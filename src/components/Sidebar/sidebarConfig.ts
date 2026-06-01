@@ -125,6 +125,7 @@ const ministryNavigation: NavGroup[] = [
     label: "Main",
     items: [
       { title: "Ministry", url: "/ministry", icon: Building2, shortTitle: "Ministry" },
+      { title: "ECZ Resources", url: "/ecz", icon: FileText, shortTitle: "ECZ" },
       { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
     ],
   },
