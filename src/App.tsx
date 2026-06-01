@@ -13,6 +13,10 @@ import { MainLayout } from '@/components/Layout/MainLayout';
 import { LogoLoader } from '@/components/UI/LogoLoader';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import DemoBanner from '@/components/Auth/DemoBanner';
+import RoleGuard from '@/components/Auth/RoleGuard';
+
+// Stakeholders allowed to access ECZ content (K-12 only)
+const ECZ_ROLES = ['student', 'teacher', 'guardian', 'institution', 'ministry'] as const;
 
 // Core Pages (eagerly loaded)
 import Index from '@/pages/Index';
@@ -48,6 +52,7 @@ const EntrepreneurHub = React.lazy(() => import('@/pages/hubs/EntrepreneurHub'))
 const NGOHub = React.lazy(() => import('@/pages/hubs/NGOHub'));
 const VideoRoomsPage = React.lazy(() => import('@/pages/VideoRoomsPage'));
 const StudyGroupsHubPage = React.lazy(() => import('@/pages/StudyGroupsHubPage'));
+const VideoWatchPage = React.lazy(() => import('@/pages/VideoWatchPage'));
 const GroupChatPage = React.lazy(() => import('@/pages/GroupChatPage'));
 const GroupFilesPage = React.lazy(() => import('@/pages/GroupFilesPage'));
 const GroupVideoPage = React.lazy(() => import('@/pages/GroupVideoPage'));
@@ -105,7 +110,9 @@ function App() {
               <Route path="/connect" element={<PG><ConnectHub /></PG>} />
               <Route path="/progress" element={<PG><ProgressHub /></PG>} />
               <Route path="/profile" element={<PG><ProfileHub /></PG>} />
-              <Route path="/ecz" element={<PG><ECZHub /></PG>} />
+              <Route path="/ecz" element={<PG><RoleGuard allow={[...ECZ_ROLES]}><ECZHub /></RoleGuard></PG>} />
+              <Route path="/watch" element={<PG><VideoWatchPage /></PG>} />
+              <Route path="/watch/:videoId" element={<PG><VideoWatchPage /></PG>} />
               <Route path="/teach" element={<PG><TeachHub /></PG>} />
               <Route path="/family" element={<PG><FamilyHub /></PG>} />
               <Route path="/ministry" element={<PG><MinistryHub /></PG>} />
@@ -192,6 +199,12 @@ function App() {
               <Route path="/ecz-practice-quiz" element={<Navigate to="/ecz?tab=quiz" replace />} />
               <Route path="/ecz-resource-library" element={<Navigate to="/ecz?tab=resources" replace />} />
               <Route path="/zambian-resources" element={<Navigate to="/ecz?tab=resources" replace />} />
+
+              {/* Video — unified watch page */}
+              <Route path="/video-learning" element={<Navigate to="/watch" replace />} />
+              <Route path="/youtube-learning" element={<Navigate to="/watch" replace />} />
+              <Route path="/student-videos" element={<Navigate to="/watch" replace />} />
+              <Route path="/role-videos" element={<Navigate to="/watch" replace />} />
 
               {/* Teacher */}
               <Route path="/teacher-gradebook" element={<Navigate to="/teach?tab=gradebook" replace />} />
