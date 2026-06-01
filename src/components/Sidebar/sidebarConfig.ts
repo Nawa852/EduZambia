@@ -81,6 +81,7 @@ const teacherNavigation: NavGroup[] = [
     items: [
       { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
       { title: "Teaching Hub", url: "/teach", icon: ClipboardCheck, shortTitle: "Teach" },
+      { title: "ECZ Resources", url: "/ecz", icon: FileText, shortTitle: "ECZ" },
       { title: "AI Tools", url: "/ai", icon: Brain, badge: "AI", shortTitle: "AI" },
       { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
       { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
@@ -95,6 +96,7 @@ const guardianNavigation: NavGroup[] = [
     items: [
       { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
       { title: "Family", url: "/family", icon: Users, shortTitle: "Family" },
+      { title: "ECZ Resources", url: "/ecz", icon: FileText, shortTitle: "ECZ" },
       { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
       { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
     ],
@@ -107,11 +109,15 @@ const institutionNavigation: NavGroup[] = [
     label: "Main",
     items: [
       { title: "Admin", url: "/admin", icon: LayoutDashboard, shortTitle: "Admin" },
+      { title: "ECZ Resources", url: "/ecz", icon: FileText, shortTitle: "ECZ" },
       { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
       { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
     ],
   },
 ];
+
+
+// (Guardian and Institution defined above)
 
 // ─── Ministry ───────────────────────────────────────
 const ministryNavigation: NavGroup[] = [
