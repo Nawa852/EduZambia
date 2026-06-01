@@ -200,6 +200,12 @@ function App() {
               <Route path="/ecz-resource-library" element={<Navigate to="/ecz?tab=resources" replace />} />
               <Route path="/zambian-resources" element={<Navigate to="/ecz?tab=resources" replace />} />
 
+              {/* Video — unified watch page */}
+              <Route path="/video-learning" element={<Navigate to="/watch" replace />} />
+              <Route path="/youtube-learning" element={<Navigate to="/watch" replace />} />
+              <Route path="/student-videos" element={<Navigate to="/watch" replace />} />
+              <Route path="/role-videos" element={<Navigate to="/watch" replace />} />
+
               {/* Teacher */}
               <Route path="/teacher-gradebook" element={<Navigate to="/teach?tab=gradebook" replace />} />
               <Route path="/teacher-lesson-plan" element={<Navigate to="/teach?tab=lesson-plans" replace />} />
