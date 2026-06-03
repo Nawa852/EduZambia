@@ -58,6 +58,7 @@ const GroupFilesPage = React.lazy(() => import('@/pages/GroupFilesPage'));
 const GroupVideoPage = React.lazy(() => import('@/pages/GroupVideoPage'));
 const SchoolAnnouncementsPage = React.lazy(() => import('@/pages/SchoolAnnouncementsPage'));
 const DonorImpactPage = React.lazy(() => import('@/pages/DonorImpactPage'));
+const ToolsHub = React.lazy(() => import('@/pages/hubs/ToolsHub'));
 
 // Lazy: Dynamic detail pages (keep standalone)
 const CourseDetailPage = React.lazy(() => import('@/pages/CourseDetailPage'));
@@ -131,6 +132,14 @@ function App() {
               <Route path="/group/:groupId/video" element={<PG><GroupVideoPage /></PG>} />
               <Route path="/school-announcements" element={<PG><SchoolAnnouncementsPage /></PG>} />
               <Route path="/donor-impact" element={<DonorImpactPage />} />
+              <Route path="/tools" element={<PG><ToolsHub /></PG>} />
+
+              {/* Tools & Resources — redirect overlapping tool routes to unified hub */}
+              <Route path="/all-tools" element={<Navigate to="/tools" replace />} />
+              <Route path="/resources" element={<Navigate to="/tools" replace />} />
+              <Route path="/tools-hub" element={<Navigate to="/tools" replace />} />
+              <Route path="/study-tools" element={<Navigate to="/tools" replace />} />
+              <Route path="/ai-tools" element={<Navigate to="/tools" replace />} />
 
               {/* ─── Dynamic Detail Pages ──────────────────────── */}
               <Route path="/course/:courseId" element={<PG><CourseDetailPage /></PG>} />

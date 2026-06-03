@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 
@@ -15,6 +14,25 @@ interface EmailVerificationRequest {
   fullName?: string;
 }
 
+const APP_BASE = "https://eduzambia.netlify.app";
+
+// Rewrite any confirmation URL so the final landing page is eduzambia.netlify.app
+function normaliseRedirect(url: string): string {
+  try {
+    const u = new URL(url);
+    const redirectTo = u.searchParams.get("redirect_to");
+    if (redirectTo) {
+      const r = new URL(redirectTo);
+      r.protocol = "https:";
+      r.host = "eduzambia.netlify.app";
+      u.searchParams.set("redirect_to", r.toString());
+    }
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -22,100 +40,124 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { email, confirmationUrl, fullName }: EmailVerificationRequest = await req.json();
+    const link = normaliseRedirect(confirmationUrl);
+    const name = (fullName || "Learner").split(" ")[0];
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Verify your Synapse · EduZambia account</title>
+</head>
+<body style="margin:0;padding:0;background:#0f172a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Inter,Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#312e81 100%);padding:40px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 24px 60px -12px rgba(0,0,0,0.5);">
+
+        <!-- Hero -->
+        <tr><td style="background:linear-gradient(135deg,#2563eb 0%,#7c3aed 50%,#db2777 100%);padding:48px 40px;text-align:center;">
+          <div style="display:inline-block;background:rgba(255,255,255,0.18);backdrop-filter:blur(10px);width:72px;height:72px;border-radius:20px;line-height:72px;font-size:36px;margin-bottom:20px;">🎓</div>
+          <h1 style="margin:0;font-size:30px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">Welcome to Synapse</h1>
+          <p style="margin:8px 0 0;font-size:15px;color:rgba(255,255,255,0.9);font-weight:500;">EduZambia · BrightSphere Technologies</p>
+        </td></tr>
+
+        <!-- Greeting -->
+        <tr><td style="padding:40px 40px 16px;">
+          <h2 style="margin:0 0 12px;font-size:22px;color:#0f172a;font-weight:700;">Hi ${name}, you're in. 🚀</h2>
+          <p style="margin:0;font-size:15px;line-height:1.65;color:#475569;">
+            One last step — confirm your email so we can sync your progress, save your work, and unlock your full Synapse workspace.
+          </p>
+        </td></tr>
+
+        <!-- CTA -->
+        <tr><td style="padding:24px 40px 8px;text-align:center;">
+          <a href="${link}" style="display:inline-block;padding:16px 44px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#ffffff;text-decoration:none;font-weight:700;font-size:15px;border-radius:14px;box-shadow:0 12px 24px -8px rgba(124,58,237,0.5);">
+            Verify my email →
+          </a>
+          <p style="margin:14px 0 0;font-size:12px;color:#94a3b8;">After verification you'll land on <b style="color:#475569;">eduzambia.netlify.app</b></p>
+        </td></tr>
+
+        <!-- Feature grid -->
+        <tr><td style="padding:32px 40px 8px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td width="50%" style="padding:14px;background:#eff6ff;border-radius:14px;vertical-align:top;">
+                <div style="font-size:22px;margin-bottom:6px;">🧠</div>
+                <div style="font-size:13px;font-weight:700;color:#1e3a8a;">AI Tutor</div>
+                <div style="font-size:11px;color:#475569;margin-top:2px;">24/7 personalised learning</div>
+              </td>
+              <td width="12"></td>
+              <td width="50%" style="padding:14px;background:#f5f3ff;border-radius:14px;vertical-align:top;">
+                <div style="font-size:22px;margin-bottom:6px;">📚</div>
+                <div style="font-size:13px;font-weight:700;color:#5b21b6;">ECZ Past Papers</div>
+                <div style="font-size:11px;color:#475569;margin-top:2px;">2003 – 2024 archive</div>
+              </td>
+            </tr>
+            <tr><td colspan="3" style="height:12px;"></td></tr>
+            <tr>
+              <td width="50%" style="padding:14px;background:#fdf2f8;border-radius:14px;vertical-align:top;">
+                <div style="font-size:22px;margin-bottom:6px;">👥</div>
+                <div style="font-size:13px;font-weight:700;color:#9d174d;">Study Groups</div>
+                <div style="font-size:11px;color:#475569;margin-top:2px;">Learn with peers nationwide</div>
+              </td>
+              <td width="12"></td>
+              <td width="50%" style="padding:14px;background:#ecfdf5;border-radius:14px;vertical-align:top;">
+                <div style="font-size:22px;margin-bottom:6px;">🏆</div>
+                <div style="font-size:13px;font-weight:700;color:#065f46;">Skill Passport</div>
+                <div style="font-size:11px;color:#475569;margin-top:2px;">Verified portfolio</div>
+              </td>
+            </tr>
+          </table>
+        </td></tr>
+
+        <!-- Fallback link -->
+        <tr><td style="padding:28px 40px 8px;">
+          <div style="padding:14px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;">
+            <p style="margin:0 0 6px;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Button not working?</p>
+            <a href="${link}" style="font-size:11px;color:#2563eb;word-break:break-all;text-decoration:none;">${link}</a>
+          </div>
+        </td></tr>
+
+        <!-- Notice -->
+        <tr><td style="padding:20px 40px 0;">
+          <div style="padding:12px 14px;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:10px;">
+            <p style="margin:0;font-size:12px;color:#78350f;">⏰ This link expires in 24 hours. If you didn't sign up, you can ignore this email.</p>
+          </div>
+        </td></tr>
+
+        <!-- Footer -->
+        <tr><td style="padding:32px 40px 36px;text-align:center;border-top:1px solid #f1f5f9;margin-top:24px;">
+          <p style="margin:0 0 6px;font-size:13px;color:#475569;font-weight:600;">Synapse · EduZambia</p>
+          <p style="margin:0 0 12px;font-size:11px;color:#94a3b8;">Built in Zambia, for Africa. Engineered for humanity.</p>
+          <p style="margin:0;font-size:11px;color:#cbd5e1;">© 2026 BrightSphere Technologies · <a href="${APP_BASE}" style="color:#94a3b8;text-decoration:none;">eduzambia.netlify.app</a></p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
 
     const emailResponse = await resend.emails.send({
-      from: "EDU ZAMBIA <onboarding@resend.dev>",
+      from: "Synapse EduZambia <onboarding@resend.dev>",
       to: [email],
-      subject: "Welcome to EDU ZAMBIA - Verify Your Email",
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #2563eb; font-size: 28px; margin-bottom: 10px;">🎓 EDU ZAMBIA</h1>
-            <h2 style="color: #374151; font-size: 24px; margin-bottom: 20px;">Welcome ${fullName || 'Student'}!</h2>
-          </div>
-          
-          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 12px; color: white; text-align: center; margin-bottom: 30px;">
-            <h3 style="margin: 0 0 15px 0; font-size: 20px;">Your Learning Journey Starts Here!</h3>
-            <p style="margin: 0; font-size: 16px; opacity: 0.9;">Join thousands of students across Zambia in revolutionizing education with AI-powered learning.</p>
-          </div>
-          
-          <div style="background: #f8fafc; padding: 25px; border-radius: 8px; margin-bottom: 25px;">
-            <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-              To get started with your EDU ZAMBIA account and access our AI-powered learning platform, please verify your email address by clicking the button below:
-            </p>
-            
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${confirmationUrl}" 
-                 style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
-                        color: white; 
-                        padding: 15px 35px; 
-                        text-decoration: none; 
-                        border-radius: 8px; 
-                        font-weight: bold; 
-                        font-size: 16px; 
-                        display: inline-block;
-                        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">
-                ✅ Verify Email Address
-              </a>
-            </div>
-            
-            <p style="color: #6b7280; font-size: 14px; text-align: center; margin: 20px 0 0 0;">
-              Or copy and paste this link in your browser:<br>
-              <a href="${confirmationUrl}" style="color: #2563eb; word-break: break-all;">${confirmationUrl}</a>
-            </p>
-          </div>
-          
-          <div style="border-left: 4px solid #10b981; padding: 20px; background: #f0fdf4; margin-bottom: 25px;">
-            <h4 style="color: #065f46; margin: 0 0 10px 0; font-size: 16px;">🚀 What's waiting for you:</h4>
-            <ul style="color: #374151; margin: 0; padding-left: 20px;">
-              <li>AI-powered personalized learning plans</li>
-              <li>Interactive homework help and tutoring</li>
-              <li>Study groups and collaboration tools</li>
-              <li>YouTube learning hub with curated content</li>
-              <li>Real-time progress tracking and analytics</li>
-              <li>Multi-AI tutor support (OpenAI, Claude, DeepSeek)</li>
-              <li>Automated flashcard generation</li>
-              <li>Smart learning recommendations</li>
-            </ul>
-          </div>
-          
-          <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 6px; margin-bottom: 25px;">
-            <p style="color: #92400e; margin: 0; font-size: 14px;">
-              <strong>⚠️ Important:</strong> This verification link will expire in 24 hours. If you didn't create an account with EDU ZAMBIA, please ignore this email.
-            </p>
-          </div>
-          
-          <div style="text-align: center; padding: 20px 0; border-top: 1px solid #e5e7eb;">
-            <p style="color: #6b7280; font-size: 14px; margin: 0 0 10px 0;">
-              Need help? Contact our support team at 
-              <a href="mailto:support@eduzambia.com" style="color: #2563eb;">support@eduzambia.com</a>
-            </p>
-            <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-              © 2025 EDU ZAMBIA. Revolutionizing education across Zambia with AI.
-            </p>
-          </div>
-        </div>
-      `,
+      subject: `${name}, verify your Synapse account 🎓`,
+      html,
     });
 
-    console.log("Email verification sent successfully:", emailResponse);
+    console.log("Email verification sent:", emailResponse);
 
     return new Response(JSON.stringify(emailResponse), {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        ...corsHeaders,
-      },
+      headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: any) {
-    console.error("Error sending email verification:", error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
-    );
+    console.error("Error sending verification email:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   }
 };
 
