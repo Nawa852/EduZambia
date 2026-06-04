@@ -68,6 +68,7 @@ const studentNavigation: NavGroup[] = [
     label: "More",
     items: [
       { title: "Tools & Resources", url: "/tools", icon: Wrench, shortTitle: "Tools" },
+      { title: "Free Courses", url: "/free-courses", icon: GraduationCap, shortTitle: "Free", badge: "NEW" },
       { title: "Progress", url: "/progress", icon: BarChart3, shortTitle: "Stats" },
       { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
       { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },

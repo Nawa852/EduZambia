@@ -6,7 +6,7 @@ import {
   Wrench, Brain, MessageSquare, FileText, Upload, Calendar, Calculator,
   Zap, PenTool, Swords, Lightbulb, Layers, Target, Map, Sparkles, Mic,
   Timer, Bookmark, BookOpen, ClipboardCheck, Video, Users, Heart,
-  Rocket, DollarSign, Briefcase, Code, Microscope,
+  Rocket, DollarSign, Briefcase, Code, Microscope, GraduationCap, Stethoscope,
 } from 'lucide-react';
 
 interface Tool {
@@ -85,6 +85,17 @@ const groups: ToolGroup[] = [
       { title: 'Mentors & Investors', desc: 'Funding directory', href: '/entrepreneur?tab=mentors', icon: DollarSign },
       { title: 'Cybersecurity Lab', desc: 'Hands-on tracks', href: '/cybersecurity', icon: Code },
       { title: 'Medical Sim', desc: 'Clinical cases', href: '/learn?tab=medical', icon: Microscope },
+    ],
+  },
+  {
+    label: 'Free World-Class Courses',
+    accent: 'from-sky-500/15 to-indigo-500/10',
+    tools: [
+      { title: 'All Free Courses', desc: 'Harvard, MIT, Stanford & more', href: '/free-courses', icon: GraduationCap, badge: 'FREE' },
+      { title: 'Developers', desc: 'CS50, MIT algos, freeCodeCamp', href: '/free-courses?track=developer', icon: Code },
+      { title: 'Entrepreneurs', desc: 'YC, Stanford, Harvard', href: '/free-courses?track=entrepreneur', icon: Rocket },
+      { title: 'Healthcare', desc: 'Harvard, Yale, WHO, Khan', href: '/free-courses?track=healthcare', icon: Stethoscope },
+      { title: 'Skills', desc: 'Learn how to learn + more', href: '/free-courses?track=skills', icon: Sparkles },
     ],
   },
 ];

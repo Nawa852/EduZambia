@@ -59,6 +59,7 @@ const GroupVideoPage = React.lazy(() => import('@/pages/GroupVideoPage'));
 const SchoolAnnouncementsPage = React.lazy(() => import('@/pages/SchoolAnnouncementsPage'));
 const DonorImpactPage = React.lazy(() => import('@/pages/DonorImpactPage'));
 const ToolsHub = React.lazy(() => import('@/pages/hubs/ToolsHub'));
+const FreeCoursesPage = React.lazy(() => import('@/pages/FreeCoursesPage'));
 
 // Lazy: Dynamic detail pages (keep standalone)
 const CourseDetailPage = React.lazy(() => import('@/pages/CourseDetailPage'));
@@ -133,6 +134,8 @@ function App() {
               <Route path="/school-announcements" element={<PG><SchoolAnnouncementsPage /></PG>} />
               <Route path="/donor-impact" element={<DonorImpactPage />} />
               <Route path="/tools" element={<PG><ToolsHub /></PG>} />
+              <Route path="/free-courses" element={<PG><FreeCoursesPage /></PG>} />
+              <Route path="/free-courses/:courseId" element={<PG><FreeCoursesPage /></PG>} />
 
               {/* Tools & Resources — redirect overlapping tool routes to unified hub */}
               <Route path="/all-tools" element={<Navigate to="/tools" replace />} />

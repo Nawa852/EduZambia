@@ -60,8 +60,12 @@ const ECZPastPapersPage = () => {
   grades.forEach(g => { groupedByGrade[g] = filtered.filter(p => p.grade === g); });
 
   const handleDownload = (paper: PastPaper) => {
-    const url = paper.file_url || paper.external_url;
-    if (url) window.open(url, '_blank');
+    if (paper.file_url) { window.open(paper.file_url, '_blank'); return; }
+    // External URLs in the DB are generic landing pages; build a precise Google search instead
+    const q = encodeURIComponent(
+      `ECZ Grade ${paper.grade} ${paper.subject} ${paper.year} ${paper.paper} past paper${paper.has_marking_scheme ? ' marking scheme' : ''} filetype:pdf`,
+    );
+    window.open(`https://www.google.com/search?q=${q}`, '_blank');
   };
 
   if (loading) return <div className="py-20"><LogoLoader size="lg" text="Loading past papers..." /></div>;
@@ -194,7 +198,7 @@ const ECZPastPapersPage = () => {
                         </div>
                         {paper.source && <p className="text-xs text-muted-foreground mb-3">Source: {paper.source}</p>}
                         <Button className="w-full gap-2" onClick={() => handleDownload(paper)}>
-                          <Download className="h-4 w-4" /> Download Paper
+                          <Download className="h-4 w-4" /> {paper.file_url ? 'Download Paper' : 'Find Paper PDF'}
                         </Button>
                       </CardContent>
                     </Card>
