@@ -6,7 +6,7 @@ import {
   Wrench, Brain, MessageSquare, FileText, Upload, Calendar, Calculator,
   Zap, PenTool, Swords, Lightbulb, Layers, Target, Map, Sparkles, Mic,
   Timer, Bookmark, BookOpen, ClipboardCheck, Video, Users, Heart,
-  Rocket, DollarSign, Briefcase, Code, Microscope,
+  Rocket, DollarSign, Briefcase, Code, Microscope, GraduationCap, Stethoscope,
 } from 'lucide-react';
 
 interface Tool {
