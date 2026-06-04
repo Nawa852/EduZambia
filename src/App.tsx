@@ -59,6 +59,7 @@ const GroupVideoPage = React.lazy(() => import('@/pages/GroupVideoPage'));
 const SchoolAnnouncementsPage = React.lazy(() => import('@/pages/SchoolAnnouncementsPage'));
 const DonorImpactPage = React.lazy(() => import('@/pages/DonorImpactPage'));
 const ToolsHub = React.lazy(() => import('@/pages/hubs/ToolsHub'));
+const FreeCoursesPage = React.lazy(() => import('@/pages/FreeCoursesPage'));
 
 // Lazy: Dynamic detail pages (keep standalone)
 const CourseDetailPage = React.lazy(() => import('@/pages/CourseDetailPage'));
