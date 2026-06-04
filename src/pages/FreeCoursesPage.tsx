@@ -46,7 +46,9 @@ const CourseCard: React.FC<{ course: FreeCourse }> = ({ course }) => (
 );
 
 const FreeCoursesListing: React.FC = () => {
-  const [track, setTrack] = useState<CourseTrack | 'all'>('all');
+  const [params] = useSearchParams();
+  const initial = (params.get('track') as CourseTrack | null) || 'all';
+  const [track, setTrack] = useState<CourseTrack | 'all'>(initial);
   const [q, setQ] = useState('');
 
   const filtered = useMemo(() => FREE_COURSES.filter(c => {
