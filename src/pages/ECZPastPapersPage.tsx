@@ -198,7 +198,7 @@ const ECZPastPapersPage = () => {
                         </div>
                         {paper.source && <p className="text-xs text-muted-foreground mb-3">Source: {paper.source}</p>}
                         <Button className="w-full gap-2" onClick={() => handleDownload(paper)}>
-                          <Download className="h-4 w-4" /> Download Paper
+                          <Download className="h-4 w-4" /> {paper.file_url ? 'Download Paper' : 'Find Paper PDF'}
                         </Button>
                       </CardContent>
                     </Card>
