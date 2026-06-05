@@ -53,10 +53,23 @@ const VideoWatchPage: React.FC = () => {
     [results, activeId]
   );
 
+  // Course-progress context: detect via ?course= or by looking up the videoId
+  const courseIdParam = search.get('course') || undefined;
+  const parentCourse = useMemo(
+    () => (courseIdParam ? findCourseByVideoId(activeId) || undefined : findCourseByVideoId(activeId)),
+    [activeId, courseIdParam]
+  );
+  const { progress: courseProgress, markStarted, markComplete } = useCourseProgress(parentCourse?.id);
+  const lessonIndex = parentCourse?.lessons.findIndex(l => l.videoId === activeId) ?? -1;
+  const nextLesson = parentCourse && lessonIndex >= 0 ? parentCourse.lessons[lessonIndex + 1] : undefined;
+  const lessonDone = parentCourse ? !!courseProgress.lessons[activeId]?.completed : false;
+  const coursePercent = parentCourse ? computePercent(parentCourse, courseProgress) : 0;
+
   useEffect(() => {
     setNotes(localStorage.getItem(NOTES_KEY(activeId)) || '');
     try { setBookmarks(JSON.parse(localStorage.getItem(BOOKMARK_KEY) || '[]')); } catch { /* noop */ }
-  }, [activeId]);
+    if (parentCourse) markStarted(activeId);
+  }, [activeId, parentCourse, markStarted]);
 
   const saveNotes = (val: string) => {
     setNotes(val);
