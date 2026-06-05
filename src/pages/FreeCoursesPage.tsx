@@ -4,12 +4,16 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PageHeader from '@/components/ui/page-header';
+import ContinueLearning from '@/components/Courses/ContinueLearning';
+import { formatDistanceToNow } from 'date-fns';
 import {
-  GraduationCap, Clock, Play, ExternalLink, ArrowLeft, BookOpen, Search, Award,
+  GraduationCap, Clock, Play, ExternalLink, ArrowLeft, BookOpen, Search, Award, CheckCircle2, Circle, RotateCcw,
 } from 'lucide-react';
 import { FREE_COURSES, TRACK_META, type CourseTrack, type FreeCourse } from '@/data/freeCourses';
+import { useCourseProgress, computePercent, getCourseProgress } from '@/hooks/useCourseProgress';
 
 const TRACKS: (CourseTrack | 'all')[] = ['all', 'developer', 'entrepreneur', 'healthcare', 'skills'];
 
