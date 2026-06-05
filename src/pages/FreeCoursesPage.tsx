@@ -4,46 +4,60 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PageHeader from '@/components/ui/page-header';
+import ContinueLearning from '@/components/Courses/ContinueLearning';
+import { formatDistanceToNow } from 'date-fns';
 import {
-  GraduationCap, Clock, Play, ExternalLink, ArrowLeft, BookOpen, Search, Award,
+  GraduationCap, Clock, Play, ExternalLink, ArrowLeft, BookOpen, Search, Award, CheckCircle2, Circle, RotateCcw,
 } from 'lucide-react';
 import { FREE_COURSES, TRACK_META, type CourseTrack, type FreeCourse } from '@/data/freeCourses';
+import { useCourseProgress, computePercent, getCourseProgress } from '@/hooks/useCourseProgress';
 
 const TRACKS: (CourseTrack | 'all')[] = ['all', 'developer', 'entrepreneur', 'healthcare', 'skills'];
 
-const CourseCard: React.FC<{ course: FreeCourse }> = ({ course }) => (
-  <Link to={`/free-courses/${course.id}`} className="group">
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow border-border/40 h-full flex flex-col">
-      <div className="relative aspect-video bg-muted overflow-hidden">
-        <img
-          src={course.thumbnail}
-          alt={course.title}
-          loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-        <Badge className="absolute top-2 left-2 bg-background/90 text-foreground border-0">
-          {TRACK_META[course.track].emoji} {course.provider}
-        </Badge>
-        <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-white bg-black/60 px-2 py-1 rounded">
-          <Clock className="w-3 h-3" /> {course.hours}h
+const CourseCard: React.FC<{ course: FreeCourse }> = ({ course }) => {
+  const progress = getCourseProgress(course.id);
+  const percent = computePercent(course, progress);
+  const started = progress.updatedAt > 0;
+  return (
+    <Link to={`/free-courses/${course.id}`} className="group">
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow border-border/40 h-full flex flex-col">
+        <div className="relative aspect-video bg-muted overflow-hidden">
+          <img
+            src={course.thumbnail}
+            alt={course.title}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+          <Badge className="absolute top-2 left-2 bg-background/90 text-foreground border-0">
+            {TRACK_META[course.track].emoji} {course.provider}
+          </Badge>
+          <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-white bg-black/60 px-2 py-1 rounded">
+            <Clock className="w-3 h-3" /> {course.hours}h
+          </div>
+          {started && (
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/40">
+              <div className="h-full bg-primary" style={{ width: `${percent}%` }} />
+            </div>
+          )}
         </div>
-      </div>
-      <CardContent className="p-4 flex flex-col gap-2 flex-1">
-        <h3 className="font-semibold text-foreground line-clamp-2 leading-snug">{course.title}</h3>
-        <p className="text-xs text-muted-foreground line-clamp-2">{course.description}</p>
-        <div className="mt-auto flex items-center justify-between pt-2">
-          <Badge variant="secondary" className="text-xs">{course.level}</Badge>
-          <span className="text-xs text-muted-foreground flex items-center gap-1">
-            <BookOpen className="w-3 h-3" /> {course.lessons.length} lessons
-          </span>
-        </div>
-      </CardContent>
-    </Card>
-  </Link>
-);
+        <CardContent className="p-4 flex flex-col gap-2 flex-1">
+          <h3 className="font-semibold text-foreground line-clamp-2 leading-snug">{course.title}</h3>
+          <p className="text-xs text-muted-foreground line-clamp-2">{course.description}</p>
+          <div className="mt-auto flex items-center justify-between pt-2">
+            <Badge variant="secondary" className="text-xs">{course.level}</Badge>
+            <span className="text-xs text-muted-foreground flex items-center gap-1">
+              {started ? <><CheckCircle2 className="w-3 h-3 text-primary" /> {percent}%</> : <><BookOpen className="w-3 h-3" /> {course.lessons.length} lessons</>}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+};
 
 const FreeCoursesListing: React.FC = () => {
   const [params] = useSearchParams();
@@ -96,6 +110,8 @@ const FreeCoursesListing: React.FC = () => {
           <p className="text-sm text-muted-foreground mb-4">{TRACK_META[track as CourseTrack].tagline}</p>
         )}
 
+        <ContinueLearning track={track === 'all' ? undefined : (track as CourseTrack)} />
+
         {filtered.length === 0 ? (
           <Card><CardContent className="p-10 text-center text-muted-foreground">No courses match your search.</CardContent></Card>
         ) : (
@@ -111,6 +127,22 @@ const FreeCoursesListing: React.FC = () => {
 const FreeCourseDetail: React.FC<{ course: FreeCourse }> = ({ course }) => {
   const navigate = useNavigate();
   const meta = TRACK_META[course.track];
+  const { progress, markComplete } = useCourseProgress(course.id);
+  const percent = computePercent(course, progress);
+  const completedCount = course.lessons.filter(l => progress.lessons[l.videoId]?.completed).length;
+  const nextLesson =
+    course.lessons.find(l => !progress.lessons[l.videoId]?.completed) ||
+    course.lessons.find(l => l.videoId === progress.lastLessonId) ||
+    course.lessons[0];
+  const started = progress.updatedAt > 0;
+
+  const reset = () => {
+    if (confirm('Reset progress for this course?')) {
+      localStorage.removeItem(`courseProgress:${course.id}`);
+      window.dispatchEvent(new CustomEvent('course-progress-changed', { detail: { courseId: course.id } }));
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background p-4 lg:p-6">
       <div className="max-w-5xl mx-auto">
@@ -136,40 +168,73 @@ const FreeCourseDetail: React.FC<{ course: FreeCourse }> = ({ course }) => {
               <Badge variant="secondary"><BookOpen className="w-3 h-3 mr-1" /> {course.lessons.length} lessons</Badge>
               {course.tags.map(t => <Badge key={t} variant="outline">#{t}</Badge>)}
             </div>
-            {course.externalUrl && (
-              <Button variant="outline" size="sm" asChild>
-                <a href={course.externalUrl} target="_blank" rel="noreferrer">
-                  <ExternalLink className="w-4 h-4 mr-1" /> Official course site
-                </a>
-              </Button>
-            )}
+
+            <div className="space-y-2 p-3 rounded-lg bg-muted/40 border border-border/40">
+              <div className="flex items-center justify-between text-sm">
+                <span className="font-medium">Your progress</span>
+                <span className="text-muted-foreground">{completedCount} / {course.lessons.length} lessons · {percent}%</span>
+              </div>
+              <Progress value={percent} className="h-2" />
+              <div className="flex flex-wrap gap-2 pt-1">
+                <Button size="sm" onClick={() => navigate(`/watch/${nextLesson.videoId}?title=${encodeURIComponent(nextLesson.title)}&course=${course.id}`)}>
+                  <Play className="w-4 h-4 mr-1" /> {started ? (percent === 100 ? 'Review' : 'Continue') : 'Start course'}
+                </Button>
+                {started && (
+                  <Button size="sm" variant="ghost" onClick={reset}>
+                    <RotateCcw className="w-4 h-4 mr-1" /> Reset
+                  </Button>
+                )}
+                {course.externalUrl && (
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={course.externalUrl} target="_blank" rel="noreferrer">
+                      <ExternalLink className="w-4 h-4 mr-1" /> Official site
+                    </a>
+                  </Button>
+                )}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
         <h2 className="text-lg font-semibold mb-3 text-foreground">Lessons</h2>
         <div className="space-y-2">
-          {course.lessons.map((l, idx) => (
-            <Card key={l.videoId + idx} className="border-border/40 hover:border-primary/40 transition-colors">
-              <CardContent className="p-3 flex items-center gap-3">
-                <div className="flex items-center justify-center w-9 h-9 rounded-full bg-primary/10 text-primary text-sm font-semibold shrink-0">
-                  {idx + 1}
-                </div>
-                <img
-                  src={`https://i.ytimg.com/vi/${l.videoId}/default.jpg`}
-                  alt=""
-                  className="w-20 h-12 object-cover rounded hidden sm:block"
-                  loading="lazy"
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-foreground truncate">{l.title}</p>
-                  {l.duration && <p className="text-xs text-muted-foreground">{l.duration}</p>}
-                </div>
-                <Button size="sm" onClick={() => navigate(`/watch/${l.videoId}?title=${encodeURIComponent(l.title)}`)}>
-                  <Play className="w-4 h-4 mr-1" /> Watch
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+          {course.lessons.map((l, idx) => {
+            const lp = progress.lessons[l.videoId];
+            const isDone = !!lp?.completed;
+            const isLast = progress.lastLessonId === l.videoId;
+            return (
+              <Card key={l.videoId + idx} className={`border-border/40 transition-colors ${isLast ? 'border-primary/50 ring-1 ring-primary/20' : 'hover:border-primary/40'}`}>
+                <CardContent className="p-3 flex items-center gap-3">
+                  <button
+                    onClick={() => markComplete(l.videoId, !isDone)}
+                    className="shrink-0"
+                    aria-label={isDone ? 'Mark as incomplete' : 'Mark as complete'}
+                  >
+                    {isDone
+                      ? <CheckCircle2 className="w-7 h-7 text-primary" />
+                      : <Circle className="w-7 h-7 text-muted-foreground/50 hover:text-primary" />}
+                  </button>
+                  <img
+                    src={`https://i.ytimg.com/vi/${l.videoId}/default.jpg`}
+                    alt=""
+                    className="w-20 h-12 object-cover rounded hidden sm:block"
+                    loading="lazy"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className={`font-medium truncate ${isDone ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
+                      <span className="text-xs text-muted-foreground mr-1">{idx + 1}.</span>{l.title}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {lp?.lastWatched ? `Watched ${formatDistanceToNow(lp.lastWatched, { addSuffix: true })}` : l.duration || 'Not started'}
+                    </p>
+                  </div>
+                  <Button size="sm" variant={isLast && !isDone ? 'default' : 'outline'} onClick={() => navigate(`/watch/${l.videoId}?title=${encodeURIComponent(l.title)}&course=${course.id}`)}>
+                    <Play className="w-4 h-4 mr-1" /> {isDone ? 'Replay' : isLast ? 'Resume' : 'Watch'}
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </div>

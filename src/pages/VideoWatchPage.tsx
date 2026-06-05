@@ -12,8 +12,11 @@ import { useProfile } from '@/hooks/useProfile';
 import { toast } from 'sonner';
 import {
   Play, Search, Bookmark, BookmarkCheck, NotebookPen, MessageSquare,
-  ListVideo, ThumbsUp, Share2, Sparkles, Loader2,
+  ListVideo, ThumbsUp, Share2, Sparkles, Loader2, CheckCircle2, ArrowRight, Circle,
 } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { useCourseProgress, findCourseByVideoId, computePercent } from '@/hooks/useCourseProgress';
+import { Link } from 'react-router-dom';
 
 interface Video {
   id: string;
@@ -50,10 +53,23 @@ const VideoWatchPage: React.FC = () => {
     [results, activeId]
   );
 
+  // Course-progress context: detect via ?course= or by looking up the videoId
+  const courseIdParam = search.get('course') || undefined;
+  const parentCourse = useMemo(
+    () => (courseIdParam ? findCourseByVideoId(activeId) || undefined : findCourseByVideoId(activeId)),
+    [activeId, courseIdParam]
+  );
+  const { progress: courseProgress, markStarted, markComplete } = useCourseProgress(parentCourse?.id);
+  const lessonIndex = parentCourse?.lessons.findIndex(l => l.videoId === activeId) ?? -1;
+  const nextLesson = parentCourse && lessonIndex >= 0 ? parentCourse.lessons[lessonIndex + 1] : undefined;
+  const lessonDone = parentCourse ? !!courseProgress.lessons[activeId]?.completed : false;
+  const coursePercent = parentCourse ? computePercent(parentCourse, courseProgress) : 0;
+
   useEffect(() => {
     setNotes(localStorage.getItem(NOTES_KEY(activeId)) || '');
     try { setBookmarks(JSON.parse(localStorage.getItem(BOOKMARK_KEY) || '[]')); } catch { /* noop */ }
-  }, [activeId]);
+    if (parentCourse) markStarted(activeId);
+  }, [activeId, parentCourse, markStarted]);
 
   const saveNotes = (val: string) => {
     setNotes(val);
@@ -160,6 +176,48 @@ const VideoWatchPage: React.FC = () => {
               </Button>
             </div>
           </div>
+
+          {parentCourse && (
+            <Card className="border-primary/30 bg-primary/5">
+              <CardContent className="p-3 sm:p-4 space-y-3">
+                <div className="flex items-start justify-between gap-3 flex-wrap">
+                  <div className="min-w-0">
+                    <p className="text-[11px] uppercase tracking-wide text-primary font-semibold">
+                      {parentCourse.provider} · {parentCourse.track}
+                    </p>
+                    <Link to={`/free-courses/${parentCourse.id}`} className="font-semibold hover:underline line-clamp-1">
+                      {parentCourse.title}
+                    </Link>
+                    <p className="text-xs text-muted-foreground">
+                      Lesson {lessonIndex + 1} of {parentCourse.lessons.length} · {coursePercent}% complete
+                    </p>
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    <Button
+                      size="sm"
+                      variant={lessonDone ? 'secondary' : 'default'}
+                      onClick={() => { markComplete(activeId, !lessonDone); toast.success(lessonDone ? 'Marked incomplete' : 'Lesson completed!'); }}
+                      className="gap-1.5"
+                    >
+                      {lessonDone ? <CheckCircle2 className="w-4 h-4" /> : <Circle className="w-4 h-4" />}
+                      {lessonDone ? 'Completed' : 'Mark complete'}
+                    </Button>
+                    {nextLesson && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => { if (!lessonDone) markComplete(activeId, true); navigate(`/watch/${nextLesson.videoId}?title=${encodeURIComponent(nextLesson.title)}&course=${parentCourse.id}`); }}
+                        className="gap-1.5"
+                      >
+                        Next lesson <ArrowRight className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                <Progress value={coursePercent} className="h-1.5" />
+              </CardContent>
+            </Card>
+          )}
 
           <Tabs defaultValue="notes" className="w-full">
             <TabsList className="grid grid-cols-3 w-full sm:w-auto">
