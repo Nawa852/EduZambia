@@ -110,6 +110,8 @@ const FreeCoursesListing: React.FC = () => {
           <p className="text-sm text-muted-foreground mb-4">{TRACK_META[track as CourseTrack].tagline}</p>
         )}
 
+        <ContinueLearning track={track === 'all' ? undefined : (track as CourseTrack)} />
+
         {filtered.length === 0 ? (
           <Card><CardContent className="p-10 text-center text-muted-foreground">No courses match your search.</CardContent></Card>
         ) : (
