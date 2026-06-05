@@ -12,8 +12,11 @@ import { useProfile } from '@/hooks/useProfile';
 import { toast } from 'sonner';
 import {
   Play, Search, Bookmark, BookmarkCheck, NotebookPen, MessageSquare,
-  ListVideo, ThumbsUp, Share2, Sparkles, Loader2,
+  ListVideo, ThumbsUp, Share2, Sparkles, Loader2, CheckCircle2, ArrowRight, Circle,
 } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { useCourseProgress, findCourseByVideoId, computePercent } from '@/hooks/useCourseProgress';
+import { Link } from 'react-router-dom';
 
 interface Video {
   id: string;
