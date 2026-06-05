@@ -1,8 +1,9 @@
 import React from 'react';
 import { HubPageLayout, HubTab } from '@/components/Layout/HubPageLayout';
-import { Rocket, Store, Users, FileText, DollarSign, Briefcase, Presentation, TrendingUp, Search, Target } from 'lucide-react';
+import { Rocket, Store, Users, FileText, DollarSign, Briefcase, Presentation, TrendingUp, Search, Target, LayoutDashboard } from 'lucide-react';
 
 const tabs: HubTab[] = [
+  { id: 'overview', label: 'Overview', icon: LayoutDashboard, component: React.lazy(() => import('@/pages/EntrepreneurDashboardPage')) },
   { id: 'ventures', label: 'Ventures', icon: Rocket, component: React.lazy(() => import('@/pages/EntrepreneurVenturesPage')) },
   { id: 'marketplace', label: 'Marketplace', icon: Store, component: React.lazy(() => import('@/pages/MarketplacePage')) },
   { id: 'mentors', label: 'Mentors', icon: Users, component: React.lazy(() => import('@/pages/MentorDirectoryPage')) },
@@ -21,7 +22,7 @@ const EntrepreneurHub = () => (
     subtitle="Build, fund, and scale Zambian ventures end-to-end."
     icon={Rocket}
     tabs={tabs}
-    defaultTab="ventures"
+    defaultTab="overview"
   />
 );
 
