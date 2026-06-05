@@ -17,37 +17,47 @@ import { useCourseProgress, computePercent, getCourseProgress } from '@/hooks/us
 
 const TRACKS: (CourseTrack | 'all')[] = ['all', 'developer', 'entrepreneur', 'healthcare', 'skills'];
 
-const CourseCard: React.FC<{ course: FreeCourse }> = ({ course }) => (
-  <Link to={`/free-courses/${course.id}`} className="group">
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow border-border/40 h-full flex flex-col">
-      <div className="relative aspect-video bg-muted overflow-hidden">
-        <img
-          src={course.thumbnail}
-          alt={course.title}
-          loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-        <Badge className="absolute top-2 left-2 bg-background/90 text-foreground border-0">
-          {TRACK_META[course.track].emoji} {course.provider}
-        </Badge>
-        <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-white bg-black/60 px-2 py-1 rounded">
-          <Clock className="w-3 h-3" /> {course.hours}h
+const CourseCard: React.FC<{ course: FreeCourse }> = ({ course }) => {
+  const progress = getCourseProgress(course.id);
+  const percent = computePercent(course, progress);
+  const started = progress.updatedAt > 0;
+  return (
+    <Link to={`/free-courses/${course.id}`} className="group">
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow border-border/40 h-full flex flex-col">
+        <div className="relative aspect-video bg-muted overflow-hidden">
+          <img
+            src={course.thumbnail}
+            alt={course.title}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+          <Badge className="absolute top-2 left-2 bg-background/90 text-foreground border-0">
+            {TRACK_META[course.track].emoji} {course.provider}
+          </Badge>
+          <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-white bg-black/60 px-2 py-1 rounded">
+            <Clock className="w-3 h-3" /> {course.hours}h
+          </div>
+          {started && (
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/40">
+              <div className="h-full bg-primary" style={{ width: `${percent}%` }} />
+            </div>
+          )}
         </div>
-      </div>
-      <CardContent className="p-4 flex flex-col gap-2 flex-1">
-        <h3 className="font-semibold text-foreground line-clamp-2 leading-snug">{course.title}</h3>
-        <p className="text-xs text-muted-foreground line-clamp-2">{course.description}</p>
-        <div className="mt-auto flex items-center justify-between pt-2">
-          <Badge variant="secondary" className="text-xs">{course.level}</Badge>
-          <span className="text-xs text-muted-foreground flex items-center gap-1">
-            <BookOpen className="w-3 h-3" /> {course.lessons.length} lessons
-          </span>
-        </div>
-      </CardContent>
-    </Card>
-  </Link>
-);
+        <CardContent className="p-4 flex flex-col gap-2 flex-1">
+          <h3 className="font-semibold text-foreground line-clamp-2 leading-snug">{course.title}</h3>
+          <p className="text-xs text-muted-foreground line-clamp-2">{course.description}</p>
+          <div className="mt-auto flex items-center justify-between pt-2">
+            <Badge variant="secondary" className="text-xs">{course.level}</Badge>
+            <span className="text-xs text-muted-foreground flex items-center gap-1">
+              {started ? <><CheckCircle2 className="w-3 h-3 text-primary" /> {percent}%</> : <><BookOpen className="w-3 h-3" /> {course.lessons.length} lessons</>}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+};
 
 const FreeCoursesListing: React.FC = () => {
   const [params] = useSearchParams();
