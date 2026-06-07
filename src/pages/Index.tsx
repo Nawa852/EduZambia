@@ -1,7 +1,7 @@
 import { useAuth } from "@/components/Auth/AuthProvider";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import MVPLanding from "@/components/Landing/MVPLanding";
+import SplashLanding from "@/components/Landing/SplashLanding";
 import { LogoLoader } from "@/components/UI/LogoLoader";
 
 const Index = () => {
@@ -22,7 +22,7 @@ const Index = () => {
     );
   }
 
-  return <MVPLanding />;
+  return <SplashLanding />;
 };
 
 export default Index;
