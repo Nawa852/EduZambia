@@ -60,6 +60,18 @@ const SchoolAnnouncementsPage = React.lazy(() => import('@/pages/SchoolAnnouncem
 const DonorImpactPage = React.lazy(() => import('@/pages/DonorImpactPage'));
 const ToolsHub = React.lazy(() => import('@/pages/hubs/ToolsHub'));
 const FreeCoursesPage = React.lazy(() => import('@/pages/FreeCoursesPage'));
+const StudyHub = React.lazy(() => import('@/pages/hubs/StudyHub'));
+const MedicalHub = React.lazy(() => import('@/pages/hubs/MedicalHub'));
+const DeveloperHub = React.lazy(() => import('@/pages/hubs/DeveloperHub'));
+const MedicalCaseSimulatorPage = React.lazy(() => import('@/pages/MedicalCaseSimulatorPage'));
+const MedicalCaseLogPage = React.lazy(() => import('@/pages/MedicalCaseLogPage'));
+const MedicalClinicalNotesPage = React.lazy(() => import('@/pages/MedicalClinicalNotesPage'));
+const MedicalRotationsPage = React.lazy(() => import('@/pages/MedicalRotationsPage'));
+const MedicalDrugReferencePage = React.lazy(() => import('@/pages/MedicalDrugReferencePage'));
+const DeveloperIDEPage = React.lazy(() => import('@/pages/DeveloperIDEPage'));
+const DeveloperProjectsPage = React.lazy(() => import('@/pages/DeveloperProjectsPage'));
+const DeveloperCodeReviewPage = React.lazy(() => import('@/pages/DeveloperCodeReviewPage'));
+const DeveloperChallengesPage = React.lazy(() => import('@/pages/DeveloperChallengesPage'));
 
 // Lazy: Dynamic detail pages (keep standalone)
 const CourseDetailPage = React.lazy(() => import('@/pages/CourseDetailPage'));
@@ -136,6 +148,24 @@ function App() {
               <Route path="/tools" element={<PG><ToolsHub /></PG>} />
               <Route path="/free-courses" element={<PG><FreeCoursesPage /></PG>} />
               <Route path="/free-courses/:courseId" element={<PG><FreeCoursesPage /></PG>} />
+
+              {/* Splash tile hubs */}
+              <Route path="/study" element={<PG><StudyHub /></PG>} />
+              <Route path="/medical" element={<PG><MedicalHub /></PG>} />
+              <Route path="/developer" element={<PG><DeveloperHub /></PG>} />
+
+              {/* Healthcare tools */}
+              <Route path="/medical-case-simulator" element={<PG><MedicalCaseSimulatorPage /></PG>} />
+              <Route path="/medical-case-log" element={<PG><MedicalCaseLogPage /></PG>} />
+              <Route path="/medical-clinical-notes" element={<PG><MedicalClinicalNotesPage /></PG>} />
+              <Route path="/medical-rotations" element={<PG><MedicalRotationsPage /></PG>} />
+              <Route path="/medical-drug-reference" element={<PG><MedicalDrugReferencePage /></PG>} />
+
+              {/* Developer tools */}
+              <Route path="/developer-ide" element={<PG><DeveloperIDEPage /></PG>} />
+              <Route path="/developer-projects" element={<PG><DeveloperProjectsPage /></PG>} />
+              <Route path="/developer-code-review" element={<PG><DeveloperCodeReviewPage /></PG>} />
+              <Route path="/developer-challenges" element={<PG><DeveloperChallengesPage /></PG>} />
 
               {/* Tools & Resources — redirect overlapping tool routes to unified hub */}
               <Route path="/all-tools" element={<Navigate to="/tools" replace />} />
