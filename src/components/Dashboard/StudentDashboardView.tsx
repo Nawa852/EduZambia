@@ -204,7 +204,7 @@ export const StudentDashboardView = ({ userName }: { userName: string }) => {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <GraduationCap className="w-4.5 h-4.5 text-primary" /> My Courses
+                  <GraduationCap className="w-4 h-4 text-primary" /> My Courses
                 </CardTitle>
                 <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => navigate('/learn?tab=catalog')}>
                   Browse <ArrowRight className="w-3 h-3" />
