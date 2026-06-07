@@ -181,7 +181,7 @@ export const StudentDashboardView = ({ userName }: { userName: string }) => {
           <Card key={i} className="border-border/50">
             <CardContent className="p-3.5 flex items-center gap-3">
               <div className={`p-2 rounded-xl ${s.color}`}>
-                <s.icon className="w-4.5 h-4.5" />
+                <s.icon className="w-4 h-4" />
               </div>
               <div>
                 <p className="text-xl font-bold text-foreground">{s.value}</p>
