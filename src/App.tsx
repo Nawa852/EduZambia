@@ -149,6 +149,24 @@ function App() {
               <Route path="/free-courses" element={<PG><FreeCoursesPage /></PG>} />
               <Route path="/free-courses/:courseId" element={<PG><FreeCoursesPage /></PG>} />
 
+              {/* Splash tile hubs */}
+              <Route path="/study" element={<PG><StudyHub /></PG>} />
+              <Route path="/medical" element={<PG><MedicalHub /></PG>} />
+              <Route path="/developer" element={<PG><DeveloperHub /></PG>} />
+
+              {/* Healthcare tools */}
+              <Route path="/medical-case-simulator" element={<PG><MedicalCaseSimulatorPage /></PG>} />
+              <Route path="/medical-case-log" element={<PG><MedicalCaseLogPage /></PG>} />
+              <Route path="/medical-clinical-notes" element={<PG><MedicalClinicalNotesPage /></PG>} />
+              <Route path="/medical-rotations" element={<PG><MedicalRotationsPage /></PG>} />
+              <Route path="/medical-drug-reference" element={<PG><MedicalDrugReferencePage /></PG>} />
+
+              {/* Developer tools */}
+              <Route path="/developer-ide" element={<PG><DeveloperIDEPage /></PG>} />
+              <Route path="/developer-projects" element={<PG><DeveloperProjectsPage /></PG>} />
+              <Route path="/developer-code-review" element={<PG><DeveloperCodeReviewPage /></PG>} />
+              <Route path="/developer-challenges" element={<PG><DeveloperChallengesPage /></PG>} />
+
               {/* Tools & Resources — redirect overlapping tool routes to unified hub */}
               <Route path="/all-tools" element={<Navigate to="/tools" replace />} />
               <Route path="/resources" element={<Navigate to="/tools" replace />} />
