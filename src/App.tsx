@@ -60,6 +60,18 @@ const SchoolAnnouncementsPage = React.lazy(() => import('@/pages/SchoolAnnouncem
 const DonorImpactPage = React.lazy(() => import('@/pages/DonorImpactPage'));
 const ToolsHub = React.lazy(() => import('@/pages/hubs/ToolsHub'));
 const FreeCoursesPage = React.lazy(() => import('@/pages/FreeCoursesPage'));
+const StudyHub = React.lazy(() => import('@/pages/hubs/StudyHub'));
+const MedicalHub = React.lazy(() => import('@/pages/hubs/MedicalHub'));
+const DeveloperHub = React.lazy(() => import('@/pages/hubs/DeveloperHub'));
+const MedicalCaseSimulatorPage = React.lazy(() => import('@/pages/MedicalCaseSimulatorPage'));
+const MedicalCaseLogPage = React.lazy(() => import('@/pages/MedicalCaseLogPage'));
+const MedicalClinicalNotesPage = React.lazy(() => import('@/pages/MedicalClinicalNotesPage'));
+const MedicalRotationsPage = React.lazy(() => import('@/pages/MedicalRotationsPage'));
+const MedicalDrugReferencePage = React.lazy(() => import('@/pages/MedicalDrugReferencePage'));
+const DeveloperIDEPage = React.lazy(() => import('@/pages/DeveloperIDEPage'));
+const DeveloperProjectsPage = React.lazy(() => import('@/pages/DeveloperProjectsPage'));
+const DeveloperCodeReviewPage = React.lazy(() => import('@/pages/DeveloperCodeReviewPage'));
+const DeveloperChallengesPage = React.lazy(() => import('@/pages/DeveloperChallengesPage'));
 
 // Lazy: Dynamic detail pages (keep standalone)
 const CourseDetailPage = React.lazy(() => import('@/pages/CourseDetailPage'));
