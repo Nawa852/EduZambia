@@ -22,7 +22,7 @@ const Index = () => {
     );
   }
 
-  return <MVPLanding />;
+  return <SplashLanding />;
 };
 
 export default Index;
