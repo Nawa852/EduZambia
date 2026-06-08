@@ -4,7 +4,7 @@ import { PageHeader } from '@/components/ui/page-header';
 import { Card } from '@/components/ui/card';
 import {
   BookOpen, Timer, FileText, Target, Bookmark, Calendar,
-  Layers, ClipboardCheck, Brain, PenTool, Users, Map,
+  Layers, ClipboardCheck, Brain, PenTool, Users, Map, FolderUp,
 } from 'lucide-react';
 
 type Tool = { title: string; desc: string; href: string; icon: React.ComponentType<{ className?: string }>; badge?: string };
@@ -28,6 +28,7 @@ const groups: Group[] = [
       { title: 'My Notes', desc: 'Offline notebook', href: '/prepare?tab=notes', icon: FileText },
       { title: 'Journal', desc: 'Daily reflection', href: '/prepare?tab=journal', icon: BookOpen },
       { title: 'Bookmarks', desc: 'Saved resources', href: '/prepare?tab=bookmarks', icon: Bookmark },
+      { title: 'My Materials', desc: 'Upload PDFs for AI', href: '/my-materials', icon: FolderUp, badge: 'AI' },
       { title: 'Mind Maps', desc: 'Visualise concepts', href: '/ai?tab=mind-maps', icon: Map },
     ],
   },
