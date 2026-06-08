@@ -4,7 +4,7 @@ import { PageHeader } from '@/components/ui/page-header';
 import { Card } from '@/components/ui/card';
 import {
   BookOpen, Timer, FileText, Target, Bookmark, Calendar,
-  Layers, ClipboardCheck, Brain, PenTool, Users, Map,
+  Layers, ClipboardCheck, Brain, PenTool, Users, Map, FolderUp,
 } from 'lucide-react';
 
 type Tool = { title: string; desc: string; href: string; icon: React.ComponentType<{ className?: string }>; badge?: string };
