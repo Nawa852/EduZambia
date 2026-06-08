@@ -72,6 +72,10 @@ const DeveloperIDEPage = React.lazy(() => import('@/pages/DeveloperIDEPage'));
 const DeveloperProjectsPage = React.lazy(() => import('@/pages/DeveloperProjectsPage'));
 const DeveloperCodeReviewPage = React.lazy(() => import('@/pages/DeveloperCodeReviewPage'));
 const DeveloperChallengesPage = React.lazy(() => import('@/pages/DeveloperChallengesPage'));
+const TeacherNotesRepoPage = React.lazy(() => import('@/pages/TeacherNotesRepoPage'));
+const TeacherSpecializationPage = React.lazy(() => import('@/pages/TeacherSpecializationPage'));
+const ResourceLibraryHubPage = React.lazy(() => import('@/pages/ResourceLibraryHubPage'));
+const MyMaterialsPage = React.lazy(() => import('@/pages/MyMaterialsPage'));
 
 // Lazy: Dynamic detail pages (keep standalone)
 const CourseDetailPage = React.lazy(() => import('@/pages/CourseDetailPage'));
