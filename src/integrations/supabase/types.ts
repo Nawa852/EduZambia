@@ -2966,6 +2966,96 @@ export type Database = {
           },
         ]
       }
+      teacher_specializations: {
+        Row: {
+          bio: string | null
+          created_at: string
+          grade_levels: string[] | null
+          id: string
+          qualifications: string | null
+          subject: string
+          updated_at: string
+          user_id: string
+          years_experience: number | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          grade_levels?: string[] | null
+          id?: string
+          qualifications?: string | null
+          subject: string
+          updated_at?: string
+          user_id: string
+          years_experience?: number | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          grade_levels?: string[] | null
+          id?: string
+          qualifications?: string | null
+          subject?: string
+          updated_at?: string
+          user_id?: string
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
+      teaching_resources: {
+        Row: {
+          created_at: string
+          description: string | null
+          downloads: number
+          external_url: string | null
+          file_url: string | null
+          grade_level: string | null
+          id: string
+          owner_id: string
+          resource_type: string
+          source: string | null
+          subject: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          visibility: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          downloads?: number
+          external_url?: string | null
+          file_url?: string | null
+          grade_level?: string | null
+          id?: string
+          owner_id: string
+          resource_type?: string
+          source?: string | null
+          subject?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          visibility?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          downloads?: number
+          external_url?: string | null
+          file_url?: string | null
+          grade_level?: string | null
+          id?: string
+          owner_id?: string
+          resource_type?: string
+          source?: string | null
+          subject?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          visibility?: string
+        }
+        Relationships: []
+      }
       user_badges: {
         Row: {
           badge_id: string
