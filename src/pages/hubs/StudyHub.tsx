@@ -28,6 +28,7 @@ const groups: Group[] = [
       { title: 'My Notes', desc: 'Offline notebook', href: '/prepare?tab=notes', icon: FileText },
       { title: 'Journal', desc: 'Daily reflection', href: '/prepare?tab=journal', icon: BookOpen },
       { title: 'Bookmarks', desc: 'Saved resources', href: '/prepare?tab=bookmarks', icon: Bookmark },
+      { title: 'My Materials', desc: 'Upload PDFs for AI', href: '/my-materials', icon: FolderUp, badge: 'AI' },
       { title: 'Mind Maps', desc: 'Visualise concepts', href: '/ai?tab=mind-maps', icon: Map },
     ],
   },
