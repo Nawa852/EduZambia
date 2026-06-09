@@ -18,7 +18,7 @@ interface Group {
   id: string; name: string; description: string | null; subject: string | null;
   grade_level: string | null; is_public: boolean; created_by: string; created_at: string;
 }
-interface Member { user_id: string; role: string | null; joined_at?: string; profile?: { full_name: string | null; avatar_url: string | null } }
+interface Member { user_id: string; joined_at?: string; profile?: { full_name: string | null; avatar_url: string | null } }
 
 const TABS = [
   { id: 'chat', label: 'Chat', icon: MessageSquare },
@@ -45,7 +45,7 @@ const GroupWorkspacePage: React.FC = () => {
     const [{ data: g }, { data: m }] = await Promise.all([
       supabase.from('study_groups').select('*').eq('id', groupId).maybeSingle(),
       supabase.from('study_group_members').select('*').eq('group_id', groupId),
-    ]);
+    ]) as any;
     setGroup((g as Group) || null);
     const memberList = (m as Member[]) || [];
     if (memberList.length) {
@@ -157,7 +157,7 @@ const GroupWorkspacePage: React.FC = () => {
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm truncate">{m.profile?.full_name || 'Member'}</p>
-                        <p className="text-xs text-muted-foreground capitalize">{m.role || 'member'}{m.user_id === group.created_by && ' · owner'}</p>
+                        <p className="text-xs text-muted-foreground capitalize">{m.user_id === group.created_by ? 'Owner' : 'Member'}</p>
                       </div>
                     </div>
                   ))}
