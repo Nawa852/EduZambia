@@ -56,6 +56,7 @@ const VideoWatchPage = React.lazy(() => import('@/pages/VideoWatchPage'));
 const GroupChatPage = React.lazy(() => import('@/pages/GroupChatPage'));
 const GroupFilesPage = React.lazy(() => import('@/pages/GroupFilesPage'));
 const GroupVideoPage = React.lazy(() => import('@/pages/GroupVideoPage'));
+const GroupWorkspacePage = React.lazy(() => import('@/pages/GroupWorkspacePage'));
 const SchoolAnnouncementsPage = React.lazy(() => import('@/pages/SchoolAnnouncementsPage'));
 const DonorImpactPage = React.lazy(() => import('@/pages/DonorImpactPage'));
 const ToolsHub = React.lazy(() => import('@/pages/hubs/ToolsHub'));
@@ -148,9 +149,10 @@ function App() {
               <Route path="/ngo" element={<PG><NGOHub /></PG>} />
               <Route path="/video-rooms" element={<PG><VideoRoomsPage /></PG>} />
               <Route path="/groups" element={<PG><StudyGroupsHubPage /></PG>} />
-              <Route path="/group/:groupId/chat" element={<PG><GroupChatPage /></PG>} />
-              <Route path="/group/:groupId/files" element={<PG><GroupFilesPage /></PG>} />
-              <Route path="/group/:groupId/video" element={<PG><GroupVideoPage /></PG>} />
+              <Route path="/group/:groupId" element={<PG><GroupWorkspacePage /></PG>} />
+              <Route path="/group/:groupId/chat" element={<PG><GroupWorkspacePage /></PG>} />
+              <Route path="/group/:groupId/files" element={<PG><GroupWorkspacePage /></PG>} />
+              <Route path="/group/:groupId/video" element={<PG><GroupWorkspacePage /></PG>} />
               <Route path="/school-announcements" element={<PG><SchoolAnnouncementsPage /></PG>} />
               <Route path="/donor-impact" element={<DonorImpactPage />} />
               <Route path="/tools" element={<PG><ToolsHub /></PG>} />
