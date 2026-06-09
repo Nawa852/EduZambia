@@ -76,7 +76,7 @@ const StudyGroupsHubPage: React.FC = () => {
     }).select().single();
     setCreating(false);
     if (error) { toast.error(error.message); return; }
-    await supabase.from('study_group_members').insert({ group_id: (data as any).id, user_id: user.id, role: 'owner' });
+    await supabase.from('study_group_members').insert({ group_id: (data as any).id, user_id: user.id });
     toast.success('Group created');
     setOpen(false);
     setForm({ name: '', description: '', subject: '', grade_level: '', is_public: true });
