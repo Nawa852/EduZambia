@@ -44,7 +44,7 @@ const GroupWorkspacePage: React.FC = () => {
     setLoading(true);
     const [{ data: g }, { data: m }] = await Promise.all([
       supabase.from('study_groups').select('*').eq('id', groupId).maybeSingle(),
-      supabase.from('study_group_members').select('user_id, role').eq('group_id', groupId),
+      supabase.from('study_group_members').select('*').eq('group_id', groupId),
     ]);
     setGroup((g as Group) || null);
     const memberList = (m as Member[]) || [];
