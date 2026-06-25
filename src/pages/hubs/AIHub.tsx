@@ -2,12 +2,13 @@ import React from 'react';
 import { HubPageLayout, HubTab } from '@/components/Layout/HubPageLayout';
 import {
   Brain, LayoutGrid, MessageSquare, Mic, Calculator, Calendar, PenTool,
-  Target, Layers, Upload, FileText, Zap, Swords, Lightbulb, Map, Sparkles,
+  Target, Layers, Upload, FileText, Zap, Swords, Lightbulb, Map, Sparkles, Camera,
 } from 'lucide-react';
 
 const tabs: HubTab[] = [
   { id: 'overview',      label: 'Overview',         icon: LayoutGrid,    component: React.lazy(() => import('@/pages/AIWorkspaceLanding')) },
-  { id: 'chat',          label: 'Chat',             icon: MessageSquare, component: React.lazy(() => import('@/pages/AIChat')) },
+  { id: 'chat',          label: 'Chat',             icon: MessageSquare, component: React.lazy(() => import('@/pages/AIChat')), badge: 'NEW' },
+  { id: 'snap-solve',    label: 'Snap & Solve',     icon: Camera,        component: React.lazy(() => import('@/pages/SnapAndSolvePage')), badge: 'NEW' },
   { id: 'tutor',         label: 'Tutor',            icon: Brain,         component: React.lazy(() => import('@/pages/MultiAITutorPage')), badge: 'PRO' },
   { id: 'voice',         label: 'Voice',            icon: Mic,           component: React.lazy(() => import('@/pages/VoiceAITutorPage')), badge: 'NEW' },
   { id: 'homework',      label: 'Homework',         icon: Calculator,    component: React.lazy(() => import('@/pages/AIHomeworkSolverPage')) },
