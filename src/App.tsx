@@ -98,6 +98,9 @@ const StudyGroupChatPage = React.lazy(() => import('@/pages/StudyGroupChatPage')
 const PdfAnnotatorPage = React.lazy(() => import('@/pages/PdfAnnotatorPage'));
 const DocumentScannerPage = React.lazy(() => import('@/pages/DocumentScannerPage'));
 const StudyGroupRoomPage = React.lazy(() => import('@/pages/StudyGroupRoomPage'));
+const DemoRolePicker = React.lazy(() => import('@/pages/DemoRolePicker'));
+const SnapAndSolvePage = React.lazy(() => import('@/pages/SnapAndSolvePage'));
+const TeacherTestGeneratorPage = React.lazy(() => import('@/pages/TeacherTestGeneratorPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
@@ -131,6 +134,8 @@ function App() {
               <Route path="/password-reset" element={<PasswordResetPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/demo" element={<DemoRolePicker />} />
+              <Route path="/try" element={<DemoRolePicker />} />
               <Route path="/choose-role" element={<ProtectedRoute><ChooseRolePage /></ProtectedRoute>} />
               <Route path="/setup" element={<ProtectedRoute><SetupPage /></ProtectedRoute>} />
               <Route path="/setup-extras" element={<ProtectedRoute><SetupExtrasPage /></ProtectedRoute>} />
@@ -258,6 +263,10 @@ function App() {
               <Route path="/document-scanner" element={<PG><DocumentScannerPage /></PG>} />
               <Route path="/pdf-reader" element={<PG><PdfAnnotatorPage /></PG>} />
               <Route path="/pdf-annotator" element={<PG><PdfAnnotatorPage /></PG>} />
+              <Route path="/snap-solve" element={<PG><SnapAndSolvePage /></PG>} />
+              <Route path="/snap" element={<PG><SnapAndSolvePage /></PG>} />
+              <Route path="/teacher-test-generator" element={<PG><TeacherTestGeneratorPage /></PG>} />
+              <Route path="/test-generator" element={<PG><TeacherTestGeneratorPage /></PG>} />
               <Route path="/ai-chat" element={<Navigate to="/ai?tab=chat" replace />} />
               <Route path="/ai-assistant" element={<Navigate to="/ai?tab=chat" replace />} />
               <Route path="/subjects" element={<Navigate to="/learn?tab=subjects" replace />} />
