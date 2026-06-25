@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import Joyride, { CallBackProps, STATUS, Step } from 'react-joyride';
+import { Joyride, STATUS, type CallBackProps, type Step } from 'react-joyride';
 
 const TOUR_KEY = 'nexus_student_tour_v1';
 

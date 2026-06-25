@@ -364,7 +364,7 @@ export default function AIChat() {
   };
 
   const userInitial = useMemo(
-    () => (profile?.full_name || profile?.username || 'U').slice(0, 1).toUpperCase(),
+    () => ((profile?.full_name as string) || 'U').slice(0, 1).toUpperCase(),
     [profile]
   );
 
