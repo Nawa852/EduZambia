@@ -106,7 +106,7 @@ export function InstallPrompt() {
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                <img src={loadingLogo} alt="Edu Zambia" className="w-10 h-10" />
+                <img src={loadingLogo} alt="Nexus Learning" className="w-10 h-10" />
               </motion.div>
 
               <div className="flex-1 min-w-0">

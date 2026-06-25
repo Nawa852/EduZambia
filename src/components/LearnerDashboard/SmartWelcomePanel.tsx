@@ -71,7 +71,7 @@ export const SmartWelcomePanel = ({ userName, onMoodSelect }: SmartWelcomePanelP
           <div className="p-2 rounded-lg bg-primary/10">
             <TimeIcon className="w-5 h-5 text-primary" />
           </div>
-          <img src={EduZambiaLogo} alt="Edu Zambia" className="w-6 h-6" />
+          <img src={EduZambiaLogo} alt="Nexus Learning" className="w-6 h-6" />
           <span className="text-sm font-medium text-muted-foreground">BrightSphere AI</span>
         </div>
 
