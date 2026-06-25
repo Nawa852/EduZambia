@@ -93,6 +93,7 @@ const teacherNavigation: NavGroup[] = [
   {
     label: "Classroom",
     items: [
+      { title: "My Classes", url: "/teacher-classes", icon: Users, shortTitle: "Classes" },
       { title: "Lesson Plans", url: "/teach?tab=lesson-plans", icon: FileText, shortTitle: "Plans" },
       { title: "Gradebook", url: "/teach?tab=gradebook", icon: ClipboardCheck, shortTitle: "Grades" },
       { title: "Attendance", url: "/teach?tab=attendance", icon: Calendar, shortTitle: "Attend" },
@@ -140,6 +141,7 @@ const institutionNavigation: NavGroup[] = [
     items: [
       { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
       { title: "Admin Hub", url: "/admin", icon: Building2, shortTitle: "Admin" },
+      { title: "Teachers", url: "/school-teachers", icon: GraduationCap, badge: "NEW", shortTitle: "Staff" },
       { title: "Users", url: "/admin?tab=users", icon: Users, shortTitle: "Users" },
       { title: "Curriculum", url: "/admin?tab=curriculum", icon: BookOpen, shortTitle: "Curric" },
     ],
@@ -231,6 +233,8 @@ const entrepreneurNavigation: NavGroup[] = [
   {
     label: "Grow",
     items: [
+      { title: "Funding", url: "/entrepreneur-funding", icon: DollarSign, badge: "NEW", shortTitle: "Funds" },
+      { title: "Network", url: "/entrepreneur-network", icon: Users, shortTitle: "Network" },
       { title: "Marketplace", url: "/marketplace", icon: Briefcase, shortTitle: "Market" },
       { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
       { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },

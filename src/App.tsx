@@ -77,6 +77,10 @@ const TeacherNotesRepoPage = React.lazy(() => import('@/pages/TeacherNotesRepoPa
 const TeacherSpecializationPage = React.lazy(() => import('@/pages/TeacherSpecializationPage'));
 const ResourceLibraryHubPage = React.lazy(() => import('@/pages/ResourceLibraryHubPage'));
 const MyMaterialsPage = React.lazy(() => import('@/pages/MyMaterialsPage'));
+const TeacherMyClassesPage = React.lazy(() => import('@/pages/TeacherMyClassesPage'));
+const EntrepreneurFundingPage = React.lazy(() => import('@/pages/EntrepreneurFundingPage'));
+const EntrepreneurNetworkPage = React.lazy(() => import('@/pages/EntrepreneurNetworkPage'));
+const SchoolAdminTeachersPage = React.lazy(() => import('@/pages/SchoolAdminTeachersPage'));
 
 // Lazy: Dynamic detail pages (keep standalone)
 const CourseDetailPage = React.lazy(() => import('@/pages/CourseDetailPage'));
@@ -135,6 +139,10 @@ function App() {
               <Route path="/teach" element={<PG><TeachHub /></PG>} />
               <Route path="/teacher-notes-repo" element={<PG><TeacherNotesRepoPage /></PG>} />
               <Route path="/teacher-specialization" element={<PG><TeacherSpecializationPage /></PG>} />
+              <Route path="/teacher-classes" element={<PG><TeacherMyClassesPage /></PG>} />
+              <Route path="/entrepreneur-funding" element={<PG><EntrepreneurFundingPage /></PG>} />
+              <Route path="/entrepreneur-network" element={<PG><EntrepreneurNetworkPage /></PG>} />
+              <Route path="/school-teachers" element={<PG><SchoolAdminTeachersPage /></PG>} />
               <Route path="/resource-library" element={<PG><ResourceLibraryHubPage /></PG>} />
               <Route path="/my-materials" element={<PG><MyMaterialsPage /></PG>} />
               <Route path="/family" element={<PG><FamilyHub /></PG>} />
