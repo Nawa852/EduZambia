@@ -9,7 +9,7 @@ import { MedicalDashboardV2 } from '@/components/Dashboard/v2/MedicalDashboardV2
 import { DeveloperDashboardV2 } from '@/components/Dashboard/v2/DeveloperDashboardV2';
 import SkillsDashboardView from '@/components/Dashboard/SkillsDashboardView';
 import CybersecurityDashboardView from '@/components/Dashboard/CybersecurityDashboardView';
-import { LogoLoader } from '@/components/UI/LogoLoader';
+import { DashboardSkeleton } from '@/components/Dashboard/DashboardSkeleton';
 import { OnboardingTour } from '@/components/Dashboard/OnboardingTour';
 
 const Dashboard = () => {
@@ -24,13 +24,16 @@ const Dashboard = () => {
     }
   }, [loading, profile]);
 
-  if (loading) {
+  // Render skeleton only when we have no profile data at all (first sign-in).
+  // Subsequent visits hydrate from localStorage cache and render instantly.
+  if (loading && !profile) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <LogoLoader size="lg" text="Loading your workspace..." />
+      <div className="p-4 lg:p-6">
+        <DashboardSkeleton />
       </div>
     );
   }
+
 
   const userName = profile?.full_name || 'Learner';
   const userType = (profile?.role || 'student') as string;
