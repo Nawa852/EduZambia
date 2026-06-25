@@ -110,7 +110,12 @@ export function StudentDashboardV2({ userName }: Props) {
           </div>
           <div className="text-xl font-extrabold">{focusHrs}h {focusRem}m</div>
           <div className="text-[11px] text-muted-foreground">today</div>
+          <svg className="mt-1 w-full h-5" viewBox="0 0 100 24" preserveAspectRatio="none">
+            <polyline fill="none" stroke="currentColor" strokeWidth="1.6" className="text-emerald-500"
+              points="0,18 12,16 24,17 36,12 48,14 60,8 72,11 84,6 100,9" />
+          </svg>
         </Card>
+
         <Card className="p-3 rounded-2xl border-border/40 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-7 h-7 rounded-full bg-blue-500/10 flex items-center justify-center">
