@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, BookOpen, User, Brain, Users, BarChart3, Trophy,
-  GraduationCap, Settings, FileText, Calendar,
+  GraduationCap, Settings, FileText, Calendar, FolderOpen,
   MessageSquare, Target, ClipboardCheck, Building2,
   Bell, Shield, PieChart,
   Briefcase, Heart, Wrench, Sparkles,
