@@ -72,9 +72,9 @@ export function ProductTour({ role = 'student' as keyof typeof TOURS }: { role?:
       callback={cb as any}
       styles={{
         tooltip: { borderRadius: 16, padding: 16, backgroundColor: 'hsl(var(--card))', color: 'hsl(var(--foreground))' },
-        tooltipTitle: { fontSize: 15, fontWeight: 700 },
-        tooltipContent: { fontSize: 13 },
-        buttonNext: { borderRadius: 999, padding: '6px 16px', fontSize: 12, fontWeight: 600, backgroundColor: 'hsl(var(--primary))' },
+        tooltipTitle: { fontSize: 15, fontWeight: 700 } as any,
+        tooltipContent: { fontSize: 13 } as any,
+        buttonPrimary: { borderRadius: 999, padding: '6px 16px', fontSize: 12, fontWeight: 600, backgroundColor: 'hsl(var(--primary))' },
         buttonBack: { fontSize: 12, color: 'hsl(var(--muted-foreground))' },
         buttonSkip: { fontSize: 12, color: 'hsl(var(--muted-foreground))' },
         overlay: { backgroundColor: 'rgba(0,0,0,0.55)' },
