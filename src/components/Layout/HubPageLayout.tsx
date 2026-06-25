@@ -9,7 +9,7 @@ export interface HubTab {
   id: string;
   label: string;
   icon: LucideIcon;
-  component: React.LazyExoticComponent<React.ComponentType<any>>;
+  component: React.LazyExoticComponent<React.ComponentType<any>> | React.ComponentType<any>;
   badge?: string;
 }
 
