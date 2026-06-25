@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { Highlighter, MessageSquarePlus, Download, Upload, ChevronLeft, ChevronRight, Trash2, FileText } from 'lucide-react';
+import { Highlighter, MessageSquarePlus, Download, Upload, ChevronLeft, ChevronRight, Trash2, FileText, NotebookPen, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/components/Auth/AuthProvider';
 
 type Anno = {
   id: string;
@@ -12,6 +16,7 @@ type Anno = {
   x: number; y: number; w: number; h: number;
   color: string;
   note?: string;
+  text?: string; // selected text under highlight (if extractable)
 };
 
 export default function PdfAnnotatorPage() {
