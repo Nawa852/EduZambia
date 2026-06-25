@@ -103,10 +103,17 @@ export default function PdfAnnotatorPage() {
     const x = Math.min(drag.sx, drag.ex), y = Math.min(drag.sy, drag.ey);
     const id = crypto.randomUUID();
     const note = tool === 'comment' ? (prompt('Add a comment') || '') : undefined;
+    // Extract text underneath the rectangle from the rendered text items
+    const text = pageTextItems
+      .filter(t => t.x < x + w && t.x + t.w > x && t.y < y + h && t.y + t.h > y)
+      .map(t => t.str)
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
     setAnnos(a => [...a, {
       id, page,
       x: x / renderSize.w, y: y / renderSize.h, w: w / renderSize.w, h: h / renderSize.h,
-      color, note,
+      color, note, text: text || undefined,
     }]);
     setDrag(null);
   };
