@@ -139,6 +139,10 @@ function App() {
               <Route path="/teach" element={<PG><TeachHub /></PG>} />
               <Route path="/teacher-notes-repo" element={<PG><TeacherNotesRepoPage /></PG>} />
               <Route path="/teacher-specialization" element={<PG><TeacherSpecializationPage /></PG>} />
+              <Route path="/teacher-classes" element={<PG><TeacherMyClassesPage /></PG>} />
+              <Route path="/entrepreneur-funding" element={<PG><EntrepreneurFundingPage /></PG>} />
+              <Route path="/entrepreneur-network" element={<PG><EntrepreneurNetworkPage /></PG>} />
+              <Route path="/school-teachers" element={<PG><SchoolAdminTeachersPage /></PG>} />
               <Route path="/resource-library" element={<PG><ResourceLibraryHubPage /></PG>} />
               <Route path="/my-materials" element={<PG><MyMaterialsPage /></PG>} />
               <Route path="/family" element={<PG><FamilyHub /></PG>} />
