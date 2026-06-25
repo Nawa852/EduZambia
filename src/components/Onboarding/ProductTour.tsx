@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Joyride, STATUS, type CallBackProps, type Step } from 'react-joyride';
+import { Joyride, STATUS, type Step } from 'react-joyride';
 
 const TOUR_KEY = 'nexus_student_tour_v1';
 
@@ -38,9 +38,7 @@ const studentSteps: Step[] = [
   },
 ];
 
-const TOURS: Record<string, Step[]> = {
-  student: studentSteps,
-};
+const TOURS: Record<string, Step[]> = { student: studentSteps };
 
 export function ProductTour({ role = 'student' as keyof typeof TOURS }: { role?: keyof typeof TOURS }) {
   const [run, setRun] = useState(false);
@@ -50,13 +48,12 @@ export function ProductTour({ role = 'student' as keyof typeof TOURS }: { role?:
     const forced = params.get('tour') === '1';
     const done = localStorage.getItem(TOUR_KEY);
     if (forced || !done) {
-      // delay so DOM is mounted
       const t = setTimeout(() => setRun(true), 400);
       return () => clearTimeout(t);
     }
   }, [params]);
 
-  const cb = (data: CallBackProps) => {
+  const cb = (data: { status: string }) => {
     const finished: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
     if (finished.includes(data.status)) {
       localStorage.setItem(TOUR_KEY, '1');
@@ -72,20 +69,15 @@ export function ProductTour({ role = 'student' as keyof typeof TOURS }: { role?:
       continuous
       showSkipButton
       showProgress
-      callback={cb}
+      callback={cb as any}
       styles={{
-        options: {
-          primaryColor: 'hsl(var(--primary))',
-          textColor: 'hsl(var(--foreground))',
-          backgroundColor: 'hsl(var(--card))',
-          arrowColor: 'hsl(var(--card))',
-          overlayColor: 'rgba(0,0,0,0.55)',
-          zIndex: 9999,
-        },
-        tooltip: { borderRadius: 16, padding: 16 },
-        buttonNext: { borderRadius: 999, padding: '6px 16px', fontSize: 12, fontWeight: 600 },
+        tooltip: { borderRadius: 16, padding: 16, backgroundColor: 'hsl(var(--card))', color: 'hsl(var(--foreground))' },
+        tooltipTitle: { fontSize: 15, fontWeight: 700 },
+        tooltipContent: { fontSize: 13 },
+        buttonNext: { borderRadius: 999, padding: '6px 16px', fontSize: 12, fontWeight: 600, backgroundColor: 'hsl(var(--primary))' },
         buttonBack: { fontSize: 12, color: 'hsl(var(--muted-foreground))' },
         buttonSkip: { fontSize: 12, color: 'hsl(var(--muted-foreground))' },
+        overlay: { backgroundColor: 'rgba(0,0,0,0.55)' },
       }}
     />
   );
