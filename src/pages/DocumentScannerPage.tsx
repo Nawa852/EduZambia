@@ -11,6 +11,16 @@ import { useAuth } from '@/components/Auth/AuthProvider';
 
 type Page = { id: string; dataUrl: string; text: string; ocrProgress: number; ocrDone: boolean };
 
+const OCR_LANGUAGES = [
+  { code: 'eng', label: 'English' },
+  { code: 'eng+bem', label: 'Bemba + English' },
+  { code: 'eng+nya', label: 'Nyanja (Chichewa) + English' },
+  { code: 'eng+toi', label: 'Tonga + English' },
+  { code: 'eng+loz', label: 'Lozi + English' },
+  { code: 'eng+fra', label: 'English + French' },
+  { code: 'eng+por', label: 'English + Portuguese' },
+];
+
 export default function DocumentScannerPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -21,6 +31,7 @@ export default function DocumentScannerPage() {
   const [title, setTitle] = useState('Scanned Note');
   const [folder, setFolder] = useState('Scans');
   const [saving, setSaving] = useState(false);
+  const [lang, setLang] = useState('eng');
 
   useEffect(() => () => stopCamera(), []);
 
