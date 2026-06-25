@@ -141,6 +141,7 @@ const institutionNavigation: NavGroup[] = [
     items: [
       { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
       { title: "Admin Hub", url: "/admin", icon: Building2, shortTitle: "Admin" },
+      { title: "Teachers", url: "/school-teachers", icon: GraduationCap, badge: "NEW", shortTitle: "Staff" },
       { title: "Users", url: "/admin?tab=users", icon: Users, shortTitle: "Users" },
       { title: "Curriculum", url: "/admin?tab=curriculum", icon: BookOpen, shortTitle: "Curric" },
     ],
