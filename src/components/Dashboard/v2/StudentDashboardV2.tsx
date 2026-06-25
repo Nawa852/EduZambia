@@ -11,6 +11,7 @@ import {
   MoreHorizontal, FolderOpen, StickyNote, ListChecks, HelpCircle,
   Folder, Bot, ScanLine, FileType2, Link2, Repeat, BarChart3,
   Search, Mic, Image as ImageIcon, Video, Paperclip,
+  CalendarDays, Radio,
 } from 'lucide-react';
 import { useAuth } from '@/components/Auth/AuthProvider';
 import { useProfile } from '@/hooks/useProfile';
