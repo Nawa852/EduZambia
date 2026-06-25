@@ -20,6 +20,8 @@ type Anno = {
 };
 
 export default function PdfAnnotatorPage() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const [pdfDoc, setPdfDoc] = useState<any>(null);
@@ -33,6 +35,9 @@ export default function PdfAnnotatorPage() {
   const [drag, setDrag] = useState<{ sx: number; sy: number; ex: number; ey: number } | null>(null);
   const [scale, setScale] = useState(1.25);
   const [renderSize, setRenderSize] = useState({ w: 0, h: 0 });
+  const [pageTextItems, setPageTextItems] = useState<Array<{ str: string; x: number; y: number; w: number; h: number }>>([]);
+  const [savingNote, setSavingNote] = useState(false);
+  const [noteFolder, setNoteFolder] = useState('PDF Highlights');
 
   // load pdfjs worker
   useEffect(() => {
