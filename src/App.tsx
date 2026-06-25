@@ -78,6 +78,10 @@ const TeacherSpecializationPage = React.lazy(() => import('@/pages/TeacherSpecia
 const ResourceLibraryHubPage = React.lazy(() => import('@/pages/ResourceLibraryHubPage'));
 const MyMaterialsPage = React.lazy(() => import('@/pages/MyMaterialsPage'));
 const TeacherMyClassesPage = React.lazy(() => import('@/pages/TeacherMyClassesPage'));
+const TeacherGradebookStandalone = React.lazy(() => import('@/pages/TeacherGradebookPage'));
+const TeacherAttendanceStandalone = React.lazy(() => import('@/pages/TeacherAttendanceQRPage'));
+const TeacherCommunicationPage = React.lazy(() => import('@/pages/TeacherCommunicationPage'));
+
 const EntrepreneurFundingPage = React.lazy(() => import('@/pages/EntrepreneurFundingPage'));
 const EntrepreneurNetworkPage = React.lazy(() => import('@/pages/EntrepreneurNetworkPage'));
 const SchoolAdminTeachersPage = React.lazy(() => import('@/pages/SchoolAdminTeachersPage'));
