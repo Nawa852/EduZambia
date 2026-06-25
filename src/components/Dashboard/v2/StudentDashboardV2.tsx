@@ -420,6 +420,50 @@ export function StudentDashboardV2({ userName }: Props) {
         </Card>
       </div>
 
+      {/* Upcoming Classes */}
+      <Card className="p-4 lg:p-5 rounded-2xl border-border/40 shadow-sm">
+        <div className="flex items-center justify-between mb-3.5">
+          <div className="flex items-center gap-2">
+            <CalendarDays className="w-4 h-4 text-blue-600" />
+            <span className="font-semibold text-sm">Upcoming Classes</span>
+          </div>
+          <button onClick={() => navigate('/calendar')} className="text-xs text-primary font-medium hover:underline">View calendar</button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {[
+            { subject: 'Physics', topic: 'Motion in 2D', time: 'Today · 14:00', room: 'Room 12', tint: 'bg-blue-500/10 text-blue-600', icon: Atom, live: true },
+            { subject: 'Biology', topic: 'Cell Structure', time: 'Tomorrow · 09:00', room: 'Room 04', tint: 'bg-emerald-500/10 text-emerald-600', icon: Leaf },
+            { subject: 'Mathematics', topic: 'Integration', time: 'Tomorrow · 11:30', room: 'Room 08', tint: 'bg-amber-500/10 text-amber-600', icon: Calculator },
+          ].map((c) => (
+            <button
+              key={c.subject + c.time}
+              onClick={() => navigate('/live-learning')}
+              className="text-left p-3.5 rounded-xl bg-card border border-border/30 hover:border-primary/30 hover:shadow-elevated transition-all flex items-start gap-3"
+            >
+              <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${c.tint}`}>
+                <c.icon className="w-4 h-4" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <div className="text-[13px] font-bold truncate">{c.subject}</div>
+                  {c.live && (
+                    <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wide text-rose-600 bg-rose-500/10 px-1.5 py-0.5 rounded-full">
+                      <Radio className="w-2.5 h-2.5" /> Live
+                    </span>
+                  )}
+                </div>
+                <div className="text-[11px] text-muted-foreground truncate">{c.topic}</div>
+                <div className="flex items-center gap-2 mt-1 text-[10px] text-muted-foreground">
+                  <span>{c.time}</span>
+                  <span>·</span>
+                  <span>{c.room}</span>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </Card>
+
       {/* Smart Study Tools */}
       <div>
         <div className="flex items-center gap-2 mb-3 lg:mb-4">
