@@ -81,20 +81,39 @@ export default function DocumentScannerPage() {
   function addPage(dataUrl: string) {
     const id = crypto.randomUUID();
     setPages(p => [...p, { id, dataUrl, text: '', ocrProgress: 0, ocrDone: false }]);
-    runOcr(id, dataUrl);
+    runOcr(id, dataUrl, lang);
   }
 
-  async function runOcr(id: string, dataUrl: string) {
+  async function runOcr(id: string, dataUrl: string, langCode: string) {
     try {
       const Tesseract = (await import('tesseract.js')).default;
-      const { data } = await Tesseract.recognize(dataUrl, 'eng', {
-        logger: (m: any) => {
-          if (m.status === 'recognizing text') {
-            setPages(prev => prev.map(p => p.id === id ? { ...p, ocrProgress: Math.round(m.progress * 100) } : p));
-          }
-        },
-      });
-      setPages(prev => prev.map(p => p.id === id ? { ...p, text: data.text.trim(), ocrDone: true, ocrProgress: 100 } : p));
+      // tesseract.js fetches traineddata on the fly; non-English Zambian languages
+      // may have limited models — we fall back to English silently if a sub-lang fails.
+      let useLang = langCode;
+      let data: any;
+      try {
+        const r = await Tesseract.recognize(dataUrl, useLang, {
+          logger: (m: any) => {
+            if (m.status === 'recognizing text') {
+              setPages(prev => prev.map(p => p.id === id ? { ...p, ocrProgress: Math.round(m.progress * 100) } : p));
+            }
+          },
+        });
+        data = r.data;
+      } catch (langErr) {
+        // Retry with English only
+        useLang = 'eng';
+        toast.message('Language pack unavailable, using English');
+        const r = await Tesseract.recognize(dataUrl, 'eng', {
+          logger: (m: any) => {
+            if (m.status === 'recognizing text') {
+              setPages(prev => prev.map(p => p.id === id ? { ...p, ocrProgress: Math.round(m.progress * 100) } : p));
+            }
+          },
+        });
+        data = r.data;
+      }
+      setPages(prev => prev.map(p => p.id === id ? { ...p, text: (data.text || '').trim(), ocrDone: true, ocrProgress: 100 } : p));
     } catch (e: any) {
       toast.error('OCR failed: ' + (e.message || ''));
       setPages(prev => prev.map(p => p.id === id ? { ...p, ocrDone: true } : p));
