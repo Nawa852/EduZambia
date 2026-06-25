@@ -61,16 +61,26 @@ const studentNavigation: NavGroup[] = [
     label: "Main",
     items: [
       { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
-      { title: "My Learning", url: "/learn", icon: GraduationCap, shortTitle: "Learn", matchPrefixes: ["/course", "/lessons"] },
-      { title: "AI Workspace", url: "/ai", icon: Brain, badge: "AI", shortTitle: "AI" },
-      { title: "Study Hub", url: "/prepare", icon: Calendar, shortTitle: "Study" },
+      { title: "My Learning", url: "/learn", icon: GraduationCap, shortTitle: "Learn", matchPrefixes: ["/course", "/lessons", "/subjects"] },
+      { title: "AI Workspace", url: "/ai", icon: Brain, badge: "AI", shortTitle: "AI", matchPrefixes: ["/ai-chat", "/ai-assistant"] },
+      { title: "Study Hub", url: "/prepare", icon: Calendar, shortTitle: "Study", matchPrefixes: ["/study-planner", "/focus-mode", "/student-notes"] },
       { title: "ECZ Exams", url: "/ecz", icon: FileText, shortTitle: "ECZ" },
+    ],
+  },
+  {
+    label: "Study",
+    items: [
+      { title: "Knowledge Hub", url: "/prepare?tab=notes", icon: FolderOpen, shortTitle: "Knowledge" },
+      { title: "Recent Notes", url: "/prepare?tab=notes", icon: FileText, shortTitle: "Notes" },
+      { title: "Flashcards", url: "/ai?tab=flashcards", icon: Layers, shortTitle: "Cards" },
+      { title: "Tasks & Planner", url: "/prepare?tab=planner", icon: ClipboardCheck, shortTitle: "Tasks" },
+      { title: "Focus Timer", url: "/prepare?tab=focus", icon: Timer, shortTitle: "Focus" },
+      { title: "Smart Tools", url: "/tools", icon: Sparkles, shortTitle: "Tools" },
     ],
   },
   {
     label: "More",
     items: [
-      { title: "Tools & Resources", url: "/tools", icon: Wrench, shortTitle: "Tools" },
       { title: "Free Courses", url: "/free-courses", icon: GraduationCap, shortTitle: "Free", badge: "NEW" },
       { title: "Progress", url: "/progress", icon: BarChart3, shortTitle: "Stats" },
       { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
@@ -339,6 +349,14 @@ export function getCommandNavigationByRole(role: string): Array<NavItem & { grou
     { title: "Settings", url: "/profile?tab=settings", icon: Settings, group: "Account" },
     { title: "Notifications", url: "/profile?tab=notifications", icon: Bell, group: "Account" },
     { title: "Bookmarks", url: "/prepare?tab=bookmarks", icon: Bookmark, group: "Account" },
+    { title: "Knowledge Hub", url: "/prepare?tab=notes", icon: FolderOpen, group: "Study", shortTitle: "Knowledge" },
+    { title: "Recent Notes", url: "/prepare?tab=notes", icon: FileText, group: "Study", shortTitle: "Notes" },
+    { title: "Flashcards", url: "/ai?tab=flashcards", icon: Layers, group: "Study", shortTitle: "Cards" },
+    { title: "Tasks & Planner", url: "/prepare?tab=planner", icon: ClipboardCheck, group: "Study", shortTitle: "Tasks" },
+    { title: "Focus Timer", url: "/prepare?tab=focus", icon: Timer, group: "Study", shortTitle: "Focus" },
+    { title: "Smart Study Tools", url: "/tools", icon: Sparkles, group: "Study", shortTitle: "Tools" },
+    { title: "Quiz Generator", url: "/ai?tab=quiz", icon: Target, group: "Study" },
+    { title: "Mind Maps", url: "/ai?tab=mind-maps", icon: Layers, group: "Study" },
   ];
 
   // Add role-specific entries
