@@ -136,7 +136,7 @@ function App() {
               {/* ─── Hub Pages ─────────────────────────────────── */}
               <Route path="/dashboard" element={<PG><Dashboard /></PG>} />
               <Route path="/learn" element={<PG><LearnHub /></PG>} />
-              <Route path="/curriculum" element={<PG><React.Suspense fallback={null}>{React.createElement(React.lazy(() => import('@/pages/CurriculumPage')))}</React.Suspense></PG>} />
+              <Route path="/curriculum" element={<PG><CurriculumPage /></PG>} />
               <Route path="/ai" element={<PG><AIHub /></PG>} />
               <Route path="/prepare" element={<PG><PrepareHub /></PG>} />
               <Route path="/connect" element={<PG><ConnectHub /></PG>} />
