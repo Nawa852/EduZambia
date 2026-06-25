@@ -380,12 +380,34 @@ export function getCommandNavigationByRole(role: string): Array<NavItem & { grou
   if (role === 'teacher') {
     baseItems.splice(2, 0,
       { title: "Teaching Hub", url: "/teach", icon: ClipboardCheck, group: "Navigate", shortTitle: "Teach" },
+      { title: "My Classes", url: "/teacher-classes", icon: Users, group: "Teacher", shortTitle: "Classes" },
+      { title: "Lesson Planner", url: "/teach?tab=lesson-plans", icon: FileText, group: "Teacher", shortTitle: "Plan" },
+      { title: "Scheme of Work", url: "/teach?tab=scheme-of-work", icon: BookOpen, group: "Teacher", shortTitle: "Scheme" },
+      { title: "Gradebook", url: "/gradebook", icon: BarChart3, group: "Teacher", shortTitle: "Grades" },
+      { title: "Attendance", url: "/attendance", icon: Calendar, group: "Teacher", shortTitle: "Attend" },
+      { title: "Communication", url: "/communication", icon: MessageSquare, group: "Teacher", shortTitle: "Chat" },
+      { title: "Announcements", url: "/teach?tab=announcements", icon: Bell, group: "Teacher" },
+      { title: "Analytics", url: "/teach?tab=analytics", icon: PieChart, group: "Teacher" },
       { title: "Notes Repo", url: "/teacher-notes-repo", icon: Bookmark, group: "Teacher", shortTitle: "Notes" },
+      { title: "Resources", url: "/resource-library", icon: FolderOpen, group: "Teacher" },
+      { title: "My Materials", url: "/my-materials", icon: FolderOpen, group: "Teacher" },
       { title: "Specialization", url: "/teacher-specialization", icon: Award, group: "Teacher" },
+      { title: "AI Lesson Generator", url: "/ai-lesson-generator", icon: Sparkles, group: "Teacher" },
     );
   }
   if (role === 'guardian' || role === 'parent') {
-    baseItems.splice(2, 0, { title: "Family", url: "/family", icon: Users, group: "Navigate", shortTitle: "Family" });
+    baseItems.splice(2, 0,
+      { title: "Family Hub", url: "/family", icon: Users, group: "Navigate", shortTitle: "Family" },
+      { title: "My Children", url: "/family?tab=children", icon: Heart, group: "Guardian", shortTitle: "Kids" },
+      { title: "Grades & Progress", url: "/family?tab=grades", icon: BarChart3, group: "Guardian", shortTitle: "Grades" },
+      { title: "Homework Tracker", url: "/family?tab=homework", icon: ClipboardCheck, group: "Guardian", shortTitle: "HW" },
+      { title: "Rewards", url: "/family?tab=rewards", icon: Award, group: "Guardian" },
+      { title: "Activity Feed", url: "/family?tab=activity", icon: Bell, group: "Guardian" },
+      { title: "Parental Controls", url: "/family?tab=controls", icon: Lock, group: "Guardian" },
+      { title: "Link Child", url: "/guardian-link", icon: Users, group: "Guardian" },
+      { title: "Reports", url: "/guardian-reports", icon: FileText, group: "Guardian" },
+      { title: "Teacher Contact", url: "/parent-teacher-contact", icon: MessageSquare, group: "Guardian" },
+    );
   }
   if (role === 'institution' || role === 'school_admin') {
     baseItems.splice(1, 0, { title: "Admin", url: "/admin", icon: Building2, group: "Navigate", shortTitle: "Admin" });
