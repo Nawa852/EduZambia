@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { Highlighter, MessageSquarePlus, Download, Upload, ChevronLeft, ChevronRight, Trash2, FileText } from 'lucide-react';
+import { Highlighter, MessageSquarePlus, Download, Upload, ChevronLeft, ChevronRight, Trash2, FileText, NotebookPen, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/components/Auth/AuthProvider';
 
 type Anno = {
   id: string;
@@ -12,9 +16,12 @@ type Anno = {
   x: number; y: number; w: number; h: number;
   color: string;
   note?: string;
+  text?: string; // selected text under highlight (if extractable)
 };
 
 export default function PdfAnnotatorPage() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const [pdfDoc, setPdfDoc] = useState<any>(null);
@@ -28,6 +35,9 @@ export default function PdfAnnotatorPage() {
   const [drag, setDrag] = useState<{ sx: number; sy: number; ex: number; ey: number } | null>(null);
   const [scale, setScale] = useState(1.25);
   const [renderSize, setRenderSize] = useState({ w: 0, h: 0 });
+  const [pageTextItems, setPageTextItems] = useState<Array<{ str: string; x: number; y: number; w: number; h: number }>>([]);
+  const [savingNote, setSavingNote] = useState(false);
+  const [noteFolder, setNoteFolder] = useState('PDF Highlights');
 
   // load pdfjs worker
   useEffect(() => {
@@ -61,6 +71,18 @@ export default function PdfAnnotatorPage() {
       setRenderSize({ w: viewport.width, h: viewport.height });
       const ctx = canvas.getContext('2d')!;
       await p.render({ canvasContext: ctx, viewport, canvas }).promise;
+      // Capture text positions for highlight → text extraction
+      try {
+        const tc = await p.getTextContent();
+        const items = tc.items.map((it: any) => {
+          const tx = it.transform;
+          const x = tx[4];
+          const yTop = viewport.height - tx[5];
+          const h = it.height || Math.abs(tx[3]) || 10;
+          return { str: it.str as string, x, y: yTop - h, w: it.width || 0, h };
+        });
+        setPageTextItems(items);
+      } catch { setPageTextItems([]); }
     })();
   }, [pdfDoc, page, scale]);
 
@@ -81,10 +103,17 @@ export default function PdfAnnotatorPage() {
     const x = Math.min(drag.sx, drag.ex), y = Math.min(drag.sy, drag.ey);
     const id = crypto.randomUUID();
     const note = tool === 'comment' ? (prompt('Add a comment') || '') : undefined;
+    // Extract text underneath the rectangle from the rendered text items
+    const text = pageTextItems
+      .filter(t => t.x < x + w && t.x + t.w > x && t.y < y + h && t.y + t.h > y)
+      .map(t => t.str)
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
     setAnnos(a => [...a, {
       id, page,
       x: x / renderSize.w, y: y / renderSize.h, w: w / renderSize.w, h: h / renderSize.h,
-      color, note,
+      color, note, text: text || undefined,
     }]);
     setDrag(null);
   };
@@ -132,6 +161,42 @@ export default function PdfAnnotatorPage() {
 
   const removeAnno = (id: string) => setAnnos(a => a.filter(x => x.id !== id));
 
+  async function saveHighlightsToNotes() {
+    if (!user) { toast.error('Please sign in to save notes'); return; }
+    if (annos.length === 0) { toast.error('Add at least one highlight or comment first'); return; }
+    setSavingNote(true);
+    const byPage = annos.reduce<Record<number, Anno[]>>((acc, a) => {
+      (acc[a.page] ||= []).push(a); return acc;
+    }, {});
+    const sortedPages = Object.keys(byPage).map(Number).sort((a, b) => a - b);
+    const html = `
+      <div data-folder="${noteFolder}">
+        <p><strong>Source:</strong> ${fileName} · <em>${annos.length} highlight${annos.length === 1 ? '' : 's'}</em></p>
+        ${sortedPages.map(pg => `
+          <h3>Page ${pg}</h3>
+          <ul>
+            ${byPage[pg].map(a => `
+              <li style="border-left:3px solid ${a.color};padding:4px 8px;margin:4px 0;background:${a.color}22;border-radius:4px">
+                ${a.text ? `<span>${a.text.replace(/</g, '&lt;')}</span>` : '<em style="color:#888">[Highlighted region]</em>'}
+                ${a.note ? `<div style="margin-top:4px;font-size:0.9em"><strong>💬 Note:</strong> ${a.note.replace(/</g, '&lt;')}</div>` : ''}
+              </li>
+            `).join('')}
+          </ul>
+        `).join('')}
+      </div>
+    `;
+    const { error } = await supabase.from('student_notes').insert({
+      user_id: user.id,
+      title: `Highlights · ${fileName.replace(/\.pdf$/i, '')}`,
+      content: html,
+    });
+    setSavingNote(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Highlights saved to your notes');
+    navigate('/student-notes');
+  }
+
+
   return (
     <div className="container mx-auto px-4 lg:px-6 py-6 max-w-7xl">
       <div className="mb-4">
@@ -161,6 +226,10 @@ export default function PdfAnnotatorPage() {
             <Button size="sm" variant="ghost" onClick={() => setScale(s => Math.max(0.5, s - 0.25))}>−</Button>
             <Button size="sm" variant="ghost" onClick={() => setScale(s => Math.min(3, s + 0.25))}>+</Button>
             <div className="flex-1" />
+            <Button size="sm" variant="outline" onClick={saveHighlightsToNotes} disabled={savingNote || annos.length === 0}>
+              {savingNote ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <NotebookPen className="w-3.5 h-3.5 mr-1.5" />}
+              Save to Notes
+            </Button>
             <Button size="sm" onClick={exportPdf}><Download className="w-3.5 h-3.5 mr-1.5" /> Export</Button>
           </div>
 
@@ -205,7 +274,15 @@ export default function PdfAnnotatorPage() {
 
         <Card className="p-4 rounded-2xl h-fit">
           <div className="font-semibold text-sm mb-3">Annotations ({annos.length})</div>
-          <div className="space-y-2 max-h-[70vh] overflow-y-auto">
+          <div className="mb-3 space-y-1.5">
+            <label className="text-[11px] text-muted-foreground">Save to folder</label>
+            <Input value={noteFolder} onChange={e => setNoteFolder(e.target.value)} className="h-8 text-xs" />
+            <Button size="sm" className="w-full mt-1" onClick={saveHighlightsToNotes} disabled={savingNote || annos.length === 0}>
+              {savingNote ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <NotebookPen className="w-3.5 h-3.5 mr-1.5" />}
+              Save highlights to notes
+            </Button>
+          </div>
+          <div className="space-y-2 max-h-[60vh] overflow-y-auto">
             {annos.length === 0 && <div className="text-xs text-muted-foreground">Drag on the page to highlight or comment.</div>}
             {annos.map(a => (
               <div key={a.id} className="p-2.5 rounded-lg border border-border/40 bg-card">
@@ -213,11 +290,17 @@ export default function PdfAnnotatorPage() {
                   <button onClick={() => setPage(a.page)} className="text-[11px] font-medium text-primary hover:underline">Page {a.page}</button>
                   <button onClick={() => removeAnno(a.id)} className="text-muted-foreground hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
+                {a.text && (
+                  <div className="text-[11px] text-foreground/80 mb-1.5 line-clamp-3 italic" style={{ borderLeft: `3px solid ${a.color}`, paddingLeft: 6 }}>
+                    "{a.text}"
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded" style={{ backgroundColor: a.color }} />
-                  {a.note ? (
+                  <div className="w-4 h-4 rounded shrink-0" style={{ backgroundColor: a.color }} />
+                  {a.note !== undefined ? (
                     <Textarea
                       className="text-xs min-h-[40px] resize-none"
+                      placeholder="Add a note…"
                       value={a.note}
                       onChange={e => setAnnos(prev => prev.map(x => x.id === a.id ? { ...x, note: e.target.value } : x))}
                     />

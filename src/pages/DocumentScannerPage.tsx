@@ -11,6 +11,16 @@ import { useAuth } from '@/components/Auth/AuthProvider';
 
 type Page = { id: string; dataUrl: string; text: string; ocrProgress: number; ocrDone: boolean };
 
+const OCR_LANGUAGES = [
+  { code: 'eng', label: 'English' },
+  { code: 'eng+bem', label: 'Bemba + English' },
+  { code: 'eng+nya', label: 'Nyanja (Chichewa) + English' },
+  { code: 'eng+toi', label: 'Tonga + English' },
+  { code: 'eng+loz', label: 'Lozi + English' },
+  { code: 'eng+fra', label: 'English + French' },
+  { code: 'eng+por', label: 'English + Portuguese' },
+];
+
 export default function DocumentScannerPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -21,6 +31,7 @@ export default function DocumentScannerPage() {
   const [title, setTitle] = useState('Scanned Note');
   const [folder, setFolder] = useState('Scans');
   const [saving, setSaving] = useState(false);
+  const [lang, setLang] = useState('eng');
 
   useEffect(() => () => stopCamera(), []);
 
@@ -70,20 +81,39 @@ export default function DocumentScannerPage() {
   function addPage(dataUrl: string) {
     const id = crypto.randomUUID();
     setPages(p => [...p, { id, dataUrl, text: '', ocrProgress: 0, ocrDone: false }]);
-    runOcr(id, dataUrl);
+    runOcr(id, dataUrl, lang);
   }
 
-  async function runOcr(id: string, dataUrl: string) {
+  async function runOcr(id: string, dataUrl: string, langCode: string) {
     try {
       const Tesseract = (await import('tesseract.js')).default;
-      const { data } = await Tesseract.recognize(dataUrl, 'eng', {
-        logger: (m: any) => {
-          if (m.status === 'recognizing text') {
-            setPages(prev => prev.map(p => p.id === id ? { ...p, ocrProgress: Math.round(m.progress * 100) } : p));
-          }
-        },
-      });
-      setPages(prev => prev.map(p => p.id === id ? { ...p, text: data.text.trim(), ocrDone: true, ocrProgress: 100 } : p));
+      // tesseract.js fetches traineddata on the fly; non-English Zambian languages
+      // may have limited models — we fall back to English silently if a sub-lang fails.
+      let useLang = langCode;
+      let data: any;
+      try {
+        const r = await Tesseract.recognize(dataUrl, useLang, {
+          logger: (m: any) => {
+            if (m.status === 'recognizing text') {
+              setPages(prev => prev.map(p => p.id === id ? { ...p, ocrProgress: Math.round(m.progress * 100) } : p));
+            }
+          },
+        });
+        data = r.data;
+      } catch (langErr) {
+        // Retry with English only
+        useLang = 'eng';
+        toast.message('Language pack unavailable, using English');
+        const r = await Tesseract.recognize(dataUrl, 'eng', {
+          logger: (m: any) => {
+            if (m.status === 'recognizing text') {
+              setPages(prev => prev.map(p => p.id === id ? { ...p, ocrProgress: Math.round(m.progress * 100) } : p));
+            }
+          },
+        });
+        data = r.data;
+      }
+      setPages(prev => prev.map(p => p.id === id ? { ...p, text: (data.text || '').trim(), ocrDone: true, ocrProgress: 100 } : p));
     } catch (e: any) {
       toast.error('OCR failed: ' + (e.message || ''));
       setPages(prev => prev.map(p => p.id === id ? { ...p, ocrDone: true } : p));
@@ -151,6 +181,19 @@ export default function DocumentScannerPage() {
               <input type="file" accept="image/*" hidden multiple onChange={e => onFiles(e.target.files)} />
               <Button variant="outline" asChild><span><Upload className="w-4 h-4 mr-1.5" /> Upload images</span></Button>
             </label>
+            <div className="inline-flex items-center gap-1.5 text-xs">
+              <span className="text-muted-foreground">OCR:</span>
+              <select
+                value={lang}
+                onChange={e => setLang(e.target.value)}
+                className="h-8 px-2 rounded-md border border-border bg-background text-xs"
+                title="OCR language"
+              >
+                {OCR_LANGUAGES.map(l => (
+                  <option key={l.code} value={l.code}>{l.label}</option>
+                ))}
+              </select>
+            </div>
             <div className="flex-1" />
             <span className="text-xs text-muted-foreground">{pages.length} page{pages.length === 1 ? '' : 's'}</span>
           </div>

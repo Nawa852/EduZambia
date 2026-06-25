@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CalendarDays, Radio, Video, MapPin, Clock, ExternalLink, Plus } from 'lucide-react';
+import { CalendarDays, Radio, Video, MapPin, Clock, ExternalLink, Plus, CalendarPlus, Link as LinkIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/components/Auth/AuthProvider';
+import { toast } from 'sonner';
 
 type Klass = {
   id: string;
@@ -18,6 +20,7 @@ type Klass = {
 
 export default function UpcomingClassesCard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [rooms, setRooms] = useState<Klass[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -54,6 +57,34 @@ export default function UpcomingClassesCard() {
   const joinUrl = (k: Klass) => {
     if (k.provider === 'jitsi') return `https://meet.jit.si/${k.room_code}`;
     return `/video-rooms?room=${k.room_code}`;
+  };
+
+  const googleCalUrl = (k: Klass) => {
+    const start = k.scheduled_at ? new Date(k.scheduled_at) : new Date();
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const join = joinUrl(k);
+    const absJoin = join.startsWith('http') ? join : `${window.location.origin}${join}`;
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: k.title,
+      dates: `${fmt(start)}/${fmt(end)}`,
+      details: `Live class on Edu Zambia. Join: ${absJoin}`,
+      location: absJoin,
+    });
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  };
+
+  const icsFeedUrl = () => {
+    if (!user) return '';
+    const base = (import.meta.env.VITE_SUPABASE_URL as string) || '';
+    return `${base}/functions/v1/calendar-feed?uid=${user.id}`;
+  };
+
+  const copyFeed = async () => {
+    const u = icsFeedUrl();
+    if (!u) { toast.error('Sign in to get your calendar feed'); return; }
+    try { await navigator.clipboard.writeText(u); toast.success('Subscribe URL copied — paste into Google/Apple Calendar'); } catch { toast.message(u); }
   };
 
   const display: Klass[] = rooms.length ? rooms : [
@@ -120,8 +151,14 @@ export default function UpcomingClassesCard() {
                     {live ? 'Join Live' : 'Join'}
                     {external ? <ExternalLink className="w-3 h-3 ml-1" /> : null}
                   </Button>
-                  <Button size="sm" variant="ghost" className="h-7 px-2 text-[11px]" onClick={() => navigate('/calendar')}>
-                    Details
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 px-2 text-[11px]"
+                    title="Add to Google Calendar"
+                    onClick={() => window.open(googleCalUrl(k), '_blank', 'noopener')}
+                  >
+                    <CalendarPlus className="w-3 h-3" />
                   </Button>
                 </div>
               </div>
@@ -130,11 +167,16 @@ export default function UpcomingClassesCard() {
         </div>
       )}
 
-      <div className="mt-3 flex items-center justify-between">
-        <span className="text-[10px] text-muted-foreground">Synced with your calendar & live classes</span>
-        <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => navigate('/video-rooms')}>
-          <Plus className="w-3 h-3 mr-1" /> Schedule
-        </Button>
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+        <span className="text-[10px] text-muted-foreground">Auto-syncs to Google / Apple Calendar via subscribe URL</span>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" className="h-7 text-[11px]" onClick={copyFeed} title="Copy iCal subscribe URL">
+            <LinkIcon className="w-3 h-3 mr-1" /> Subscribe (.ics)
+          </Button>
+          <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => navigate('/video-rooms')}>
+            <Plus className="w-3 h-3 mr-1" /> Schedule
+          </Button>
+        </div>
       </div>
     </Card>
   );
