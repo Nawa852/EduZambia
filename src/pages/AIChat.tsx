@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
@@ -145,6 +146,28 @@ export default function AIChat() {
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [active?.messages.length, isStreaming]);
+
+  // Honor ?prompt=… and ?mode=…
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const p = searchParams.get('prompt');
+    const m = searchParams.get('mode') as Thread['mode'] | null;
+    let changed = false;
+    if (m && ['chat', 'snap-solve', 'deep-research', 'voice'].includes(m) && active && active.mode !== m) {
+      updateActive({ mode: m });
+      changed = true;
+    }
+    if (p && active && active.messages.length === 0) {
+      setInput(p);
+      changed = true;
+    }
+    if (changed) {
+      const next = new URLSearchParams(searchParams);
+      next.delete('prompt'); next.delete('mode');
+      setSearchParams(next, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams.toString(), active?.id]);
 
   const updateActive = (patch: Partial<Thread>) => {
     setThreads(prev => prev.map(t => t.id === active.id ? { ...t, ...patch, updatedAt: Date.now() } : t));
