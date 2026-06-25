@@ -168,7 +168,8 @@ function App() {
               <Route path="/ngo" element={<PG><NGOHub /></PG>} />
               <Route path="/video-rooms" element={<PG><VideoRoomsPage /></PG>} />
               <Route path="/groups" element={<PG><StudyGroupsHubPage /></PG>} />
-              <Route path="/group/:groupId" element={<PG><GroupWorkspacePage /></PG>} />
+             <Route path="/group/:groupId" element={<PG><GroupWorkspacePage /></PG>} />
+             <Route path="/study-room/:groupId" element={<PG><StudyGroupRoomPage /></PG>} />
               <Route path="/group/:groupId/chat" element={<PG><GroupWorkspacePage /></PG>} />
               <Route path="/group/:groupId/files" element={<PG><GroupWorkspacePage /></PG>} />
               <Route path="/group/:groupId/video" element={<PG><GroupWorkspacePage /></PG>} />
