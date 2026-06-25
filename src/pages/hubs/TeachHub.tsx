@@ -10,6 +10,7 @@ const tabs: HubTab[] = [
   { id: 'my-materials', label: 'My Materials', icon: FolderUp, component: React.lazy(() => import('@/pages/MyMaterialsPage')) },
   { id: 'gradebook', label: 'Gradebook', icon: ClipboardCheck, component: React.lazy(() => import('@/pages/TeacherGradebookPage')) },
   { id: 'lesson-plans', label: 'Lesson Plans', icon: FileText, component: React.lazy(() => import('@/pages/TeacherLessonPlanPage')) },
+  { id: 'scheme-of-work', label: 'Scheme of Work', icon: FileText, component: React.lazy(() => import('@/pages/SchemeOfWorkPage')) },
   { id: 'analytics', label: 'Analytics', icon: BarChart3, component: React.lazy(() => import('@/pages/TeacherAnalyticsPage')) },
   { id: 'announcements', label: 'Announcements', icon: Megaphone, component: React.lazy(() => import('@/pages/TeacherAnnouncementsPage')) },
   { id: 'attendance', label: 'Attendance', icon: Users, component: React.lazy(() => import('@/pages/TeacherAttendanceQRPage')) },
