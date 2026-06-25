@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
-import { Sparkles, BookOpenCheck, ListOrdered, PenLine, Languages, Mic, ChevronRight } from 'lucide-react';
+import { Sparkles, BookOpenCheck, ListOrdered, PenLine, Languages, Mic, ChevronRight, Camera } from 'lucide-react';
 
 const shortcuts = [
   {
@@ -36,12 +36,20 @@ const shortcuts = [
     to: '/ai?tab=chat',
   },
   {
+    label: 'Snap & Solve',
+    desc: 'Photo → instant solution',
+    icon: Camera,
+    tint: 'bg-orange-500/10 text-orange-600',
+    prompt: '',
+    to: '/snap-solve',
+  },
+  {
     label: 'Voice Tutor',
     desc: 'Talk it through aloud',
     icon: Mic,
     tint: 'bg-rose-500/10 text-rose-600',
     prompt: 'Start a voice tutoring conversation. Greet me and ask what subject I want to discuss today.',
-    to: '/ai?tab=tutor&mode=voice',
+    to: '/ai?tab=chat&mode=voice',
   },
 ];
 

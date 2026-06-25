@@ -19,6 +19,7 @@ import { useUserStats } from '@/hooks/useUserStats';
 import { supabase } from '@/integrations/supabase/client';
 import UpcomingClassesCard from '@/components/Dashboard/UpcomingClassesCard';
 import AIShortcutsCard from '@/components/Dashboard/AIShortcutsCard';
+import { ProductTour } from '@/components/Onboarding/ProductTour';
 
 interface Props { userName: string; }
 
@@ -103,9 +104,10 @@ export function StudentDashboardV2({ userName }: Props) {
   ];
 
   const smartTools = [
-    { icon: Bot, label: 'AI Assistant', desc: 'Ask anything. Get explanations, summaries, and help.', tint: 'bg-purple-500/10 text-purple-600', to: '/ai-chat' },
+    { icon: Bot, label: 'AI Chat', desc: 'Streaming · markdown · LaTeX · voice · images.', tint: 'bg-purple-500/10 text-purple-600', to: '/ai?tab=chat' },
+    { icon: Camera, label: 'Snap & Solve', desc: 'Photo of homework → instant step-by-step.', tint: 'bg-rose-500/10 text-rose-600', to: '/snap-solve' },
     { icon: ScanLine, label: 'Document Scanner', desc: 'Scan notes and extract text.', tint: 'bg-blue-500/10 text-blue-600', to: '/scan' },
-    { icon: FileType2, label: 'PDF Reader', desc: 'Read, highlight, and annotate.', tint: 'bg-rose-500/10 text-rose-600', to: '/pdf-reader' },
+    { icon: FileType2, label: 'PDF Reader', desc: 'Read, highlight, and annotate.', tint: 'bg-amber-500/10 text-amber-600', to: '/pdf-reader' },
     { icon: Link2, label: 'Web Clipper', desc: 'Save articles and resources.', tint: 'bg-cyan-500/10 text-cyan-600', to: '/student-notes?source=web' },
     { icon: Layers, label: 'Flashcards', desc: 'Create and review active recall cards.', tint: 'bg-emerald-500/10 text-emerald-600', to: '/flashcards' },
     { icon: HelpCircle, label: 'Quiz Generator', desc: 'Generate quizzes from your notes.', tint: 'bg-amber-500/10 text-amber-600', to: '/ai-quiz' },
@@ -115,6 +117,7 @@ export function StudentDashboardV2({ userName }: Props) {
 
   return (
     <div className="space-y-5 lg:space-y-6 pb-24 lg:pb-8 max-w-[1280px] mx-auto">
+      <ProductTour role="student" />
       {/* Greeting + Study Plan (desktop side-by-side) */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-4 lg:gap-5 items-start">
         <div>
@@ -126,7 +129,7 @@ export function StudentDashboardV2({ userName }: Props) {
               <p className="text-sm text-muted-foreground mt-1">Let's make today count.</p>
             </div>
             {/* Mobile streak badge */}
-            <Card className="lg:hidden px-3 py-2 flex items-center gap-2 rounded-2xl border-border/40 shadow-sm shrink-0">
+            <Card data-tour="streak" className="lg:hidden px-3 py-2 flex items-center gap-2 rounded-2xl border-border/40 shadow-sm shrink-0">
               <Flame className="w-5 h-5 text-orange-500" />
               <div>
                 <div className="text-base font-bold leading-none">{streak}</div>
@@ -138,7 +141,7 @@ export function StudentDashboardV2({ userName }: Props) {
           {/* Stat tiles */}
           <div className="grid grid-cols-3 gap-3">
             {/* Study Streak (desktop) / Focus Time (mobile) */}
-            <Card className="hidden lg:block p-4 rounded-2xl border-border/40 shadow-sm">
+            <Card data-tour="streak" className="hidden lg:block p-4 rounded-2xl border-border/40 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-7 h-7 rounded-full bg-blue-500/10 flex items-center justify-center">
                   <Flame className="w-3.5 h-3.5 text-blue-600" />
@@ -197,7 +200,7 @@ export function StudentDashboardV2({ userName }: Props) {
         </div>
 
         {/* Study Plan side panel */}
-        <Card className="p-4 lg:p-5 rounded-2xl border-border/40 shadow-sm">
+        <Card data-tour="study-plan" className="p-4 lg:p-5 rounded-2xl border-border/40 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
@@ -218,7 +221,7 @@ export function StudentDashboardV2({ userName }: Props) {
       </div>
 
       {/* Quick-create chip row */}
-      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 lg:gap-3">
+      <div data-tour="quick-tools" className="grid grid-cols-3 sm:grid-cols-5 gap-2 lg:gap-3">
         {createChips.map((c) => (
           <button
             key={c.label}
@@ -423,10 +426,10 @@ export function StudentDashboardV2({ userName }: Props) {
       </div>
 
       {/* Upcoming Classes — live from video_rooms */}
-      <UpcomingClassesCard />
+      <div data-tour="upcoming"><UpcomingClassesCard /></div>
 
       {/* AI Shortcuts */}
-      <AIShortcutsCard />
+      <div data-tour="ai-shortcuts"><AIShortcutsCard /></div>
 
       {/* Smart Study Tools */}
       <div>
