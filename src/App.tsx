@@ -132,6 +132,7 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/choose-role" element={<ProtectedRoute><ChooseRolePage /></ProtectedRoute>} />
               <Route path="/setup" element={<ProtectedRoute><SetupPage /></ProtectedRoute>} />
+              <Route path="/setup-extras" element={<ProtectedRoute><React.Suspense fallback={null}>{React.createElement(React.lazy(() => import('@/pages/SetupExtrasPage')))}</React.Suspense></ProtectedRoute>} />
 
               {/* ─── Hub Pages ─────────────────────────────────── */}
               <Route path="/dashboard" element={<PG><Dashboard /></PG>} />
