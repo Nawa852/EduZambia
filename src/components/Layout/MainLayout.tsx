@@ -4,6 +4,8 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { RoleBasedSidebar } from '@/components/Sidebar/RoleBasedSidebar';
 import { TopNavbar } from '@/components/Layout/TopNavbar';
 import { MobileBottomNav } from '@/components/Layout/MobileBottomNav';
+import { TeacherQuickActionsBar } from '@/components/Layout/TeacherQuickActionsBar';
+
 import { ScrollToTop } from '@/components/UI/ScrollToTop';
 import { QuickNoteButton } from '@/components/UI/QuickNoteButton';
 import { useSecurityAlerts } from '@/hooks/useSecurityAlerts';
@@ -131,12 +133,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           {/* Main content — extra bottom padding on mobile for bottom nav */}
           <main id="main-content" className="flex-1 px-3 py-3 pb-24 lg:px-5 lg:py-5 lg:pb-5 overflow-auto">
             {children}
+            <TeacherQuickActionsBar />
           </main>
 
           <MobileBottomNav />
           <QuickNoteButton />
           <ScrollToTop />
           <OfflineBanner />
+
         </div>
       </div>
 

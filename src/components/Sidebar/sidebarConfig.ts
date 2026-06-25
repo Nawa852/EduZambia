@@ -85,31 +85,30 @@ const teacherNavigation: NavGroup[] = [
     label: "Main",
     items: [
       { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
-      { title: "Teaching Hub", url: "/teach", icon: ClipboardCheck, shortTitle: "Teach" },
-      { title: "AI Studio", url: "/ai", icon: Brain, badge: "AI", shortTitle: "AI" },
-      { title: "ECZ Resources", url: "/ecz", icon: FileText, shortTitle: "ECZ" },
-    ],
-  },
-  {
-    label: "Classroom",
-    items: [
       { title: "My Classes", url: "/teacher-classes", icon: Users, shortTitle: "Classes" },
-      { title: "Lesson Plans", url: "/teach?tab=lesson-plans", icon: FileText, shortTitle: "Plans" },
-      { title: "Gradebook", url: "/teach?tab=gradebook", icon: ClipboardCheck, shortTitle: "Grades" },
-      { title: "Attendance", url: "/teach?tab=attendance", icon: Calendar, shortTitle: "Attend" },
-      { title: "Analytics", url: "/teach?tab=analytics", icon: BarChart3, shortTitle: "Stats" },
+      { title: "Lessons", url: "/teach?tab=lesson-plans", icon: BookOpen, shortTitle: "Lessons" },
+      { title: "Assignments", url: "/assignments", icon: FileText, shortTitle: "Tasks" },
+      { title: "Gradebook", url: "/gradebook", icon: ClipboardCheck, shortTitle: "Grades" },
+      { title: "Students", url: "/teach?tab=students", icon: GraduationCap, shortTitle: "Students" },
+      { title: "Attendance", url: "/attendance", icon: Calendar, shortTitle: "Attend" },
+      { title: "Reports & Analytics", url: "/teach?tab=analytics", icon: BarChart3, shortTitle: "Reports" },
     ],
   },
   {
-    label: "Resources",
+    label: "Teaching",
     items: [
-      { title: "Notes Repo", url: "/teacher-notes-repo", icon: Bookmark, shortTitle: "Notes" },
-      { title: "Specialization", url: "/teacher-specialization", icon: Award, shortTitle: "Subj" },
-      { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
-      { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
+      { title: "Curriculum Co-Pilot", url: "/ai-lesson-generator", icon: Sparkles, badge: "AI", shortTitle: "Co-Pilot" },
+      { title: "Resources", url: "/resource-library", icon: FolderOpen, shortTitle: "Resources" },
+      { title: "Assessments", url: "/teach?tab=assessments", icon: Target, shortTitle: "Assess" },
+      { title: "Communication", url: "/communication", icon: MessageSquare, shortTitle: "Chat" },
+      { title: "Calendar", url: "/calendar", icon: Calendar, shortTitle: "Cal" },
+      { title: "Professional Development", url: "/teacher-specialization", icon: Award, shortTitle: "PD" },
+      { title: "Settings", url: "/settings", icon: Settings, shortTitle: "Settings" },
     ],
   },
 ];
+
+
 
 // ─── Guardian ───────────────────────────────────────
 const guardianNavigation: NavGroup[] = [
