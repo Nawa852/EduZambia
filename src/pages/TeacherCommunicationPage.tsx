@@ -55,9 +55,9 @@ export default function TeacherCommunicationPage() {
     if (!user) return;
     (async () => {
       const { data } = await supabase
-        .from('class_announcements')
+        .from('school_announcements')
         .select('id, title, body, audience, created_at')
-        .eq('created_by', user.id)
+        .eq('author_id', user.id)
         .order('created_at', { ascending: false })
         .limit(20);
       if (data) setAnnouncements(data as any);
@@ -80,9 +80,24 @@ export default function TeacherCommunicationPage() {
     if (!annTitle.trim() || !user) return;
     setPosting(true);
     try {
+      // Look up the teacher's school from their profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('school')
+        .eq('id', user.id)
+        .maybeSingle();
+      const school = profile?.school || 'My School';
+
       const { data, error } = await supabase
-        .from('class_announcements')
-        .insert({ title: annTitle, body: annBody, audience, created_by: user.id })
+        .from('school_announcements')
+        .insert({
+          title: annTitle,
+          body: annBody || null,
+          audience,
+          school,
+          author_id: user.id,
+          priority: 'normal',
+        })
         .select('id, title, body, audience, created_at')
         .single();
       if (error) throw error;
@@ -96,6 +111,7 @@ export default function TeacherCommunicationPage() {
       setPosting(false);
     }
   };
+
 
   return (
     <div className="space-y-5 pb-20 lg:pb-6">
