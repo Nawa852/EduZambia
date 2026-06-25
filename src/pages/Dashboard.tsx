@@ -38,12 +38,12 @@ const Dashboard = () => {
   const renderDashboardView = () => {
     switch (userType) {
       case 'teacher': return <TeacherDashboardV2 userName={userName} />;
-      case 'guardian': return <GuardianDashboardView userName={userName} />;
+      case 'guardian': return <GuardianDashboardV2 userName={userName} />;
       case 'institution':
       case 'school_admin': return <SchoolAdminDashboardV2 userName={userName} />;
-      case 'doctor': return <MedicalDashboardView userName={userName} />;
+      case 'doctor': return <MedicalDashboardV2 userName={userName} />;
       case 'entrepreneur': return <EntrepreneurDashboardV2 userName={userName} />;
-      case 'developer': return <DeveloperDashboardView userName={userName} />;
+      case 'developer': return <DeveloperDashboardV2 userName={userName} />;
       case 'skills': return <SkillsDashboardView />;
       case 'cybersecurity': return <CybersecurityDashboardView />;
       default: return <StudentDashboardV2 userName={userName} />;
