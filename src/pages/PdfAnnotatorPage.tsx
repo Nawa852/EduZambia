@@ -71,6 +71,18 @@ export default function PdfAnnotatorPage() {
       setRenderSize({ w: viewport.width, h: viewport.height });
       const ctx = canvas.getContext('2d')!;
       await p.render({ canvasContext: ctx, viewport, canvas }).promise;
+      // Capture text positions for highlight → text extraction
+      try {
+        const tc = await p.getTextContent();
+        const items = tc.items.map((it: any) => {
+          const tx = it.transform;
+          const x = tx[4];
+          const yTop = viewport.height - tx[5];
+          const h = it.height || Math.abs(tx[3]) || 10;
+          return { str: it.str as string, x, y: yTop - h, w: it.width || 0, h };
+        });
+        setPageTextItems(items);
+      } catch { setPageTextItems([]); }
     })();
   }, [pdfDoc, page, scale]);
 
