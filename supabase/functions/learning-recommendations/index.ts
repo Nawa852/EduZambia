@@ -145,7 +145,7 @@ Return ONLY valid JSON.`;
 
   } catch (error) {
     console.error('Error:', error);
-    return new Response(JSON.stringify({ error: error.message, success: false }), {
+    return new Response(JSON.stringify({ error: 'Service temporarily unavailable. Please try again.', success: false }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

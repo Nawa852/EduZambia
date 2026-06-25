@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -29,6 +30,18 @@ const MODELS: Record<string, string> = {
   'gemini-3-flash': 'google/gemini-3-flash-preview',
 };
 
+const MessageSchema = z.object({
+  message: z.string().trim().min(1).max(4000),
+  model: z.enum(Object.keys(MODELS) as [string, ...string[]]).optional(),
+  systemPrompt: z.string().max(4000).optional(),
+  conversationHistory: z.array(z.object({
+    role: z.enum(['system','user','assistant']),
+    content: z.string().max(4000),
+  })).max(20).optional(),
+  subject: z.string().max(64).optional(),
+  gradeLevel: z.string().max(32).optional(),
+});
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -49,25 +62,31 @@ serve(async (req) => {
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     )
 
-    const { data: { user } } = await supabaseClient.auth.getUser()
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
 
-    if (user && isRateLimited(user.id)) {
+    if (isRateLimited(user.id)) {
       return new Response(
         JSON.stringify({ error: 'Rate limit exceeded. Please wait a moment.' }),
         { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    const { message, model, systemPrompt, conversationHistory, subject, gradeLevel } = await req.json()
-
-    if (!message) {
+    const parsed = MessageSchema.safeParse(await req.json());
+    if (!parsed.success) {
       return new Response(
-        JSON.stringify({ error: 'Message is required' }),
+        JSON.stringify({ error: 'Invalid request' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
+    const { message, model, systemPrompt, conversationHistory, subject, gradeLevel } = parsed.data;
 
-    const selectedModel = MODELS[model] || MODELS['gemini-flash'];
+    const selectedModel = MODELS[model ?? 'gemini-flash'];
 
     const defaultSystem = `You are BrightSphere AI — a world-class educational tutor for Zambian students.
 
@@ -117,14 +136,17 @@ ${gradeLevel ? `Student grade level: ${gradeLevel}` : ''}`;
       }
       const errorText = await response.text();
       console.error('AI gateway error:', response.status, errorText);
-      throw new Error(`AI service error: ${response.status}`);
+      return new Response(
+        JSON.stringify({ error: 'AI service temporarily unavailable. Please try again.' }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
     }
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || 'I could not generate a response. Please try again.';
 
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         response: content,
         model: selectedModel,
         usage: data.usage || null
