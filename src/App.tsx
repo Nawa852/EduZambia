@@ -93,6 +93,9 @@ const AssessmentTakingPage = React.lazy(() => import('@/pages/AssessmentTakingPa
 const AssessmentResultsPage = React.lazy(() => import('@/pages/AssessmentResultsPage'));
 const CreateCoursePage = React.lazy(() => import('@/pages/CreateCoursePage'));
 const StudyGroupChatPage = React.lazy(() => import('@/pages/StudyGroupChatPage'));
+const PdfAnnotatorPage = React.lazy(() => import('@/pages/PdfAnnotatorPage'));
+const DocumentScannerPage = React.lazy(() => import('@/pages/DocumentScannerPage'));
+const StudyGroupRoomPage = React.lazy(() => import('@/pages/StudyGroupRoomPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
@@ -165,7 +168,8 @@ function App() {
               <Route path="/ngo" element={<PG><NGOHub /></PG>} />
               <Route path="/video-rooms" element={<PG><VideoRoomsPage /></PG>} />
               <Route path="/groups" element={<PG><StudyGroupsHubPage /></PG>} />
-              <Route path="/group/:groupId" element={<PG><GroupWorkspacePage /></PG>} />
+             <Route path="/group/:groupId" element={<PG><GroupWorkspacePage /></PG>} />
+             <Route path="/study-room/:groupId" element={<PG><StudyGroupRoomPage /></PG>} />
               <Route path="/group/:groupId/chat" element={<PG><GroupWorkspacePage /></PG>} />
               <Route path="/group/:groupId/files" element={<PG><GroupWorkspacePage /></PG>} />
               <Route path="/group/:groupId/video" element={<PG><GroupWorkspacePage /></PG>} />
@@ -246,8 +250,10 @@ function App() {
               <Route path="/recent-notes" element={<Navigate to="/prepare?tab=notes" replace />} />
               <Route path="/flashcards-review" element={<Navigate to="/ai?tab=flashcards" replace />} />
               <Route path="/smart-tools" element={<Navigate to="/tools" replace />} />
-              <Route path="/scan" element={<Navigate to="/tools?tab=scanner" replace />} />
-              <Route path="/pdf-reader" element={<Navigate to="/tools?tab=pdf" replace />} />
+              <Route path="/scan" element={<PG><DocumentScannerPage /></PG>} />
+              <Route path="/document-scanner" element={<PG><DocumentScannerPage /></PG>} />
+              <Route path="/pdf-reader" element={<PG><PdfAnnotatorPage /></PG>} />
+              <Route path="/pdf-annotator" element={<PG><PdfAnnotatorPage /></PG>} />
               <Route path="/ai-chat" element={<Navigate to="/ai?tab=chat" replace />} />
               <Route path="/ai-assistant" element={<Navigate to="/ai?tab=chat" replace />} />
               <Route path="/subjects" element={<Navigate to="/learn?tab=subjects" replace />} />
