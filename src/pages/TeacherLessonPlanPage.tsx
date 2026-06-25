@@ -73,7 +73,7 @@ const allBorders = { top: cellBorder, bottom: cellBorder, left: cellBorder, righ
 
 const labelRun = (t: string) => new TextRun({ text: t, bold: true, font: 'Times New Roman', size: 22 });
 const valueRun = (t: string) => new TextRun({ text: t || ' ', font: 'Times New Roman', size: 22 });
-const para = (children: TextRun[], align: AlignmentType = AlignmentType.LEFT) =>
+const para = (children: TextRun[], align: (typeof AlignmentType)[keyof typeof AlignmentType] = AlignmentType.LEFT) =>
   new Paragraph({ children, alignment: align });
 const labelPara = (label: string, value: string) =>
   new Paragraph({ children: [labelRun(`${label} `), valueRun(value)] });
