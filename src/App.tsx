@@ -295,6 +295,11 @@ function App() {
               <Route path="/teacher-announcements" element={<Navigate to="/teach?tab=announcements" replace />} />
               <Route path="/teacher-attendance-qr" element={<Navigate to="/teach?tab=attendance" replace />} />
               <Route path="/teacher-dashboard" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/lesson-planner" element={<Navigate to="/teach?tab=lesson-plans" replace />} />
+              <Route path="/scheme-of-work" element={<Navigate to="/teach?tab=scheme-of-work" replace />} />
+              <Route path="/ai-lesson-generator" element={<Navigate to="/teach?tab=lesson-plans" replace />} />
+              <Route path="/calendar" element={<Navigate to="/prepare?tab=planner" replace />} />
+              <Route path="/assignments" element={<Navigate to="/teach?tab=announcements" replace />} />
 
               {/* Guardian */}
               <Route path="/parent-children" element={<Navigate to="/family?tab=children" replace />} />
@@ -303,6 +308,18 @@ function App() {
               <Route path="/guardian-homework" element={<Navigate to="/family?tab=homework" replace />} />
               <Route path="/guardian-rewards" element={<Navigate to="/family?tab=rewards" replace />} />
               <Route path="/guardian-activity-feed" element={<Navigate to="/family?tab=activity" replace />} />
+              <Route path="/guardian-digest" element={<Navigate to="/family?tab=activity" replace />} />
+              <Route path="/guardian-reports" element={<Navigate to="/family?tab=grades" replace />} />
+              <Route path="/guardian-link" element={<Navigate to="/family?tab=children" replace />} />
+              <Route path="/guardian-study-comparison" element={<Navigate to="/family?tab=grades" replace />} />
+              <Route path="/parent-alerts" element={<Navigate to="/family?tab=activity" replace />} />
+              <Route path="/parent-messages" element={<Navigate to="/connect?tab=messenger" replace />} />
+              <Route path="/parent-progress" element={<Navigate to="/family?tab=grades" replace />} />
+              <Route path="/parent-attendance" element={<Navigate to="/family?tab=activity" replace />} />
+              <Route path="/parent-school-updates" element={<Navigate to="/family?tab=activity" replace />} />
+              <Route path="/parent-teacher-contact" element={<Navigate to="/connect?tab=messenger" replace />} />
+              <Route path="/ecz-parent-support" element={<Navigate to="/ecz" replace />} />
+              <Route path="/ecz-parent-teacher" element={<Navigate to="/connect?tab=messenger" replace />} />
               <Route path="/parent-dashboard" element={<Navigate to="/dashboard" replace />} />
 
               {/* Ministry */}
