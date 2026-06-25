@@ -3316,7 +3316,36 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      ctf_leaderboard: {
+        Row: {
+          category: string | null
+          challenge_name: string | null
+          created_at: string | null
+          id: string | null
+          is_correct: boolean | null
+          points: number | null
+          user_id: string | null
+        }
+        Insert: {
+          category?: string | null
+          challenge_name?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_correct?: boolean | null
+          points?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          category?: string | null
+          challenge_name?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_correct?: boolean | null
+          points?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       award_xp: {
@@ -3324,6 +3353,17 @@ export type Database = {
         Returns: undefined
       }
       calculate_user_streak: { Args: { p_user_id: string }; Returns: number }
+      get_mentor_contact_email: {
+        Args: { _mentor_id: string }
+        Returns: string
+      }
+      get_partner_school_contact: {
+        Args: { _school_id: string }
+        Returns: {
+          contact_person: string
+          contact_phone: string
+        }[]
+      }
       get_platform_stats: { Args: never; Returns: Json }
       has_role: {
         Args: {
