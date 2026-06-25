@@ -14,6 +14,12 @@ interface RoleGuardProps {
   redirectTo?: string;
 }
 
+const ROLE_ALIASES: Record<string, AppRole> = {
+  parent: 'guardian',
+  school_admin: 'institution',
+  medical: 'doctor',
+};
+
 const RoleGuard: React.FC<RoleGuardProps> = ({ allow, children, redirectTo }) => {
   const { profile, loading } = useProfile();
   const navigate = useNavigate();
@@ -22,7 +28,8 @@ const RoleGuard: React.FC<RoleGuardProps> = ({ allow, children, redirectTo }) =>
     return <div className="min-h-[40vh] flex items-center justify-center"><LogoLoader text="Checking access..." /></div>;
   }
 
-  const role = (profile?.role || 'student') as AppRole;
+  const raw = (profile?.role || 'student') as string;
+  const role = (ROLE_ALIASES[raw] ?? raw) as AppRole;
   if (allow.includes(role)) return <>{children}</>;
 
   if (redirectTo) return <Navigate to={redirectTo} replace />;
