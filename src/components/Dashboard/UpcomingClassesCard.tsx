@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CalendarDays, Radio, Video, MapPin, Clock, ExternalLink, Plus } from 'lucide-react';
+import { CalendarDays, Radio, Video, MapPin, Clock, ExternalLink, Plus, CalendarPlus, Link as LinkIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/components/Auth/AuthProvider';
+import { toast } from 'sonner';
 
 type Klass = {
   id: string;
