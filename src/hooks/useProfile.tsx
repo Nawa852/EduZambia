@@ -53,10 +53,28 @@ function toAppRole(value: string | null | undefined): AppRole {
   return 'student';
 }
 
+const PROFILE_CACHE_KEY = 'edu-zambia-profile-cache';
+
+function readCachedProfile(userId: string | undefined): Profile | null {
+  if (!userId) return null;
+  try {
+    const raw = localStorage.getItem(PROFILE_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && parsed.id === userId ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 export const useProfile = () => {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
   const { user, isDemo } = useAuth();
+  const cached = readCachedProfile(user?.id);
+  const [profile, setProfile] = useState<Profile | null>(cached);
+  // If we already have a cached profile, render immediately and refresh in the background.
+  const [loading, setLoading] = useState(!cached);
+
+
 
   const fetchProfile = useCallback(async () => {
     if (isDemo) {
