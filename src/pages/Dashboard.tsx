@@ -4,9 +4,9 @@ import { StudentDashboardV2 } from '@/components/Dashboard/v2/StudentDashboardV2
 import { TeacherDashboardV2 } from '@/components/Dashboard/v2/TeacherDashboardV2';
 import { EntrepreneurDashboardV2 } from '@/components/Dashboard/v2/EntrepreneurDashboardV2';
 import { SchoolAdminDashboardV2 } from '@/components/Dashboard/v2/SchoolAdminDashboardV2';
-import { GuardianDashboardView } from '@/components/Dashboard/GuardianDashboardView';
-import { MedicalDashboardView } from '@/components/Dashboard/MedicalDashboardView';
-import { DeveloperDashboardView } from '@/components/Dashboard/DeveloperDashboardView';
+import { GuardianDashboardV2 } from '@/components/Dashboard/v2/GuardianDashboardV2';
+import { MedicalDashboardV2 } from '@/components/Dashboard/v2/MedicalDashboardV2';
+import { DeveloperDashboardV2 } from '@/components/Dashboard/v2/DeveloperDashboardV2';
 import SkillsDashboardView from '@/components/Dashboard/SkillsDashboardView';
 import CybersecurityDashboardView from '@/components/Dashboard/CybersecurityDashboardView';
 import { LogoLoader } from '@/components/UI/LogoLoader';
