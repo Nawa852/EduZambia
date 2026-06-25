@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { PageHeader } from '@/components/ui/page-header';
 import { Card } from '@/components/ui/card';
+import { HubPageLayout, HubTab } from '@/components/Layout/HubPageLayout';
 import {
   HeartPulse, Stethoscope, Microscope, Pill, FileText, ClipboardList,
-  GraduationCap, Brain, Video, BookOpen,
+  GraduationCap, Brain, Video, BookOpen, LayoutDashboard,
 } from 'lucide-react';
 
 type Tool = { title: string; desc: string; href: string; icon: React.ComponentType<{ className?: string }>; badge?: string };
@@ -15,17 +15,17 @@ const groups: Group[] = [
     label: 'Clinical Practice',
     accent: 'from-rose-500/15 to-red-500/10',
     tools: [
-      { title: 'Case Simulator', desc: 'Diagnose virtual patients', href: '/medical-case-simulator', icon: Stethoscope, badge: 'SIM' },
-      { title: 'Case Log', desc: 'Track patients seen', href: '/medical-case-log', icon: ClipboardList },
-      { title: 'Clinical Notes', desc: 'SOAP templates', href: '/medical-clinical-notes', icon: FileText },
-      { title: 'Rotations', desc: 'Plan placements', href: '/medical-rotations', icon: GraduationCap },
+      { title: 'Case Simulator', desc: 'Diagnose virtual patients', href: '/medical?tab=simulator', icon: Stethoscope, badge: 'SIM' },
+      { title: 'Case Log', desc: 'Track patients seen', href: '/medical?tab=cases', icon: ClipboardList },
+      { title: 'Clinical Notes', desc: 'SOAP templates', href: '/medical?tab=notes', icon: FileText },
+      { title: 'Rotations', desc: 'Plan placements', href: '/medical?tab=rotations', icon: GraduationCap },
     ],
   },
   {
     label: 'Reference',
     accent: 'from-pink-500/15 to-fuchsia-500/10',
     tools: [
-      { title: 'Drug Reference', desc: 'Zambian formulary', href: '/medical-drug-reference', icon: Pill },
+      { title: 'Drug Reference', desc: 'Zambian formulary', href: '/medical?tab=drugs', icon: Pill },
       { title: 'Anatomy & Pathology', desc: 'Study materials', href: '/learn?tab=catalog', icon: Microscope },
     ],
   },
@@ -34,20 +34,15 @@ const groups: Group[] = [
     accent: 'from-blue-500/15 to-cyan-500/10',
     tools: [
       { title: 'Free Healthcare Courses', desc: 'Harvard · Yale · WHO', href: '/free-courses?track=healthcare', icon: GraduationCap, badge: 'FREE' },
-      { title: 'AI Tutor', desc: 'Ask any clinical question', href: '/ai?tab=tutor', icon: Brain, badge: 'AI' },
+      { title: 'AI Clinical Tutor', desc: 'Ask any clinical question', href: '/ai?tab=tutor', icon: Brain, badge: 'AI' },
       { title: 'Video Lectures', desc: 'Curated medical videos', href: '/watch', icon: Video },
       { title: 'Reading List', desc: 'Saved papers & notes', href: '/prepare?tab=bookmarks', icon: BookOpen },
     ],
   },
 ];
 
-const MedicalHub: React.FC = () => (
+const MedicalOverview: React.FC = () => (
   <div className="space-y-6">
-    <PageHeader
-      icon={HeartPulse}
-      title="Healthcare"
-      subtitle="Clinical learning, case simulations and a Zambian drug reference for healthcare workers."
-    />
     {groups.map((g) => (
       <section key={g.label} className="space-y-3">
         <div className="flex items-center justify-between">
@@ -75,6 +70,29 @@ const MedicalHub: React.FC = () => (
       </section>
     ))}
   </div>
+);
+
+const tabs: HubTab[] = [
+  { id: 'overview', label: 'Overview', icon: LayoutDashboard, component: MedicalOverview },
+  { id: 'simulator', label: 'Case Simulator', icon: Stethoscope, badge: 'AI', component: React.lazy(() => import('@/pages/MedicalCaseSimulatorPage')) },
+  { id: 'cases', label: 'Case Log', icon: ClipboardList, component: React.lazy(() => import('@/pages/MedicalCaseLogPage')) },
+  { id: 'notes', label: 'Clinical Notes', icon: FileText, component: React.lazy(() => import('@/pages/MedicalClinicalNotesPage')) },
+  { id: 'rotations', label: 'Rotations', icon: GraduationCap, component: React.lazy(() => import('@/pages/MedicalRotationsPage')) },
+  { id: 'drugs', label: 'Drug Reference', icon: Pill, component: React.lazy(() => import('@/pages/MedicalDrugReferencePage')) },
+];
+
+const MedicalHub: React.FC = () => (
+  <HubPageLayout
+    title="Healthcare"
+    subtitle="Clinical learning, case simulations and a Zambian drug reference for healthcare workers."
+    icon={HeartPulse}
+    tabs={tabs}
+    defaultTab="overview"
+    quickLinks={[
+      { label: 'AI Tutor', href: '/ai?tab=tutor', icon: Brain },
+      { label: 'Free Courses', href: '/free-courses?track=healthcare', icon: GraduationCap },
+    ]}
+  />
 );
 
 export default MedicalHub;
