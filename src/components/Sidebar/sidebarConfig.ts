@@ -340,16 +340,62 @@ export function getCommandNavigationByRole(role: string): Array<NavItem & { grou
 
   // Add role-specific entries
   if (role === 'teacher') {
-    baseItems.splice(2, 0, { title: "Teaching Hub", url: "/teach", icon: ClipboardCheck, group: "Navigate", shortTitle: "Teach" });
+    baseItems.splice(2, 0,
+      { title: "Teaching Hub", url: "/teach", icon: ClipboardCheck, group: "Navigate", shortTitle: "Teach" },
+      { title: "Notes Repo", url: "/teacher-notes-repo", icon: Bookmark, group: "Teacher", shortTitle: "Notes" },
+      { title: "Specialization", url: "/teacher-specialization", icon: Award, group: "Teacher" },
+    );
   }
-  if (role === 'guardian') {
+  if (role === 'guardian' || role === 'parent') {
     baseItems.splice(2, 0, { title: "Family", url: "/family", icon: Users, group: "Navigate", shortTitle: "Family" });
   }
-  if (role === 'institution') {
+  if (role === 'institution' || role === 'school_admin') {
     baseItems.splice(1, 0, { title: "Admin", url: "/admin", icon: Building2, group: "Navigate", shortTitle: "Admin" });
   }
   if (role === 'ministry') {
     baseItems.splice(1, 0, { title: "Ministry", url: "/ministry", icon: Building2, group: "Navigate", shortTitle: "Ministry" });
+  }
+  if (role === 'doctor' || role === 'medical') {
+    baseItems.splice(1, 0,
+      { title: "Medical Hub", url: "/medical", icon: Heart, group: "Navigate", shortTitle: "Medical" },
+      { title: "Case Simulator", url: "/medical-case-simulator", icon: Microscope, group: "Medical" },
+      { title: "Case Log", url: "/medical-case-log", icon: ClipboardCheck, group: "Medical" },
+      { title: "Drug Reference", url: "/medical-drug-reference", icon: Bookmark, group: "Medical" },
+      { title: "Clinical Notes", url: "/medical-clinical-notes", icon: FileText, group: "Medical" },
+      { title: "Rotations", url: "/medical-rotations", icon: Calendar, group: "Medical" },
+    );
+  }
+  if (role === 'developer') {
+    baseItems.splice(1, 0,
+      { title: "Dev Hub", url: "/developer", icon: Code, group: "Navigate", shortTitle: "Dev" },
+      { title: "IDE", url: "/developer-ide", icon: Monitor, group: "Developer" },
+      { title: "Projects", url: "/developer-projects", icon: FolderOpen, group: "Developer" },
+      { title: "Code Review", url: "/developer-code-review", icon: Search, group: "Developer" },
+      { title: "Challenges", url: "/developer-challenges", icon: Target, group: "Developer" },
+    );
+  }
+  if (role === 'entrepreneur') {
+    baseItems.splice(1, 0,
+      { title: "Venture Hub", url: "/entrepreneur", icon: Rocket, group: "Navigate", shortTitle: "Build" },
+      { title: "Business Plan", url: "/entrepreneur?tab=plan", icon: FileText, group: "Venture" },
+      { title: "Pitch Deck", url: "/entrepreneur?tab=pitch", icon: Sparkles, group: "Venture" },
+      { title: "Financials", url: "/entrepreneur?tab=finance", icon: DollarSign, group: "Venture" },
+      { title: "Marketplace", url: "/marketplace", icon: Briefcase, group: "Venture" },
+    );
+  }
+  if (role === 'cybersecurity') {
+    baseItems.splice(1, 0,
+      { title: "Cyber Hub", url: "/cybersecurity", icon: Shield, group: "Navigate", shortTitle: "Cyber" },
+      { title: "Terminal", url: "/cyber-terminal", icon: Monitor, group: "Cyber" },
+      { title: "SOC Simulator", url: "/cyber-soc", icon: Bot, group: "Cyber" },
+      { title: "Skill Tree", url: "/cyber-skills", icon: Layers, group: "Cyber" },
+    );
+  }
+  if (role === 'skills') {
+    baseItems.splice(2, 0,
+      { title: "Skill Passport", url: "/skill-passport", icon: Award, group: "Navigate", shortTitle: "Skills" },
+      { title: "Marketplace", url: "/marketplace", icon: Briefcase, group: "Navigate" },
+    );
   }
 
   // Add quick-access tabs as command items
