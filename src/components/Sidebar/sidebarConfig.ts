@@ -349,6 +349,14 @@ export function getCommandNavigationByRole(role: string): Array<NavItem & { grou
     { title: "Settings", url: "/profile?tab=settings", icon: Settings, group: "Account" },
     { title: "Notifications", url: "/profile?tab=notifications", icon: Bell, group: "Account" },
     { title: "Bookmarks", url: "/prepare?tab=bookmarks", icon: Bookmark, group: "Account" },
+    { title: "Knowledge Hub", url: "/prepare?tab=notes", icon: FolderOpen, group: "Study", shortTitle: "Knowledge" },
+    { title: "Recent Notes", url: "/prepare?tab=notes", icon: FileText, group: "Study", shortTitle: "Notes" },
+    { title: "Flashcards", url: "/ai?tab=flashcards", icon: Layers, group: "Study", shortTitle: "Cards" },
+    { title: "Tasks & Planner", url: "/prepare?tab=planner", icon: ClipboardCheck, group: "Study", shortTitle: "Tasks" },
+    { title: "Focus Timer", url: "/prepare?tab=focus", icon: Timer, group: "Study", shortTitle: "Focus" },
+    { title: "Smart Study Tools", url: "/tools", icon: Sparkles, group: "Study", shortTitle: "Tools" },
+    { title: "Quiz Generator", url: "/ai?tab=quiz", icon: Target, group: "Study" },
+    { title: "Mind Maps", url: "/ai?tab=mind-maps", icon: Layers, group: "Study" },
   ];
 
   // Add role-specific entries
