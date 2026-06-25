@@ -10,7 +10,16 @@ const SetupPage = () => {
   const navigate = useNavigate();
   const { profile, loading } = useProfile();
 
-  const handleComplete = () => navigate('/dashboard', { replace: true });
+  const handleComplete = () => {
+    // After the role-specific wizard, send students through the extras wizard
+    // (materials uploads, YouTube sync, timetable, guardian, app-block consent)
+    const role = profile?.role || 'student';
+    if (role === 'student' && !(profile as any)?.onboarding_extras_complete) {
+      navigate('/setup-extras', { replace: true });
+    } else {
+      navigate('/dashboard', { replace: true });
+    }
+  };
 
   if (loading) {
     return (
