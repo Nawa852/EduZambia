@@ -232,6 +232,8 @@ const entrepreneurNavigation: NavGroup[] = [
   {
     label: "Grow",
     items: [
+      { title: "Funding", url: "/entrepreneur-funding", icon: DollarSign, badge: "NEW", shortTitle: "Funds" },
+      { title: "Network", url: "/entrepreneur-network", icon: Users, shortTitle: "Network" },
       { title: "Marketplace", url: "/marketplace", icon: Briefcase, shortTitle: "Market" },
       { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
       { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
