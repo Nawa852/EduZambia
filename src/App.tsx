@@ -249,8 +249,10 @@ function App() {
               <Route path="/recent-notes" element={<Navigate to="/prepare?tab=notes" replace />} />
               <Route path="/flashcards-review" element={<Navigate to="/ai?tab=flashcards" replace />} />
               <Route path="/smart-tools" element={<Navigate to="/tools" replace />} />
-              <Route path="/scan" element={<Navigate to="/tools?tab=scanner" replace />} />
-              <Route path="/pdf-reader" element={<Navigate to="/tools?tab=pdf" replace />} />
+              <Route path="/scan" element={<PG><DocumentScannerPage /></PG>} />
+              <Route path="/document-scanner" element={<PG><DocumentScannerPage /></PG>} />
+              <Route path="/pdf-reader" element={<PG><PdfAnnotatorPage /></PG>} />
+              <Route path="/pdf-annotator" element={<PG><PdfAnnotatorPage /></PG>} />
               <Route path="/ai-chat" element={<Navigate to="/ai?tab=chat" replace />} />
               <Route path="/ai-assistant" element={<Navigate to="/ai?tab=chat" replace />} />
               <Route path="/subjects" element={<Navigate to="/learn?tab=subjects" replace />} />
