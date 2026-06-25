@@ -240,6 +240,19 @@ function App() {
               <Route path="/journaling" element={<Navigate to="/prepare?tab=journal" replace />} />
               <Route path="/journal" element={<Navigate to="/prepare?tab=journal" replace />} />
               <Route path="/bookmarks" element={<Navigate to="/prepare?tab=bookmarks" replace />} />
+              <Route path="/student-notes" element={<Navigate to="/prepare?tab=notes" replace />} />
+              <Route path="/voice-notes" element={<Navigate to="/prepare?tab=notes" replace />} />
+              <Route path="/knowledge-hub" element={<Navigate to="/prepare?tab=notes" replace />} />
+              <Route path="/recent-notes" element={<Navigate to="/prepare?tab=notes" replace />} />
+              <Route path="/flashcards-review" element={<Navigate to="/ai?tab=flashcards" replace />} />
+              <Route path="/smart-tools" element={<Navigate to="/tools" replace />} />
+              <Route path="/scan" element={<Navigate to="/tools?tab=scanner" replace />} />
+              <Route path="/pdf-reader" element={<Navigate to="/tools?tab=pdf" replace />} />
+              <Route path="/ai-chat" element={<Navigate to="/ai?tab=chat" replace />} />
+              <Route path="/ai-assistant" element={<Navigate to="/ai?tab=chat" replace />} />
+              <Route path="/subjects" element={<Navigate to="/learn?tab=subjects" replace />} />
+              <Route path="/tools/periodic-table" element={<Navigate to="/tools?tab=periodic-table" replace />} />
+              <Route path="/tools/calculator" element={<Navigate to="/tools?tab=calculator" replace />} />
 
               {/* Connect */}
               <Route path="/messenger" element={<Navigate to="/connect?tab=messenger" replace />} />
