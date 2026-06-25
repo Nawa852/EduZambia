@@ -16,10 +16,14 @@ const OUTCOMES = ['ongoing', 'resolved', 'referred'];
 const MedicalCaseLogPage = () => {
   const { cases, loading, addCase, deleteCase } = useClinicalCases();
   const [filterSystem, setFilterSystem] = useState('all');
+  const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ condition: '', presenting_complaint: '', diagnosis: '', outcome: 'ongoing', body_system: '', notes: '' });
 
-  const filtered = filterSystem === 'all' ? cases : cases.filter(c => c.body_system === filterSystem);
+  const q = query.trim().toLowerCase();
+  const filtered = cases
+    .filter(c => filterSystem === 'all' || c.body_system === filterSystem)
+    .filter(c => !q || [c.condition, c.diagnosis, c.presenting_complaint, c.body_system, c.notes].some(v => (v || '').toLowerCase().includes(q)));
   const systemStats = BODY_SYSTEMS.map(s => ({ name: s, count: cases.filter(c => c.body_system === s).length })).filter(s => s.count > 0);
 
   const handleAdd = async () => {
