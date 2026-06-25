@@ -1,9 +1,10 @@
 import React from 'react';
 import { HubPageLayout, HubTab } from '@/components/Layout/HubPageLayout';
-import { BookOpen, ClipboardCheck, FileText, BarChart3, Megaphone, Users, MessageSquare, Library, GraduationCap, FolderUp, Link as LinkIcon } from 'lucide-react';
+import { BookOpen, ClipboardCheck, FileText, BarChart3, Megaphone, Users, MessageSquare, Library, GraduationCap, FolderUp, Link as LinkIcon, Wand2 } from 'lucide-react';
 
 const tabs: HubTab[] = [
   { id: 'courses', label: 'My Courses', icon: BookOpen, component: React.lazy(() => import('@/pages/Courses')) },
+  { id: 'test-generator', label: 'AI Test Generator', icon: Wand2, component: React.lazy(() => import('@/pages/TeacherTestGeneratorPage')), badge: 'NEW' },
   { id: 'notes-repo', label: 'Notes Repo', icon: FileText, component: React.lazy(() => import('@/pages/TeacherNotesRepoPage')) },
   { id: 'specialization', label: 'Specialization', icon: GraduationCap, component: React.lazy(() => import('@/pages/TeacherSpecializationPage')) },
   { id: 'resource-library', label: 'External Library', icon: Library, component: React.lazy(() => import('@/pages/ResourceLibraryHubPage')) },
