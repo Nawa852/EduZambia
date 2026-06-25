@@ -140,6 +140,10 @@ function App() {
               <Route path="/teacher-notes-repo" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherNotesRepoPage /></RoleGuard></PG>} />
               <Route path="/teacher-specialization" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherSpecializationPage /></RoleGuard></PG>} />
               <Route path="/teacher-classes" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherMyClassesPage /></RoleGuard></PG>} />
+              <Route path="/gradebook" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherGradebookStandalone /></RoleGuard></PG>} />
+              <Route path="/attendance" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherAttendanceStandalone /></RoleGuard></PG>} />
+              <Route path="/communication" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherCommunicationPage /></RoleGuard></PG>} />
+
               <Route path="/entrepreneur-funding" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurFundingPage /></RoleGuard></PG>} />
               <Route path="/entrepreneur-network" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurNetworkPage /></RoleGuard></PG>} />
               <Route path="/school-teachers" element={<PG><RoleGuard allow={['institution','ministry']}><SchoolAdminTeachersPage /></RoleGuard></PG>} />
