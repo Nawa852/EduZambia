@@ -151,8 +151,14 @@ export default function UpcomingClassesCard() {
                     {live ? 'Join Live' : 'Join'}
                     {external ? <ExternalLink className="w-3 h-3 ml-1" /> : null}
                   </Button>
-                  <Button size="sm" variant="ghost" className="h-7 px-2 text-[11px]" onClick={() => navigate('/calendar')}>
-                    Details
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 px-2 text-[11px]"
+                    title="Add to Google Calendar"
+                    onClick={() => window.open(googleCalUrl(k), '_blank', 'noopener')}
+                  >
+                    <CalendarPlus className="w-3 h-3" />
                   </Button>
                 </div>
               </div>
@@ -161,11 +167,16 @@ export default function UpcomingClassesCard() {
         </div>
       )}
 
-      <div className="mt-3 flex items-center justify-between">
-        <span className="text-[10px] text-muted-foreground">Synced with your calendar & live classes</span>
-        <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => navigate('/video-rooms')}>
-          <Plus className="w-3 h-3 mr-1" /> Schedule
-        </Button>
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+        <span className="text-[10px] text-muted-foreground">Auto-syncs to Google / Apple Calendar via subscribe URL</span>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" className="h-7 text-[11px]" onClick={copyFeed} title="Copy iCal subscribe URL">
+            <LinkIcon className="w-3 h-3 mr-1" /> Subscribe (.ics)
+          </Button>
+          <Button variant="outline" size="sm" className="h-7 text-[11px]" onClick={() => navigate('/video-rooms')}>
+            <Plus className="w-3 h-3 mr-1" /> Schedule
+          </Button>
+        </div>
       </div>
     </Card>
   );
