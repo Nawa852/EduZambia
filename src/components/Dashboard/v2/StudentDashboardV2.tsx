@@ -57,19 +57,6 @@ export function StudentDashboardV2({ userName }: Props) {
       ]);
     })();
 
-    (async () => {
-      const { data } = await supabase
-        .from('study_tasks')
-        .select('id, title, due_date, completed')
-        .eq('user_id', user.id)
-        .order('due_date', { ascending: true })
-        .limit(4);
-      setTasks((data || []).map((t: any) => ({
-        id: t.id, title: t.title,
-        due: t.due_date ? new Date(t.due_date).toDateString() === new Date().toDateString() ? 'Today' : 'Tomorrow' : 'Soon',
-        done: t.completed,
-      })));
-    })().catch(() => {});
   }, [user]);
 
   const greeting = () => {
@@ -78,11 +65,11 @@ export function StudentDashboardV2({ userName }: Props) {
   };
 
   const firstName = userName.split(' ')[0];
-  const streak = stats?.stats?.streak_days || 7;
-  const focusMin = Math.round(((stats?.stats?.total_study_minutes || 165)) % 600);
+  const streak = stats?.stats?.current_streak || 7;
+  const focusMin = (stats?.stats?.total_focus_minutes || 165) % 600;
   const focusHrs = Math.floor(focusMin / 60);
   const focusRem = focusMin % 60;
-  const tasksDone = stats?.stats?.lessons_completed || 5;
+  const tasksDone = 5;
   const tasksGoal = 8;
 
   const quickTools = [
