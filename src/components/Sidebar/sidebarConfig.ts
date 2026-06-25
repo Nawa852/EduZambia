@@ -93,6 +93,7 @@ const teacherNavigation: NavGroup[] = [
   {
     label: "Classroom",
     items: [
+      { title: "My Classes", url: "/teacher-classes", icon: Users, shortTitle: "Classes" },
       { title: "Lesson Plans", url: "/teach?tab=lesson-plans", icon: FileText, shortTitle: "Plans" },
       { title: "Gradebook", url: "/teach?tab=gradebook", icon: ClipboardCheck, shortTitle: "Grades" },
       { title: "Attendance", url: "/teach?tab=attendance", icon: Calendar, shortTitle: "Attend" },
