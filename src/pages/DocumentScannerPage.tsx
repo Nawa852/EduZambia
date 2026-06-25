@@ -181,6 +181,19 @@ export default function DocumentScannerPage() {
               <input type="file" accept="image/*" hidden multiple onChange={e => onFiles(e.target.files)} />
               <Button variant="outline" asChild><span><Upload className="w-4 h-4 mr-1.5" /> Upload images</span></Button>
             </label>
+            <div className="inline-flex items-center gap-1.5 text-xs">
+              <span className="text-muted-foreground">OCR:</span>
+              <select
+                value={lang}
+                onChange={e => setLang(e.target.value)}
+                className="h-8 px-2 rounded-md border border-border bg-background text-xs"
+                title="OCR language"
+              >
+                {OCR_LANGUAGES.map(l => (
+                  <option key={l.code} value={l.code}>{l.label}</option>
+                ))}
+              </select>
+            </div>
             <div className="flex-1" />
             <span className="text-xs text-muted-foreground">{pages.length} page{pages.length === 1 ? '' : 's'}</span>
           </div>
