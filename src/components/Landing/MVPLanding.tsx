@@ -46,7 +46,7 @@ const MVPLanding = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-2xl border-b border-border/10">
         <div className="container mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <img src={eduMark} alt="Edu Zambia" className="w-9 h-9 rounded-xl shadow-card transition-transform group-hover:scale-105" />
+            <img src={eduMark} alt="Nexus Learning" className="w-9 h-9 rounded-xl shadow-card transition-transform group-hover:scale-105" />
             <span className="font-extrabold text-base text-foreground tracking-tight">Edu Zambia</span>
           </Link>
           <div className="hidden md:flex items-center gap-8 text-[13px] text-muted-foreground font-medium">
@@ -257,7 +257,7 @@ const MVPLanding = () => {
       <footer className="border-t border-border/10 py-8 px-4">
         <div className="container mx-auto max-w-5xl flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-2.5">
-            <img src={eduMark} alt="Edu Zambia" className="w-6 h-6 rounded-lg" />
+            <img src={eduMark} alt="Nexus Learning" className="w-6 h-6 rounded-lg" />
             <span className="text-xs">© 2026 Edu Zambia. Made with <Heart className="w-3 h-3 inline text-destructive fill-current" /> in Zambia</span>
           </div>
           <div className="flex items-center gap-6 text-xs">

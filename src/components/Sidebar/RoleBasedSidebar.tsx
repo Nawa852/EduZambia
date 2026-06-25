@@ -40,7 +40,7 @@ export function RoleBasedSidebar() {
           {/* Header */}
           <div className="h-16 flex items-center px-3 border-b border-sidebar-border shrink-0">
             <div className="flex items-center gap-2.5 w-full">
-              <img src={eduIcon} alt="Edu Zambia" className="w-8 h-8 flex-shrink-0" />
+              <img src={eduIcon} alt="Nexus Learning" className="w-8 h-8 flex-shrink-0" />
               {!collapsed && (
                 <div className="flex-1 flex items-center justify-between min-w-0">
                   <span className="font-bold text-sm text-foreground">Edu Zambia</span>

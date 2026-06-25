@@ -55,7 +55,7 @@ export const WelcomeScreen = ({ onRoleSelect }: WelcomeScreenProps) => {
 
               <motion.div className="inline-block mb-6 relative" initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.3 }}>
                 <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
-                  <motion.img src={EduZambiaLogo} alt="Edu Zambia" className="w-28 h-28 mx-auto rounded-2xl" whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }} transition={{ duration: 0.4 }} />
+                  <motion.img src={EduZambiaLogo} alt="Nexus Learning" className="w-28 h-28 mx-auto rounded-2xl" whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }} transition={{ duration: 0.4 }} />
                 </motion.div>
               </motion.div>
               

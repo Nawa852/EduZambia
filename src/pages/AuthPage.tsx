@@ -142,7 +142,7 @@ const AuthPage = () => {
           <div>
             <div className="flex items-center gap-3 mb-12">
               <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm overflow-hidden">
-                <img src={eduIcon} alt="Edu Zambia" className="w-9 h-9" />
+                <img src={eduIcon} alt="Nexus Learning" className="w-9 h-9" />
               </div>
               <span className="text-2xl font-bold">Edu Zambia</span>
             </div>
@@ -166,7 +166,7 @@ const AuthPage = () => {
           <Card className="border-0 shadow-2xl">
             <CardHeader className="text-center pb-2">
               <div className="mx-auto mb-4 w-14 h-14 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-lg lg:hidden overflow-hidden">
-                <img src={eduIcon} alt="Edu Zambia" className="w-10 h-10" />
+                <img src={eduIcon} alt="Nexus Learning" className="w-10 h-10" />
               </div>
               <CardTitle className="text-2xl font-bold">
                 {activeTab === 'login' ? 'Welcome Back' : 'Create Your Account'}

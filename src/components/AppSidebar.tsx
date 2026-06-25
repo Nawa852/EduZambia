@@ -65,7 +65,7 @@ export function AppSidebar() {
           <div className={cn("border-b border-border", collapsed ? "p-3" : "p-4")}>
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center overflow-hidden shadow-lg shadow-primary/20 shrink-0">
-                <img src={EduZambiaLogo} alt="Edu Zambia" className="w-7 h-7" />
+                <img src={EduZambiaLogo} alt="Nexus Learning" className="w-7 h-7" />
               </div>
               {!collapsed && (
                 <div className="flex-1 min-w-0">

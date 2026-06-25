@@ -38,7 +38,7 @@ export const TopNavbar = () => {
         
         {/* Mobile: Logo */}
         <div className="flex items-center gap-2.5 lg:hidden flex-1 min-w-0">
-          <img src={eduMark} alt="Edu Zambia" className="w-7 h-7 shrink-0 rounded-lg shadow-sm" />
+          <img src={eduMark} alt="Nexus Learning" className="w-7 h-7 shrink-0 rounded-lg shadow-sm" />
           <span className="font-bold text-[15px] text-foreground tracking-tight">Edu Zambia</span>
         </div>
 

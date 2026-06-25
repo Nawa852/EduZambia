@@ -44,7 +44,7 @@ const SplashLanding = () => {
             <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-primary/30 to-accent/20 blur-2xl" />
             <img
               src={eduMark}
-              alt="Edu Zambia"
+              alt="Nexus Learning"
               className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-3xl shadow-xl"
             />
           </div>
