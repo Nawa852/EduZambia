@@ -64,6 +64,16 @@ const MedicalCaseLogPage = () => {
         </Dialog>
       </div>
 
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search cases by condition, diagnosis, complaint, notes…"
+          className="pl-9"
+        />
+      </div>
+
       {systemStats.length > 0 && (
         <div className="flex gap-2 flex-wrap">
           <Badge variant={filterSystem === 'all' ? 'default' : 'outline'} className="cursor-pointer" onClick={() => setFilterSystem('all')}>All ({cases.length})</Badge>
