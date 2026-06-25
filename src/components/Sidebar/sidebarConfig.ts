@@ -61,16 +61,26 @@ const studentNavigation: NavGroup[] = [
     label: "Main",
     items: [
       { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
-      { title: "My Learning", url: "/learn", icon: GraduationCap, shortTitle: "Learn", matchPrefixes: ["/course", "/lessons"] },
-      { title: "AI Workspace", url: "/ai", icon: Brain, badge: "AI", shortTitle: "AI" },
-      { title: "Study Hub", url: "/prepare", icon: Calendar, shortTitle: "Study" },
+      { title: "My Learning", url: "/learn", icon: GraduationCap, shortTitle: "Learn", matchPrefixes: ["/course", "/lessons", "/subjects"] },
+      { title: "AI Workspace", url: "/ai", icon: Brain, badge: "AI", shortTitle: "AI", matchPrefixes: ["/ai-chat", "/ai-assistant"] },
+      { title: "Study Hub", url: "/prepare", icon: Calendar, shortTitle: "Study", matchPrefixes: ["/study-planner", "/focus-mode", "/student-notes"] },
       { title: "ECZ Exams", url: "/ecz", icon: FileText, shortTitle: "ECZ" },
+    ],
+  },
+  {
+    label: "Study",
+    items: [
+      { title: "Knowledge Hub", url: "/prepare?tab=notes", icon: FolderOpen, shortTitle: "Knowledge" },
+      { title: "Recent Notes", url: "/prepare?tab=notes", icon: FileText, shortTitle: "Notes" },
+      { title: "Flashcards", url: "/ai?tab=flashcards", icon: Layers, shortTitle: "Cards" },
+      { title: "Tasks & Planner", url: "/prepare?tab=planner", icon: ClipboardCheck, shortTitle: "Tasks" },
+      { title: "Focus Timer", url: "/prepare?tab=focus", icon: Timer, shortTitle: "Focus" },
+      { title: "Smart Tools", url: "/tools", icon: Sparkles, shortTitle: "Tools" },
     ],
   },
   {
     label: "More",
     items: [
-      { title: "Tools & Resources", url: "/tools", icon: Wrench, shortTitle: "Tools" },
       { title: "Free Courses", url: "/free-courses", icon: GraduationCap, shortTitle: "Free", badge: "NEW" },
       { title: "Progress", url: "/progress", icon: BarChart3, shortTitle: "Stats" },
       { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
