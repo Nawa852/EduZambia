@@ -136,24 +136,24 @@ function App() {
               <Route path="/ecz" element={<PG><RoleGuard allow={[...ECZ_ROLES]}><ECZHub /></RoleGuard></PG>} />
               <Route path="/watch" element={<PG><VideoWatchPage /></PG>} />
               <Route path="/watch/:videoId" element={<PG><VideoWatchPage /></PG>} />
-              <Route path="/teach" element={<PG><TeachHub /></PG>} />
-              <Route path="/teacher-notes-repo" element={<PG><TeacherNotesRepoPage /></PG>} />
-              <Route path="/teacher-specialization" element={<PG><TeacherSpecializationPage /></PG>} />
-              <Route path="/teacher-classes" element={<PG><TeacherMyClassesPage /></PG>} />
-              <Route path="/entrepreneur-funding" element={<PG><EntrepreneurFundingPage /></PG>} />
-              <Route path="/entrepreneur-network" element={<PG><EntrepreneurNetworkPage /></PG>} />
-              <Route path="/school-teachers" element={<PG><SchoolAdminTeachersPage /></PG>} />
+              <Route path="/teach" element={<PG><RoleGuard allow={['teacher','institution']}><TeachHub /></RoleGuard></PG>} />
+              <Route path="/teacher-notes-repo" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherNotesRepoPage /></RoleGuard></PG>} />
+              <Route path="/teacher-specialization" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherSpecializationPage /></RoleGuard></PG>} />
+              <Route path="/teacher-classes" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherMyClassesPage /></RoleGuard></PG>} />
+              <Route path="/entrepreneur-funding" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurFundingPage /></RoleGuard></PG>} />
+              <Route path="/entrepreneur-network" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurNetworkPage /></RoleGuard></PG>} />
+              <Route path="/school-teachers" element={<PG><RoleGuard allow={['institution','ministry']}><SchoolAdminTeachersPage /></RoleGuard></PG>} />
               <Route path="/resource-library" element={<PG><ResourceLibraryHubPage /></PG>} />
               <Route path="/my-materials" element={<PG><MyMaterialsPage /></PG>} />
-              <Route path="/family" element={<PG><FamilyHub /></PG>} />
-              <Route path="/ministry" element={<PG><MinistryHub /></PG>} />
-              <Route path="/admin" element={<PG><AdminHub /></PG>} />
-              <Route path="/cybersecurity" element={<PG><CybersecurityHub /></PG>} />
-              <Route path="/cyber-terminal" element={<PG><CyberTerminalSandboxPage /></PG>} />
-              <Route path="/cyber-soc" element={<PG><CyberSOCSimulatorPage /></PG>} />
-              <Route path="/cyber-skills" element={<PG><CyberSkillTreePage /></PG>} />
+              <Route path="/family" element={<PG><RoleGuard allow={['guardian']}><FamilyHub /></RoleGuard></PG>} />
+              <Route path="/ministry" element={<PG><RoleGuard allow={['ministry']}><MinistryHub /></RoleGuard></PG>} />
+              <Route path="/admin" element={<PG><RoleGuard allow={['institution','ministry']}><AdminHub /></RoleGuard></PG>} />
+              <Route path="/cybersecurity" element={<PG><RoleGuard allow={['cybersecurity','student','developer']}><CybersecurityHub /></RoleGuard></PG>} />
+              <Route path="/cyber-terminal" element={<PG><RoleGuard allow={['cybersecurity','student','developer']}><CyberTerminalSandboxPage /></RoleGuard></PG>} />
+              <Route path="/cyber-soc" element={<PG><RoleGuard allow={['cybersecurity','student','developer']}><CyberSOCSimulatorPage /></RoleGuard></PG>} />
+              <Route path="/cyber-skills" element={<PG><RoleGuard allow={['cybersecurity','student','developer']}><CyberSkillTreePage /></RoleGuard></PG>} />
               <Route path="/setup-schedule" element={<PG><SetupSchedulePage /></PG>} />
-              <Route path="/entrepreneur" element={<PG><EntrepreneurHub /></PG>} />
+              <Route path="/entrepreneur" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurHub /></RoleGuard></PG>} />
               <Route path="/ngo" element={<PG><NGOHub /></PG>} />
               <Route path="/video-rooms" element={<PG><VideoRoomsPage /></PG>} />
               <Route path="/groups" element={<PG><StudyGroupsHubPage /></PG>} />
@@ -169,21 +169,22 @@ function App() {
 
               {/* Splash tile hubs */}
               <Route path="/study" element={<PG><StudyHub /></PG>} />
-              <Route path="/medical" element={<PG><MedicalHub /></PG>} />
-              <Route path="/developer" element={<PG><DeveloperHub /></PG>} />
+              <Route path="/medical" element={<PG><RoleGuard allow={['doctor']}><MedicalHub /></RoleGuard></PG>} />
+              <Route path="/developer" element={<PG><RoleGuard allow={['developer']}><DeveloperHub /></RoleGuard></PG>} />
 
               {/* Healthcare tools */}
-              <Route path="/medical-case-simulator" element={<PG><MedicalCaseSimulatorPage /></PG>} />
-              <Route path="/medical-case-log" element={<PG><MedicalCaseLogPage /></PG>} />
-              <Route path="/medical-clinical-notes" element={<PG><MedicalClinicalNotesPage /></PG>} />
-              <Route path="/medical-rotations" element={<PG><MedicalRotationsPage /></PG>} />
-              <Route path="/medical-drug-reference" element={<PG><MedicalDrugReferencePage /></PG>} />
+              <Route path="/medical-case-simulator" element={<PG><RoleGuard allow={['doctor']}><MedicalCaseSimulatorPage /></RoleGuard></PG>} />
+              <Route path="/medical-case-log" element={<PG><RoleGuard allow={['doctor']}><MedicalCaseLogPage /></RoleGuard></PG>} />
+              <Route path="/medical-clinical-notes" element={<PG><RoleGuard allow={['doctor']}><MedicalClinicalNotesPage /></RoleGuard></PG>} />
+              <Route path="/medical-rotations" element={<PG><RoleGuard allow={['doctor']}><MedicalRotationsPage /></RoleGuard></PG>} />
+              <Route path="/medical-drug-reference" element={<PG><RoleGuard allow={['doctor']}><MedicalDrugReferencePage /></RoleGuard></PG>} />
 
               {/* Developer tools */}
-              <Route path="/developer-ide" element={<PG><DeveloperIDEPage /></PG>} />
-              <Route path="/developer-projects" element={<PG><DeveloperProjectsPage /></PG>} />
-              <Route path="/developer-code-review" element={<PG><DeveloperCodeReviewPage /></PG>} />
-              <Route path="/developer-challenges" element={<PG><DeveloperChallengesPage /></PG>} />
+              <Route path="/developer-ide" element={<PG><RoleGuard allow={['developer']}><DeveloperIDEPage /></RoleGuard></PG>} />
+              <Route path="/developer-projects" element={<PG><RoleGuard allow={['developer']}><DeveloperProjectsPage /></RoleGuard></PG>} />
+              <Route path="/developer-code-review" element={<PG><RoleGuard allow={['developer']}><DeveloperCodeReviewPage /></RoleGuard></PG>} />
+              <Route path="/developer-challenges" element={<PG><RoleGuard allow={['developer']}><DeveloperChallengesPage /></RoleGuard></PG>} />
+
 
               {/* Tools & Resources — redirect overlapping tool routes to unified hub */}
               <Route path="/all-tools" element={<Navigate to="/tools" replace />} />
