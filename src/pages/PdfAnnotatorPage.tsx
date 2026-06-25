@@ -161,6 +161,42 @@ export default function PdfAnnotatorPage() {
 
   const removeAnno = (id: string) => setAnnos(a => a.filter(x => x.id !== id));
 
+  async function saveHighlightsToNotes() {
+    if (!user) { toast.error('Please sign in to save notes'); return; }
+    if (annos.length === 0) { toast.error('Add at least one highlight or comment first'); return; }
+    setSavingNote(true);
+    const byPage = annos.reduce<Record<number, Anno[]>>((acc, a) => {
+      (acc[a.page] ||= []).push(a); return acc;
+    }, {});
+    const sortedPages = Object.keys(byPage).map(Number).sort((a, b) => a - b);
+    const html = `
+      <div data-folder="${noteFolder}">
+        <p><strong>Source:</strong> ${fileName} · <em>${annos.length} highlight${annos.length === 1 ? '' : 's'}</em></p>
+        ${sortedPages.map(pg => `
+          <h3>Page ${pg}</h3>
+          <ul>
+            ${byPage[pg].map(a => `
+              <li style="border-left:3px solid ${a.color};padding:4px 8px;margin:4px 0;background:${a.color}22;border-radius:4px">
+                ${a.text ? `<span>${a.text.replace(/</g, '&lt;')}</span>` : '<em style="color:#888">[Highlighted region]</em>'}
+                ${a.note ? `<div style="margin-top:4px;font-size:0.9em"><strong>💬 Note:</strong> ${a.note.replace(/</g, '&lt;')}</div>` : ''}
+              </li>
+            `).join('')}
+          </ul>
+        `).join('')}
+      </div>
+    `;
+    const { error } = await supabase.from('student_notes').insert({
+      user_id: user.id,
+      title: `Highlights · ${fileName.replace(/\.pdf$/i, '')}`,
+      content: html,
+    });
+    setSavingNote(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Highlights saved to your notes');
+    navigate('/student-notes');
+  }
+
+
   return (
     <div className="container mx-auto px-4 lg:px-6 py-6 max-w-7xl">
       <div className="mb-4">
