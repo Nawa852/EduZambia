@@ -8,6 +8,7 @@ import {
   Megaphone, GraduationCap, Trophy, Sparkles, FileText, BookText,
   FlaskConical, Video, ListChecks, ArrowRight,
 } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 
 interface Props { userName: string; }
 
@@ -54,6 +55,21 @@ export function TeacherDashboardV2({ userName }: Props) {
     { label: 'Interactive Simulations', icon: FlaskConical, color: 'bg-purple-50 text-purple-600 dark:bg-purple-500/10' },
     { label: 'Video Lessons', icon: Video, color: 'bg-rose-50 text-rose-600 dark:bg-rose-500/10' },
     { label: 'Question Bank', icon: ClipboardCheck, color: 'bg-cyan-50 text-cyan-600 dark:bg-cyan-500/10' },
+  ];
+
+  const progressSeries = [
+    { week: 'Apr 20', '11A': 68, '10B': 60, '12A': 72, '11B': 58, 'Club': 55 },
+    { week: 'Apr 27', '11A': 72, '10B': 64, '12A': 74, '11B': 62, 'Club': 60 },
+    { week: 'May 4',  '11A': 76, '10B': 68, '12A': 78, '11B': 66, 'Club': 63 },
+    { week: 'May 11', '11A': 79, '10B': 72, '12A': 81, '11B': 70, 'Club': 65 },
+    { week: 'May 18', '11A': 82, '10B': 76, '12A': 85, '11B': 72, 'Club': 68 },
+  ];
+  const progressLines = [
+    { key: '11A', label: 'Gr 11A', color: '#3b82f6' },
+    { key: '10B', label: 'Gr 10B', color: '#10b981' },
+    { key: '12A', label: 'Gr 12A', color: '#f59e0b' },
+    { key: '11B', label: 'Add Math 11B', color: '#8b5cf6' },
+    { key: 'Club', label: 'Math Club', color: '#ef4444' },
   ];
 
   return (
@@ -164,21 +180,62 @@ export function TeacherDashboardV2({ userName }: Props) {
           </div>
         </Card>
 
-        {/* Curriculum Co-Pilot */}
-        <Card className="p-4 rounded-2xl border-border/40 bg-gradient-to-br from-primary/5 via-card to-purple-500/5 relative overflow-hidden">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <h2 className="font-bold">Curriculum Co-Pilot</h2>
-              <Badge className="bg-primary text-primary-foreground text-[9px] h-4">AI</Badge>
-            </div>
-            <button onClick={() => navigate('/ai-lesson-generator')} className="text-xs text-primary font-medium">Generate with AI</button>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Recent Assignments */}
+        <Card className="p-4 rounded-2xl border-border/40">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-bold">Recent Assignments</h2>
+            <button onClick={() => navigate('/assignments')} className="text-xs text-primary font-medium">View all</button>
           </div>
-          <p className="text-xs text-muted-foreground mb-3">
-            Need help with lesson planning? Let Curriculum Co-Pilot create engaging lessons, quizzes, and activities aligned with the ECZ curriculum.
-          </p>
-          <Button onClick={() => navigate('/ai-lesson-generator')} className="rounded-full px-4 h-9 text-xs">Create with Co-Pilot</Button>
-          <div className="absolute -bottom-2 -right-2 text-5xl opacity-40 select-none">🤖</div>
+          <div className="space-y-3">
+            {assignments.map((a) => (
+              <div key={a.title} className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                  <FileText className="w-4 h-4 text-muted-foreground" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold truncate">{a.title}</div>
+                  <div className="text-[11px] text-muted-foreground">{a.grade}</div>
+                </div>
+                <div className="text-right shrink-0">
+                  <div className="text-xs font-bold">{a.score}</div>
+                  <div className="text-[10px] text-emerald-600">Submitted</div>
+                </div>
+              </div>
+            ))}
+            <button onClick={() => navigate('/assignments/new')} className="w-full text-xs text-primary font-medium mt-1 flex items-center justify-center gap-1">
+              <Plus className="w-3.5 h-3.5" /> Create New Assignment
+            </button>
+          </div>
+        </Card>
+
+        {/* Class Progress Overview */}
+        <Card className="p-4 rounded-2xl border-border/40">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-bold">Class Progress Overview</h2>
+            <Badge variant="secondary" className="text-[10px]">This Month</Badge>
+          </div>
+          <div className="h-[200px] -ml-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={progressSeries} margin={{ top: 5, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} vertical={false} />
+                <XAxis dataKey="week" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tickFormatter={(v) => `${v}%`} />
+                <Tooltip contentStyle={{ borderRadius: 12, fontSize: 11, border: '1px solid hsl(var(--border))', background: 'hsl(var(--card))' }} />
+                {progressLines.map((l) => (
+                  <Line key={l.key} type="monotone" dataKey={l.key} stroke={l.color} strokeWidth={2} dot={{ r: 2.5 }} activeDot={{ r: 4 }} name={l.label} />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2 justify-center">
+            {progressLines.map((l) => (
+              <div key={l.key} className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                <span className="w-2.5 h-2.5 rounded-full" style={{ background: l.color }} />
+                {l.label}
+              </div>
+            ))}
+          </div>
         </Card>
       </div>
 
@@ -205,23 +262,41 @@ export function TeacherDashboardV2({ userName }: Props) {
           </div>
         </Card>
 
-        {/* Quick Resources */}
-        <Card className="p-4 rounded-2xl border-border/40">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-bold">Quick Resources</h2>
-            <button onClick={() => navigate('/resource-library')} className="text-xs text-primary font-medium">View all</button>
-          </div>
-          <div className="grid grid-cols-3 gap-2.5">
-            {resources.map((r) => (
-              <button key={r.label} onClick={() => navigate('/resource-library')} className="flex flex-col items-center gap-2 p-2 rounded-xl hover:bg-muted transition-colors">
-                <div className={`w-10 h-10 rounded-xl ${r.color} flex items-center justify-center`}>
-                  <r.icon className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-medium text-center leading-tight">{r.label}</span>
-              </button>
-            ))}
-          </div>
-        </Card>
+        {/* Right column: Co-Pilot + Quick Resources */}
+        <div className="space-y-4">
+          <Card className="p-4 rounded-2xl border-border/40 bg-gradient-to-br from-primary/5 via-card to-purple-500/5 relative overflow-hidden">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <h2 className="font-bold">Curriculum Co-Pilot</h2>
+                <Badge className="bg-primary text-primary-foreground text-[9px] h-4">AI</Badge>
+              </div>
+              <button onClick={() => navigate('/ai-lesson-generator')} className="text-xs text-primary font-medium">Generate with AI</button>
+            </div>
+            <p className="text-xs text-muted-foreground mb-3">
+              Need help with lesson planning? Let Curriculum Co-Pilot create engaging lessons, quizzes, and activities aligned with the ECZ curriculum.
+            </p>
+            <Button onClick={() => navigate('/ai-lesson-generator')} className="rounded-full px-4 h-9 text-xs">Create with Co-Pilot</Button>
+            <div className="absolute -bottom-2 -right-2 text-5xl opacity-40 select-none">🤖</div>
+          </Card>
+
+          <Card className="p-4 rounded-2xl border-border/40">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-bold">Quick Resources</h2>
+              <button onClick={() => navigate('/resource-library')} className="text-xs text-primary font-medium">View all</button>
+            </div>
+            <div className="grid grid-cols-3 gap-2.5">
+              {resources.map((r) => (
+                <button key={r.label} onClick={() => navigate('/resource-library')} className="flex flex-col items-center gap-2 p-2 rounded-xl hover:bg-muted transition-colors">
+                  <div className={`w-10 h-10 rounded-xl ${r.color} flex items-center justify-center`}>
+                    <r.icon className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-medium text-center leading-tight">{r.label}</span>
+                </button>
+              ))}
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   );
