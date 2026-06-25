@@ -59,6 +59,34 @@ export default function UpcomingClassesCard() {
     return `/video-rooms?room=${k.room_code}`;
   };
 
+  const googleCalUrl = (k: Klass) => {
+    const start = k.scheduled_at ? new Date(k.scheduled_at) : new Date();
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const join = joinUrl(k);
+    const absJoin = join.startsWith('http') ? join : `${window.location.origin}${join}`;
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: k.title,
+      dates: `${fmt(start)}/${fmt(end)}`,
+      details: `Live class on Edu Zambia. Join: ${absJoin}`,
+      location: absJoin,
+    });
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  };
+
+  const icsFeedUrl = () => {
+    if (!user) return '';
+    const base = (import.meta.env.VITE_SUPABASE_URL as string) || '';
+    return `${base}/functions/v1/calendar-feed?uid=${user.id}`;
+  };
+
+  const copyFeed = async () => {
+    const u = icsFeedUrl();
+    if (!u) { toast.error('Sign in to get your calendar feed'); return; }
+    try { await navigator.clipboard.writeText(u); toast.success('Subscribe URL copied — paste into Google/Apple Calendar'); } catch { toast.message(u); }
+  };
+
   const display: Klass[] = rooms.length ? rooms : [
     { id: 'demo-1', title: 'Physics · Motion in 2D', scheduled_at: new Date(Date.now() + 60*60*1000).toISOString(), started_at: null, ended_at: null, room_code: 'phys-12', provider: 'jitsi', scope: 'class' },
     { id: 'demo-2', title: 'Biology · Cell Structure', scheduled_at: new Date(Date.now() + 22*60*60*1000).toISOString(), started_at: null, ended_at: null, room_code: 'bio-04', provider: 'jitsi', scope: 'class' },
