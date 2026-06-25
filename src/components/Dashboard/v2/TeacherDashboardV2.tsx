@@ -152,36 +152,7 @@ export function TeacherDashboardV2({ userName }: Props) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Recent Assignments */}
-        <Card className="p-4 rounded-2xl border-border/40">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-bold">Recent Assignments</h2>
-            <button onClick={() => navigate('/assignments')} className="text-xs text-primary font-medium">View all</button>
-          </div>
-          <div className="space-y-3">
-            {assignments.map((a) => (
-              <div key={a.title} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                  <FileText className="w-4 h-4 text-muted-foreground" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold truncate">{a.title}</div>
-                  <div className="text-[11px] text-muted-foreground">{a.grade}</div>
-                </div>
-                <div className="text-right shrink-0">
-                  <div className="text-xs font-bold">{a.score}</div>
-                  <div className="text-[10px] text-emerald-600">Submitted</div>
-                </div>
-              </div>
-            ))}
-            <button onClick={() => navigate('/assignments/new')} className="w-full text-xs text-primary font-medium mt-1 flex items-center justify-center gap-1">
-              <Plus className="w-3.5 h-3.5" /> Create New Assignment
-            </button>
-          </div>
-        </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Recent Assignments */}
         <Card className="p-4 rounded-2xl border-border/40">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-bold">Recent Assignments</h2>
