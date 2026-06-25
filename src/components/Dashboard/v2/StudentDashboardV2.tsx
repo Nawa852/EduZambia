@@ -17,6 +17,8 @@ import { useAuth } from '@/components/Auth/AuthProvider';
 import { useProfile } from '@/hooks/useProfile';
 import { useUserStats } from '@/hooks/useUserStats';
 import { supabase } from '@/integrations/supabase/client';
+import UpcomingClassesCard from '@/components/Dashboard/UpcomingClassesCard';
+import AIShortcutsCard from '@/components/Dashboard/AIShortcutsCard';
 
 interface Props { userName: string; }
 
