@@ -93,6 +93,9 @@ const AssessmentTakingPage = React.lazy(() => import('@/pages/AssessmentTakingPa
 const AssessmentResultsPage = React.lazy(() => import('@/pages/AssessmentResultsPage'));
 const CreateCoursePage = React.lazy(() => import('@/pages/CreateCoursePage'));
 const StudyGroupChatPage = React.lazy(() => import('@/pages/StudyGroupChatPage'));
+const PdfAnnotatorPage = React.lazy(() => import('@/pages/PdfAnnotatorPage'));
+const DocumentScannerPage = React.lazy(() => import('@/pages/DocumentScannerPage'));
+const StudyGroupRoomPage = React.lazy(() => import('@/pages/StudyGroupRoomPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
