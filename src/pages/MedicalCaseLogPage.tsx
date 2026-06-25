@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ClipboardList, Plus, Trash2, Stethoscope } from 'lucide-react';
+import { ClipboardList, Plus, Trash2, Stethoscope, Search } from 'lucide-react';
 import { useClinicalCases } from '@/hooks/useClinicalCases';
 import { toast } from '@/hooks/use-toast';
 
@@ -16,10 +16,14 @@ const OUTCOMES = ['ongoing', 'resolved', 'referred'];
 const MedicalCaseLogPage = () => {
   const { cases, loading, addCase, deleteCase } = useClinicalCases();
   const [filterSystem, setFilterSystem] = useState('all');
+  const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ condition: '', presenting_complaint: '', diagnosis: '', outcome: 'ongoing', body_system: '', notes: '' });
 
-  const filtered = filterSystem === 'all' ? cases : cases.filter(c => c.body_system === filterSystem);
+  const q = query.trim().toLowerCase();
+  const filtered = cases
+    .filter(c => filterSystem === 'all' || c.body_system === filterSystem)
+    .filter(c => !q || [c.condition, c.diagnosis, c.presenting_complaint, c.body_system, c.notes].some(v => (v || '').toLowerCase().includes(q)));
   const systemStats = BODY_SYSTEMS.map(s => ({ name: s, count: cases.filter(c => c.body_system === s).length })).filter(s => s.count > 0);
 
   const handleAdd = async () => {
@@ -58,6 +62,16 @@ const MedicalCaseLogPage = () => {
             </div>
           </DialogContent>
         </Dialog>
+      </div>
+
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search cases by condition, diagnosis, complaint, notes…"
+          className="pl-9"
+        />
       </div>
 
       {systemStats.length > 0 && (
