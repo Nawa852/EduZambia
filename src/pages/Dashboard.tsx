@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useProfile } from '@/hooks/useProfile';
-import { StudentDashboardView } from '@/components/Dashboard/StudentDashboardView';
-import { TeacherDashboardView } from '@/components/Dashboard/TeacherDashboardView';
+import { StudentDashboardV2 } from '@/components/Dashboard/v2/StudentDashboardV2';
+import { TeacherDashboardV2 } from '@/components/Dashboard/v2/TeacherDashboardV2';
+import { EntrepreneurDashboardV2 } from '@/components/Dashboard/v2/EntrepreneurDashboardV2';
+import { SchoolAdminDashboardV2 } from '@/components/Dashboard/v2/SchoolAdminDashboardV2';
 import { GuardianDashboardView } from '@/components/Dashboard/GuardianDashboardView';
-import { InstitutionDashboardView } from '@/components/Dashboard/InstitutionDashboardView';
 import { MedicalDashboardView } from '@/components/Dashboard/MedicalDashboardView';
-import { EntrepreneurDashboardView } from '@/components/Dashboard/EntrepreneurDashboardView';
 import { DeveloperDashboardView } from '@/components/Dashboard/DeveloperDashboardView';
 import SkillsDashboardView from '@/components/Dashboard/SkillsDashboardView';
 import CybersecurityDashboardView from '@/components/Dashboard/CybersecurityDashboardView';
-import { StakeholderBridge } from '@/components/Dashboard/StakeholderBridge';
 import { LogoLoader } from '@/components/UI/LogoLoader';
 import { OnboardingTour } from '@/components/Dashboard/OnboardingTour';
-import { Button } from '@/components/ui/button';
-import { getPrimaryNavigationByRole, roleLabels } from '@/components/Sidebar/sidebarConfig';
-import { ArrowRight } from 'lucide-react';
 
 const Dashboard = () => {
   const { profile, loading } = useProfile();
-  const navigate = useNavigate();
   const [showTour, setShowTour] = useState(false);
 
   useEffect(() => {
@@ -30,10 +24,6 @@ const Dashboard = () => {
     }
   }, [loading, profile]);
 
-  const userName = profile?.full_name || 'Learner';
-  const userType = profile?.role || 'student';
-  const primaryActions = getPrimaryNavigationByRole(userType as string).filter((item) => item.url !== '/dashboard').slice(0, 4);
-
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -42,78 +32,28 @@ const Dashboard = () => {
     );
   }
 
+  const userName = profile?.full_name || 'Learner';
+  const userType = (profile?.role || 'student') as string;
+
   const renderDashboardView = () => {
-    switch (userType as string) {
-      case 'teacher': return <TeacherDashboardView userName={userName} />;
+    switch (userType) {
+      case 'teacher': return <TeacherDashboardV2 userName={userName} />;
       case 'guardian': return <GuardianDashboardView userName={userName} />;
-      case 'institution': return <InstitutionDashboardView userName={userName} />;
+      case 'institution':
+      case 'school_admin': return <SchoolAdminDashboardV2 userName={userName} />;
       case 'doctor': return <MedicalDashboardView userName={userName} />;
-      case 'entrepreneur': return <EntrepreneurDashboardView userName={userName} />;
+      case 'entrepreneur': return <EntrepreneurDashboardV2 userName={userName} />;
       case 'developer': return <DeveloperDashboardView userName={userName} />;
       case 'skills': return <SkillsDashboardView />;
       case 'cybersecurity': return <CybersecurityDashboardView />;
-      default: return <StudentDashboardView userName={userName} />;
+      default: return <StudentDashboardV2 userName={userName} />;
     }
   };
 
-  const greeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
-  };
-
   return (
-    <div className="space-y-4 lg:space-y-5">
+    <div>
       {showTour && <OnboardingTour role={userType} onComplete={() => setShowTour(false)} />}
-      
-      {/* Hero — premium card */}
-      <div className="relative overflow-hidden rounded-2xl bg-card border border-border/20">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-transparent to-accent/[0.03]" />
-        <div className="absolute top-0 right-0 w-[200px] h-[200px] rounded-full bg-primary/[0.04] blur-[80px]" />
-        <div className="relative px-4 py-5 lg:px-6 lg:py-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-[10px] text-primary font-bold uppercase tracking-[0.15em] mb-1.5">
-                {roleLabels[userType as string] || 'Workspace'}
-              </p>
-              <h1 className="text-xl lg:text-2xl font-extrabold text-foreground tracking-tight">
-                {greeting()}, {userName.split(' ')[0]} 👋
-              </h1>
-              <p className="text-[13px] text-muted-foreground mt-1 max-w-sm leading-relaxed">
-                Your workspace is ready. Pick up where you left off.
-              </p>
-            </div>
-
-            {/* Quick actions */}
-            <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1 -mb-1">
-              {primaryActions.map((item) => (
-                <Button
-                  key={item.url}
-                  variant="secondary"
-                  size="sm"
-                  className="gap-1.5 rounded-xl border border-border/20 hover:border-primary/25 hover:bg-primary/5 transition-all whitespace-nowrap shrink-0 h-9 text-xs font-medium shadow-sm"
-                  onClick={() => navigate(item.url)}
-                >
-                  <item.icon className="w-3.5 h-3.5" />
-                  {item.shortTitle ?? item.title}
-                  <ArrowRight className="w-3 h-3 opacity-30" />
-                </Button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-5">
-        <div className="xl:col-span-2">
-          {renderDashboardView()}
-        </div>
-        <div className="space-y-4">
-          <StakeholderBridge role={userType as string} />
-        </div>
-      </div>
+      {renderDashboardView()}
     </div>
   );
 };
