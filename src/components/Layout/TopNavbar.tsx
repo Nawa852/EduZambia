@@ -13,6 +13,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useAuth } from '@/components/Auth/AuthProvider';
 import { useProfile } from '@/hooks/useProfile';
 import { roleLabels } from '@/components/Sidebar/sidebarConfig';
+import { MobileSidebarDrawer } from '@/components/Layout/MobileSidebarDrawer';
 import eduMark from '@/assets/edu-zambia-icon.png';
 
 export const TopNavbar = () => {
@@ -36,10 +37,11 @@ export const TopNavbar = () => {
         {/* Desktop sidebar trigger */}
         <SidebarTrigger className="hidden lg:flex shrink-0 -ml-1 text-muted-foreground hover:text-foreground transition-colors" />
         
-        {/* Mobile: Logo */}
-        <div className="flex items-center gap-2.5 lg:hidden flex-1 min-w-0">
+        {/* Mobile: Drawer trigger + Logo */}
+        <div className="flex items-center gap-1.5 lg:hidden flex-1 min-w-0">
+          <MobileSidebarDrawer />
           <img src={eduMark} alt="Nexus Learning" className="w-7 h-7 shrink-0 rounded-lg shadow-sm" />
-          <span className="font-bold text-[15px] text-foreground tracking-tight">Edu Zambia</span>
+          <span className="font-bold text-[15px] text-foreground tracking-tight truncate">Edu Zambia</span>
         </div>
 
         {/* Desktop: Search center */}
