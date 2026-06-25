@@ -274,7 +274,15 @@ export default function PdfAnnotatorPage() {
 
         <Card className="p-4 rounded-2xl h-fit">
           <div className="font-semibold text-sm mb-3">Annotations ({annos.length})</div>
-          <div className="space-y-2 max-h-[70vh] overflow-y-auto">
+          <div className="mb-3 space-y-1.5">
+            <label className="text-[11px] text-muted-foreground">Save to folder</label>
+            <Input value={noteFolder} onChange={e => setNoteFolder(e.target.value)} className="h-8 text-xs" />
+            <Button size="sm" className="w-full mt-1" onClick={saveHighlightsToNotes} disabled={savingNote || annos.length === 0}>
+              {savingNote ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <NotebookPen className="w-3.5 h-3.5 mr-1.5" />}
+              Save highlights to notes
+            </Button>
+          </div>
+          <div className="space-y-2 max-h-[60vh] overflow-y-auto">
             {annos.length === 0 && <div className="text-xs text-muted-foreground">Drag on the page to highlight or comment.</div>}
             {annos.map(a => (
               <div key={a.id} className="p-2.5 rounded-lg border border-border/40 bg-card">
@@ -282,11 +290,17 @@ export default function PdfAnnotatorPage() {
                   <button onClick={() => setPage(a.page)} className="text-[11px] font-medium text-primary hover:underline">Page {a.page}</button>
                   <button onClick={() => removeAnno(a.id)} className="text-muted-foreground hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
+                {a.text && (
+                  <div className="text-[11px] text-foreground/80 mb-1.5 line-clamp-3 italic" style={{ borderLeft: `3px solid ${a.color}`, paddingLeft: 6 }}>
+                    "{a.text}"
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded" style={{ backgroundColor: a.color }} />
-                  {a.note ? (
+                  <div className="w-4 h-4 rounded shrink-0" style={{ backgroundColor: a.color }} />
+                  {a.note !== undefined ? (
                     <Textarea
                       className="text-xs min-h-[40px] resize-none"
+                      placeholder="Add a note…"
                       value={a.note}
                       onChange={e => setAnnos(prev => prev.map(x => x.id === a.id ? { ...x, note: e.target.value } : x))}
                     />
