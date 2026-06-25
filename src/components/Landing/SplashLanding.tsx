@@ -62,8 +62,8 @@ const SplashLanding = () => {
             <Button asChild size="sm" variant="secondary" className="rounded-full">
               <Link to="/auth?mode=signup">Create account <ArrowRight className="w-4 h-4 ml-1.5" /></Link>
             </Button>
-            <Button onClick={tryDemo} size="sm" variant="ghost" className="rounded-full">
-              <Play className="w-4 h-4 mr-1.5" /> Try demo
+            <Button asChild size="sm" variant="ghost" className="rounded-full">
+              <Link to="/demo"><Play className="w-4 h-4 mr-1.5" /> Try demo</Link>
             </Button>
           </div>
         </header>
