@@ -893,6 +893,155 @@ export type Database = {
         }
         Relationships: []
       }
+      curriculum_resources: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          is_featured: boolean | null
+          kind: string
+          sort_order: number | null
+          source: string | null
+          thumbnail_url: string | null
+          title: string
+          topic_id: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_featured?: boolean | null
+          kind: string
+          sort_order?: number | null
+          source?: string | null
+          thumbnail_url?: string | null
+          title: string
+          topic_id: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_featured?: boolean | null
+          kind?: string
+          sort_order?: number | null
+          source?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          topic_id?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "curriculum_resources_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "curriculum_topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      curriculum_subjects: {
+        Row: {
+          code: string
+          color: string | null
+          created_at: string
+          description: string | null
+          grade: string
+          icon: string | null
+          id: string
+          name: string
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          grade: string
+          icon?: string | null
+          id?: string
+          name: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          grade?: string
+          icon?: string | null
+          id?: string
+          name?: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      curriculum_topics: {
+        Row: {
+          created_at: string
+          description: string | null
+          difficulty: string | null
+          estimated_minutes: number | null
+          id: string
+          objectives: string[] | null
+          parent_id: string | null
+          sort_order: number | null
+          subject_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          difficulty?: string | null
+          estimated_minutes?: number | null
+          id?: string
+          objectives?: string[] | null
+          parent_id?: string | null
+          sort_order?: number | null
+          subject_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          difficulty?: string | null
+          estimated_minutes?: number | null
+          id?: string
+          objectives?: string[] | null
+          parent_id?: string | null
+          sort_order?: number | null
+          subject_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "curriculum_topics_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "curriculum_topics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "curriculum_topics_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "curriculum_subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cyber_challenges: {
         Row: {
           challenge_name: string
@@ -2227,6 +2376,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          app_block_consent: boolean | null
           avatar_url: string | null
           bio: string | null
           career_interest: string | null
@@ -2236,15 +2386,19 @@ export type Database = {
           education_level: string | null
           exam_target: string | null
           exam_year: number | null
+          favorite_subjects: string[] | null
           full_name: string | null
           grade: string | null
           grades_taught: string[] | null
           guardian_contact: string | null
+          guardian_details: Json | null
           id: string
           institution_name: string | null
           institution_type: string | null
+          learning_goals_detailed: Json | null
           learning_style: string | null
           num_children: number | null
+          onboarding_extras_complete: boolean | null
           phone: string | null
           preferred_language: string | null
           program_of_study: string | null
@@ -2262,6 +2416,7 @@ export type Database = {
           years_experience: number | null
         }
         Insert: {
+          app_block_consent?: boolean | null
           avatar_url?: string | null
           bio?: string | null
           career_interest?: string | null
@@ -2271,15 +2426,19 @@ export type Database = {
           education_level?: string | null
           exam_target?: string | null
           exam_year?: number | null
+          favorite_subjects?: string[] | null
           full_name?: string | null
           grade?: string | null
           grades_taught?: string[] | null
           guardian_contact?: string | null
+          guardian_details?: Json | null
           id: string
           institution_name?: string | null
           institution_type?: string | null
+          learning_goals_detailed?: Json | null
           learning_style?: string | null
           num_children?: number | null
+          onboarding_extras_complete?: boolean | null
           phone?: string | null
           preferred_language?: string | null
           program_of_study?: string | null
@@ -2297,6 +2456,7 @@ export type Database = {
           years_experience?: number | null
         }
         Update: {
+          app_block_consent?: boolean | null
           avatar_url?: string | null
           bio?: string | null
           career_interest?: string | null
@@ -2306,15 +2466,19 @@ export type Database = {
           education_level?: string | null
           exam_target?: string | null
           exam_year?: number | null
+          favorite_subjects?: string[] | null
           full_name?: string | null
           grade?: string | null
           grades_taught?: string[] | null
           guardian_contact?: string | null
+          guardian_details?: Json | null
           id?: string
           institution_name?: string | null
           institution_type?: string | null
+          learning_goals_detailed?: Json | null
           learning_style?: string | null
           num_children?: number | null
+          onboarding_extras_complete?: boolean | null
           phone?: string | null
           preferred_language?: string | null
           program_of_study?: string | null
@@ -3085,6 +3249,48 @@ export type Database = {
           },
         ]
       }
+      user_materials: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          file_path: string
+          file_size_bytes: number | null
+          file_type: string | null
+          grade: string | null
+          id: string
+          subject: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          file_path: string
+          file_size_bytes?: number | null
+          file_type?: string | null
+          grade?: string | null
+          id?: string
+          subject?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          file_path?: string
+          file_size_bytes?: number | null
+          file_type?: string | null
+          grade?: string | null
+          id?: string
+          subject?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -3142,6 +3348,84 @@ export type Database = {
           updated_at?: string
           user_id?: string
           xp?: number
+        }
+        Relationships: []
+      }
+      user_timetables: {
+        Row: {
+          color: string | null
+          created_at: string
+          day_of_week: number
+          end_time: string
+          id: string
+          is_block_apps: boolean | null
+          location: string | null
+          notes: string | null
+          start_time: string
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          day_of_week: number
+          end_time: string
+          id?: string
+          is_block_apps?: boolean | null
+          location?: string | null
+          notes?: string | null
+          start_time: string
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          is_block_apps?: boolean | null
+          location?: string | null
+          notes?: string | null
+          start_time?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_youtube_channels: {
+        Row: {
+          channel_id: string | null
+          channel_name: string | null
+          channel_url: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          kind: string | null
+          user_id: string
+        }
+        Insert: {
+          channel_id?: string | null
+          channel_name?: string | null
+          channel_url: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          kind?: string | null
+          user_id: string
+        }
+        Update: {
+          channel_id?: string | null
+          channel_name?: string | null
+          channel_url?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          kind?: string | null
+          user_id?: string
         }
         Relationships: []
       }

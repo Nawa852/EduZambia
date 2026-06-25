@@ -33,6 +33,8 @@ const SetupPage = React.lazy(() => import('@/pages/SetupPage'));
 // Lazy: Hub pages
 const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
 const LearnHub = React.lazy(() => import('@/pages/hubs/LearnHub'));
+const CurriculumPage = React.lazy(() => import('@/pages/CurriculumPage'));
+const SetupExtrasPage = React.lazy(() => import('@/pages/SetupExtrasPage'));
 const AIHub = React.lazy(() => import('@/pages/hubs/AIHub'));
 const PrepareHub = React.lazy(() => import('@/pages/hubs/PrepareHub'));
 const ConnectHub = React.lazy(() => import('@/pages/hubs/ConnectHub'));
@@ -131,10 +133,12 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/choose-role" element={<ProtectedRoute><ChooseRolePage /></ProtectedRoute>} />
               <Route path="/setup" element={<ProtectedRoute><SetupPage /></ProtectedRoute>} />
+              <Route path="/setup-extras" element={<ProtectedRoute><SetupExtrasPage /></ProtectedRoute>} />
 
               {/* ─── Hub Pages ─────────────────────────────────── */}
               <Route path="/dashboard" element={<PG><Dashboard /></PG>} />
               <Route path="/learn" element={<PG><LearnHub /></PG>} />
+              <Route path="/curriculum" element={<PG><CurriculumPage /></PG>} />
               <Route path="/ai" element={<PG><AIHub /></PG>} />
               <Route path="/prepare" element={<PG><PrepareHub /></PG>} />
               <Route path="/connect" element={<PG><ConnectHub /></PG>} />

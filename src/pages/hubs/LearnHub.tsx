@@ -1,23 +1,23 @@
 import React from 'react';
 import { HubPageLayout, HubTab } from '@/components/Layout/HubPageLayout';
-import { GraduationCap, BookOpen, Video, Youtube, Tv, Sparkles } from 'lucide-react';
+import { GraduationCap, BookOpen, Video, Tv, Sparkles, Library } from 'lucide-react';
 
 const tabs: HubTab[] = [
+  { id: 'curriculum', label: 'Curriculum', icon: Library, component: React.lazy(() => import('@/pages/CurriculumPage')), badge: 'NEW' },
   { id: 'my-courses', label: 'My Courses', icon: GraduationCap, component: React.lazy(() => import('@/pages/MyCoursesPage')) },
-  { id: 'catalog', label: 'Browse Courses', icon: BookOpen, component: React.lazy(() => import('@/pages/CourseCatalogPage')) },
+  { id: 'catalog', label: 'Browse', icon: BookOpen, component: React.lazy(() => import('@/pages/CourseCatalogPage')) },
   { id: 'lessons', label: 'Lessons', icon: Sparkles, component: React.lazy(() => import('@/pages/LessonsPage')) },
-  { id: 'videos', label: 'Video Library', icon: Video, component: React.lazy(() => import('@/pages/VideoLearningPage')) },
-  { id: 'youtube', label: 'YouTube', icon: Youtube, component: React.lazy(() => import('@/pages/YouTubeLearningPage')) },
+  { id: 'videos', label: 'Videos', icon: Video, component: React.lazy(() => import('@/pages/VideoLearningPage')) },
   { id: 'live', label: 'Live Classes', icon: Tv, component: React.lazy(() => import('@/pages/LiveLearningPage')), badge: 'LIVE' },
 ];
 
 const LearnHub = () => (
   <HubPageLayout
     title="Learning Hub"
-    subtitle="All your courses, lessons, and learning resources in one place."
+    subtitle="Curriculum, courses, lessons and live classes — all in one place."
     icon={GraduationCap}
     tabs={tabs}
-    defaultTab="my-courses"
+    defaultTab="curriculum"
     quickLinks={[
       { label: 'AI Tutor', href: '/ai?tab=tutor', icon: Sparkles },
       { label: 'ECZ Papers', href: '/ecz?tab=papers', icon: BookOpen },
