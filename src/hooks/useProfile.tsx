@@ -148,7 +148,7 @@ export const useProfile = () => {
 
       if (data) {
         const role = toAppRole(data.role);
-        setProfile({
+        const next: Profile = {
           ...data,
           role,
           email: user.email,
@@ -156,8 +156,10 @@ export const useProfile = () => {
           grade_level: data.grade,
           onboarding_completed: !!data.full_name,
           device_setup_complete: data.device_setup_complete ?? false,
-        });
+        };
+        setProfile(next);
         localStorage.setItem('edu-zambia-user-type', role);
+        try { localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify(next)); } catch {}
       }
     } catch (err) {
       console.error('Profile fetch error:', err);
@@ -165,6 +167,7 @@ export const useProfile = () => {
       setLoading(false);
     }
   }, [user]);
+
 
   useEffect(() => {
     fetchProfile();
