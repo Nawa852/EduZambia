@@ -226,6 +226,10 @@ export default function PdfAnnotatorPage() {
             <Button size="sm" variant="ghost" onClick={() => setScale(s => Math.max(0.5, s - 0.25))}>−</Button>
             <Button size="sm" variant="ghost" onClick={() => setScale(s => Math.min(3, s + 0.25))}>+</Button>
             <div className="flex-1" />
+            <Button size="sm" variant="outline" onClick={saveHighlightsToNotes} disabled={savingNote || annos.length === 0}>
+              {savingNote ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <NotebookPen className="w-3.5 h-3.5 mr-1.5" />}
+              Save to Notes
+            </Button>
             <Button size="sm" onClick={exportPdf}><Download className="w-3.5 h-3.5 mr-1.5" /> Export</Button>
           </div>
 
