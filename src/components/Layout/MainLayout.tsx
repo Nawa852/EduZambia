@@ -4,6 +4,8 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { RoleBasedSidebar } from '@/components/Sidebar/RoleBasedSidebar';
 import { TopNavbar } from '@/components/Layout/TopNavbar';
 import { MobileBottomNav } from '@/components/Layout/MobileBottomNav';
+import { TeacherQuickActionsBar } from '@/components/Layout/TeacherQuickActionsBar';
+
 import { ScrollToTop } from '@/components/UI/ScrollToTop';
 import { QuickNoteButton } from '@/components/UI/QuickNoteButton';
 import { useSecurityAlerts } from '@/hooks/useSecurityAlerts';
