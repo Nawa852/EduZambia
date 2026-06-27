@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import {
-  BookOpen, Search, ArrowRight, Layers, CheckCircle, Clock, Play
+  BookOpen, Search, ArrowRight, Layers, CheckCircle, Clock, Play, Flame, Sparkles, Trophy, Zap
 } from 'lucide-react';
 
 interface EnrolledCourse {
@@ -130,6 +130,16 @@ const MyCoursesPage = () => {
             const pct = course.lesson_count > 0 ? (course.completed_count / course.lesson_count) * 100 : 0;
             const gradient = subjectColors[course.subject || ''] || 'from-primary to-accent';
             const isComplete = pct >= 100;
+            const stageBadge = isComplete
+              ? { label: 'Complete', icon: Trophy, cls: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' }
+              : pct >= 75
+                ? { label: 'Almost there', icon: Flame, cls: 'bg-orange-500/10 text-orange-600 border-orange-500/20' }
+                : pct >= 25
+                  ? { label: 'In progress', icon: Zap, cls: 'bg-blue-500/10 text-blue-600 border-blue-500/20' }
+                  : pct > 0
+                    ? { label: 'Just started', icon: Sparkles, cls: 'bg-violet-500/10 text-violet-600 border-violet-500/20' }
+                    : { label: 'Not started', icon: Play, cls: 'bg-muted text-muted-foreground border-border' };
+            const StageIcon = stageBadge.icon;
             return (
               <motion.div key={course.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
                 <Card
@@ -146,9 +156,12 @@ const MyCoursesPage = () => {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">{course.title}</h3>
-                          {isComplete && <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 text-[10px]">Complete</Badge>}
+                          <Badge className={`${stageBadge.cls} text-[10px] gap-1 border`}>
+                            <StageIcon className="w-3 h-3" />
+                            {stageBadge.label}
+                          </Badge>
                         </div>
                         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-2">
                           {course.subject && <Badge variant="secondary" className="text-[10px]">{course.subject}</Badge>}
@@ -160,7 +173,19 @@ const MyCoursesPage = () => {
                           <span className="text-xs font-medium text-muted-foreground">{Math.round(pct)}%</span>
                         </div>
                       </div>
-                      <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
+                      <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                        {!isComplete && (
+                          <Button
+                            size="sm"
+                            className="h-8 rounded-full text-xs gap-1.5 shadow-sm"
+                            onClick={(e) => { e.stopPropagation(); navigate(`/course/${course.id}?resume=1`); }}
+                          >
+                            <Play className="w-3 h-3" />
+                            {pct > 0 ? 'Resume' : 'Start'}
+                          </Button>
+                        )}
+                        <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
