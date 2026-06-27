@@ -78,17 +78,33 @@ export const useProfile = () => {
 
   const fetchProfile = useCallback(async () => {
     if (isDemo) {
+      const demoRole = toAppRole(
+        (typeof window !== 'undefined' && sessionStorage.getItem('demo_role')) || 'student'
+      );
+      const demoNames: Record<AppRole, string> = {
+        student: 'Demo Student',
+        teacher: 'Mrs. Mwansa (Demo Teacher)',
+        guardian: 'Demo Parent',
+        institution: 'Demo School Admin',
+        ministry: 'Demo Ministry Officer',
+        doctor: 'Dr. Chanda (Demo)',
+        entrepreneur: 'Demo Entrepreneur',
+        developer: 'Demo Developer',
+        skills: 'Demo Skills Learner',
+        cybersecurity: 'Demo Security Analyst',
+      };
       setProfile({
         id: 'demo-user',
-        full_name: 'Demo Student',
+        full_name: demoNames[demoRole] || 'Demo User',
         avatar_url: null,
-        role: 'student',
+        role: demoRole,
         bio: null,
         phone: null,
         school: 'Demo School',
         grade: 'Grade 10',
         province: 'Lusaka',
         device_setup_complete: true,
+        onboarding_completed: true,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       });

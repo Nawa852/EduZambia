@@ -50,6 +50,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const exitDemoMode = () => {
     setIsDemo(false);
     localStorage.removeItem('edu-zambia-demo');
+    sessionStorage.removeItem('demo_role');
+    sessionStorage.removeItem('demo_mode');
+    sessionStorage.removeItem('demo_started');
   };
 
   useEffect(() => {
