@@ -18,10 +18,14 @@ const ROLES = [
 
 export default function DemoRolePicker() {
   const navigate = useNavigate();
+  const { enterDemoMode } = useAuth();
   const pick = (id: string) => {
     sessionStorage.setItem('demo_role', id);
     sessionStorage.setItem('demo_mode', '1');
     sessionStorage.setItem('demo_started', Date.now().toString());
+    localStorage.setItem('edu-zambia-user-type', id);
+    localStorage.setItem('edu-zambia-onboarding-completed', 'true');
+    enterDemoMode();
     const map: Record<string, string> = {
       student: '/dashboard?demo=1&tour=1',
       teacher: '/teach?demo=1&tour=1',
