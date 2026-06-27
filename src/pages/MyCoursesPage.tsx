@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import {
-  BookOpen, Search, ArrowRight, Layers, CheckCircle, Clock, Play
+  BookOpen, Search, ArrowRight, Layers, CheckCircle, Clock, Play, Flame, Sparkles, Trophy, Zap
 } from 'lucide-react';
 
 interface EnrolledCourse {
