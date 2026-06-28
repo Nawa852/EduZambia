@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { lovable } from '@/integrations/lovable';
 import { Mail, Lock, User, BookOpen } from 'lucide-react';
 
 const SimpleAuthPage = () => {
@@ -36,8 +37,8 @@ const SimpleAuthPage = () => {
 
   const handleGoogleAuth = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } });
-      if (error) throw error;
+      const result = await lovable.auth.signInWithOAuth('google', { redirect_uri: window.location.origin });
+      if ((result as any)?.error) throw (result as any).error;
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to sign in with Google", variant: "destructive" });
     }
