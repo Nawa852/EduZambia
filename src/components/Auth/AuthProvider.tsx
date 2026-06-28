@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { lovable } from '@/integrations/lovable';
 
 interface AuthContextType {
   user: User | null;
@@ -139,7 +140,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const signInWithGoogle = async () => {
-    toast.info("Google sign-in has been disabled. Please use email & password.");
+    try {
+      const result = await lovable.auth.signInWithOAuth('google', {
+        redirect_uri: window.location.origin,
+      });
+      if ((result as any)?.error) {
+        toast.error((result as any).error.message || 'Google sign-in failed');
+        return;
+      }
+    } catch (e: any) {
+      toast.error(e?.message || 'Google sign-in failed');
+    }
   };
 
   const signInWithFacebook = async () => {
