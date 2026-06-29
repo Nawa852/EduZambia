@@ -487,6 +487,77 @@ export type Database = {
         }
         Relationships: []
       }
+      class_enrollments: {
+        Row: {
+          class_id: string
+          created_at: string
+          id: string
+          status: string
+          student_id: string
+        }
+        Insert: {
+          class_id: string
+          created_at?: string
+          id?: string
+          status?: string
+          student_id: string
+        }
+        Update: {
+          class_id?: string
+          created_at?: string
+          id?: string
+          status?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_enrollments_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classes: {
+        Row: {
+          color: string | null
+          created_at: string
+          grade: string | null
+          id: string
+          name: string
+          room: string | null
+          schedule: Json | null
+          subject: string | null
+          teacher_id: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          grade?: string | null
+          id?: string
+          name: string
+          room?: string | null
+          schedule?: Json | null
+          subject?: string | null
+          teacher_id: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          grade?: string | null
+          id?: string
+          name?: string
+          room?: string | null
+          schedule?: Json | null
+          subject?: string | null
+          teacher_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       clinical_cases: {
         Row: {
           accuracy_score: number | null
@@ -1456,6 +1527,59 @@ export type Database = {
         }
         Relationships: []
       }
+      generated_quizzes: {
+        Row: {
+          ai_generated: boolean | null
+          class_id: string | null
+          created_at: string
+          difficulty: string | null
+          grade: string | null
+          id: string
+          questions: Json
+          subject: string | null
+          teacher_id: string
+          title: string
+          topic: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_generated?: boolean | null
+          class_id?: string | null
+          created_at?: string
+          difficulty?: string | null
+          grade?: string | null
+          id?: string
+          questions?: Json
+          subject?: string | null
+          teacher_id: string
+          title: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_generated?: boolean | null
+          class_id?: string | null
+          created_at?: string
+          difficulty?: string | null
+          grade?: string | null
+          id?: string
+          questions?: Json
+          subject?: string | null
+          teacher_id?: string
+          title?: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_quizzes_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       grades: {
         Row: {
           course_id: string
@@ -1760,6 +1884,56 @@ export type Database = {
             columns: ["lesson_id"]
             isOneToOne: false
             referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lesson_plans: {
+        Row: {
+          ai_generated: boolean | null
+          class_id: string | null
+          content: Json
+          created_at: string
+          grade: string | null
+          id: string
+          subject: string | null
+          teacher_id: string
+          title: string
+          topic: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_generated?: boolean | null
+          class_id?: string | null
+          content?: Json
+          created_at?: string
+          grade?: string | null
+          id?: string
+          subject?: string | null
+          teacher_id: string
+          title: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_generated?: boolean | null
+          class_id?: string | null
+          content?: Json
+          created_at?: string
+          grade?: string | null
+          id?: string
+          subject?: string | null
+          teacher_id?: string
+          title?: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_plans_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
             referencedColumns: ["id"]
           },
         ]
@@ -2216,6 +2390,45 @@ export type Database = {
           title?: string
           type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      parent_updates: {
+        Row: {
+          ai_generated: boolean | null
+          body: string
+          created_at: string
+          id: string
+          parent_id: string | null
+          read_at: string | null
+          sent_at: string | null
+          student_id: string
+          subject: string
+          teacher_id: string
+        }
+        Insert: {
+          ai_generated?: boolean | null
+          body: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          read_at?: string | null
+          sent_at?: string | null
+          student_id: string
+          subject: string
+          teacher_id: string
+        }
+        Update: {
+          ai_generated?: boolean | null
+          body?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          read_at?: string | null
+          sent_at?: string | null
+          student_id?: string
+          subject?: string
+          teacher_id?: string
         }
         Relationships: []
       }
