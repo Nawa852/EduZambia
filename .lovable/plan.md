@@ -1,69 +1,71 @@
+## Goal
+Ship the full Teacher experience matching the Mrs. Mulenga reference image, wire up Lovable AI edge functions for lesson/quiz/grading/parent updates, and add teacher→student→parent linking with manual rosters + guardian links.
 
+## 1. Fix blocking runtime error
+`ThemeContext` is crashing the whole app (`useState` on null React). Root cause is a Vite dep cache mismatch after recent installs. Clear `.vite` and restart dev server. No code change needed unless it persists; then guard `ThemeProvider` against SSR-style null.
 
-## Plan: Minimize Pages While Maintaining Features
+## 2. Database — connectivity layer (one migration)
+New tables (all with GRANTs + RLS):
+- `classes` — teacher_id, name, grade, subject, room, color
+- `class_enrollments` — class_id, student_id, status
+- `class_invites` — class_id, code (unique), expires_at  *(used internally for roster add-by-code, optional)*
+- `guardian_links` already exists → reuse; add `verified` + RLS policy so parents see linked student progress
+- `parent_updates` — teacher_id, student_id, parent_id, subject, body, generated_by_ai, sent_at
+- `lesson_plans` — teacher_id, class_id, title, topic, grade, content (jsonb), ai_generated
+- `generated_quizzes` — teacher_id, class_id, topic, questions (jsonb), ai_generated
 
-### The Problem
-The app has **300+ routes** and **250+ lazy-loaded pages**, many of which are near-duplicates or micro-features that should be sections within a larger page. This creates confusion, slow load times, and an unmaintainable codebase.
+Helper SQL function `is_classmate_teacher(_class uuid)` for RLS reads.
 
-### Strategy: Consolidate into ~30 Core Pages Using Tabs
+## 3. Edge Functions (Lovable AI Gateway, `google/gemini-3-flash-preview`, streaming where useful)
+- `ai-lesson-plan` — ECZ-aligned, returns structured JSON (objectives, activities, assessment, resources)
+- `ai-quiz-generator` — N questions, difficulty, type (MCQ/short/essay), ECZ topic mapping
+- `ai-grade-assist` — input submission text + rubric → suggested score + feedback
+- `ai-parent-update` — input student stats → friendly bilingual update (English + local language toggle)
+- `ai-curriculum-copilot` — general chat tool for teachers (streaming, SSE)
+- `ai-attendance-insight` — flags at-risk students from attendance/grade patterns
 
-Instead of hundreds of standalone pages, each role gets a small set of **hub pages** with internal tab navigation. Features don't disappear — they become tabs or sections within a hub.
+All with CORS, zod input validation, 429/402 surfacing.
 
-### Proposed Page Structure
+## 4. Teacher pages (pixel-faithful to the reference image)
+Shared `TeacherShell` with left sidebar (TEACHER badge, nav items, school card, achievements card) + top search + date picker, exactly like image.
 
-**Shared (all roles): 8 pages**
-| Page | Absorbs |
-|------|---------|
-| `/dashboard` | smart-dashboard, comprehensive-dashboard, daily-goal-coach |
-| `/learn` | my-courses, course-catalog, lessons, classroom, video-learning, youtube-learning, adaptive-content, live-learning, adaptive-course, adaptive-learning |
-| `/ai` | ai-tutor, multi-ai-tutor, enhanced-ai-tutor, ai-study-buddy, ai-study-helper, ai-study-mentor, comprehensive-ai, study-assistant, ai-exam-prep, ai-content-generator, ai-resource-finder, ai-scheduler, ai-task-manager, ai-feedback, flashcards, mind-maps, teach-back, adaptive-difficulty + ~20 more AI pages |
-| `/prepare` | study-planner, focus-mode, my-notes, goals, journaling, pomodoro, spaced-repetition, reading-list, bookmarks, study-goal-tracker, study-streak |
-| `/connect` | communication-hub, messenger, study-groups, social-feed, community, mentorship, peer-finder, virtual-study-room, competition-arena, knowledge-feed + ~10 more |
-| `/progress` | analytics, achievements, leaderboard, badges, progress-report, smart-recommendations, skill-passport, certificates |
-| `/profile` | profile, settings, personalization, notifications, notification-preferences, data-export, mfa-setup, sessions |
-| `/course/:id` | course detail, assignments, assessments (keep dynamic routes) |
+Pages:
+- `/teacher` — Dashboard: 4 stat cards (My Classes, Students, Assignments, Avg Progress), My Classes list with progress bars + colored subject icons, Today's Schedule timeline with room chips, Recent Assignments, Class Progress Overview chart (recharts multi-line), School Announcements, Curriculum Co-Pilot AI panel, Quick Resources grid, bottom Quick Actions bar
+- `/teacher/classes` — class cards grid + roster management (add students by email/search, generate invite code)
+- `/teacher/classes/:id` — roster, attendance shortcut, gradebook shortcut, AI lesson plan/quiz buttons
+- `/teacher/lessons` — list + AI generator panel (streaming) + save to lesson_plans
+- `/teacher/assignments` — list + create + AI quiz generator integration
+- `/teacher/gradebook` — table per class with AI grade-assist on each submission
+- `/teacher/students` — directory with linked guardians, "Send AI Update to Parent" action
+- `/teacher/attendance` — daily roster, mark present/absent/late, at-risk AI flag
+- `/teacher/reports` — analytics charts, AI insights summary
+- `/teacher/curriculum-copilot` — full streaming chat using AI Elements (Conversation/Message/PromptInput/Shimmer)
+- `/teacher/resources` — ECZ syllabus, past papers, question bank, video lessons
+- `/teacher/communications` — parent updates inbox/compose with AI draft
 
-**Student-specific: +1 page**
-| `/ecz` | ecz-past-papers, ecz-exam-simulator, ecz-videos, ecz-practice-quiz, ecz-resource-library, zambian-resources + ~20 ECZ sub-pages (all become tabs: Papers, Simulator, Videos, Resources, Community, Lab) |
+UI polish: gradient hero, MD3 cards with soft shadows, rounded-2xl, subject color tokens, animated progress bars, sticky bottom action bar, dark/light parity.
 
-**Teacher-specific: +1 page**
-| `/teach` | courses (manage), create-course, teacher-gradebook, teacher-lesson-plan, teacher-bulk-grades, teacher-analytics, teacher-report-cards, teacher-attendance-qr, teacher-rubric-builder, teacher-announcements, teacher-collaboration |
+## 5. Connectivity flows
+- Teacher → Students: teacher adds students to a class (search by email or invite code). Students see class on their dashboard.
+- Student → Parent: parent requests `guardian_links` row referencing student email; student approves from settings → unlocks parent dashboard view of grades/attendance/AI updates.
+- Teacher → Parent: from `/teacher/students/:id`, "Generate Parent Update" calls `ai-parent-update`, teacher reviews + sends → row in `parent_updates`, parent sees in their dashboard + push notification (existing service).
 
-**Guardian-specific: +1 page**
-| `/family` | parent-children, parent-grades, parent-attendance, parent-progress, parental-controls, screen-time, guardian-homework, guardian-rewards, guardian-activity-feed, guardian-digest, guardian-study-comparison |
+## 6. AI everywhere (sprinkled, not standalone screens)
+- Dashboard: Curriculum Co-Pilot card → opens chat
+- Lessons list: "✨ Generate with AI" FAB
+- Assignments create: "Auto-fill questions with AI" toggle
+- Gradebook row: "AI suggest grade" inline
+- Student detail: "Draft parent update with AI", "Spot at-risk patterns"
+- Attendance: "Explain absence patterns"
 
-**Institution: +1 page**
-| `/admin` | school-admin, admin/users, admin/curriculum, admin/scheduling, admin/analytics, admin/attendance |
+## 7. Verification
+- Deploy all 6 edge functions, curl one each to confirm 200
+- Playwright: login as teacher demo, visit `/teacher`, screenshot, verify hero stats render
+- Typecheck clean
 
-**Ministry: +1 page**
-| `/ministry` | ministry-dashboard + all 25 ministry sub-pages as tabs grouped into: Overview, Schools, Analytics, Policy, Budget, Reports |
+## Out of scope this turn
+- Live class video for teachers (already covered by existing LiveLearningPage)
+- Native mobile teacher build
+- Marketplace integration
 
-**Specialist roles** (doctor, entrepreneur, developer, cybersecurity, skills): **+1 page each** — each role's 5-15 sub-pages become tabs within a single hub page.
-
-**Total: ~20 routable pages** (down from 300+)
-
-### Implementation Steps
-
-1. **Create hub page components** — Each hub (e.g., `AIHub.tsx`) uses a `Tabs` component with the existing sub-components embedded as tab content. No feature code is deleted — components move from being standalone pages to being tab panels.
-
-2. **Rewrite `App.tsx`** — Replace 300+ routes with ~20 hub routes. Old paths redirect to the new hub with a query param (e.g., `/flashcards` → `/ai?tab=flashcards`) for backwards compatibility.
-
-3. **Simplify `sidebarConfig.ts`** — Each role gets 5-7 sidebar items max, pointing to hub pages. No more `matchPrefixes` arrays — each item is one page.
-
-4. **Update navigation components** — TopNavbar workspace strip, MobileBottomNav, and command palette all point to the reduced route set.
-
-5. **Clean up unused lazy imports** — Remove the 250+ `React.lazy` declarations that are no longer needed as standalone routes.
-
-### Technical Details
-
-- Hub pages use `@/components/ui/tabs` with URL-synced tab state via `useSearchParams` so deep-linking works (e.g., `/ai?tab=flashcards`)
-- Existing component files in `src/components/` are preserved and imported into hubs — no feature logic is rewritten
-- Redirect routes use `<Navigate to="/ai?tab=flashcards" replace />` for any bookmarked old URLs
-- Bundle size improves because hub pages can use dynamic `React.lazy` per-tab instead of per-route
-
-### What Users Experience
-- Sidebar: 5-7 clear items instead of 20+
-- Each page feels complete — all related tools in one place
-- Tab navigation within pages is fast (no full page reload)
-- Command palette (Cmd+K) still finds everything by searching tab names
-
+This is roughly 1 migration + 6 edge functions + ~14 page files + 1 shell + ~6 shared components. I'll build in parallel batches.
