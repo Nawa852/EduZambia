@@ -153,6 +153,18 @@ function App() {
               <Route path="/watch" element={<PG><VideoWatchPage /></PG>} />
               <Route path="/watch/:videoId" element={<PG><VideoWatchPage /></PG>} />
               <Route path="/teach" element={<PG><RoleGuard allow={['teacher','institution']}><TeachHub /></RoleGuard></PG>} />
+              {/* New polished Teacher Suite v2 */}
+              <Route path="/teacher" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherDashboardV2 /></RoleGuard></PG>} />
+              <Route path="/teacher/classes" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherClassesPage /></RoleGuard></PG>} />
+              <Route path="/teacher/students" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherStudentsPage /></RoleGuard></PG>} />
+              <Route path="/teacher/lessons" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherLessonsPage /></RoleGuard></PG>} />
+              <Route path="/teacher/copilot" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherCopilotPage /></RoleGuard></PG>} />
+              <Route path="/teacher/assignments" element={<Navigate to="/teach?tab=assignments" replace />} />
+              <Route path="/teacher/gradebook" element={<Navigate to="/gradebook" replace />} />
+              <Route path="/teacher/attendance" element={<Navigate to="/attendance" replace />} />
+              <Route path="/teacher/reports" element={<Navigate to="/teach?tab=analytics" replace />} />
+              <Route path="/teacher/resources" element={<Navigate to="/teach?tab=resources" replace />} />
+              <Route path="/teacher/communications" element={<Navigate to="/communication" replace />} />
               <Route path="/teacher-notes-repo" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherNotesRepoPage /></RoleGuard></PG>} />
               <Route path="/teacher-specialization" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherSpecializationPage /></RoleGuard></PG>} />
               <Route path="/teacher-classes" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherMyClassesPage /></RoleGuard></PG>} />
