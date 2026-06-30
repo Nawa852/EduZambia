@@ -2,29 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useAuth } from '@/components/Auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   GraduationCap, BookOpen, Users, School, Building2,
-  Stethoscope, Rocket, Code, Wrench, Shield, CheckCircle2, ArrowRight
+  Stethoscope, Rocket, Code, Wrench, Shield, CheckCircle2, ArrowRight, ArrowLeft, Sparkles
 } from 'lucide-react';
+import synapseLogo from '@/assets/synapse-logo.png';
 import type { Database } from '@/integrations/supabase/types';
 
 type AppRole = Database['public']['Enums']['app_role'];
 
-const roles: { value: AppRole; label: string; icon: React.ElementType; description: string; color: string }[] = [
-  { value: 'student', label: 'Student', icon: GraduationCap, description: 'Learn with AI tutors & ECZ resources', color: 'from-blue-500 to-indigo-600' },
-  { value: 'teacher', label: 'Teacher', icon: BookOpen, description: 'Create courses & manage students', color: 'from-emerald-500 to-teal-600' },
-  { value: 'guardian', label: 'Parent / Guardian', icon: Users, description: "Track your child's progress", color: 'from-orange-500 to-amber-600' },
-  { value: 'doctor', label: 'Medical Student', icon: Stethoscope, description: 'Clinical cases & rotations', color: 'from-rose-500 to-pink-600' },
-  { value: 'entrepreneur', label: 'Entrepreneur', icon: Rocket, description: 'Business tools & venture tracking', color: 'from-purple-500 to-violet-600' },
-  { value: 'developer', label: 'Developer', icon: Code, description: 'Code challenges & project builder', color: 'from-cyan-500 to-blue-600' },
-  { value: 'skills', label: 'Skills Training', icon: Wrench, description: 'Vocational & trade skills', color: 'from-yellow-500 to-orange-600' },
-  { value: 'cybersecurity', label: 'Cybersecurity', icon: Shield, description: 'Ethical hacking & CTF labs', color: 'from-red-500 to-rose-600' },
-  { value: 'institution', label: 'School Admin', icon: School, description: 'Manage your institution', color: 'from-slate-500 to-gray-600' },
-  { value: 'ministry', label: 'Ministry / NGO', icon: Building2, description: 'Oversee education programs', color: 'from-green-500 to-emerald-600' },
+const roles: { value: AppRole; label: string; icon: React.ElementType; description: string; color: string; home: string; goals: string[] }[] = [
+  { value: 'student', label: 'Student', icon: GraduationCap, description: 'Learn with AI tutors & ECZ resources', color: 'from-blue-500 to-indigo-600', home: '/dashboard', goals: ['Pass ECZ exams', 'Daily AI tutoring', 'Catch up on subjects', 'Just exploring'] },
+  { value: 'teacher', label: 'Teacher', icon: BookOpen, description: 'Create courses & manage students', color: 'from-emerald-500 to-teal-600', home: '/teacher', goals: ['Plan ECZ lessons with AI', 'Grade faster', 'Track my classes', 'Engage parents'] },
+  { value: 'guardian', label: 'Parent / Guardian', icon: Users, description: "Track your child's progress", color: 'from-orange-500 to-amber-600', home: '/family', goals: ["Monitor my child's progress", 'Talk to teachers', 'Limit screen time', 'Help with homework'] },
+  { value: 'doctor', label: 'Medical Student', icon: Stethoscope, description: 'Clinical cases & rotations', color: 'from-rose-500 to-pink-600', home: '/medical', goals: ['Clinical case practice', 'Drug reference', 'Track rotations', 'Exam prep'] },
+  { value: 'entrepreneur', label: 'Entrepreneur', icon: Rocket, description: 'Business tools & venture tracking', color: 'from-purple-500 to-violet-600', home: '/entrepreneur', goals: ['Build a business plan', 'Find funding', 'Market research', 'Pitch deck'] },
+  { value: 'developer', label: 'Developer', icon: Code, description: 'Code challenges & project builder', color: 'from-cyan-500 to-blue-600', home: '/developer', goals: ['Practice coding', 'AI code review', 'Build a portfolio', 'Hackathons'] },
+  { value: 'skills', label: 'Skills Training', icon: Wrench, description: 'Vocational & trade skills', color: 'from-yellow-500 to-orange-600', home: '/dashboard', goals: ['Learn a trade', 'Get certified', 'Find work', 'Upskill'] },
+  { value: 'cybersecurity', label: 'Cybersecurity', icon: Shield, description: 'Ethical hacking & CTF labs', color: 'from-red-500 to-rose-600', home: '/cybersecurity', goals: ['CTF challenges', 'SOC simulator', 'Skill tree', 'Career prep'] },
+  { value: 'institution', label: 'School Admin', icon: School, description: 'Manage your institution', color: 'from-slate-500 to-gray-600', home: '/admin', goals: ['Manage students', 'Track teachers', 'School analytics', 'Communications'] },
+  { value: 'ministry', label: 'Ministry / NGO', icon: Building2, description: 'Oversee education programs', color: 'from-green-500 to-emerald-600', home: '/ministry', goals: ['Policy tracking', 'School registry', 'Interventions', 'Donor impact'] },
 ];
 
 const ChooseRolePage = () => {
