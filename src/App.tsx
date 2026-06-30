@@ -28,6 +28,8 @@ const ChooseRolePage = React.lazy(() => import('@/pages/ChooseRolePage'));
 const PasswordResetPage = React.lazy(() => import('@/pages/PasswordResetPage'));
 const About = React.lazy(() => import('@/pages/About'));
 const Contact = React.lazy(() => import('@/pages/Contact'));
+const Privacy = React.lazy(() => import('@/pages/Privacy'));
+const Terms = React.lazy(() => import('@/pages/Terms'));
 const SetupPage = React.lazy(() => import('@/pages/SetupPage'));
 
 // Lazy: Hub pages
@@ -139,6 +141,8 @@ function App() {
               <Route path="/password-reset" element={<PasswordResetPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
               <Route path="/demo" element={<DemoRolePicker />} />
               <Route path="/try" element={<DemoRolePicker />} />
               <Route path="/choose-role" element={<ProtectedRoute><ChooseRolePage /></ProtectedRoute>} />
