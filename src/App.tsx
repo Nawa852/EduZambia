@@ -28,6 +28,8 @@ const ChooseRolePage = React.lazy(() => import('@/pages/ChooseRolePage'));
 const PasswordResetPage = React.lazy(() => import('@/pages/PasswordResetPage'));
 const About = React.lazy(() => import('@/pages/About'));
 const Contact = React.lazy(() => import('@/pages/Contact'));
+const Privacy = React.lazy(() => import('@/pages/Privacy'));
+const Terms = React.lazy(() => import('@/pages/Terms'));
 const SetupPage = React.lazy(() => import('@/pages/SetupPage'));
 
 // Lazy: Hub pages
