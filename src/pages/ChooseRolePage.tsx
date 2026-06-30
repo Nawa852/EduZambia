@@ -31,7 +31,10 @@ const roles: { value: AppRole; label: string; icon: React.ElementType; descripti
 ];
 
 const ChooseRolePage = () => {
+  const [step, setStep] = useState<0 | 1 | 2>(0);
   const [selected, setSelected] = useState<AppRole>('student');
+  const [goal, setGoal] = useState<string>('');
+  const [displayName, setDisplayName] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -39,24 +42,31 @@ const ChooseRolePage = () => {
 
   useEffect(() => {
     if (!user) navigate('/auth', { replace: true });
+    else if (user.user_metadata?.full_name) setDisplayName(user.user_metadata.full_name);
   }, [user, navigate]);
 
-  const handleContinue = async () => {
+  const activeRole = roles.find(r => r.value === selected)!;
+
+  const handleFinish = async () => {
     if (!user) return;
     setLoading(true);
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ role: selected, updated_at: new Date().toISOString() })
+        .update({
+          role: selected,
+          full_name: displayName || user.user_metadata?.full_name || null,
+          updated_at: new Date().toISOString(),
+        })
         .eq('id', user.id);
-      
       if (error) throw error;
-      
+
       localStorage.setItem('edu-zambia-user-type', selected);
+      if (goal) localStorage.setItem('synapse-primary-goal', goal);
       localStorage.removeItem('edu-zambia-needs-role');
       localStorage.setItem('edu-zambia-show-tour', 'true');
-      toast({ title: 'Role set!', description: `Welcome as ${roles.find(r => r.value === selected)?.label}` });
-      navigate('/dashboard', { replace: true });
+      toast({ title: `Welcome to Synapse${displayName ? `, ${displayName.split(' ')[0]}` : ''}!`, description: `Heading to your ${activeRole.label} workspace.` });
+      navigate(activeRole.home, { replace: true });
     } catch (error: any) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
     } finally {
@@ -65,45 +75,132 @@ const ChooseRolePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center p-4">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl">
-        <Card className="border-0 shadow-2xl">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">How will you use Edu Zambia?</CardTitle>
-            <CardDescription>Choose your role to get a personalized experience. You can change this later in settings.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-              {roles.map((role, i) => (
-                <motion.button
-                  key={role.value}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.04 }}
-                  type="button"
-                  onClick={() => setSelected(role.value)}
-                  className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left ${
-                    selected === role.value
-                      ? 'border-primary bg-primary/5 shadow-md'
-                      : 'border-border hover:border-primary/40 hover:bg-accent/30'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${role.color} flex items-center justify-center shrink-0`}>
-                    <role.icon className="w-5 h-5 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 flex items-center justify-center p-4">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-3xl">
+        <div className="flex flex-col items-center mb-6">
+          <img src={synapseLogo} alt="Synapse Edu Zambia" className="w-20 h-20 rounded-2xl shadow-xl mb-3" />
+          <p className="text-xs font-semibold tracking-widest text-muted-foreground">LEARN · CONNECT · GROW</p>
+        </div>
+
+        <Card className="border-0 shadow-2xl overflow-hidden">
+          <div className="h-1.5 bg-muted">
+            <motion.div className="h-full bg-gradient-to-r from-primary to-accent" animate={{ width: `${((step + 1) / 3) * 100}%` }} />
+          </div>
+
+          <AnimatePresence mode="wait">
+            {step === 0 && (
+              <motion.div key="s0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl font-bold">How will you use Synapse?</CardTitle>
+                  <CardDescription>Pick the role that fits you best — we'll tailor everything around it.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                    {roles.map((role, i) => (
+                      <motion.button
+                        key={role.value}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.03 }}
+                        type="button"
+                        onClick={() => setSelected(role.value)}
+                        className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left ${
+                          selected === role.value
+                            ? 'border-primary bg-primary/5 shadow-md scale-[1.01]'
+                            : 'border-border hover:border-primary/40 hover:bg-accent/30'
+                        }`}
+                      >
+                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${role.color} flex items-center justify-center shrink-0`}>
+                          <role.icon className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm">{role.label}</p>
+                          <p className="text-xs text-muted-foreground truncate">{role.description}</p>
+                        </div>
+                        {selected === role.value && <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />}
+                      </motion.button>
+                    ))}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm">{role.label}</p>
-                    <p className="text-xs text-muted-foreground truncate">{role.description}</p>
+                  <Button onClick={() => setStep(1)} className="w-full" size="lg">
+                    Continue <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </CardContent>
+              </motion.div>
+            )}
+
+            {step === 1 && (
+              <motion.div key="s1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <CardHeader className="text-center">
+                  <div className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br ${activeRole.color} flex items-center justify-center mb-3 shadow-lg`}>
+                    <activeRole.icon className="w-8 h-8 text-white" />
                   </div>
-                  {selected === role.value && <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />}
-                </motion.button>
-              ))}
-            </div>
-            <Button onClick={handleContinue} className="w-full" size="lg" disabled={loading}>
-              {loading ? 'Setting up...' : 'Continue to Dashboard'}
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </CardContent>
+                  <CardTitle className="text-2xl font-bold">What's your #1 goal?</CardTitle>
+                  <CardDescription>As a {activeRole.label.toLowerCase()}, what do you want from Synapse first?</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                    {activeRole.goals.map((g, i) => (
+                      <motion.button
+                        key={g}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.05 }}
+                        type="button"
+                        onClick={() => setGoal(g)}
+                        className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left ${
+                          goal === g
+                            ? 'border-primary bg-primary/5 shadow-md'
+                            : 'border-border hover:border-primary/40 hover:bg-accent/30'
+                        }`}
+                      >
+                        <Sparkles className={`w-4 h-4 shrink-0 ${goal === g ? 'text-primary' : 'text-muted-foreground'}`} />
+                        <span className="font-medium text-sm">{g}</span>
+                        {goal === g && <CheckCircle2 className="w-5 h-5 text-primary ml-auto shrink-0" />}
+                      </motion.button>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setStep(0)} className="gap-2">
+                      <ArrowLeft className="w-4 h-4" /> Back
+                    </Button>
+                    <Button onClick={() => setStep(2)} className="flex-1" size="lg" disabled={!goal}>
+                      Continue <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </motion.div>
+            )}
+
+            {step === 2 && (
+              <motion.div key="s2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl font-bold">What should we call you?</CardTitle>
+                  <CardDescription>One more thing before your personalized workspace opens.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-5">
+                  <div className="space-y-2">
+                    <Label htmlFor="displayName">Your name</Label>
+                    <Input id="displayName" placeholder="e.g. Mwape Banda" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+                  </div>
+
+                  <div className="rounded-xl border bg-muted/30 p-4 text-sm space-y-1">
+                    <p><span className="text-muted-foreground">Role:</span> <span className="font-semibold">{activeRole.label}</span></p>
+                    <p><span className="text-muted-foreground">Goal:</span> <span className="font-semibold">{goal}</span></p>
+                    <p><span className="text-muted-foreground">You'll land in:</span> <span className="font-semibold">{activeRole.home}</span></p>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setStep(1)} className="gap-2">
+                      <ArrowLeft className="w-4 h-4" /> Back
+                    </Button>
+                    <Button onClick={handleFinish} className="flex-1" size="lg" disabled={loading}>
+                      {loading ? 'Setting up…' : <>Enter Synapse <ArrowRight className="w-4 h-4 ml-2" /></>}
+                    </Button>
+                  </div>
+                </CardContent>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Card>
       </motion.div>
     </div>
