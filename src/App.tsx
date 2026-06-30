@@ -139,6 +139,8 @@ function App() {
               <Route path="/password-reset" element={<PasswordResetPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
               <Route path="/demo" element={<DemoRolePicker />} />
               <Route path="/try" element={<DemoRolePicker />} />
               <Route path="/choose-role" element={<ProtectedRoute><ChooseRolePage /></ProtectedRoute>} />
