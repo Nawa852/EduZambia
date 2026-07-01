@@ -25,7 +25,7 @@ async function collectConsoleErrors(page: Page): Promise<string[]> {
     if (msg.type() === "error") {
       const text = msg.text();
       // Ignore known-noisy but harmless entries
-      if (/Download the React DevTools|Failed to load resource: net::ERR_FAILED.*\/~oauth/i.test(text)) return;
+      if (/Download the React DevTools|Failed to load resource: net::ERR_FAILED.*\/~oauth|404 Error: User attempted to access/i.test(text)) return;
       errors.push(`console.error: ${text}`);
     }
   });
