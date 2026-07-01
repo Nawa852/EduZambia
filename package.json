@@ -8,8 +8,13 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:mobile": "playwright test",
+    "test:mobile:ios": "playwright test --project='iPhone 14 (iOS Safari)'",
+    "test:mobile:android": "playwright test --project='Pixel 7 (Android Chrome)'",
+    "test:mobile:report": "playwright show-report"
   },
+
   "dependencies": {
     "@capacitor/cli": "^8.2.0",
     "@capacitor/local-notifications": "^8.0.2",
