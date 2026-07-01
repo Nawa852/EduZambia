@@ -56,6 +56,8 @@ const ChooseRolePage = () => {
         .update({
           role: selected,
           full_name: displayName || user.user_metadata?.full_name || null,
+          study_goals: goal || null,
+          preferred_language: localStorage.getItem('synapse-lang') || 'English',
           updated_at: new Date().toISOString(),
         })
         .eq('id', user.id);
@@ -65,6 +67,7 @@ const ChooseRolePage = () => {
       if (goal) localStorage.setItem('synapse-primary-goal', goal);
       localStorage.removeItem('edu-zambia-needs-role');
       localStorage.setItem('edu-zambia-show-tour', 'true');
+
       toast({ title: `Welcome to Synapse${displayName ? `, ${displayName.split(' ')[0]}` : ''}!`, description: `Heading to your ${activeRole.label} workspace.` });
       navigate(activeRole.home, { replace: true });
     } catch (error: any) {
