@@ -121,18 +121,17 @@ test.describe("Mobile smoke — input glitches", () => {
 });
 
 test.describe("Mobile smoke — client-side routing", () => {
-  test("navigating between routes does not full-reload", async ({ page }) => {
-    await page.goto("/");
-    // Tag the window; if a full reload happens, tag is lost.
+  test("in-app navigation uses pushState (no full reload)", async ({ page }) => {
+    await page.goto("/privacy", { waitUntil: "networkidle" });
+    // Tag AFTER navigation; a subsequent full reload would clear it.
     await page.evaluate(() => ((window as any).__spaTag = "sticky"));
-    await page.goto("/privacy", { waitUntil: "domcontentloaded" });
-    // Direct goto IS a full navigation — instead click an in-app link if available.
-    // Fallback: verify pushState works from JS.
     await page.evaluate(() => history.pushState({}, "", "/terms"));
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(300);
     const tag = await page.evaluate(() => (window as any).__spaTag);
-    expect(tag).toBe("sticky");
+    expect(tag, "pushState triggered a full reload — SPA routing broken").toBe("sticky");
+    expect(page.url()).toContain("/terms");
   });
+
 
   test("unknown route renders a not-found without runtime crash", async ({ page }) => {
     const errors = await collectConsoleErrors(page);
