@@ -17,7 +17,14 @@ export default defineConfig({
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "off",
+    launchOptions: {
+      // Use the sandbox-provided Chromium so tests run without installing browsers.
+      // In CI/local, unset PW_CHROMIUM_EXECUTABLE_PATH to fall back to Playwright's bundled Chromium.
+      executablePath: process.env.PW_CHROMIUM_EXECUTABLE_PATH || "/bin/chromium",
+      args: ["--no-sandbox", "--disable-dev-shm-usage"],
+    },
   },
+
   projects: [
     // NOTE: All projects use Chromium engine with mobile viewport/UA emulation.
     // This catches layout, CSS, routing and input glitches on iOS + Android form factors.
