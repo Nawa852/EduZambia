@@ -19,8 +19,12 @@ export default defineConfig({
     video: "off",
   },
   projects: [
-    { name: "iPhone 14 (iOS Safari)", use: { ...devices["iPhone 14"] } },
+    // NOTE: All projects use Chromium engine with mobile viewport/UA emulation.
+    // This catches layout, CSS, routing and input glitches on iOS + Android form factors.
+    // WebKit engine differences aren't covered here — run WebKit locally via `npx playwright install webkit` if needed.
+    { name: "iPhone 14 (iOS Safari)", use: { ...devices["iPhone 14"], defaultBrowserType: "chromium", browserName: "chromium" } },
     { name: "Pixel 7 (Android Chrome)", use: { ...devices["Pixel 7"] } },
-    { name: "Small phone (iPhone SE)", use: { ...devices["iPhone SE"] } },
+    { name: "Small phone (iPhone SE)", use: { ...devices["iPhone SE"], defaultBrowserType: "chromium", browserName: "chromium" } },
   ],
+
 });
