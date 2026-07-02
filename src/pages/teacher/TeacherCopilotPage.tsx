@@ -95,16 +95,26 @@ export default function TeacherCopilotPage() {
           <CardContent className="p-0">
             <div className="max-h-[60vh] overflow-y-auto p-5 space-y-4">
               {messages.map((m, i) => (
-                <div key={i} className={`flex gap-3 ${m.role === "user" ? "justify-end" : ""}`}>
+                <div key={i} className={`flex gap-2 sm:gap-3 ${m.role === "user" ? "justify-end" : ""}`}>
                   {m.role === "assistant" && (
                     <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-purple-500 grid place-items-center text-white shrink-0">
                       <Bot className="w-4 h-4" />
                     </div>
                   )}
-                  <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                  <div className={`group max-w-[88%] sm:max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm ${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                    <div className="prose prose-sm dark:prose-invert max-w-none break-words">
                       <ReactMarkdown>{m.content || (loading && i === messages.length - 1 ? "…" : "")}</ReactMarkdown>
                     </div>
+                    {m.role === "assistant" && m.content && !(loading && i === messages.length - 1) && (
+                      <div className="mt-2 flex gap-1.5 opacity-70 hover:opacity-100 transition-opacity">
+                        <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => exportMarkdownAsPDF(m.content)}>
+                          <FileDown className="w-3.5 h-3.5 mr-1" /> PDF
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => exportMarkdownAsDOCX(m.content)}>
+                          <FileText className="w-3.5 h-3.5 mr-1" /> DOCX
+                        </Button>
+                      </div>
+                    )}
                   </div>
                   {m.role === "user" && (
                     <div className="w-8 h-8 rounded-lg bg-secondary grid place-items-center shrink-0">
