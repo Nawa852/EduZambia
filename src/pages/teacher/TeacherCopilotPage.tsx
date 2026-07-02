@@ -3,9 +3,10 @@ import { TeacherShell } from "@/components/Teacher/TeacherShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, Send, Loader2, User as UserIcon, Bot } from "lucide-react";
+import { Sparkles, Send, Loader2, User as UserIcon, Bot, FileDown, FileText } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
+import { exportMarkdownAsPDF, exportMarkdownAsDOCX } from "@/utils/exportDocument";
 
 interface Msg { role: "user" | "assistant"; content: string }
 

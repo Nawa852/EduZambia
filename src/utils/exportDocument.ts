@@ -1,0 +1,184 @@
+import jsPDF from "jspdf";
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from "docx";
+import { saveAs } from "file-saver";
+
+// Very small markdown parser sufficient for headings, bold, bullets, and paragraphs.
+function parseBlocks(md: string) {
+  const lines = md.split(/\r?\n/);
+  const blocks: { type: "h1" | "h2" | "h3" | "bullet" | "num" | "p" | "hr" | "blank"; text: string; num?: number }[] = [];
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    if (!line.trim()) { blocks.push({ type: "blank", text: "" }); continue; }
+    if (/^---+$/.test(line)) { blocks.push({ type: "hr", text: "" }); continue; }
+    if (/^###\s+/.test(line)) { blocks.push({ type: "h3", text: line.replace(/^###\s+/, "") }); continue; }
+    if (/^##\s+/.test(line)) { blocks.push({ type: "h2", text: line.replace(/^##\s+/, "") }); continue; }
+    if (/^#\s+/.test(line)) { blocks.push({ type: "h1", text: line.replace(/^#\s+/, "") }); continue; }
+    const bullet = line.match(/^\s*[-*]\s+(.*)/);
+    if (bullet) { blocks.push({ type: "bullet", text: bullet[1] }); continue; }
+    const num = line.match(/^\s*(\d+)\.\s+(.*)/);
+    if (num) { blocks.push({ type: "num", text: num[2], num: parseInt(num[1], 10) }); continue; }
+    blocks.push({ type: "p", text: line.trim() });
+  }
+  return blocks;
+}
+
+function stripInline(t: string) {
+  return t.replace(/\*\*(.+?)\*\*/g, "$1").replace(/\*(.+?)\*/g, "$1").replace(/`(.+?)`/g, "$1");
+}
+
+// ============ Colorful PDF ============
+export function exportMarkdownAsPDF(markdown: string, filename = "synapse-document.pdf") {
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 48;
+  const contentW = pageWidth - margin * 2;
+
+  // Cover header band
+  doc.setFillColor(99, 102, 241); // indigo-500
+  doc.rect(0, 0, pageWidth, 90, "F");
+  doc.setFillColor(139, 92, 246); // violet-500
+  doc.rect(0, 90, pageWidth, 6, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(22);
+  doc.text("Synapse", margin, 50);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(11);
+  doc.text("AI-generated document · " + new Date().toLocaleDateString(), margin, 72);
+
+  let y = 130;
+  const ensureSpace = (needed: number) => {
+    if (y + needed > pageHeight - margin) {
+      doc.addPage();
+      // slim colored top strip on subsequent pages
+      doc.setFillColor(99, 102, 241);
+      doc.rect(0, 0, pageWidth, 6, "F");
+      y = margin;
+    }
+  };
+
+  const blocks = parseBlocks(markdown);
+  for (const b of blocks) {
+    if (b.type === "blank") { y += 8; continue; }
+    if (b.type === "hr") {
+      ensureSpace(20);
+      doc.setDrawColor(226, 232, 240);
+      doc.line(margin, y, pageWidth - margin, y);
+      y += 16;
+      continue;
+    }
+    if (b.type === "h1") {
+      ensureSpace(38);
+      doc.setTextColor(30, 41, 59);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(20);
+      const lines = doc.splitTextToSize(stripInline(b.text), contentW);
+      doc.text(lines, margin, y);
+      y += lines.length * 24 + 6;
+      // accent underline
+      doc.setDrawColor(99, 102, 241);
+      doc.setLineWidth(2);
+      doc.line(margin, y, margin + 60, y);
+      doc.setLineWidth(1);
+      y += 12;
+      continue;
+    }
+    if (b.type === "h2") {
+      ensureSpace(30);
+      doc.setTextColor(79, 70, 229);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(15);
+      const lines = doc.splitTextToSize(stripInline(b.text), contentW);
+      doc.text(lines, margin, y);
+      y += lines.length * 20 + 8;
+      continue;
+    }
+    if (b.type === "h3") {
+      ensureSpace(24);
+      doc.setTextColor(107, 33, 168);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      const lines = doc.splitTextToSize(stripInline(b.text), contentW);
+      doc.text(lines, margin, y);
+      y += lines.length * 16 + 6;
+      continue;
+    }
+    if (b.type === "bullet" || b.type === "num") {
+      doc.setTextColor(51, 65, 85);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      const marker = b.type === "bullet" ? "•" : `${b.num}.`;
+      const lines = doc.splitTextToSize(stripInline(b.text), contentW - 22);
+      ensureSpace(lines.length * 14 + 4);
+      doc.setTextColor(99, 102, 241);
+      doc.text(marker, margin, y);
+      doc.setTextColor(51, 65, 85);
+      doc.text(lines, margin + 18, y);
+      y += lines.length * 14 + 4;
+      continue;
+    }
+    // paragraph
+    doc.setTextColor(30, 41, 59);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    const lines = doc.splitTextToSize(stripInline(b.text), contentW);
+    ensureSpace(lines.length * 14 + 6);
+    doc.text(lines, margin, y);
+    y += lines.length * 14 + 8;
+  }
+
+  // Footer on last page
+  doc.setFontSize(9);
+  doc.setTextColor(148, 163, 184);
+  doc.text("Generated by Synapse · Curriculum Co-Pilot", margin, pageHeight - 24);
+
+  doc.save(filename);
+}
+
+// ============ Rich DOCX ============
+export async function exportMarkdownAsDOCX(markdown: string, filename = "synapse-document.docx") {
+  const blocks = parseBlocks(markdown);
+  const children: Paragraph[] = [];
+
+  children.push(
+    new Paragraph({
+      alignment: AlignmentType.LEFT,
+      children: [new TextRun({ text: "Synapse", bold: true, size: 44, color: "6366F1" })],
+    }),
+    new Paragraph({
+      children: [new TextRun({ text: "AI-generated document · " + new Date().toLocaleDateString(), color: "64748B", size: 20 })],
+      spacing: { after: 240 },
+    })
+  );
+
+  for (const b of blocks) {
+    if (b.type === "blank") { children.push(new Paragraph({ text: "" })); continue; }
+    if (b.type === "hr") { children.push(new Paragraph({ text: "────────────────────────────" })); continue; }
+    if (b.type === "h1") {
+      children.push(new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun({ text: stripInline(b.text), bold: true, color: "1E293B" })] }));
+      continue;
+    }
+    if (b.type === "h2") {
+      children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun({ text: stripInline(b.text), bold: true, color: "4F46E5" })] }));
+      continue;
+    }
+    if (b.type === "h3") {
+      children.push(new Paragraph({ heading: HeadingLevel.HEADING_3, children: [new TextRun({ text: stripInline(b.text), bold: true, color: "6B21A8" })] }));
+      continue;
+    }
+    if (b.type === "bullet") {
+      children.push(new Paragraph({ bullet: { level: 0 }, children: [new TextRun(stripInline(b.text))] }));
+      continue;
+    }
+    if (b.type === "num") {
+      children.push(new Paragraph({ children: [new TextRun({ text: `${b.num}. ${stripInline(b.text)}` })] }));
+      continue;
+    }
+    children.push(new Paragraph({ children: [new TextRun(stripInline(b.text))] }));
+  }
+
+  const doc = new Document({ sections: [{ children }] });
+  const blob = await Packer.toBlob(doc);
+  saveAs(blob, filename);
+}
