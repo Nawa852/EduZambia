@@ -39,8 +39,8 @@ export function TeacherShell({ children, title }: { children: ReactNode; title?:
       {/* Sidebar */}
       <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r bg-card sticky top-0 h-screen">
         <div className="flex items-center gap-2 px-5 h-16 border-b">
-          <div className="w-8 h-8 rounded-lg bg-primary text-primary-foreground grid place-items-center font-bold">EZ</div>
-          <span className="font-semibold">Edu Zambia</span>
+          <img src="/synapse-icon.png" alt="Synapse" className="w-8 h-8 rounded-lg" />
+          <span className="font-semibold">Synapse</span>
         </div>
         <div className="px-5 pt-4">
           <Badge variant="secondary" className="text-[10px] tracking-wider">TEACHER</Badge>
