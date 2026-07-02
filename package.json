@@ -14,7 +14,6 @@
     "test:mobile:android": "playwright test --project='Pixel 7 (Android Chrome)'",
     "test:mobile:report": "playwright show-report"
   },
-
   "dependencies": {
     "@capacitor/cli": "^8.2.0",
     "@capacitor/local-notifications": "^8.0.2",
