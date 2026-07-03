@@ -70,8 +70,8 @@ const studentNavigation: NavGroup[] = [
   {
     label: "Study",
     items: [
-      { title: "Knowledge Hub", url: "/prepare?tab=notes", icon: FolderOpen, shortTitle: "Knowledge" },
-      { title: "Recent Notes", url: "/prepare?tab=notes", icon: FileText, shortTitle: "Notes" },
+      { title: "Knowledge Hub", url: "/prepare?tab=notes", icon: FolderOpen, shortTitle: "Notes" },
+      { title: "Journal", url: "/prepare?tab=journal", icon: BookOpen, shortTitle: "Journal" },
       { title: "Flashcards", url: "/ai?tab=flashcards", icon: Layers, shortTitle: "Cards" },
       { title: "Tasks & Planner", url: "/prepare?tab=planner", icon: ClipboardCheck, shortTitle: "Tasks" },
       { title: "Focus Timer", url: "/prepare?tab=focus", icon: Timer, shortTitle: "Focus" },
@@ -366,8 +366,8 @@ export function getCommandNavigationByRole(role: string): Array<NavItem & { grou
     { title: "Settings", url: "/profile?tab=settings", icon: Settings, group: "Account" },
     { title: "Notifications", url: "/profile?tab=notifications", icon: Bell, group: "Account" },
     { title: "Bookmarks", url: "/prepare?tab=bookmarks", icon: Bookmark, group: "Account" },
-    { title: "Knowledge Hub", url: "/prepare?tab=notes", icon: FolderOpen, group: "Study", shortTitle: "Knowledge" },
-    { title: "Recent Notes", url: "/prepare?tab=notes", icon: FileText, group: "Study", shortTitle: "Notes" },
+    { title: "Knowledge Hub", url: "/prepare?tab=notes", icon: FolderOpen, group: "Study", shortTitle: "Notes" },
+    { title: "Journal", url: "/prepare?tab=journal", icon: BookOpen, group: "Study", shortTitle: "Journal" },
     { title: "Flashcards", url: "/ai?tab=flashcards", icon: Layers, group: "Study", shortTitle: "Cards" },
     { title: "Tasks & Planner", url: "/prepare?tab=planner", icon: ClipboardCheck, group: "Study", shortTitle: "Tasks" },
     { title: "Focus Timer", url: "/prepare?tab=focus", icon: Timer, group: "Study", shortTitle: "Focus" },
