@@ -96,7 +96,7 @@ export function RoleBasedSidebar() {
                       );
 
                       return (
-                        <SidebarMenuItem key={item.url}>
+                        <SidebarMenuItem key={`${item.title}-${item.url}`}>
                           <SidebarMenuButton asChild className="h-auto p-0">
                             {collapsed ? (
                               <Tooltip>
