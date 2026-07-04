@@ -87,11 +87,12 @@ export default function UpcomingClassesCard() {
     try { await navigator.clipboard.writeText(u); toast.success('Subscribe URL copied — paste into Google/Apple Calendar'); } catch { toast.message(u); }
   };
 
-  const display: Klass[] = rooms.length ? rooms : [
+  const demoRooms: Klass[] = [
     { id: 'demo-1', title: 'Physics · Motion in 2D', scheduled_at: new Date(Date.now() + 60*60*1000).toISOString(), started_at: null, ended_at: null, room_code: 'phys-12', provider: 'jitsi', scope: 'class' },
     { id: 'demo-2', title: 'Biology · Cell Structure', scheduled_at: new Date(Date.now() + 22*60*60*1000).toISOString(), started_at: null, ended_at: null, room_code: 'bio-04', provider: 'jitsi', scope: 'class' },
     { id: 'demo-3', title: 'Mathematics · Integration', scheduled_at: new Date(Date.now() + 26*60*60*1000).toISOString(), started_at: null, ended_at: null, room_code: 'math-08', provider: 'jitsi', scope: 'class' },
   ];
+  const display: Klass[] = rooms.length ? rooms : (isDemo ? demoRooms : []);
 
   return (
     <Card className="p-4 lg:p-5 rounded-2xl border-border/40 shadow-sm">
