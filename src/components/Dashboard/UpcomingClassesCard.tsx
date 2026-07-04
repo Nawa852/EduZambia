@@ -111,6 +111,10 @@ export default function UpcomingClassesCard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[0,1,2].map(i => <div key={i} className="h-24 rounded-xl bg-muted/40 animate-pulse" />)}
         </div>
+      ) : display.length === 0 ? (
+        <div className="p-6 text-center text-xs text-muted-foreground">
+          No upcoming classes yet. Schedule one to get started.
+        </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {display.map(k => {
