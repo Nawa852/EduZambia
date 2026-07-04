@@ -43,6 +43,26 @@ const LearningAnalytics = () => {
     { title: "Achievements", value: "15", icon: Award, color: "text-yellow-600", change: "+2" },
   ];
 
+  if (!isDemo) {
+    return (
+      <div className="min-h-screen bg-background p-6">
+        <div className="max-w-3xl mx-auto space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-6 w-6 text-blue-600" />
+                Learning Analytics
+              </CardTitle>
+              <CardDescription>
+                Your analytics will populate as you complete lessons, quizzes and focus sessions. Start studying to see real insights here.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -51,13 +71,14 @@ const LearningAnalytics = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="h-6 w-6 text-blue-600" />
-              Learning Analytics Dashboard
+              Learning Analytics Dashboard <span className="text-xs font-normal text-muted-foreground">(Demo data)</span>
             </CardTitle>
             <CardDescription>
               Track your learning progress and performance insights
             </CardDescription>
           </CardHeader>
         </Card>
+
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
