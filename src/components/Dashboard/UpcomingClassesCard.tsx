@@ -20,7 +20,7 @@ type Klass = {
 
 export default function UpcomingClassesCard() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isDemo } = useAuth();
   const [rooms, setRooms] = useState<Klass[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -87,11 +87,12 @@ export default function UpcomingClassesCard() {
     try { await navigator.clipboard.writeText(u); toast.success('Subscribe URL copied — paste into Google/Apple Calendar'); } catch { toast.message(u); }
   };
 
-  const display: Klass[] = rooms.length ? rooms : [
+  const demoRooms: Klass[] = [
     { id: 'demo-1', title: 'Physics · Motion in 2D', scheduled_at: new Date(Date.now() + 60*60*1000).toISOString(), started_at: null, ended_at: null, room_code: 'phys-12', provider: 'jitsi', scope: 'class' },
     { id: 'demo-2', title: 'Biology · Cell Structure', scheduled_at: new Date(Date.now() + 22*60*60*1000).toISOString(), started_at: null, ended_at: null, room_code: 'bio-04', provider: 'jitsi', scope: 'class' },
     { id: 'demo-3', title: 'Mathematics · Integration', scheduled_at: new Date(Date.now() + 26*60*60*1000).toISOString(), started_at: null, ended_at: null, room_code: 'math-08', provider: 'jitsi', scope: 'class' },
   ];
+  const display: Klass[] = rooms.length ? rooms : (isDemo ? demoRooms : []);
 
   return (
     <Card className="p-4 lg:p-5 rounded-2xl border-border/40 shadow-sm">
@@ -109,6 +110,10 @@ export default function UpcomingClassesCard() {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[0,1,2].map(i => <div key={i} className="h-24 rounded-xl bg-muted/40 animate-pulse" />)}
+        </div>
+      ) : display.length === 0 ? (
+        <div className="p-6 text-center text-xs text-muted-foreground">
+          No upcoming classes yet. Schedule one to get started.
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
