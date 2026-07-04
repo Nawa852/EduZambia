@@ -6,7 +6,8 @@ import { BarChart3, TrendingUp, Clock, Target, Award, Brain } from 'lucide-react
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 
 const LearningAnalytics = () => {
-  const { user } = useAuth();
+  const { user, isDemo } = useAuth();
+
 
   // Mock data for demonstration
   const weeklyProgress = [
