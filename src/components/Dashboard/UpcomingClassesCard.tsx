@@ -20,7 +20,7 @@ type Klass = {
 
 export default function UpcomingClassesCard() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isDemo } = useAuth();
   const [rooms, setRooms] = useState<Klass[]>([]);
   const [loading, setLoading] = useState(true);
 
