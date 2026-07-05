@@ -37,14 +37,24 @@ const AssessmentResultsPage = () => {
 
       const [{ data: asmt }, { data: qs }] = await Promise.all([
         supabase.from('course_assessments').select('*').eq('id', att.assessment_id).single(),
-        supabase.from('assessment_questions').select('*').eq('assessment_id', att.assessment_id).order('order_index'),
+        (supabase.rpc as any)('get_assessment_review', { _attempt_id: attemptId }),
       ]);
       if (asmt) {
         setAssessment(asmt);
         const { data: c } = await supabase.from('courses').select('title').eq('id', asmt.course_id).single();
         setCourse(c?.title || '');
       }
-      setQuestions(qs || []);
+      // Map RPC result to shape expected by the rest of the component
+      setQuestions((qs || []).map((r: any) => ({
+        id: r.question_id,
+        question_text: r.question_text,
+        options: r.options,
+        correct_answer: r.correct_answer,
+        explanation: r.explanation,
+        points: r.points,
+        order_index: r.order_index,
+        difficulty_level: 'medium',
+      })));
       setLoading(false);
     };
     fetch();
