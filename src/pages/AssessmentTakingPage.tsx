@@ -114,82 +114,38 @@ const AssessmentTakingPage = () => {
     if (!user || !assessmentId || submitting) return;
     setSubmitting(true);
 
-    // Calculate score
-    let earnedPoints = 0;
-    let totalPoints = 0;
+    const timeSpent = assessment?.time_limit_minutes
+      ? Math.round(assessment.time_limit_minutes - (timeLeft || 0) / 60)
+      : null;
 
-    questions.forEach(q => {
-      totalPoints += q.points;
-      if (answers[q.id] === q.correct_answer) {
-        earnedPoints += q.points;
-      }
+    const { data: graded, error } = await (supabase.rpc as any)('grade_assessment_attempt', {
+      _assessment_id: assessmentId,
+      _answers: answers,
+      _time_spent_minutes: timeSpent,
     });
 
-    const score = totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 0;
-    const passed = score >= (assessment?.pass_threshold || 70);
-
-    // Get attempt number
-    const { count } = await supabase
-      .from('assessment_attempts')
-      .select('*', { count: 'exact', head: true })
-      .eq('assessment_id', assessmentId)
-      .eq('user_id', user.id);
-
-    // Save attempt
-    const { data: attempt, error } = await supabase.from('assessment_attempts').insert({
-      assessment_id: assessmentId,
-      user_id: user.id,
-      score,
-      total_points: totalPoints,
-      earned_points: earnedPoints,
-      answers,
-      passed,
-      completed_at: new Date().toISOString(),
-      attempt_number: (count || 0) + 1,
-      time_spent_minutes: assessment?.time_limit_minutes 
-        ? Math.round(assessment.time_limit_minutes - (timeLeft || 0) / 60)
-        : null,
-    }).select().single();
-
-    if (error) {
-      toast.error('Failed to save results');
+    if (error || !graded || !graded[0]) {
+      toast.error('Failed to submit assessment');
       setSubmitting(false);
       return;
     }
 
-    setAttemptId(attempt?.id || null);
-    setResults({ score, passed, earnedPoints, totalPoints });
+    const row = graded[0];
+    setAttemptId(row.attempt_id);
+    setResults({
+      score: row.score,
+      passed: row.passed,
+      earnedPoints: row.earned_points,
+      totalPoints: row.total_points,
+    });
     setIsComplete(true);
-
-    // Award XP and coins
-    const xpReward = passed ? 25 + Math.floor(score / 10) : 10;
-    const coinReward = passed ? 15 : 5;
-    await supabase.rpc('award_xp' as any, { p_user_id: user.id, p_xp: xpReward, p_coins: coinReward });
-
-    // Auto-issue certificate on pass
-    if (passed && assessment?.course_id) {
-      const { data: existing } = await supabase
-        .from('certificates')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('course_id', assessment.course_id)
-        .maybeSingle();
-      if (!existing) {
-        await supabase.from('certificates').insert({
-          user_id: user.id,
-          course_id: assessment.course_id,
-        });
-      }
-    }
-
-    toast.success(passed ? '🎉 Assessment passed!' : 'Assessment complete');
+    toast.success(row.passed ? '🎉 Assessment passed!' : 'Assessment complete');
     setSubmitting(false);
 
-    // Navigate to detailed results
-    if (attempt?.id) {
-      navigate(`/assessment-results/${attempt.id}`);
+    if (row.attempt_id) {
+      navigate(`/assessment-results/${row.attempt_id}`);
     }
-  }, [user, assessmentId, questions, answers, assessment, timeLeft, submitting, navigate]);
+  }, [user, assessmentId, answers, assessment, timeLeft, submitting, navigate]);
 
   const currentQuestion = questions[currentIndex];
   const progress = questions.length > 0 ? ((currentIndex + 1) / questions.length) * 100 : 0;
