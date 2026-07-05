@@ -3843,6 +3843,39 @@ export type Database = {
         }
         Relationships: []
       }
+      leaderboard_view: {
+        Row: {
+          current_streak: number | null
+          level: number | null
+          longest_streak: number | null
+          total_focus_minutes: number | null
+          total_lessons_completed: number | null
+          total_quizzes_passed: number | null
+          user_id: string | null
+          xp: number | null
+        }
+        Insert: {
+          current_streak?: number | null
+          level?: number | null
+          longest_streak?: number | null
+          total_focus_minutes?: number | null
+          total_lessons_completed?: number | null
+          total_quizzes_passed?: number | null
+          user_id?: string | null
+          xp?: number | null
+        }
+        Update: {
+          current_streak?: number | null
+          level?: number | null
+          longest_streak?: number | null
+          total_focus_minutes?: number | null
+          total_lessons_completed?: number | null
+          total_quizzes_passed?: number | null
+          user_id?: string | null
+          xp?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       award_xp: {
@@ -3850,8 +3883,80 @@ export type Database = {
         Returns: undefined
       }
       calculate_user_streak: { Args: { p_user_id: string }; Returns: number }
+      get_assessment_review: {
+        Args: { _attempt_id: string }
+        Returns: {
+          correct_answer: string
+          explanation: string
+          options: Json
+          order_index: number
+          points: number
+          question_id: string
+          question_text: string
+        }[]
+      }
+      get_guardian_link_contact: {
+        Args: { _link_id: string }
+        Returns: {
+          email: string
+          phone: string
+        }[]
+      }
       get_mentor_contact_email: {
         Args: { _mentor_id: string }
+        Returns: string
+      }
+      get_my_profile: {
+        Args: never
+        Returns: {
+          app_block_consent: boolean | null
+          avatar_url: string | null
+          bio: string | null
+          career_interest: string | null
+          created_at: string
+          date_of_birth: string | null
+          device_setup_complete: boolean
+          education_level: string | null
+          exam_target: string | null
+          exam_year: number | null
+          favorite_subjects: string[] | null
+          full_name: string | null
+          grade: string | null
+          grades_taught: string[] | null
+          guardian_contact: string | null
+          guardian_details: Json | null
+          id: string
+          institution_name: string | null
+          institution_type: string | null
+          learning_goals_detailed: Json | null
+          learning_style: string | null
+          num_children: number | null
+          onboarding_extras_complete: boolean | null
+          phone: string | null
+          preferred_language: string | null
+          program_of_study: string | null
+          province: string | null
+          relationship_to_child: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          school: string | null
+          study_goals: string | null
+          subjects: string[] | null
+          subjects_taught: string[] | null
+          teacher_qualification: string | null
+          theme_preference: string | null
+          updated_at: string
+          year_of_study: string | null
+          years_experience: number | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      get_ngo_partnership_contact: {
+        Args: { _partnership_id: string }
         Returns: string
       }
       get_partner_school_contact: {
@@ -3862,6 +3967,20 @@ export type Database = {
         }[]
       }
       get_platform_stats: { Args: never; Returns: Json }
+      grade_assessment_attempt: {
+        Args: {
+          _answers: Json
+          _assessment_id: string
+          _time_spent_minutes?: number
+        }
+        Returns: {
+          attempt_id: string
+          earned_points: number
+          passed: boolean
+          score: number
+          total_points: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
