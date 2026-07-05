@@ -134,7 +134,7 @@ export const useProfile = () => {
           });
 
         if (!insertError) {
-          const retry = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
+          const retry = await (supabase.rpc as any)('get_my_profile').maybeSingle();
           data = retry.data;
           error = retry.error;
         }
