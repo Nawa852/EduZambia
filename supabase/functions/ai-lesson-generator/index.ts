@@ -50,7 +50,6 @@ Make it practical, engaging, and fully aligned with the ECZ curriculum.`;
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        stream: true,
       }),
     });
 
@@ -72,8 +71,10 @@ Make it practical, engaging, and fully aligned with the ECZ curriculum.`;
       });
     }
 
-    return new Response(response.body, {
-      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
+    const json = await response.json();
+    const lessonPlan = json?.choices?.[0]?.message?.content ?? "";
+    return new Response(JSON.stringify({ lessonPlan }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
     console.error("ai-lesson-generator error:", e);
