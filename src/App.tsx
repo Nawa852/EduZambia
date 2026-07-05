@@ -31,6 +31,7 @@ const Contact = React.lazy(() => import('@/pages/Contact'));
 const Privacy = React.lazy(() => import('@/pages/Privacy'));
 const Terms = React.lazy(() => import('@/pages/Terms'));
 const SetupPage = React.lazy(() => import('@/pages/SetupPage'));
+const OAuthConsent = React.lazy(() => import('@/pages/OAuthConsent'));
 
 // Lazy: Hub pages
 const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
@@ -145,6 +146,7 @@ function App() {
               <Route path="/terms" element={<Terms />} />
               <Route path="/demo" element={<DemoRolePicker />} />
               <Route path="/try" element={<DemoRolePicker />} />
+              <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
               <Route path="/choose-role" element={<ProtectedRoute><ChooseRolePage /></ProtectedRoute>} />
               <Route path="/setup" element={<ProtectedRoute><SetupPage /></ProtectedRoute>} />
               <Route path="/setup-extras" element={<ProtectedRoute><SetupExtrasPage /></ProtectedRoute>} />
