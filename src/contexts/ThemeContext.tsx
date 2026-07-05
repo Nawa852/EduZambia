@@ -20,9 +20,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemeType>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('edu-zambia-theme') as ThemeType;
-      return saved === 'light' ? 'light' : 'dark';
+      return saved === 'dark' ? 'dark' : 'light';
     }
-    return 'dark';
+    return 'light';
   });
 
   const setTheme = useCallback(async (newTheme: ThemeType) => {
