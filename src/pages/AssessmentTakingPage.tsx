@@ -266,7 +266,7 @@ const AssessmentTakingPage = () => {
                               {userAnswer ? `${userAnswer}: ${q.options[userAnswer]}` : 'Not answered'}
                             </span>
                           </p>
-                          {!isCorrect && (
+                          {!isCorrect && q.correct_answer && (
                             <p className="text-emerald-600">
                               Correct: {q.correct_answer}: {q.options[q.correct_answer]}
                             </p>
