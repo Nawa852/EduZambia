@@ -29,7 +29,7 @@ export const StudyLeaderboard = () => {
         .limit(10);
 
       if (data && data.length > 0) {
-        const userIds = data.map((d) => d.user_id);
+        const userIds = data.map((d: any) => d.user_id);
         const { data: profiles } = await supabase
           .from('profiles')
           .select('id, full_name')
@@ -37,7 +37,7 @@ export const StudyLeaderboard = () => {
 
         const profileMap = new Map(profiles?.map((p) => [p.id, p.full_name]) || []);
         setEntries(
-          data.map((d) => ({
+          data.map((d: any) => ({
             ...d,
             full_name: profileMap.get(d.user_id) || 'Learner',
           }))
