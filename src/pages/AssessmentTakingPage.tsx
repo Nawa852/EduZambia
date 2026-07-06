@@ -65,7 +65,7 @@ const AssessmentTakingPage = () => {
     const fetchData = async () => {
       const [{ data: assessmentData }, { data: questionsData }] = await Promise.all([
         supabase.from('course_assessments').select('*').eq('id', assessmentId).single(),
-        supabase.from('assessment_questions').select('*').eq('assessment_id', assessmentId).order('order_index'),
+        supabase.from('assessment_questions').select('id, assessment_id, question_text, question_type, options, difficulty_level, points, order_index').eq('assessment_id', assessmentId).order('order_index'),
       ]);
 
       if (assessmentData) {
