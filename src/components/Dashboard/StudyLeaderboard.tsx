@@ -24,7 +24,7 @@ export const StudyLeaderboard = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       const { data } = await supabase
-        .from('user_stats')
+        .from('leaderboard_view' as any)
         .select('user_id, xp, total_focus_minutes, current_streak, level')
         .order('xp', { ascending: false })
         .limit(10);
