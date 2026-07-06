@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, Users, ExternalLink, MessageSquare, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
-interface Mentor { id: string; user_id: string | null; name: string; expertise: string | null; bio: string | null; sectors: string[] | null; contact_email: string | null; linkedin_url: string | null; directory_type: string; province: string | null; is_verified: boolean; created_by: string; }
+interface Mentor { id: string; user_id: string | null; name: string; expertise: string | null; bio: string | null; sectors: string[] | null; contact_email?: string | null; linkedin_url: string | null; directory_type: string; province: string | null; is_verified: boolean; created_by: string; }
 
 const PROVINCES = ['Lusaka', 'Copperbelt', 'Central', 'Eastern', 'Northern', 'Southern', 'Western', 'Luapula', 'Muchinga', 'North-Western'];
 
