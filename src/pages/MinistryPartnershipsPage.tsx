@@ -36,7 +36,7 @@ const MinistryPartnershipsPage = () => {
   });
 
   const fetchPartnerships = async () => {
-    const { data } = await supabase.from('ngo_partnerships').select('*').order('created_at', { ascending: false });
+    const { data } = await supabase.from('ngo_partnerships').select('id, ngo_name, program_name, focus_area, province, funding_amount, start_date, end_date, status, notes, created_by, created_at, updated_at').order('created_at', { ascending: false });
     if (data) setPartnerships(data as unknown as Partnership[]);
     setLoading(false);
   };

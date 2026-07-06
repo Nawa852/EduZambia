@@ -19,15 +19,14 @@ export const StudentSpotlight = () => {
 
   useEffect(() => {
     const load = async () => {
-      const { data } = await supabase
-        .from('user_stats')
+      const { data } = await (supabase.from('leaderboard_view' as any) as any)
         .select('user_id, xp, total_lessons_completed, current_streak')
         .order('xp', { ascending: false })
         .limit(5);
 
       if (!data?.length) return;
 
-      const userIds = data.map(d => d.user_id);
+      const userIds = data.map((d: any) => d.user_id);
       const { data: profiles } = await supabase
         .from('profiles')
         .select('id, full_name, avatar_url')
@@ -36,7 +35,7 @@ export const StudentSpotlight = () => {
       const profileMap: Record<string, any> = {};
       profiles?.forEach(p => { profileMap[p.id] = p; });
 
-      setStudents(data.map(d => ({
+      setStudents(data.map((d: any) => ({
         id: d.user_id,
         name: profileMap[d.user_id]?.full_name || 'Student',
         avatar: profileMap[d.user_id]?.avatar_url,

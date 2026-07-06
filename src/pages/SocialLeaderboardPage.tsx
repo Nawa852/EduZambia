@@ -60,7 +60,7 @@ const SocialLeaderboardPage = () => {
   const fetchLeaderboard = async () => {
     setLoading(true);
     const orderCol = sortBy === 'xp' ? 'xp' : sortBy === 'streak' ? 'current_streak' : 'total_focus_minutes';
-    const { data: stats } = await (supabase.from('user_stats') as any)
+    const { data: stats } = await (supabase.from('leaderboard_view' as any) as any)
       .select('user_id, xp, level, current_streak, longest_streak, total_focus_minutes, total_lessons_completed, total_quizzes_passed')
       .order(orderCol, { ascending: false })
       .limit(50);

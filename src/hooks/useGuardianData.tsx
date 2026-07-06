@@ -69,7 +69,7 @@ export function useGuardianData() {
       // 1. Get guardian links
       const { data: links, error: linksErr } = await supabase
         .from('guardian_links')
-        .select('*')
+        .select('id, student_id, guardian_id, guardian_name, relationship, mode, status, created_at')
         .eq('guardian_id', user.id)
         .eq('status', 'active');
 
@@ -84,7 +84,7 @@ export function useGuardianData() {
       // 2. Fetch profiles for all linked students
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, full_name, avatar_url, role, school, grade, province')
         .in('id', studentIds);
 
       // 3. Fetch grades for linked students

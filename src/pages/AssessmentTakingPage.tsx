@@ -20,8 +20,8 @@ interface Question {
   id: string;
   question_text: string;
   options: Record<string, string>;
-  correct_answer: string;
-  explanation: string | null;
+  correct_answer?: string;
+  explanation?: string | null;
   difficulty_level: string;
   points: number;
   order_index: number;
@@ -65,7 +65,7 @@ const AssessmentTakingPage = () => {
     const fetchData = async () => {
       const [{ data: assessmentData }, { data: questionsData }] = await Promise.all([
         supabase.from('course_assessments').select('*').eq('id', assessmentId).single(),
-        supabase.from('assessment_questions').select('*').eq('assessment_id', assessmentId).order('order_index'),
+        supabase.from('assessment_questions').select('id, assessment_id, question_text, question_type, options, difficulty_level, points, order_index').eq('assessment_id', assessmentId).order('order_index'),
       ]);
 
       if (assessmentData) {
@@ -266,7 +266,7 @@ const AssessmentTakingPage = () => {
                               {userAnswer ? `${userAnswer}: ${q.options[userAnswer]}` : 'Not answered'}
                             </span>
                           </p>
-                          {!isCorrect && (
+                          {!isCorrect && q.correct_answer && (
                             <p className="text-emerald-600">
                               Correct: {q.correct_answer}: {q.options[q.correct_answer]}
                             </p>

@@ -33,7 +33,7 @@ const LeaderboardPage = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       setLoading(true);
-      const { data: statsData } = await (supabase.from('user_stats') as any)
+      const { data: statsData } = await (supabase.from('leaderboard_view' as any) as any)
         .select('user_id, xp, level, current_streak, total_focus_minutes')
         .order(sortBy === 'xp' ? 'xp' : sortBy === 'streak' ? 'current_streak' : 'total_focus_minutes', { ascending: false })
         .limit(50);

@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, Users, ExternalLink, MessageSquare, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
-interface Mentor { id: string; user_id: string | null; name: string; expertise: string | null; bio: string | null; sectors: string[] | null; contact_email: string | null; linkedin_url: string | null; directory_type: string; province: string | null; is_verified: boolean; created_by: string; }
+interface Mentor { id: string; user_id: string | null; name: string; expertise: string | null; bio: string | null; sectors: string[] | null; contact_email?: string | null; linkedin_url: string | null; directory_type: string; province: string | null; is_verified: boolean; created_by: string; }
 
 const PROVINCES = ['Lusaka', 'Copperbelt', 'Central', 'Eastern', 'Northern', 'Southern', 'Western', 'Luapula', 'Muchinga', 'North-Western'];
 
@@ -25,7 +25,7 @@ export default function MentorDirectoryPage() {
   const [form, setForm] = useState({ name: '', expertise: '', bio: '', contact_email: '', linkedin_url: '', directory_type: 'mentor', province: '', sectors: '' });
 
   const load = async () => {
-    const { data } = await supabase.from('mentors_directory').select('*').order('is_verified', { ascending: false }).order('created_at', { ascending: false });
+    const { data } = await supabase.from('mentors_directory').select('id, user_id, name, expertise, bio, sectors, linkedin_url, directory_type, province, is_verified, created_by, created_at').order('is_verified', { ascending: false }).order('created_at', { ascending: false });
     setList((data as Mentor[]) || []);
   };
   useEffect(() => { load(); }, []);
