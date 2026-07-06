@@ -19,8 +19,7 @@ export const StudentSpotlight = () => {
 
   useEffect(() => {
     const load = async () => {
-      const { data } = await supabase
-        .from('user_stats')
+      const { data } = await (supabase.from('leaderboard_view' as any) as any)
         .select('user_id, xp, total_lessons_completed, current_streak')
         .order('xp', { ascending: false })
         .limit(5);
