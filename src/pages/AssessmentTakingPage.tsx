@@ -20,8 +20,6 @@ interface Question {
   id: string;
   question_text: string;
   options: Record<string, string>;
-  correct_answer: string;
-  explanation: string | null;
   difficulty_level: string;
   points: number;
   order_index: number;
