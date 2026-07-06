@@ -47,7 +47,7 @@ const ParentChildrenPage = () => {
     if (!user) return;
     const { data } = await supabase
       .from('guardian_links')
-      .select('*')
+      .select('id, student_id, guardian_id, guardian_name, relationship, mode, status, created_at')
       .eq('guardian_id', user.id)
       .order('created_at', { ascending: false });
     setLinks((data as any) || []);
