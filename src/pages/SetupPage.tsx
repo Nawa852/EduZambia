@@ -5,6 +5,9 @@ import { LogoLoader } from '@/components/UI/LogoLoader';
 import StudentOnboardingWizard from '@/components/Onboarding/StudentOnboardingWizard';
 import TeacherOnboardingWizard from '@/components/Onboarding/TeacherOnboardingWizard';
 import ParentOnboardingWizard from '@/components/Onboarding/ParentOnboardingWizard';
+import DeveloperOnboardingWizard from '@/components/Onboarding/DeveloperOnboardingWizard';
+import VocationalOnboardingWizard from '@/components/Onboarding/VocationalOnboardingWizard';
+import EntrepreneurOnboardingWizard from '@/components/Onboarding/EntrepreneurOnboardingWizard';
 
 const SetupPage = () => {
   const navigate = useNavigate();
@@ -41,15 +44,20 @@ const SetupPage = () => {
 
   const role = profile?.role || 'student';
 
+  const renderWizard = () => {
+    switch (role) {
+      case 'teacher':      return <TeacherOnboardingWizard onComplete={handleComplete} />;
+      case 'guardian':     return <ParentOnboardingWizard onComplete={handleComplete} />;
+      case 'developer':    return <DeveloperOnboardingWizard onComplete={handleComplete} />;
+      case 'skills':       return <VocationalOnboardingWizard onComplete={handleComplete} />;
+      case 'entrepreneur': return <EntrepreneurOnboardingWizard onComplete={handleComplete} />;
+      default:             return <StudentOnboardingWizard onComplete={handleComplete} />;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 py-8 px-4">
-      {role === 'teacher' ? (
-        <TeacherOnboardingWizard onComplete={handleComplete} />
-      ) : role === 'guardian' ? (
-        <ParentOnboardingWizard onComplete={handleComplete} />
-      ) : (
-        <StudentOnboardingWizard onComplete={handleComplete} />
-      )}
+      {renderWizard()}
     </div>
   );
 };
