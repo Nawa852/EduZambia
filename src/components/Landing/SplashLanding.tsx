@@ -3,30 +3,40 @@ import { useAuth } from '@/components/Auth/AuthProvider';
 import { Button } from '@/components/ui/button';
 import {
   Brain, BookOpen, GraduationCap, Target, Sparkles, Users,
-  Rocket, HeartPulse, Wrench, Compass, ArrowRight, Play, LogIn,
+  Rocket, HeartPulse, Wrench, ArrowRight, Play, LogIn, ShieldCheck, WifiOff, Globe2,
 } from 'lucide-react';
 import eduMark from '@/assets/edu-zambia-icon.png';
 
-// App-launcher style splash. Replaces marketing landing with a clean tool grid.
-type Tile = {
+type Feature = {
   label: string;
   desc: string;
   icon: typeof Brain;
   to: string;
-  gradient: string;
 };
 
-const TILES: Tile[] = [
-  { label: 'AI Tutor',       desc: 'Ask anything, 24/7',            icon: Brain,        to: '/ai',            gradient: 'from-violet-500 to-fuchsia-500' },
-  { label: 'Learn',          desc: 'Courses & lessons',             icon: GraduationCap,to: '/learn',         gradient: 'from-blue-500 to-cyan-500' },
-  { label: 'ECZ Exams',      desc: 'Past papers + mocks',           icon: Target,       to: '/ecz',           gradient: 'from-rose-500 to-orange-500' },
-  { label: 'Free Courses',   desc: 'Harvard · MIT · YC',            icon: Sparkles,     to: '/free-courses',  gradient: 'from-amber-500 to-yellow-500' },
-  { label: 'Study',          desc: 'Focus, notes & quizzes',        icon: BookOpen,     to: '/study',         gradient: 'from-emerald-500 to-teal-500' },
-  { label: 'Community',      desc: 'Groups & messages',             icon: Users,        to: '/connect',       gradient: 'from-pink-500 to-rose-500' },
-  { label: 'Entrepreneur',   desc: 'Build your venture',            icon: Rocket,       to: '/entrepreneur',  gradient: 'from-indigo-500 to-blue-500' },
-  { label: 'Healthcare',     desc: 'Clinical learning',             icon: HeartPulse,   to: '/medical',       gradient: 'from-red-500 to-pink-500' },
-  { label: 'Developer',      desc: 'Code & ship projects',          icon: Wrench,       to: '/developer',     gradient: 'from-slate-600 to-zinc-700' },
-  { label: 'Tools & More',   desc: 'Every Edu Zambia tool',         icon: Compass,      to: '/tools',         gradient: 'from-cyan-500 to-sky-500' },
+const FEATURES: Feature[] = [
+  { label: 'AI Tutor',       desc: 'Ask anything, in English or Bemba, 24/7',   icon: Brain,        to: '/ai' },
+  { label: 'ECZ Exams',      desc: 'Past papers, mocks & predictions',          icon: Target,       to: '/ecz' },
+  { label: 'Learn',          desc: 'Courses, lessons & video library',          icon: GraduationCap,to: '/learn' },
+  { label: 'Free Courses',   desc: 'Harvard, MIT & YC content — free',          icon: Sparkles,     to: '/free-courses' },
+  { label: 'Study',          desc: 'Focus mode, notes & flashcards',            icon: BookOpen,     to: '/study' },
+  { label: 'Community',      desc: 'Study groups, mentors & messaging',         icon: Users,        to: '/connect' },
+  { label: 'Entrepreneur',   desc: 'Build a venture, find funding',             icon: Rocket,       to: '/entrepreneur' },
+  { label: 'Healthcare',     desc: 'Clinical learning for med students',        icon: HeartPulse,   to: '/medical' },
+  { label: 'Developer',      desc: 'Code, AI reviews & ship projects',          icon: Wrench,       to: '/developer' },
+];
+
+const AUDIENCES = [
+  { title: 'Students',      body: 'Grade 1-12, ECZ-aligned. Bemba, Nyanja, Tonga, Lozi.' },
+  { title: 'Teachers',      body: 'Auto-generate lessons, mark faster, track your class.' },
+  { title: 'Parents',       body: 'Real progress reports, screen limits, guardian mode.' },
+  { title: 'Institutions',  body: 'School dashboards, curriculum tools, analytics.' },
+];
+
+const TRUST = [
+  { icon: WifiOff,     label: 'Works offline' },
+  { icon: ShieldCheck, label: 'Child-safe by default' },
+  { icon: Globe2,      label: '5 local languages' },
 ];
 
 const SplashLanding = () => {
@@ -37,66 +47,138 @@ const SplashLanding = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-5xl px-4 pt-10 pb-16 sm:pt-16">
-        {/* Brand header */}
-        <header className="flex flex-col items-center text-center mb-8 sm:mb-12">
-          <div className="relative">
-            <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-primary/30 to-accent/20 blur-2xl" />
-            <img
-              src={eduMark}
-              alt="Nexus Learning"
-              className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-3xl shadow-xl"
-            />
+      {/* Nav */}
+      <header className="border-b border-border/60 bg-background/80 backdrop-blur sticky top-0 z-40">
+        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2">
+            <img src={eduMark} alt="Synapse" className="w-8 h-8 rounded-lg" />
+            <span className="font-bold text-lg">Synapse</span>
+          </Link>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={tryDemo} className="hidden sm:inline-flex">
+              <Play className="w-4 h-4 mr-1.5" /> Try demo
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/login"><LogIn className="w-4 h-4 mr-1.5" /> Sign in</Link>
+            </Button>
+            <Button size="sm" asChild>
+              <Link to="/signup">Get started</Link>
+            </Button>
           </div>
-          <h1 className="mt-5 text-3xl sm:text-4xl font-extrabold tracking-tight">
-            Edu Zambia
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background pointer-events-none" />
+        <div className="relative max-w-6xl mx-auto px-4 pt-16 sm:pt-24 pb-16 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-medium mb-6">
+            <Sparkles className="w-3.5 h-3.5" /> Built for Zambia — ECZ curriculum, offline-ready
+          </div>
+          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight max-w-3xl mx-auto">
+            Learn anything.
+            <span className="block bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Grow anywhere.
+            </span>
           </h1>
-          <p className="mt-2 text-sm sm:text-base text-muted-foreground max-w-md">
-            Your full learning workspace — pick a tool to get started.
+          <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
+            Synapse brings AI tutoring, ECZ exam prep, world-class courses and career tools into one
+            place — for students, teachers, parents and every stakeholder in Zambian education.
           </p>
-
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-            <Button asChild size="sm" className="rounded-full">
-              <Link to="/auth"><LogIn className="w-4 h-4 mr-1.5" /> Sign in</Link>
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Button size="lg" className="h-12 px-6 text-base" asChild>
+              <Link to="/signup">Get started free <ArrowRight className="w-4 h-4 ml-2" /></Link>
             </Button>
-            <Button asChild size="sm" variant="secondary" className="rounded-full">
-              <Link to="/auth?mode=signup">Create account <ArrowRight className="w-4 h-4 ml-1.5" /></Link>
-            </Button>
-            <Button asChild size="sm" variant="ghost" className="rounded-full">
-              <Link to="/demo"><Play className="w-4 h-4 mr-1.5" /> Try demo</Link>
+            <Button size="lg" variant="outline" className="h-12 px-6 text-base" onClick={tryDemo}>
+              <Play className="w-4 h-4 mr-2" /> Try the demo
             </Button>
           </div>
-        </header>
 
-        {/* Launcher grid */}
-        <section aria-label="App launcher" className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-4">
-          {TILES.map((t) => (
-            <Link
-              key={t.label}
-              to={t.to}
-              className="group flex flex-col items-center text-center gap-2 p-2 rounded-2xl hover:bg-muted/50 active:scale-95 transition-all"
-            >
-              <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br ${t.gradient} flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all`}>
-                <t.icon className="w-7 h-7 sm:w-9 sm:h-9 text-white" />
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
+            {TRUST.map(t => (
+              <div key={t.label} className="flex items-center gap-1.5">
+                <t.icon className="w-4 h-4 text-primary" /> {t.label}
               </div>
-              <div>
-                <p className="text-[13px] sm:text-sm font-semibold text-foreground leading-tight">{t.label}</p>
-                <p className="hidden sm:block text-[11px] text-muted-foreground leading-tight mt-0.5">{t.desc}</p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="max-w-6xl mx-auto px-4 py-16 sm:py-20">
+        <div className="text-center mb-10 sm:mb-14">
+          <h2 className="text-3xl sm:text-4xl font-bold">Everything for the whole learning journey</h2>
+          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
+            One account, every tool. Pick what you need — the rest is a tap away.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {FEATURES.map(f => (
+            <Link
+              key={f.label}
+              to={f.to}
+              className="group p-5 rounded-2xl border border-border bg-card hover:bg-accent/40 hover:border-primary/40 transition-all"
+            >
+              <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                <f.icon className="w-5 h-5" />
+              </div>
+              <h3 className="font-semibold text-base">{f.label}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{f.desc}</p>
+              <div className="mt-3 text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                Open <ArrowRight className="w-3 h-3" />
               </div>
             </Link>
           ))}
-        </section>
+        </div>
+      </section>
 
-        {/* Footer */}
-        <footer className="mt-12 text-center text-xs text-muted-foreground space-x-3">
-          <Link to="/about" className="hover:text-foreground">About</Link>
-          <span aria-hidden>·</span>
-          <Link to="/contact" className="hover:text-foreground">Contact</Link>
-          <span aria-hidden>·</span>
-          <Link to="/auth" className="hover:text-foreground">Sign in</Link>
-          <p className="mt-3">Made for Zambian learners 🇿🇲</p>
-        </footer>
-      </div>
+      {/* Audiences */}
+      <section className="bg-muted/30 border-y border-border/60">
+        <div className="max-w-6xl mx-auto px-4 py-16 sm:py-20">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl sm:text-4xl font-bold">Made for everyone in the classroom — and out of it</h2>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {AUDIENCES.map(a => (
+              <div key={a.title} className="p-5 rounded-2xl bg-card border border-border">
+                <h3 className="font-semibold">{a.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{a.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="max-w-4xl mx-auto px-4 py-16 sm:py-24 text-center">
+        <h2 className="text-3xl sm:text-4xl font-bold">Start learning in under a minute</h2>
+        <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
+          Create a free account and pick your path — student, teacher, parent, developer, entrepreneur, or skills learner.
+        </p>
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Button size="lg" className="h-12 px-6 text-base" asChild>
+            <Link to="/signup">Create free account <ArrowRight className="w-4 h-4 ml-2" /></Link>
+          </Button>
+          <Button size="lg" variant="ghost" className="h-12 px-6 text-base" onClick={tryDemo}>
+            Just browse the demo
+          </Button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border/60">
+        <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <img src={eduMark} alt="Synapse" className="w-6 h-6 rounded" />
+            <span>© {new Date().getFullYear()} Synapse. Made in Zambia.</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link to="/about" className="hover:text-foreground">About</Link>
+            <Link to="/contact" className="hover:text-foreground">Contact</Link>
+            <Link to="/login" className="hover:text-foreground">Sign in</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
