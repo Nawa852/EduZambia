@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/components/Auth/AuthProvider';
 import {
   Briefcase, DollarSign, Trophy, Users, TrendingUp, Lightbulb, Target,
   UserPlus, Wallet, Rocket, FileText, BarChart3, Calendar, Plus,
@@ -13,17 +14,23 @@ interface Props { userName: string; }
 
 export function EntrepreneurDashboardV2({ userName }: Props) {
   const navigate = useNavigate();
+  const { isDemo } = useAuth();
   const greeting = () => {
     const h = new Date().getHours();
     return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
   };
   const firstName = userName.split(' ')[0];
 
-  const stats = [
+  const stats = isDemo ? [
     { icon: Briefcase, label: 'Active Ventures', value: '3', sub: '2 in progress', tint: 'bg-purple-500/10 text-purple-600', link: '/entrepreneur?tab=ventures' },
     { icon: DollarSign, label: 'Total Funding', value: 'ZMW 128,500', sub: 'Received', tint: 'bg-emerald-500/10 text-emerald-600', link: '/entrepreneur?tab=funding' },
     { icon: Trophy, label: 'Bounties Won', value: '5', sub: 'ZMW 45,300', tint: 'bg-amber-500/10 text-amber-600', link: '/entrepreneur?tab=bounties' },
     { icon: Users, label: 'Network', value: '156', sub: '+12 this month', tint: 'bg-blue-500/10 text-blue-600', link: '/entrepreneur?tab=network' },
+  ] : [
+    { icon: Briefcase, label: 'Active Ventures', value: '0', sub: 'Create your first', tint: 'bg-purple-500/10 text-purple-600', link: '/entrepreneur/idea/new' },
+    { icon: DollarSign, label: 'Total Funding', value: 'ZMW 0', sub: 'Apply for grants', tint: 'bg-emerald-500/10 text-emerald-600', link: '/entrepreneur?tab=funding' },
+    { icon: Trophy, label: 'Bounties Won', value: '0', sub: 'Browse bounties', tint: 'bg-amber-500/10 text-amber-600', link: '/entrepreneur?tab=bounties' },
+    { icon: Users, label: 'Network', value: '0', sub: 'Find co-founders', tint: 'bg-blue-500/10 text-blue-600', link: '/entrepreneur?tab=cofounders' },
   ];
 
   const quickActions = [
@@ -43,16 +50,16 @@ export function EntrepreneurDashboardV2({ userName }: Props) {
     { title: 'AfriLabs Accelerator', desc: 'Acceleration program + funding', kind: 'Program', date: 'Deadline: Jun 30, 2025', tint: 'bg-purple-500/10 text-purple-700' },
   ];
 
-  const ventures = [
+  const ventures = isDemo ? [
     { name: 'AgriTrack Zambia', desc: 'Smart farm management platform for small scale farmers.', progress: 68, milestone: 'User testing phase', date: 'May 30, 2025', funding: 'ZMW 78,000 / 150,000', icon: '🌱', status: 'In Progress' },
-  ];
+  ] : [];
 
-  const tasks = [
+  const tasks = isDemo ? [
     { title: 'Complete user research', tag: 'AgriTrack Zambia', due: 'May 25', done: false },
     { title: 'Build MVP prototype', tag: 'AgriTrack Zambia', due: 'May 30', done: true },
     { title: 'Pitch deck presentation', tag: 'EduConnect', due: 'Jun 05', done: false },
     { title: 'Apply for innovation fund', tag: 'SolarPay', due: 'Jun 10', done: false },
-  ];
+  ] : [];
 
   return (
     <div className="space-y-5 pb-20 lg:pb-6">
@@ -94,6 +101,16 @@ export function EntrepreneurDashboardV2({ userName }: Props) {
             <h2 className="font-bold">My Active Ventures</h2>
             <button onClick={() => navigate('/entrepreneur?tab=ventures')} className="text-xs text-primary font-medium">View all</button>
           </div>
+          {ventures.length === 0 && (
+            <div className="text-center py-8">
+              <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center mx-auto mb-3">
+                <Rocket className="w-6 h-6" />
+              </div>
+              <p className="text-sm font-semibold">No ventures yet</p>
+              <p className="text-xs text-muted-foreground mt-1 mb-3">Start your first venture and track its progress.</p>
+              <Button size="sm" onClick={() => navigate('/entrepreneur/idea/new')} className="rounded-full">Create your first venture</Button>
+            </div>
+          )}
           {ventures.map((v) => (
             <div key={v.name} className="space-y-3">
               <div className="flex items-start justify-between">
@@ -182,6 +199,9 @@ export function EntrepreneurDashboardV2({ userName }: Props) {
             <button onClick={() => navigate('/entrepreneur?tab=tasks')} className="text-xs text-primary font-medium">View all</button>
           </div>
           <div className="space-y-2.5">
+            {tasks.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-6">No tasks yet. Create a venture to start tracking milestones.</p>
+            )}
             {tasks.map((t) => (
               <div key={t.title} className="flex items-center gap-3">
                 <div className={`w-5 h-5 rounded ${t.done ? 'bg-emerald-500 border-emerald-500' : 'border-2 border-muted-foreground/30'} flex items-center justify-center shrink-0`}>

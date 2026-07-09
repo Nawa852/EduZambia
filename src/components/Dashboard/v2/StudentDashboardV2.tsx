@@ -32,7 +32,7 @@ const subjectMeta: Record<string, { icon: any; tint: string }> = {
 
 export function StudentDashboardV2({ userName }: Props) {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isDemo } = useAuth();
   const { profile } = useProfile();
   const stats = useUserStats();
   const [subjects, setSubjects] = useState<Array<{ name: string; progress: number; notes: number }>>([]);
@@ -54,14 +54,16 @@ export function StudentDashboardV2({ userName }: Props) {
       const list = Array.from(bySubject.entries()).slice(0, 4).map(([name, v]) => ({
         name, progress: Math.round(v.total / Math.max(v.count, 1)), notes: v.count,
       }));
-      setSubjects(list.length ? list : [
+      if (list.length) setSubjects(list);
+      else if (isDemo) setSubjects([
         { name: 'Physics', progress: 80, notes: 12 },
         { name: 'Biology', progress: 60, notes: 8 },
         { name: 'Mathematics', progress: 70, notes: 15 },
         { name: 'Chemistry', progress: 75, notes: 10 },
       ]);
+      else setSubjects([]);
     })();
-  }, [user]);
+  }, [user, isDemo]);
 
   const greeting = () => {
     const h = new Date().getHours();
@@ -69,12 +71,12 @@ export function StudentDashboardV2({ userName }: Props) {
   };
 
   const firstName = userName.split(' ')[0];
-  const streak = stats?.stats?.current_streak || 7;
-  const focusMin = (stats?.stats?.total_focus_minutes || 165) % 600;
+  const streak = stats?.stats?.current_streak ?? (isDemo ? 7 : 0);
+  const focusMin = (stats?.stats?.total_focus_minutes ?? (isDemo ? 165 : 0)) % 600;
   const focusHrs = Math.floor(focusMin / 60);
   const focusRem = focusMin % 60;
-  const tasksDone = 5;
-  const tasksGoal = 8;
+  const tasksDone = isDemo ? 5 : 0;
+  const tasksGoal = isDemo ? 8 : 0;
 
   const createChips = [
     { icon: StickyNote, label: 'New Note', tint: 'text-violet-600 bg-violet-500/10', to: '/student-notes?action=new' },
