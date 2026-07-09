@@ -199,6 +199,9 @@ export function EntrepreneurDashboardV2({ userName }: Props) {
             <button onClick={() => navigate('/entrepreneur?tab=tasks')} className="text-xs text-primary font-medium">View all</button>
           </div>
           <div className="space-y-2.5">
+            {tasks.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-6">No tasks yet. Create a venture to start tracking milestones.</p>
+            )}
             {tasks.map((t) => (
               <div key={t.title} className="flex items-center gap-3">
                 <div className={`w-5 h-5 rounded ${t.done ? 'bg-emerald-500 border-emerald-500' : 'border-2 border-muted-foreground/30'} flex items-center justify-center shrink-0`}>
