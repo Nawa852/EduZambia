@@ -101,6 +101,16 @@ export function EntrepreneurDashboardV2({ userName }: Props) {
             <h2 className="font-bold">My Active Ventures</h2>
             <button onClick={() => navigate('/entrepreneur?tab=ventures')} className="text-xs text-primary font-medium">View all</button>
           </div>
+          {ventures.length === 0 && (
+            <div className="text-center py-8">
+              <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center mx-auto mb-3">
+                <Rocket className="w-6 h-6" />
+              </div>
+              <p className="text-sm font-semibold">No ventures yet</p>
+              <p className="text-xs text-muted-foreground mt-1 mb-3">Start your first venture and track its progress.</p>
+              <Button size="sm" onClick={() => navigate('/entrepreneur/idea/new')} className="rounded-full">Create your first venture</Button>
+            </div>
+          )}
           {ventures.map((v) => (
             <div key={v.name} className="space-y-3">
               <div className="flex items-start justify-between">
