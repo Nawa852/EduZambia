@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.award_xp(uuid, integer, integer) TO authenticated;

@@ -38,7 +38,7 @@ const GuardianLinkPage = () => {
   const fetchGuardians = async () => {
     const { data } = await supabase
       .from('guardian_links')
-      .select('id, student_id, guardian_id, guardian_name, relationship, mode, status, created_at, phone, email')
+      .select('id, student_id, guardian_id, guardian_name, relationship, mode, status, created_at')
       .eq('student_id', user!.id)
       .order('created_at', { ascending: false });
     setGuardians((data as unknown as GuardianLink[]) || []);
@@ -179,8 +179,7 @@ const GuardianLinkPage = () => {
                     <h3 className="font-semibold">{g.guardian_name}</h3>
                     <p className="text-sm text-muted-foreground capitalize">{g.relationship} · {g.mode} mode</p>
                     <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{g.phone}</span>
-                      {g.email && <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{g.email}</span>}
+                      <span className="capitalize">{g.status}</span>
                     </div>
                   </div>
                 </div>

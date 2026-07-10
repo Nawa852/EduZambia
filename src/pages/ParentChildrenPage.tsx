@@ -47,7 +47,7 @@ const ParentChildrenPage = () => {
     if (!user) return;
     const { data } = await supabase
       .from('guardian_links')
-      .select('id, student_id, guardian_id, guardian_name, relationship, mode, status, created_at, phone, email')
+      .select('id, student_id, guardian_id, guardian_name, relationship, mode, status, created_at')
       .eq('guardian_id', user.id)
       .order('created_at', { ascending: false });
     setLinks((data as any) || []);
@@ -180,9 +180,8 @@ const ParentChildrenPage = () => {
               <div key={l.id} className="flex items-center justify-between p-2 rounded-lg border border-border/40">
                 <div>
                   <p className="text-sm font-medium">{l.guardian_name}</p>
-                  <p className="text-[11px] text-muted-foreground flex items-center gap-2">
-                    <Phone className="w-3 h-3" /> {l.phone}
-                    {l.email && <><Mail className="w-3 h-3 ml-1" /> {l.email}</>}
+                  <p className="text-[11px] text-muted-foreground capitalize">
+                    {l.relationship}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">

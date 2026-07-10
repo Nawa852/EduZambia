@@ -36,7 +36,7 @@ const MinistryPartnershipsPage = () => {
   });
 
   const fetchPartnerships = async () => {
-    const { data } = await supabase.from('ngo_partnerships').select('id, ngo_name, program_name, focus_area, province, funding_amount, start_date, end_date, status, notes, contact_email, created_by, created_at, updated_at').order('created_at', { ascending: false });
+    const { data } = await supabase.from('ngo_partnerships').select('id, ngo_name, program_name, focus_area, province, funding_amount, start_date, end_date, status, notes, created_by, created_at, updated_at').order('created_at', { ascending: false });
     if (data) setPartnerships(data as unknown as Partnership[]);
     setLoading(false);
   };
@@ -160,7 +160,7 @@ const MinistryPartnershipsPage = () => {
                     {p.focus_area && <div className="bg-muted/30 rounded p-2"><span className="text-xs text-muted-foreground">Focus</span><p className="font-medium">{p.focus_area}</p></div>}
                     {p.province && <div className="bg-muted/30 rounded p-2"><span className="text-xs text-muted-foreground">Province</span><p className="font-medium">{p.province}</p></div>}
                     <div className="bg-muted/30 rounded p-2"><span className="text-xs text-muted-foreground">Funding</span><p className="font-medium">K{p.funding_amount.toLocaleString()}</p></div>
-                    {p.contact_email && <div className="bg-muted/30 rounded p-2"><span className="text-xs text-muted-foreground">Contact</span><p className="font-medium truncate">{p.contact_email}</p></div>}
+                    {/* contact_email hidden — retrieve via get_ngo_partnership_contact RPC when needed */}
                   </div>
                   {p.notes && <p className="text-xs text-muted-foreground mt-3">{p.notes}</p>}
                 </CardContent>
