@@ -180,9 +180,8 @@ const ParentChildrenPage = () => {
               <div key={l.id} className="flex items-center justify-between p-2 rounded-lg border border-border/40">
                 <div>
                   <p className="text-sm font-medium">{l.guardian_name}</p>
-                  <p className="text-[11px] text-muted-foreground flex items-center gap-2">
-                    <Phone className="w-3 h-3" /> {l.phone}
-                    {l.email && <><Mail className="w-3 h-3 ml-1" /> {l.email}</>}
+                  <p className="text-[11px] text-muted-foreground capitalize">
+                    {l.relationship}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">

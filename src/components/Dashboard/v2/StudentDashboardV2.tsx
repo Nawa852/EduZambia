@@ -181,9 +181,9 @@ export function StudentDashboardV2({ userName }: Props) {
                 </div>
                 <span className="text-xs font-medium text-muted-foreground">Tasks Done</span>
               </div>
-              <div className="text-xl lg:text-2xl font-extrabold">{tasksDone}/{tasksGoal}</div>
-              <div className="text-[11px] text-muted-foreground">today</div>
-              <Progress value={(tasksDone / tasksGoal) * 100} className="h-1 mt-1.5" />
+              <div className="text-xl lg:text-2xl font-extrabold">{tasksGoal > 0 ? `${tasksDone}/${tasksGoal}` : '—'}</div>
+              <div className="text-[11px] text-muted-foreground">{tasksGoal > 0 ? 'today' : 'Set a daily goal'}</div>
+              <Progress value={tasksGoal > 0 ? (tasksDone / tasksGoal) * 100 : 0} className="h-1 mt-1.5" />
             </Card>
 
             {/* Mobile-only Study Goal */}
