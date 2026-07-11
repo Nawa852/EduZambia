@@ -63,16 +63,21 @@ const ChooseRolePage = () => {
         .eq('id', user.id);
       if (error) throw error;
 
+      // CRITICAL: bust the profile cache so RoleGuard / PostLoginGate
+      // don't read a stale 'student' role on the destination route.
+      try { localStorage.removeItem('edu-zambia-profile-cache'); } catch {}
       localStorage.setItem('edu-zambia-user-type', selected);
       if (goal) localStorage.setItem('synapse-primary-goal', goal);
       localStorage.removeItem('edu-zambia-needs-role');
       localStorage.setItem('edu-zambia-show-tour', 'true');
 
       toast({ title: `Welcome to Synapse${displayName ? `, ${displayName.split(' ')[0]}` : ''}!`, description: `Heading to your ${activeRole.label} workspace.` });
-      navigate(activeRole.home, { replace: true });
+
+      // Hard reload so every hook (useProfile, RoleGuard, sidebar) picks up
+      // the new role from the DB instead of the stale in-memory cache.
+      window.location.replace(activeRole.home);
     } catch (error: any) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
-    } finally {
       setLoading(false);
     }
   };

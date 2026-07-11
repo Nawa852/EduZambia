@@ -106,7 +106,7 @@ const AuthPage = () => {
         email,
         password,
         options: {
-          emailRedirectTo: `https://eduzambia.netlify.app/choose-role`,
+          emailRedirectTo: `${window.location.origin}/choose-role`,
           data: { full_name: fullName, user_type: 'student' }
         }
       });
