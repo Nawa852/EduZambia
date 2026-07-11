@@ -14,6 +14,7 @@ import { LogoLoader } from '@/components/UI/LogoLoader';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import DemoBanner from '@/components/Auth/DemoBanner';
 import RoleGuard from '@/components/Auth/RoleGuard';
+import ScrollToTop from '@/components/ScrollToTop';
 
 // Stakeholders allowed to access ECZ content (K-12 only)
 const ECZ_ROLES = ['student', 'teacher', 'guardian', 'institution', 'ministry'] as const;
@@ -131,6 +132,7 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <Router>
+          <ScrollToTop />
           <DemoBanner />
           <SuspenseWrap>
             <Routes>
