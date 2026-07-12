@@ -54,7 +54,7 @@ export function TeacherShell({ children, title }: { children: ReactNode; title?:
         </div>
       </div>
       {children}
-    </div>
+    </section>
   );
 }
 
