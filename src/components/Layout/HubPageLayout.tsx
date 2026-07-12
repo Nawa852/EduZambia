@@ -46,11 +46,10 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
   const [tab, setTab] = useTabFromUrl(defaultTab);
 
   return (
-    <div className="space-y-0">
+    <div className="space-y-4 max-w-[1280px] mx-auto">
       {/* Hero header */}
-      <div className="relative overflow-hidden rounded-2xl bg-card border border-border/20 mb-4 lg:mb-5">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.05] via-transparent to-accent/[0.03]" />
-        <div className="relative px-4 py-4 lg:px-6 lg:py-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="rounded-2xl bg-card border border-border/40 shadow-sm">
+        <div className="px-4 py-4 lg:px-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3.5">
             <div className="shrink-0 flex items-center justify-center w-11 h-11 rounded-2xl bg-primary/10 text-primary shadow-sm shadow-primary/5">
               <Icon className="w-5 h-5" />
@@ -66,7 +65,7 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
                 <a
                   key={link.href}
                   href={link.href}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-secondary/50 hover:bg-secondary text-xs font-medium text-secondary-foreground transition-all border border-border/15 hover:shadow-card"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-secondary/60 hover:bg-secondary text-xs font-medium text-secondary-foreground transition-colors border border-border/40"
                 >
                   <link.icon className="w-3.5 h-3.5" />
                   {link.label}
@@ -79,14 +78,14 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
 
       {/* Tabs */}
       <Tabs value={tab} onValueChange={setTab} className="w-full">
-        <div className="sticky top-[52px] z-30 -mx-4 px-4 lg:-mx-6 lg:px-6 py-2 bg-background/90 backdrop-blur-3xl border-b border-border/15">
+        <div className="rounded-2xl border border-border/40 bg-card px-2 py-2 shadow-sm">
           <TabsList className="w-full justify-start gap-1 bg-transparent h-auto p-0 overflow-x-auto scrollbar-none">
             {tabs.map((t) => (
               <TabsTrigger
                 key={t.id}
                 value={t.id}
                 className={cn(
-                  "relative gap-1.5 px-4 py-2 rounded-xl text-xs lg:text-[13px] font-medium transition-all whitespace-nowrap shrink-0",
+                   "relative gap-1.5 px-4 py-2 rounded-xl text-xs lg:text-[13px] font-medium transition-colors whitespace-nowrap shrink-0",
                   "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:font-semibold",
                   "data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-secondary/40 data-[state=inactive]:hover:text-foreground"
                 )}
@@ -103,7 +102,7 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
           </TabsList>
         </div>
 
-        <div className="mt-4 lg:mt-5">
+        <div>
           <Suspense fallback={<Loader />}>
             {tabs.map((t) => (
               <TabsContent key={t.id} value={t.id} className="mt-0 focus-visible:outline-none">

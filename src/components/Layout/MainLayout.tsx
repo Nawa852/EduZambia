@@ -80,13 +80,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         Skip to content
       </a>
 
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-dvh flex w-full max-w-full bg-background overflow-visible">
         {/* Sidebar: desktop only */}
         <div className="hidden lg:block">
           <RoleBasedSidebar />
         </div>
         
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col min-w-0 max-w-full overflow-visible">
           <TopNavbar />
 
           {/* Study schedule banner */}
@@ -131,7 +131,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           )}
 
           {/* Main content — extra bottom padding on mobile for bottom nav */}
-          <main id="main-content" className="flex-1 px-3 py-3 pb-24 lg:px-5 lg:py-5 lg:pb-5">
+          <main id="main-content" className="flex-1 w-full max-w-full overflow-visible px-3 py-3 pb-28 lg:px-5 lg:py-5 lg:pb-5 touch-pan-y">
             {children}
             <TeacherQuickActionsBar />
           </main>

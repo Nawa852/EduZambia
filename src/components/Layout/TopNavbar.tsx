@@ -32,23 +32,23 @@ export const TopNavbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-background/85 backdrop-blur-3xl border-b border-border/15">
-      <div className="flex h-[52px] items-center px-3 sm:px-4 gap-2">
+    <nav className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur-xl border-b border-border/40">
+      <div className="flex h-14 items-center px-3 sm:px-4 gap-2">
         {/* Desktop sidebar trigger */}
         <SidebarTrigger className="hidden lg:flex shrink-0 -ml-1 text-muted-foreground hover:text-foreground transition-colors" />
         
         {/* Mobile: Drawer trigger + Logo */}
         <div className="flex items-center gap-1.5 lg:hidden flex-1 min-w-0">
           <MobileSidebarDrawer />
-          <img src={eduMark} alt="Nexus Learning" className="w-7 h-7 shrink-0 rounded-lg shadow-sm" />
-          <span className="font-bold text-[15px] text-foreground tracking-tight truncate">Edu Zambia</span>
+          <img src={eduMark} alt="Synapse" className="w-7 h-7 shrink-0 rounded-lg shadow-sm" />
+          <span className="font-bold text-[15px] text-foreground truncate">Synapse</span>
         </div>
 
         {/* Desktop: Search center */}
         <div className="hidden lg:flex flex-1 justify-center">
           <button
             onClick={openCommandPalette}
-            className="flex items-center gap-3 h-9 w-full max-w-md px-4 rounded-xl bg-secondary/40 border border-border/30 text-muted-foreground hover:bg-secondary/70 hover:border-border/50 transition-all text-sm cursor-pointer group"
+            className="flex items-center gap-3 h-9 w-full max-w-md px-4 rounded-xl bg-secondary/60 border border-border/50 text-muted-foreground hover:bg-secondary transition-colors text-sm cursor-pointer group"
           >
             <Search className="w-4 h-4 shrink-0 text-muted-foreground/60 group-hover:text-foreground transition-colors" />
             <span className="flex-1 text-left text-muted-foreground/50">Search anything...</span>

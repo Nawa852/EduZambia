@@ -178,7 +178,7 @@ export const useProfile = () => {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, isDemo]);
 
 
   useEffect(() => {

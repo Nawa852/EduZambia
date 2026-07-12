@@ -19,8 +19,8 @@ export function TeacherQuickActionsBar() {
   ];
 
   return (
-    <div className="hidden lg:block sticky bottom-0 z-30 -mx-5 mt-4">
-      <div className="border-t border-border/40 bg-card/90 backdrop-blur-xl px-5 py-2.5">
+    <div className="hidden lg:block -mx-5 mt-4">
+      <div className="border-t border-border/40 bg-card px-5 py-2.5">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 pr-3 border-r border-border/40">
             <Zap className="w-3.5 h-3.5 text-primary" />
