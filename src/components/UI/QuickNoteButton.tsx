@@ -44,7 +44,7 @@ export const QuickNoteButton: React.FC = () => {
       <button
         onClick={() => setOpen(!open)}
         className={cn(
-          'fixed bottom-20 right-4 lg:bottom-6 lg:right-6 z-50',
+          'fixed bottom-24 right-4 lg:bottom-6 lg:right-6 z-30',
           'w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg',
           'flex items-center justify-center hover:scale-105 transition-transform',
           open && 'bg-muted text-muted-foreground'
@@ -55,7 +55,7 @@ export const QuickNoteButton: React.FC = () => {
 
       {/* Note panel */}
       {open && (
-        <div className="fixed bottom-36 right-4 lg:bottom-20 lg:right-6 z-50 w-72 bg-card border border-border rounded-xl shadow-xl p-4 space-y-3">
+        <div className="fixed bottom-40 right-4 lg:bottom-20 lg:right-6 z-30 w-72 max-w-[calc(100vw-2rem)] bg-card border border-border rounded-xl shadow-xl p-4 space-y-3">
           <Input
             placeholder="Title (optional)"
             value={title}

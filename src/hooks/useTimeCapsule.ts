@@ -118,12 +118,8 @@ export function useTimeCapsule() {
       const capsule = await restoreCapsule();
       if (!capsule || Date.now() - capsule.timestamp > 24 * 60 * 60 * 1000) return; // expire after 24h
 
-      // Restore scroll after a brief delay for content to render
-      setTimeout(() => {
-        window.scrollTo({ top: capsule.scrollY, left: capsule.scrollX, behavior: 'instant' as ScrollBehavior });
-      }, 300);
-
-      // Restore form data
+      // Restore form data only. Restoring scroll caused route changes to feel
+      // locked on mobile because it fought the global ScrollToTop behavior.
       setTimeout(() => {
         Object.entries(capsule.formData).forEach(([key, value]) => {
           const el = document.querySelector<HTMLInputElement>(
