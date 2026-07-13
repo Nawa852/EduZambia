@@ -45,7 +45,7 @@ export default function DemoRolePicker() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-4">
             <PlayCircle className="w-3.5 h-3.5" /> Interactive demo
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">How do you want to demo Nexus?</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">How do you want to demo Synapse?</h1>
           <p className="text-muted-foreground max-w-xl mx-auto">
             Pick a role — we&apos;ll show you the dashboard, AI tools and workflows built for that user.
             No signup needed.

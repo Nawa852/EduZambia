@@ -18,14 +18,14 @@ function TeacherCoursesView() {
   const { courses, totalStudents, loading } = useTeacherStats();
   const [searchTerm, setSearchTerm] = useState("");
 
-  if (loading) return <LogoLoader size="lg" text="Loading your courses..." />;
+  if (loading) return <div className="flex items-center justify-center py-16"><LogoLoader size="lg" text="Loading your courses..." /></div>;
 
   const filtered = courses.filter(c =>
     c.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="bg-background py-4">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -114,7 +114,7 @@ function StudentCoursesView() {
   });
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="bg-background py-4">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-foreground mb-4">Learning Courses</h1>

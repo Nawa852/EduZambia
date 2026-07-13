@@ -33,7 +33,7 @@ export const CookieConsent = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 50 }}
           transition={{ duration: 0.4 }}
-          className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-[100]"
+            className="fixed bottom-20 left-4 right-4 z-30 md:bottom-4 md:left-auto md:right-6 md:max-w-sm"
         >
           <div className="glass-card border border-border/30 rounded-2xl p-4 shadow-xl">
             <div className="flex items-start gap-3">
@@ -43,7 +43,7 @@ export const CookieConsent = () => {
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground mb-1">Cookies & Privacy</p>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  We use cookies to enhance your experience. By continuing to use Edu Zambia, you automatically accept our cookie policy.
+                  We use cookies to enhance your Synapse experience and keep learning tools working smoothly.
                 </p>
               </div>
               <button onClick={dismiss} className="text-muted-foreground hover:text-foreground transition-colors shrink-0">
