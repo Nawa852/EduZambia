@@ -1,13 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/components/Auth/AuthProvider';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Play, LogIn } from 'lucide-react';
 import eduMark from '@/assets/edu-zambia-icon.png';
 
 const SplashLanding = () => {
-  const { enterDemoMode } = useAuth();
   const navigate = useNavigate();
-  const tryDemo = () => { enterDemoMode(); navigate('/dashboard'); };
+  const tryDemo = () => navigate('/demo');
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-6 text-center">

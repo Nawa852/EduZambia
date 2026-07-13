@@ -101,17 +101,22 @@
     @apply border-border;
   }
 
-  html, body, #root {
+  html,
+  body {
     width: 100%;
     max-width: 100vw;
     min-height: 100%;
     overflow-x: hidden;
-    overflow-y: auto;
   }
 
   html {
     scroll-behavior: auto;
-    touch-action: pan-y;
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100%;
+    overflow: visible;
   }
 
   body {
@@ -123,7 +128,13 @@
     -webkit-tap-highlight-color: transparent;
     overflow-y: auto;
     overscroll-behavior-y: auto;
-    touch-action: pan-y;
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
   }
 
   /* Prevent iOS zoom on input focus (fonts < 16px trigger zoom) */

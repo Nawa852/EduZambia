@@ -10,7 +10,7 @@ const DemoBanner = () => {
   if (!isDemo) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[100] bg-primary/95 backdrop-blur-xl text-primary-foreground py-2 px-4 flex items-center justify-between gap-2 text-xs shadow-lg">
+    <div className="relative z-30 bg-primary/95 backdrop-blur-xl text-primary-foreground py-2 px-4 flex items-center justify-between gap-2 text-xs shadow-lg">
       <div className="flex items-center gap-2">
         <div className="w-5 h-5 rounded-full bg-primary-foreground/15 flex items-center justify-center">
           <Eye className="w-3 h-3" />

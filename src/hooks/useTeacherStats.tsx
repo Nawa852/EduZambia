@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useSecureAuth } from '@/hooks/useSecureAuth';
+import { useAuth } from '@/components/Auth/AuthProvider';
 
 export interface TeacherCourse {
   id: string;
@@ -33,7 +34,8 @@ export interface StudentAlert {
 }
 
 export function useTeacherStats() {
-  const { user } = useSecureAuth();
+  const { user, loading: authLoading } = useSecureAuth();
+  const { isDemo } = useAuth();
   const [courses, setCourses] = useState<TeacherCourse[]>([]);
   const [totalStudents, setTotalStudents] = useState(0);
   const [pendingCount, setPendingCount] = useState(0);
@@ -43,9 +45,33 @@ export function useTeacherStats() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user?.id) return;
+    if (isDemo) {
+      setCourses([
+        { id: 'demo-math-11', title: 'Mathematics Grade 11A', subject: 'Mathematics', grade_level: 'Grade 11', is_published: true, created_at: new Date().toISOString(), enrollment_count: 32, avg_score: 82 },
+        { id: 'demo-science-10', title: 'Integrated Science Grade 10B', subject: 'Science', grade_level: 'Grade 10', is_published: true, created_at: new Date().toISOString(), enrollment_count: 28, avg_score: 76 },
+        { id: 'demo-ecz-12', title: 'ECZ Exam Prep Grade 12', subject: 'ECZ Preparation', grade_level: 'Grade 12', is_published: false, created_at: new Date().toISOString(), enrollment_count: 24, avg_score: 85 },
+      ]);
+      setTotalStudents(84);
+      setPendingCount(8);
+      setAvgPerformance(81);
+      setPendingSubmissions([]);
+      setStudentAlerts([]);
+      setLoading(false);
+      return;
+    }
+    if (authLoading) return;
+    if (!user?.id) {
+      setCourses([]);
+      setTotalStudents(0);
+      setPendingCount(0);
+      setAvgPerformance(0);
+      setPendingSubmissions([]);
+      setStudentAlerts([]);
+      setLoading(false);
+      return;
+    }
     fetchTeacherData();
-  }, [user?.id]);
+  }, [user?.id, authLoading, isDemo]);
 
   const fetchTeacherData = async () => {
     if (!user?.id) return;
@@ -59,6 +85,12 @@ export function useTeacherStats() {
         .eq('created_by', user.id);
 
       if (!teacherCourses || teacherCourses.length === 0) {
+        setCourses([]);
+        setTotalStudents(0);
+        setPendingCount(0);
+        setAvgPerformance(0);
+        setPendingSubmissions([]);
+        setStudentAlerts([]);
         setLoading(false);
         return;
       }

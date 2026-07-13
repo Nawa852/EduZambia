@@ -84,7 +84,7 @@ export function InstallPrompt() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 100, scale: 0.9 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        className="fixed bottom-4 left-4 right-4 z-[9999] md:left-auto md:right-6 md:max-w-sm"
+        className="fixed bottom-20 left-4 right-4 z-50 md:bottom-4 md:left-auto md:right-6 md:max-w-sm"
       >
         <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-card shadow-2xl">
           {/* Gradient top bar */}
@@ -106,12 +106,12 @@ export function InstallPrompt() {
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                <img src={loadingLogo} alt="Nexus Learning" className="w-10 h-10" />
+                <img src={loadingLogo} alt="Synapse" className="w-10 h-10" />
               </motion.div>
 
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-foreground text-base">
-                  Install Edu Zambia
+                  Install Synapse
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1">
                   Get the full app experience — faster access, offline learning & instant notifications.

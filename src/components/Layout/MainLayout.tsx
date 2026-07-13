@@ -131,7 +131,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           )}
 
           {/* Main content — extra bottom padding on mobile for bottom nav */}
-          <main id="main-content" className="flex-1 w-full max-w-full overflow-visible px-3 py-3 pb-28 lg:px-5 lg:py-5 lg:pb-5 touch-pan-y">
+          <main id="main-content" className="flex-1 w-full max-w-full overflow-visible px-3 py-3 pb-28 lg:px-5 lg:py-5 lg:pb-5">
             {children}
             <TeacherQuickActionsBar />
           </main>

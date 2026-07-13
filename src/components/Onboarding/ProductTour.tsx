@@ -19,12 +19,21 @@ const JoyrideAny: any = Joyride;
 
 export function ProductTour({ role = 'student' as keyof typeof TOURS }: { role?: keyof typeof TOURS }) {
   const [run, setRun] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [params, setParams] = useSearchParams();
 
   useEffect(() => {
+    const update = () => setIsSmallScreen(window.innerWidth < 768);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  useEffect(() => {
     const forced = params.get('tour') === '1';
+    const requested = localStorage.getItem('edu-zambia-show-tour') === 'true';
     const done = localStorage.getItem(TOUR_KEY);
-    if (forced || !done) {
+    if (forced || (requested && !done)) {
       const t = setTimeout(() => setRun(true), 400);
       return () => clearTimeout(t);
     }
@@ -35,7 +44,11 @@ export function ProductTour({ role = 'student' as keyof typeof TOURS }: { role?:
     if (data?.status && finished.includes(data.status)) {
       localStorage.setItem(TOUR_KEY, '1');
       setRun(false);
-      if (params.get('tour')) { params.delete('tour'); setParams(params, { replace: true }); }
+      if (params.get('tour')) {
+        const next = new URLSearchParams(params);
+        next.delete('tour');
+        setParams(next, { replace: true });
+      }
     }
   };
 
@@ -44,8 +57,12 @@ export function ProductTour({ role = 'student' as keyof typeof TOURS }: { role?:
       steps={TOURS[role] || studentSteps}
       run={run}
       continuous
-      onEvent={onEvent}
-      options={{ showSkipButton: true, showProgress: true }}
+      callback={onEvent}
+      disableOverlay={isSmallScreen}
+      disableScrolling={false}
+      spotlightClicks
+      showSkipButton
+      showProgress
       styles={{
         tooltip: { borderRadius: 16, padding: 16, backgroundColor: 'hsl(var(--card))', color: 'hsl(var(--foreground))' },
         buttonPrimary: { borderRadius: 999, padding: '6px 16px', fontSize: 12, fontWeight: 600, backgroundColor: 'hsl(var(--primary))' },
