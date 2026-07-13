@@ -57,11 +57,12 @@ export function ProductTour({ role = 'student' as keyof typeof TOURS }: { role?:
       steps={TOURS[role] || studentSteps}
       run={run}
       continuous
-      onEvent={onEvent}
+      callback={onEvent}
       disableOverlay={isSmallScreen}
       disableScrolling={false}
       spotlightClicks
-      options={{ showSkipButton: true, showProgress: true }}
+      showSkipButton
+      showProgress
       styles={{
         tooltip: { borderRadius: 16, padding: 16, backgroundColor: 'hsl(var(--card))', color: 'hsl(var(--foreground))' },
         buttonPrimary: { borderRadius: 999, padding: '6px 16px', fontSize: 12, fontWeight: 600, backgroundColor: 'hsl(var(--primary))' },
