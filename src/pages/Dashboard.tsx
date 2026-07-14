@@ -49,6 +49,8 @@ const Dashboard = () => {
       case 'entrepreneur': return <EntrepreneurDashboardV2 userName={userName} />;
       case 'developer': return <DeveloperDashboardV2 userName={userName} />;
       case 'skills': return <SkillsDashboardView />;
+      case 'ngo':
+      case 'humanitarian': return <NgoDashboardV2 userName={userName} />;
       case 'cybersecurity': return <CybersecurityDashboardView />;
       default: return <StudentDashboardV2 userName={userName} />;
     }
