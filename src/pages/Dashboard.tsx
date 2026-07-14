@@ -7,6 +7,7 @@ import { SchoolAdminDashboardV2 } from '@/components/Dashboard/v2/SchoolAdminDas
 import { GuardianDashboardV2 } from '@/components/Dashboard/v2/GuardianDashboardV2';
 import { MedicalDashboardV2 } from '@/components/Dashboard/v2/MedicalDashboardV2';
 import { DeveloperDashboardV2 } from '@/components/Dashboard/v2/DeveloperDashboardV2';
+import { NgoDashboardV2 } from '@/components/Dashboard/v2/NgoDashboardV2';
 import SkillsDashboardView from '@/components/Dashboard/SkillsDashboardView';
 import CybersecurityDashboardView from '@/components/Dashboard/CybersecurityDashboardView';
 import { DashboardSkeleton } from '@/components/Dashboard/DashboardSkeleton';
