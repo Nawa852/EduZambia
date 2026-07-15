@@ -111,6 +111,16 @@ const DemoRolePicker = React.lazy(() => import('@/pages/DemoRolePicker'));
 const SnapAndSolvePage = React.lazy(() => import('@/pages/SnapAndSolvePage'));
 const TeacherTestGeneratorPage = React.lazy(() => import('@/pages/TeacherTestGeneratorPage'));
 
+// New specialist pages
+const MedicalCPDPage = React.lazy(() => import('@/pages/MedicalCPDPage'));
+const MedicalPatientsPage = React.lazy(() => import('@/pages/MedicalPatientsPage'));
+const EntrepreneurCofoundersPage = React.lazy(() => import('@/pages/EntrepreneurCofoundersPage'));
+const EntrepreneurPitchPage = React.lazy(() => import('@/pages/EntrepreneurPitchPage'));
+const DeveloperBountiesPage = React.lazy(() => import('@/pages/DeveloperBountiesPage'));
+const DeveloperReputationPage = React.lazy(() => import('@/pages/DeveloperReputationPage'));
+const SkillsPathsPage = React.lazy(() => import('@/pages/SkillsPathsPage'));
+const SkillsPortfolioPage = React.lazy(() => import('@/pages/SkillsPortfolioPage'));
+
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
 });
