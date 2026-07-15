@@ -241,6 +241,16 @@ function App() {
               <Route path="/developer-code-review" element={<PG><RoleGuard allow={['developer']}><DeveloperCodeReviewPage /></RoleGuard></PG>} />
               <Route path="/developer-challenges" element={<PG><RoleGuard allow={['developer']}><DeveloperChallengesPage /></RoleGuard></PG>} />
 
+              {/* New specialist inner pages */}
+              <Route path="/medical-cpd" element={<PG><RoleGuard allow={['doctor']}><MedicalCPDPage /></RoleGuard></PG>} />
+              <Route path="/medical-patients" element={<PG><RoleGuard allow={['doctor']}><MedicalPatientsPage /></RoleGuard></PG>} />
+              <Route path="/entrepreneur-cofounders" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurCofoundersPage /></RoleGuard></PG>} />
+              <Route path="/entrepreneur-pitch" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurPitchPage /></RoleGuard></PG>} />
+              <Route path="/developer-bounties" element={<PG><RoleGuard allow={['developer']}><DeveloperBountiesPage /></RoleGuard></PG>} />
+              <Route path="/developer-reputation" element={<PG><RoleGuard allow={['developer']}><DeveloperReputationPage /></RoleGuard></PG>} />
+              <Route path="/skills-paths" element={<PG><RoleGuard allow={['skills','student']}><SkillsPathsPage /></RoleGuard></PG>} />
+              <Route path="/skills-portfolio" element={<PG><RoleGuard allow={['skills','student']}><SkillsPortfolioPage /></RoleGuard></PG>} />
+
 
               {/* Tools & Resources — redirect overlapping tool routes to unified hub */}
               <Route path="/all-tools" element={<Navigate to="/tools" replace />} />
