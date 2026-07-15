@@ -1167,6 +1167,92 @@ export type Database = {
         }
         Relationships: []
       }
+      developer_bounties: {
+        Row: {
+          created_at: string
+          deadline: string | null
+          description: string | null
+          id: string
+          poster_id: string
+          reward_kwacha: number | null
+          status: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          poster_id: string
+          reward_kwacha?: number | null
+          status?: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          poster_id?: string
+          reward_kwacha?: number | null
+          status?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
+      developer_bounty_submissions: {
+        Row: {
+          ai_review: string | null
+          bounty_id: string
+          created_at: string
+          developer_id: string
+          id: string
+          notes: string | null
+          repo_url: string | null
+          score: number | null
+          status: string | null
+        }
+        Insert: {
+          ai_review?: string | null
+          bounty_id: string
+          created_at?: string
+          developer_id: string
+          id?: string
+          notes?: string | null
+          repo_url?: string | null
+          score?: number | null
+          status?: string | null
+        }
+        Update: {
+          ai_review?: string | null
+          bounty_id?: string
+          created_at?: string
+          developer_id?: string
+          id?: string
+          notes?: string | null
+          repo_url?: string | null
+          score?: number | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "developer_bounty_submissions_bounty_id_fkey"
+            columns: ["bounty_id"]
+            isOneToOne: false
+            referencedRelation: "developer_bounties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       developer_projects: {
         Row: {
           created_at: string
@@ -1199,6 +1285,30 @@ export type Database = {
           progress?: number | null
           repo_url?: string | null
           status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      developer_reputation: {
+        Row: {
+          badges: Json
+          points: number
+          tier: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          badges?: Json
+          points?: number
+          tier?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          badges?: Json
+          points?: number
+          tier?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -1936,6 +2046,39 @@ export type Database = {
         }
         Relationships: []
       }
+      learning_paths: {
+        Row: {
+          created_at: string
+          generated_by_ai: boolean | null
+          id: string
+          progress: number
+          steps: Json
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          generated_by_ai?: boolean | null
+          id?: string
+          progress?: number
+          steps?: Json
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          generated_by_ai?: boolean | null
+          id?: string
+          progress?: number
+          steps?: Json
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lesson_completions: {
         Row: {
           completed_at: string
@@ -2147,6 +2290,158 @@ export type Database = {
         }
         Relationships: []
       }
+      medical_case_notes: {
+        Row: {
+          ai_generated: boolean | null
+          assessment: string | null
+          created_at: string
+          id: string
+          objective: string | null
+          patient_id: string | null
+          plan: string | null
+          subjective: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_generated?: boolean | null
+          assessment?: string | null
+          created_at?: string
+          id?: string
+          objective?: string | null
+          patient_id?: string | null
+          plan?: string | null
+          subjective?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_generated?: boolean | null
+          assessment?: string | null
+          created_at?: string
+          id?: string
+          objective?: string | null
+          patient_id?: string | null
+          plan?: string | null
+          subjective?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medical_case_notes_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "medical_patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medical_cpd_activities: {
+        Row: {
+          category: string
+          completed_at: string
+          created_at: string
+          evidence_url: string | null
+          hours: number
+          id: string
+          provider: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          completed_at?: string
+          created_at?: string
+          evidence_url?: string | null
+          hours?: number
+          id?: string
+          provider?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          completed_at?: string
+          created_at?: string
+          evidence_url?: string | null
+          hours?: number
+          id?: string
+          provider?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      medical_drug_lookups: {
+        Row: {
+          checked_at: string
+          drug_name: string
+          id: string
+          result: Json | null
+          user_id: string
+        }
+        Insert: {
+          checked_at?: string
+          drug_name: string
+          id?: string
+          result?: Json | null
+          user_id: string
+        }
+        Update: {
+          checked_at?: string
+          drug_name?: string
+          id?: string
+          result?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      medical_patients: {
+        Row: {
+          age: number | null
+          complaint: string | null
+          created_at: string
+          id: string
+          initials: string
+          next_review: string | null
+          notes: string | null
+          owner_id: string
+          sex: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          age?: number | null
+          complaint?: string | null
+          created_at?: string
+          id?: string
+          initials: string
+          next_review?: string | null
+          notes?: string | null
+          owner_id: string
+          sex?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          age?: number | null
+          complaint?: string | null
+          created_at?: string
+          id?: string
+          initials?: string
+          next_review?: string | null
+          notes?: string | null
+          owner_id?: string
+          sex?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mentor_requests: {
         Row: {
           created_at: string
@@ -2338,6 +2633,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "ngo_beneficiaries_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "ngo_programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ngo_impact_reports: {
+        Row: {
+          created_at: string
+          generated_by_ai: boolean | null
+          id: string
+          metrics: Json
+          narrative: string | null
+          period: string
+          program_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          generated_by_ai?: boolean | null
+          id?: string
+          metrics?: Json
+          narrative?: string | null
+          period: string
+          program_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          generated_by_ai?: boolean | null
+          id?: string
+          metrics?: Json
+          narrative?: string | null
+          period?: string
+          program_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ngo_impact_reports_program_id_fkey"
             columns: ["program_id"]
             isOneToOne: false
             referencedRelation: "ngo_programs"
@@ -3075,6 +3411,57 @@ export type Database = {
           },
         ]
       }
+      skill_assessments: {
+        Row: {
+          assessed_at: string
+          evidence: string | null
+          id: string
+          score: number
+          skill: string
+          user_id: string
+        }
+        Insert: {
+          assessed_at?: string
+          evidence?: string | null
+          id?: string
+          score?: number
+          skill: string
+          user_id: string
+        }
+        Update: {
+          assessed_at?: string
+          evidence?: string | null
+          id?: string
+          score?: number
+          skill?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      skills_profile: {
+        Row: {
+          current_level: string | null
+          motivation: string | null
+          target_role: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          current_level?: string | null
+          motivation?: string | null
+          target_role?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          current_level?: string | null
+          motivation?: string | null
+          target_role?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       social_comments: {
         Row: {
           content: string
@@ -3749,6 +4136,36 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           kind?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      venture_cofounder_matches: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          skills: string[] | null
+          status: string | null
+          target_user_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          skills?: string[] | null
+          status?: string | null
+          target_user_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          skills?: string[] | null
+          status?: string | null
+          target_user_id?: string | null
           user_id?: string
         }
         Relationships: []
