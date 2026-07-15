@@ -111,6 +111,16 @@ const DemoRolePicker = React.lazy(() => import('@/pages/DemoRolePicker'));
 const SnapAndSolvePage = React.lazy(() => import('@/pages/SnapAndSolvePage'));
 const TeacherTestGeneratorPage = React.lazy(() => import('@/pages/TeacherTestGeneratorPage'));
 
+// New specialist pages
+const MedicalCPDPage = React.lazy(() => import('@/pages/MedicalCPDPage'));
+const MedicalPatientsPage = React.lazy(() => import('@/pages/MedicalPatientsPage'));
+const EntrepreneurCofoundersPage = React.lazy(() => import('@/pages/EntrepreneurCofoundersPage'));
+const EntrepreneurPitchPage = React.lazy(() => import('@/pages/EntrepreneurPitchPage'));
+const DeveloperBountiesPage = React.lazy(() => import('@/pages/DeveloperBountiesPage'));
+const DeveloperReputationPage = React.lazy(() => import('@/pages/DeveloperReputationPage'));
+const SkillsPathsPage = React.lazy(() => import('@/pages/SkillsPathsPage'));
+const SkillsPortfolioPage = React.lazy(() => import('@/pages/SkillsPortfolioPage'));
+
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
 });
@@ -230,6 +240,16 @@ function App() {
               <Route path="/developer-projects" element={<PG><RoleGuard allow={['developer']}><DeveloperProjectsPage /></RoleGuard></PG>} />
               <Route path="/developer-code-review" element={<PG><RoleGuard allow={['developer']}><DeveloperCodeReviewPage /></RoleGuard></PG>} />
               <Route path="/developer-challenges" element={<PG><RoleGuard allow={['developer']}><DeveloperChallengesPage /></RoleGuard></PG>} />
+
+              {/* New specialist inner pages */}
+              <Route path="/medical-cpd" element={<PG><RoleGuard allow={['doctor']}><MedicalCPDPage /></RoleGuard></PG>} />
+              <Route path="/medical-patients" element={<PG><RoleGuard allow={['doctor']}><MedicalPatientsPage /></RoleGuard></PG>} />
+              <Route path="/entrepreneur-cofounders" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurCofoundersPage /></RoleGuard></PG>} />
+              <Route path="/entrepreneur-pitch" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurPitchPage /></RoleGuard></PG>} />
+              <Route path="/developer-bounties" element={<PG><RoleGuard allow={['developer']}><DeveloperBountiesPage /></RoleGuard></PG>} />
+              <Route path="/developer-reputation" element={<PG><RoleGuard allow={['developer']}><DeveloperReputationPage /></RoleGuard></PG>} />
+              <Route path="/skills-paths" element={<PG><RoleGuard allow={['skills','student']}><SkillsPathsPage /></RoleGuard></PG>} />
+              <Route path="/skills-portfolio" element={<PG><RoleGuard allow={['skills','student']}><SkillsPortfolioPage /></RoleGuard></PG>} />
 
 
               {/* Tools & Resources — redirect overlapping tool routes to unified hub */}
