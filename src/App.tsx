@@ -120,6 +120,10 @@ const DeveloperBountiesPage = React.lazy(() => import('@/pages/DeveloperBounties
 const DeveloperReputationPage = React.lazy(() => import('@/pages/DeveloperReputationPage'));
 const SkillsPathsPage = React.lazy(() => import('@/pages/SkillsPathsPage'));
 const SkillsPortfolioPage = React.lazy(() => import('@/pages/SkillsPortfolioPage'));
+const StudentLearningHubPage = React.lazy(() => import('@/pages/StudentLearningHubPage'));
+const StudentAnalyticsPage = React.lazy(() => import('@/pages/StudentAnalyticsPage'));
+const StudentQuizzesPage = React.lazy(() => import('@/pages/StudentQuizzesPage'));
+const TeacherCompletionsPage = React.lazy(() => import('@/pages/TeacherCompletionsPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
@@ -194,6 +198,10 @@ function App() {
               <Route path="/gradebook" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherGradebookStandalone /></RoleGuard></PG>} />
               <Route path="/attendance" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherAttendanceStandalone /></RoleGuard></PG>} />
               <Route path="/communication" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherCommunicationPage /></RoleGuard></PG>} />
+              <Route path="/teacher/completions" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherCompletionsPage /></RoleGuard></PG>} />
+              <Route path="/student/learn" element={<PG><StudentLearningHubPage /></PG>} />
+              <Route path="/student/analytics" element={<PG><StudentAnalyticsPage /></PG>} />
+              <Route path="/student/quizzes" element={<PG><StudentQuizzesPage /></PG>} />
 
               <Route path="/entrepreneur-funding" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurFundingPage /></RoleGuard></PG>} />
               <Route path="/entrepreneur-network" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurNetworkPage /></RoleGuard></PG>} />
