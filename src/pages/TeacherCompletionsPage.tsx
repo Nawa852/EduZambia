@@ -24,8 +24,8 @@ const TeacherCompletionsPage = () => {
 
   useEffect(() => {
     if (!user) return;
-    supabase.from('courses').select('id,title').eq('instructor_id', user.id).then(({ data }) => {
-      setCourses(data || []);
+    supabase.from('courses').select('id,title').eq('created_by', user.id).then(({ data }: any) => {
+      setCourses((data as any) || []);
       if (data?.[0]) setCourseId(data[0].id);
     });
   }, [user]);
@@ -47,7 +47,7 @@ const TeacherCompletionsPage = () => {
       : { data: [] as any[] };
     const profMap = Object.fromEntries((profs || []).map(p => [p.id, p]));
     const lessonMap = Object.fromEntries((lessons || []).map(l => [l.id, l]));
-    setRows((comps || []).map(c => ({ ...c, profile: profMap[c.user_id] || null, lesson: lessonMap[c.lesson_id] || null })));
+    setRows(((comps || []) as any[]).map((c: any) => ({ ...c, profile: profMap[c.user_id] || null, lesson: lessonMap[c.lesson_id] || null })) as Row[]);
     setLoading(false);
   };
 
