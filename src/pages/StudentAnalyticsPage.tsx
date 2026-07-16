@@ -151,7 +151,7 @@ const StudentAnalyticsPage = () => {
           <CardContent className="space-y-3">
             {goals.length === 0 ? <p className="text-sm text-muted-foreground">No goals yet.</p> :
               goals.map(g => {
-                const pct = g.target_minutes ? Math.min(100, ((g.completed_minutes || 0) / g.target_minutes) * 100) : 0;
+                const pct = g.target ? Math.min(100, ((g.current || 0) / g.target) * 100) : 0;
                 return (
                   <div key={g.id} className="space-y-1">
                     <div className="flex justify-between text-sm">

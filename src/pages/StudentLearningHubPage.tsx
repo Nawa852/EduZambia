@@ -11,7 +11,7 @@ import { BookOpen, PlayCircle, Target, Sparkles, Clock, ArrowRight } from 'lucid
 interface CourseRow { id: string; title: string; subject: string | null; description: string | null; }
 interface Enroll { course_id: string; progress: number; courses: CourseRow | null; }
 interface Lesson { id: string; title: string; course_id: string; order_index: number | null; duration_minutes: number | null; }
-interface Goal { id: string; title: string; target_minutes: number | null; completed_minutes: number | null; due_date: string | null; }
+interface Goal { id: string; title: string; target: number | null; current: number | null; due_date: string | null; }
 
 const StudentLearningHubPage = () => {
   const { user } = useAuth();
@@ -26,7 +26,7 @@ const StudentLearningHubPage = () => {
       const [enr, courses, gls] = await Promise.all([
         supabase.from('enrollments').select('course_id, progress, courses(id,title,subject,description)').eq('user_id', user.id),
         supabase.from('courses').select('id').limit(50),
-        supabase.from('study_goals').select('id,title,target_minutes,completed_minutes,due_date').eq('user_id', user.id).order('due_date', { ascending: true }).limit(5),
+        supabase.from('study_goals').select('id,title,target,current,due_date').eq('user_id', user.id).order('due_date', { ascending: true }).limit(5),
       ]);
       setEnrollments((enr.data as any) || []);
       const enrolledIds = new Set(((enr.data as any) || []).map((e: any) => e.course_id));
@@ -77,10 +77,10 @@ const StudentLearningHubPage = () => {
             {todayPlan.length === 0 ? (
               <p className="text-sm text-muted-foreground">No goals set. <Link to="/prepare?tab=planner" className="text-primary underline">Create one</Link>.</p>
             ) : todayPlan.map(g => {
-              const pct = g.target_minutes ? Math.min(100, ((g.completed_minutes || 0) / g.target_minutes) * 100) : 0;
+              const pct = g.target ? Math.min(100, ((g.current || 0) / g.target) * 100) : 0;
               return (
                 <div key={g.id} className="space-y-1">
-                  <div className="flex justify-between text-sm"><span>{g.title}</span><span className="text-muted-foreground">{g.completed_minutes || 0}/{g.target_minutes || 0}m</span></div>
+                  <div className="flex justify-between text-sm"><span>{g.title}</span><span className="text-muted-foreground">{g.current || 0}/{g.target || 0}</span></div>
                   <Progress value={pct} className="h-1.5" />
                 </div>
               );
