@@ -1,9 +1,10 @@
 import React from 'react';
 import { HubPageLayout, HubTab } from '@/components/Layout/HubPageLayout';
-import { Rocket, Store, Users, FileText, DollarSign, Briefcase, Presentation, TrendingUp, Search, Target, LayoutDashboard } from 'lucide-react';
+import { Rocket, Store, Users, FileText, DollarSign, Briefcase, Presentation, TrendingUp, Search, Target, LayoutDashboard, Sparkles } from 'lucide-react';
 
 const tabs: HubTab[] = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard, component: React.lazy(() => import('@/pages/EntrepreneurDashboardPage')) },
+  { id: 'ai-suite', label: 'AI Suite', icon: Sparkles, component: React.lazy(() => import('@/pages/AIBusinessSuitePage')) },
   { id: 'ventures', label: 'Ventures', icon: Rocket, component: React.lazy(() => import('@/pages/EntrepreneurVenturesPage')) },
   { id: 'marketplace', label: 'Marketplace', icon: Store, component: React.lazy(() => import('@/pages/MarketplacePage')) },
   { id: 'mentors', label: 'Mentors', icon: Users, component: React.lazy(() => import('@/pages/MentorDirectoryPage')) },
