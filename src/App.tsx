@@ -123,6 +123,7 @@ const SkillsPortfolioPage = React.lazy(() => import('@/pages/SkillsPortfolioPage
 const StudentLearningHubPage = React.lazy(() => import('@/pages/StudentLearningHubPage'));
 const StudentAnalyticsPage = React.lazy(() => import('@/pages/StudentAnalyticsPage'));
 const StudentQuizzesPage = React.lazy(() => import('@/pages/StudentQuizzesPage'));
+const AIBusinessSuitePage = React.lazy(() => import('@/pages/AIBusinessSuitePage'));
 const TeacherCompletionsPage = React.lazy(() => import('@/pages/TeacherCompletionsPage'));
 
 const queryClient = new QueryClient({
@@ -258,6 +259,8 @@ function App() {
               <Route path="/developer-reputation" element={<PG><RoleGuard allow={['developer']}><DeveloperReputationPage /></RoleGuard></PG>} />
               <Route path="/skills-paths" element={<PG><RoleGuard allow={['skills','student']}><SkillsPathsPage /></RoleGuard></PG>} />
               <Route path="/skills-portfolio" element={<PG><RoleGuard allow={['skills','student']}><SkillsPortfolioPage /></RoleGuard></PG>} />
+              <Route path="/ai-business-suite" element={<PG><AIBusinessSuitePage /></PG>} />
+              <Route path="/business-suite" element={<Navigate to="/ai-business-suite" replace />} />
 
 
               {/* Tools & Resources — redirect overlapping tool routes to unified hub */}
