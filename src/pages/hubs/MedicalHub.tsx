@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { HubPageLayout, HubTab } from '@/components/Layout/HubPageLayout';
 import {
   HeartPulse, Stethoscope, Microscope, Pill, FileText, ClipboardList,
-  GraduationCap, Brain, Video, BookOpen, LayoutDashboard,
+  GraduationCap, Brain, Video, BookOpen, LayoutDashboard, Sparkles,
 } from 'lucide-react';
 
 type Tool = { title: string; desc: string; href: string; icon: React.ComponentType<{ className?: string }>; badge?: string };
@@ -74,6 +74,7 @@ const MedicalOverview: React.FC = () => (
 
 const tabs: HubTab[] = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard, component: MedicalOverview },
+  { id: 'ai-suite', label: 'AI Suite', icon: Sparkles, badge: 'AI', component: React.lazy(() => import('@/pages/AIMedicalSuitePage')) },
   { id: 'simulator', label: 'Case Simulator', icon: Stethoscope, badge: 'AI', component: React.lazy(() => import('@/pages/MedicalCaseSimulatorPage')) },
   { id: 'cases', label: 'Case Log', icon: ClipboardList, component: React.lazy(() => import('@/pages/MedicalCaseLogPage')) },
   { id: 'notes', label: 'Clinical Notes', icon: FileText, component: React.lazy(() => import('@/pages/MedicalClinicalNotesPage')) },
