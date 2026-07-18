@@ -4,7 +4,7 @@ import { PageHeader } from '@/components/ui/page-header';
 import { Card } from '@/components/ui/card';
 import {
   Wrench, Code, Terminal, GitBranch, Bug, Rocket,
-  GraduationCap, Brain, Shield, Trophy, FolderGit2,
+  GraduationCap, Brain, Shield, Trophy, FolderGit2, Sparkles,
 } from 'lucide-react';
 
 type Tool = { title: string; desc: string; href: string; icon: React.ComponentType<{ className?: string }>; badge?: string };
@@ -15,6 +15,7 @@ const groups: Group[] = [
     label: 'Build',
     accent: 'from-slate-600/15 to-zinc-700/10',
     tools: [
+      { title: 'AI Developer Suite', desc: '15+ AI dev tools', href: '/ai-developer-suite', icon: Sparkles, badge: 'AI' },
       { title: 'BrightSphere IDE', desc: 'Web code workspace', href: '/developer-ide', icon: Terminal, badge: 'IDE' },
       { title: 'Projects', desc: 'Your repos & builds', href: '/developer-projects', icon: FolderGit2 },
       { title: 'Code Review', desc: 'AI pull-request review', href: '/developer-code-review', icon: GitBranch, badge: 'AI' },

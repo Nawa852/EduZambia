@@ -124,6 +124,11 @@ const StudentLearningHubPage = React.lazy(() => import('@/pages/StudentLearningH
 const StudentAnalyticsPage = React.lazy(() => import('@/pages/StudentAnalyticsPage'));
 const StudentQuizzesPage = React.lazy(() => import('@/pages/StudentQuizzesPage'));
 const AIBusinessSuitePage = React.lazy(() => import('@/pages/AIBusinessSuitePage'));
+const AIMedicalSuitePage = React.lazy(() => import('@/pages/AIMedicalSuitePage'));
+const AIDeveloperSuitePage = React.lazy(() => import('@/pages/AIDeveloperSuitePage'));
+const AINGOSuitePage = React.lazy(() => import('@/pages/AINGOSuitePage'));
+const AISkillsSuitePage = React.lazy(() => import('@/pages/AISkillsSuitePage'));
+const AITeacherSuitePage = React.lazy(() => import('@/pages/AITeacherSuitePage'));
 const TeacherCompletionsPage = React.lazy(() => import('@/pages/TeacherCompletionsPage'));
 
 const queryClient = new QueryClient({
@@ -260,6 +265,11 @@ function App() {
               <Route path="/skills-paths" element={<PG><RoleGuard allow={['skills','student']}><SkillsPathsPage /></RoleGuard></PG>} />
               <Route path="/skills-portfolio" element={<PG><RoleGuard allow={['skills','student']}><SkillsPortfolioPage /></RoleGuard></PG>} />
               <Route path="/ai-business-suite" element={<PG><AIBusinessSuitePage /></PG>} />
+              <Route path="/ai-medical-suite" element={<PG><AIMedicalSuitePage /></PG>} />
+              <Route path="/ai-developer-suite" element={<PG><AIDeveloperSuitePage /></PG>} />
+              <Route path="/ai-ngo-suite" element={<PG><AINGOSuitePage /></PG>} />
+              <Route path="/ai-skills-suite" element={<PG><AISkillsSuitePage /></PG>} />
+              <Route path="/ai-teacher-suite" element={<PG><AITeacherSuitePage /></PG>} />
               <Route path="/business-suite" element={<Navigate to="/ai-business-suite" replace />} />
 
 
