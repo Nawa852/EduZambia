@@ -121,6 +121,7 @@ const DeveloperReputationPage = React.lazy(() => import('@/pages/DeveloperReputa
 const SkillsPathsPage = React.lazy(() => import('@/pages/SkillsPathsPage'));
 const SkillsPortfolioPage = React.lazy(() => import('@/pages/SkillsPortfolioPage'));
 const StudentLearningHubPage = React.lazy(() => import('@/pages/StudentLearningHubPage'));
+const StudyRoomPage = React.lazy(() => import('@/pages/StudyRoomPage'));
 const StudentAnalyticsPage = React.lazy(() => import('@/pages/StudentAnalyticsPage'));
 const StudentQuizzesPage = React.lazy(() => import('@/pages/StudentQuizzesPage'));
 const AIBusinessSuitePage = React.lazy(() => import('@/pages/AIBusinessSuitePage'));
@@ -208,6 +209,8 @@ function App() {
               <Route path="/student/learn" element={<PG><StudentLearningHubPage /></PG>} />
               <Route path="/student/analytics" element={<PG><StudentAnalyticsPage /></PG>} />
               <Route path="/student/quizzes" element={<PG><StudentQuizzesPage /></PG>} />
+              <Route path="/study" element={<PG><StudyRoomPage /></PG>} />
+              <Route path="/study-room" element={<PG><StudyRoomPage /></PG>} />
 
               <Route path="/entrepreneur-funding" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurFundingPage /></RoleGuard></PG>} />
               <Route path="/entrepreneur-network" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurNetworkPage /></RoleGuard></PG>} />
