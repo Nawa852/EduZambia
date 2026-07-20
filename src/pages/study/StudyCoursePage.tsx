@@ -446,7 +446,7 @@ const ArtifactCard: React.FC<{ kind:string; artifact:any; onReload:()=>void }> =
             const isWrong = picked===i && i!==q.correct;
             return (
               <button key={i} onClick={()=>submit(i)} disabled={picked!==null}
-                className={`w-full text-left p-3 rounded-xl border text-sm transition ${isCorrect?'bg-emerald-500/10 border-emerald-500':'':''} ${isWrong?'bg-destructive/10 border-destructive':''} ${picked===null?'hover:border-primary':''}`}>
+                className={`w-full text-left p-3 rounded-xl border text-sm transition ${isCorrect?'bg-emerald-500/10 border-emerald-500':''} ${isWrong?'bg-destructive/10 border-destructive':''} ${picked===null?'hover:border-primary':''}`}>
                 {opt}
               </button>
             );
