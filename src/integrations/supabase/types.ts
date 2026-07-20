@@ -3604,6 +3604,159 @@ export type Database = {
           },
         ]
       }
+      study_artifacts: {
+        Row: {
+          course_id: string | null
+          created_at: string
+          id: string
+          kind: string
+          payload: Json
+          resource_id: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          payload?: Json
+          resource_id?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          payload?: Json
+          resource_id?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_artifacts_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "study_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_artifacts_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "study_resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_chat_messages: {
+        Row: {
+          content: string
+          course_id: string | null
+          created_at: string
+          id: string
+          resource_id: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          resource_id?: string | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          resource_id?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_chat_messages_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "study_courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_chat_messages_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "study_resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_courses: {
+        Row: {
+          board: string | null
+          color: string | null
+          created_at: string
+          daily_minutes: number | null
+          emoji: string | null
+          exam_date: string | null
+          grade: string | null
+          id: string
+          learning_style: string | null
+          level: string | null
+          name: string
+          objectives: string | null
+          subject: string | null
+          target_grade: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          board?: string | null
+          color?: string | null
+          created_at?: string
+          daily_minutes?: number | null
+          emoji?: string | null
+          exam_date?: string | null
+          grade?: string | null
+          id?: string
+          learning_style?: string | null
+          level?: string | null
+          name: string
+          objectives?: string | null
+          subject?: string | null
+          target_grade?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          board?: string | null
+          color?: string | null
+          created_at?: string
+          daily_minutes?: number | null
+          emoji?: string | null
+          exam_date?: string | null
+          grade?: string | null
+          id?: string
+          learning_style?: string | null
+          level?: string | null
+          name?: string
+          objectives?: string | null
+          subject?: string | null
+          target_grade?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       study_goals: {
         Row: {
           completed: boolean
@@ -3739,6 +3892,62 @@ export type Database = {
           subject?: string | null
         }
         Relationships: []
+      }
+      study_resources: {
+        Row: {
+          course_id: string
+          created_at: string
+          extracted_text: string | null
+          id: string
+          kind: string
+          mime: string | null
+          size_bytes: number | null
+          source_url: string | null
+          storage_path: string | null
+          summary: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          extracted_text?: string | null
+          id?: string
+          kind?: string
+          mime?: string | null
+          size_bytes?: number | null
+          source_url?: string | null
+          storage_path?: string | null
+          summary?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          extracted_text?: string | null
+          id?: string
+          kind?: string
+          mime?: string | null
+          size_bytes?: number | null
+          source_url?: string | null
+          storage_path?: string | null
+          summary?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_resources_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "study_courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       study_schedules: {
         Row: {
