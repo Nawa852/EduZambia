@@ -209,7 +209,9 @@ function App() {
               <Route path="/student/learn" element={<PG><StudentLearningHubPage /></PG>} />
               <Route path="/student/analytics" element={<PG><StudentAnalyticsPage /></PG>} />
               <Route path="/student/quizzes" element={<PG><StudentQuizzesPage /></PG>} />
-              <Route path="/study" element={<PG><StudyRoomPage /></PG>} />
+              <Route path="/study" element={<PG><React.Suspense fallback={null}>{React.createElement(React.lazy(() => import('@/pages/study/StudyDashboardPage')))}</React.Suspense></PG>} />
+              <Route path="/study/course/:courseId" element={<PG><React.Suspense fallback={null}>{React.createElement(React.lazy(() => import('@/pages/study/StudyCoursePage')))}</React.Suspense></PG>} />
+              <Route path="/study/resource/:resourceId" element={<PG><React.Suspense fallback={null}>{React.createElement(React.lazy(() => import('@/pages/study/StudyResourcePage')))}</React.Suspense></PG>} />
               <Route path="/study-room" element={<PG><StudyRoomPage /></PG>} />
 
               <Route path="/entrepreneur-funding" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurFundingPage /></RoleGuard></PG>} />
