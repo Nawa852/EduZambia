@@ -77,26 +77,45 @@ const StudyResourcePage = () => {
 
   return (
     <div className="container mx-auto p-4 lg:p-6 max-w-6xl space-y-4">
-      <button onClick={()=>nav(`/study/course/${r.course_id}`)} className="text-sm text-muted-foreground flex items-center gap-1 hover:text-foreground"><ArrowLeft className="w-4 h-4" /> Back to course</button>
+      {/* Header row: back button + title */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={()=>nav(`/study/course/${r.course_id}`)}
+          aria-label="Back to folder"
+          className="w-10 h-10 rounded-xl border bg-background hover:bg-muted flex items-center justify-center shrink-0"
+        >
+          <ArrowLeft className="w-4 h-4" />
+        </button>
+        <h1 className="text-xl md:text-2xl font-semibold truncate flex-1">{r.title}</h1>
+        {!pack && (
+          <Button onClick={generatePack} disabled={busy} className="rounded-full gap-2 shrink-0">
+            {busy ? <Loader2 className="w-4 h-4 animate-spin"/> : <Sparkles className="w-4 h-4"/>}
+            <span className="hidden sm:inline">Build study pack</span>
+          </Button>
+        )}
+      </div>
 
-      <Card className="p-4 rounded-2xl flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-          {r.kind==='youtube'?<Youtube className="w-5 h-5" />:r.kind==='url'?<LinkIcon className="w-5 h-5" />:<FileText className="w-5 h-5" />}
+      {/* Underline tab bar (SchoolGoat style) */}
+      <div className="border-b overflow-x-auto -mx-4 lg:-mx-6 px-4 lg:px-6">
+        <div className="flex gap-1 min-w-max">
+          {tabs.map(([id,label,Icon])=>(
+            <button
+              key={id}
+              onClick={()=>setTab(id)}
+              className={`relative flex items-center gap-2 px-3 md:px-4 h-11 text-sm font-medium transition ${
+                tab===id
+                  ? 'text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              {label}
+              {tab===id && (
+                <span className="absolute left-2 right-2 -bottom-px h-0.5 bg-foreground rounded-full" />
+              )}
+            </button>
+          ))}
         </div>
-        <div className="flex-1 min-w-0">
-          <h1 className="font-semibold truncate">{r.title}</h1>
-          <div className="flex gap-1.5 flex-wrap mt-0.5"><Badge variant="secondary" className="text-[10px]">{r.kind}</Badge>{r.mime && <Badge variant="outline" className="text-[10px]">{r.mime}</Badge>}</div>
-        </div>
-        {!pack && <Button onClick={generatePack} disabled={busy} className="rounded-full gap-2">{busy?<Loader2 className="w-4 h-4 animate-spin"/>:<Sparkles className="w-4 h-4"/>} Build study pack</Button>}
-      </Card>
-
-      <div className="flex gap-1.5 overflow-x-auto pb-1">
-        {tabs.map(([id,label,Icon])=>(
-          <button key={id} onClick={()=>setTab(id)}
-            className={`shrink-0 flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-medium border ${tab===id?'bg-primary text-primary-foreground border-primary':'border-border text-muted-foreground hover:text-foreground'}`}>
-            <Icon className="w-3.5 h-3.5" />{label}
-          </button>
-        ))}
       </div>
 
       {tab === 'source' && <SourceView r={r} signedUrl={signedUrl} />}
