@@ -209,9 +209,23 @@ function App() {
               <Route path="/student/learn" element={<PG><StudentLearningHubPage /></PG>} />
               <Route path="/student/analytics" element={<PG><StudentAnalyticsPage /></PG>} />
               <Route path="/student/quizzes" element={<PG><StudentQuizzesPage /></PG>} />
-              <Route path="/study" element={<PG><React.Suspense fallback={null}>{React.createElement(React.lazy(() => import('@/pages/study/StudyDashboardPage')))}</React.Suspense></PG>} />
-              <Route path="/study/course/:courseId" element={<PG><React.Suspense fallback={null}>{React.createElement(React.lazy(() => import('@/pages/study/StudyCoursePage')))}</React.Suspense></PG>} />
-              <Route path="/study/resource/:resourceId" element={<PG><React.Suspense fallback={null}>{React.createElement(React.lazy(() => import('@/pages/study/StudyResourcePage')))}</React.Suspense></PG>} />
+              <Route path="/study" element={<PG><React.Suspense fallback={null}><StudyDashboardPage /></React.Suspense></PG>} />
+              <Route path="/study/course/:courseId" element={<PG><React.Suspense fallback={null}><StudyCoursePage /></React.Suspense></PG>} />
+              <Route path="/study/resource/:resourceId" element={<PG><React.Suspense fallback={null}><StudyResourcePage /></React.Suspense></PG>} />
+              <Route path="/lecture" element={<Navigate to="/prepare?tab=notes" replace />} />
+              <Route path="/medical/patients" element={<Navigate to="/medical-patients" replace />} />
+              <Route path="/medical/consults" element={<Navigate to="/medical?tab=cases" replace />} />
+              <Route path="/medical/sandbox" element={<Navigate to="/medical?tab=simulator" replace />} />
+              <Route path="/medical/cpd" element={<Navigate to="/medical-cpd" replace />} />
+              <Route path="/medical/library" element={<Navigate to="/learn?tab=catalog" replace />} />
+              <Route path="/medical/drugs" element={<Navigate to="/medical?tab=drugs" replace />} />
+              <Route path="/medical/protocols" element={<Navigate to="/medical?tab=notes" replace />} />
+              <Route path="/medical/referrals" element={<Navigate to="/medical?tab=cases" replace />} />
+              <Route path="/medical/cases" element={<Navigate to="/medical?tab=cases" replace />} />
+              <Route path="/ngo/projects" element={<Navigate to="/ngo?tab=programs" replace />} />
+              <Route path="/skills-lab" element={<Navigate to="/skills-paths" replace />} />
+              <Route path="/skill-passport" element={<Navigate to="/skills-portfolio" replace />} />
+              <Route path="/learning-paths" element={<Navigate to="/skills-paths" replace />} />
               <Route path="/study-room" element={<PG><StudyRoomPage /></PG>} />
 
               <Route path="/entrepreneur-funding" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurFundingPage /></RoleGuard></PG>} />
