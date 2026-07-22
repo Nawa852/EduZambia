@@ -58,8 +58,8 @@ const StudentQuizzesPage = () => {
     setSubmitted(true);
     if (user) {
       await supabase.from('quiz_attempts').insert({
-        user_id: user.id, subject, total_questions: questions.length,
-        correct_answers: correct, quiz_data: { questions, answers } as any,
+        user_id: user.id, subject, grade_level: 'Grade 10',
+        total_questions: questions.length, correct_answers: correct,
       } as any);
       loadHistory();
     }
