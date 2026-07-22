@@ -39,7 +39,7 @@ export default function EntrepreneurPitchPage() {
     if (!deck) return;
     const { data: user } = await supabase.auth.getUser();
     const { error } = await supabase.from('pitch_decks').insert({
-      user_id: user.user!.id, title: input.ventureName || 'Pitch Deck', slides: deck,
+      user_id: user.user!.id, title: input.ventureName || 'Pitch Deck', content_json: { deck, input } as any,
     } as any);
     if (error) toast.error(error.message);
     else { toast.success('Deck saved'); qc.invalidateQueries({ queryKey: ['pitch-decks'] }); }
