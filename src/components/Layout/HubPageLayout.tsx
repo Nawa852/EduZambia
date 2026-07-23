@@ -29,11 +29,7 @@ interface HubPageLayoutProps {
   quickLinks?: QuickLink[];
 }
 
-const Loader = () => (
-  <div className="flex justify-center py-16">
-    <LogoLoader text="Loading..." />
-  </div>
-);
+const Loader = () => <HubSkeleton />;
 
 export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
   title,
