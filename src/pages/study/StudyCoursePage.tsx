@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { StudyCourseSkeleton } from '@/components/UI/StudySkeleton';
 import ReactMarkdown from 'react-markdown';
 import {
   ArrowLeft, Upload, FileText, Image as ImageIcon, Youtube, Link as LinkIcon, MessageSquare,
