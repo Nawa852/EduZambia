@@ -68,7 +68,7 @@ const StudyResourcePage = () => {
     setBusy(false);
   };
 
-  if (!r) return <div className="p-6 text-sm text-muted-foreground">Loading…</div>;
+  if (!r) return <StudyResourceSkeleton />;
 
   const tabs: [Tab, string, any][] = [
     ['source','Source',FileText],['summary','Summary',StickyNote],['notes','Notes',StickyNote],
