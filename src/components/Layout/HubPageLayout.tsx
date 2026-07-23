@@ -76,14 +76,14 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
 
       {/* Tabs */}
       <Tabs value={tab} onValueChange={setTab} className="w-full">
-        <div className="rounded-2xl border border-border/40 bg-card px-2 py-2 shadow-sm">
+        <div className="rounded-2xl border border-border/40 bg-card px-1.5 py-1.5 sm:px-2 sm:py-2 shadow-sm">
           <TabsList className="w-full justify-start gap-1 bg-transparent h-auto p-0 overflow-x-auto scrollbar-none">
             {tabs.map((t) => (
               <TabsTrigger
                 key={t.id}
                 value={t.id}
                 className={cn(
-                   "relative gap-1.5 px-4 py-2 rounded-xl text-xs lg:text-[13px] font-medium transition-colors whitespace-nowrap shrink-0",
+                   "relative gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs lg:text-[13px] font-medium transition-colors whitespace-nowrap shrink-0",
                   "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:font-semibold",
                   "data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-secondary/40 data-[state=inactive]:hover:text-foreground"
                 )}
