@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTabFromUrl } from '@/hooks/useTabFromUrl';
-import { LogoLoader } from '@/components/UI/LogoLoader';
+import { HubSkeleton } from '@/components/UI/HubSkeleton';
 import { cn } from '@/lib/utils';
 import type { LucideIcon } from 'lucide-react';
 
