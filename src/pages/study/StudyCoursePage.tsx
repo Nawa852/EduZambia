@@ -99,7 +99,7 @@ const StudyCoursePage = () => {
     return <FileText className="w-4 h-4 text-primary" />;
   };
 
-  if (!course) return <div className="p-6 text-sm text-muted-foreground">Loading course…</div>;
+  if (!course) { const { StudyCourseSkeleton } = require('@/components/UI/StudySkeleton'); return <StudyCourseSkeleton />; }
 
   const daysLeft = course.exam_date ? Math.max(0, Math.ceil((new Date(course.exam_date).getTime() - Date.now())/(1000*60*60*24))) : null;
 
