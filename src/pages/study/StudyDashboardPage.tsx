@@ -15,6 +15,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { StudyDashboardSkeleton } from '@/components/UI/StudySkeleton';
 import {
   Plus, Folder, FileText, Upload, Sparkles, Mic, PenLine, ListChecks, BookOpen,
   Search, Trash2, Youtube, Link as LinkIcon, ImageIcon, ChevronRight, Clock,
