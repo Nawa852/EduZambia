@@ -149,17 +149,20 @@ const StudyDashboardPage = () => {
     return <FileText className="w-4 h-4 text-primary" />;
   };
 
+  if (loading && courses.length === 0) return <StudyDashboardSkeleton />;
+
   return (
-    <div className="container mx-auto p-4 lg:p-6 max-w-6xl space-y-5">
+    <div className="container mx-auto p-3 sm:p-4 lg:p-6 max-w-6xl space-y-4 sm:space-y-5">
       {/* Heading */}
       <div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
+        <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
           Your Dashboard
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
           Organize your study material into folders — upload notes, watch lessons, and let Synapse turn them into flashcards, quizzes and a personal tutor.
         </p>
       </div>
+
 
       {/* Tabs + primary action */}
       <div className="flex items-center gap-3 flex-wrap justify-between">
