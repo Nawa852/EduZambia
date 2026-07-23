@@ -15,6 +15,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { StudyDashboardSkeleton } from '@/components/UI/StudySkeleton';
 import {
   Plus, Folder, FileText, Upload, Sparkles, Mic, PenLine, ListChecks, BookOpen,
   Search, Trash2, Youtube, Link as LinkIcon, ImageIcon, ChevronRight, Clock,
@@ -148,21 +149,24 @@ const StudyDashboardPage = () => {
     return <FileText className="w-4 h-4 text-primary" />;
   };
 
+  if (loading && courses.length === 0) return <StudyDashboardSkeleton />;
+
   return (
-    <div className="container mx-auto p-4 lg:p-6 max-w-6xl space-y-5">
+    <div className="container mx-auto p-3 sm:p-4 lg:p-6 max-w-6xl space-y-4 sm:space-y-5">
       {/* Heading */}
       <div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
+        <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
           Your Dashboard
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
           Organize your study material into folders — upload notes, watch lessons, and let Synapse turn them into flashcards, quizzes and a personal tutor.
         </p>
       </div>
 
+
       {/* Tabs + primary action */}
-      <div className="flex items-center gap-3 flex-wrap justify-between">
-        <div className="inline-flex bg-muted/60 backdrop-blur rounded-full p-1 border border-border/60">
+      <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-between">
+        <div className="inline-flex bg-muted/60 backdrop-blur rounded-full p-1 border border-border/60 overflow-x-auto scrollbar-none max-w-full">
           {([
             ['actions', 'Actions'],
             ['files', 'Files'],
@@ -172,7 +176,7 @@ const StudyDashboardPage = () => {
             <button
               key={id}
               onClick={() => setTab(id)}
-              className={`px-4 h-9 rounded-full text-sm font-medium transition ${
+              className={`px-3 sm:px-4 h-8 sm:h-9 rounded-full text-xs sm:text-sm font-medium transition whitespace-nowrap ${
                 tab === id
                   ? 'bg-background text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
@@ -182,28 +186,29 @@ const StudyDashboardPage = () => {
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-2">
-          <div className="relative">
+        <div className="flex items-center gap-2 flex-1 sm:flex-none justify-end">
+          <div className="relative flex-1 sm:flex-none min-w-0">
             <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search…"
-              className="pl-9 h-9 rounded-full w-48"
+              className="pl-9 h-9 rounded-full w-full sm:w-48"
             />
           </div>
           {tab === 'folders' && (
-            <Button onClick={() => setOpenFolder(true)} className="rounded-full gap-2 h-9 bg-foreground text-background hover:bg-foreground/90">
-              <Plus className="w-4 h-4" /> Add folder
+            <Button onClick={() => setOpenFolder(true)} className="rounded-full gap-1.5 h-9 px-3 sm:px-4 bg-foreground text-background hover:bg-foreground/90 shrink-0">
+              <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Add folder</span><span className="sm:hidden">Add</span>
             </Button>
           )}
           {tab === 'files' && (
-            <Button onClick={() => { setUploadCourseId(courses[0]?.id || ''); setOpenUpload(true); }} className="rounded-full gap-2 h-9 bg-foreground text-background hover:bg-foreground/90">
-              <Upload className="w-4 h-4" /> Upload file
+            <Button onClick={() => { setUploadCourseId(courses[0]?.id || ''); setOpenUpload(true); }} className="rounded-full gap-1.5 h-9 px-3 sm:px-4 bg-foreground text-background hover:bg-foreground/90 shrink-0">
+              <Upload className="w-4 h-4" /> <span className="hidden sm:inline">Upload file</span><span className="sm:hidden">Upload</span>
             </Button>
           )}
         </div>
       </div>
+
 
       {/* ACTIONS */}
       {tab === 'actions' && (

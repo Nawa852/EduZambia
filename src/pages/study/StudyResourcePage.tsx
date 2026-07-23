@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { StudyResourceSkeleton } from '@/components/UI/StudySkeleton';
 import ReactMarkdown from 'react-markdown';
 import {
   ArrowLeft, FileText, Sparkles, MessageSquare, Loader2, Send, StickyNote,
@@ -67,7 +68,7 @@ const StudyResourcePage = () => {
     setBusy(false);
   };
 
-  if (!r) return <div className="p-6 text-sm text-muted-foreground">Loading…</div>;
+  if (!r) return <StudyResourceSkeleton />;
 
   const tabs: [Tab, string, any][] = [
     ['source','Source',FileText],['summary','Summary',StickyNote],['notes','Notes',StickyNote],
