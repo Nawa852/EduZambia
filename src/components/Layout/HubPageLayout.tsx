@@ -42,26 +42,26 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
   const [tab, setTab] = useTabFromUrl(defaultTab);
 
   return (
-    <div className="space-y-4 max-w-[1280px] mx-auto">
+    <div className="space-y-3 sm:space-y-4 max-w-[1280px] mx-auto px-2 sm:px-0">
       {/* Hero header */}
       <div className="relative overflow-hidden rounded-2xl bg-card border border-border/40 shadow-sm surface-tinted">
-        <div className="relative px-4 py-4 lg:px-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3.5">
-            <div className="shrink-0 flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-br from-primary/15 to-accent/10 text-primary ring-1 ring-primary/10 shadow-sm">
-              <Icon className="w-5 h-5" />
+        <div className="relative px-3 py-3 sm:px-4 sm:py-4 lg:px-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start sm:items-center gap-3 min-w-0">
+            <div className="shrink-0 flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-primary/15 to-accent/10 text-primary ring-1 ring-primary/10 shadow-sm">
+              <Icon className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
             </div>
-            <div>
-              <h1 className="text-lg lg:text-xl font-bold text-foreground leading-tight tracking-tight">{title}</h1>
-              <p className="text-[12px] text-muted-foreground mt-0.5 max-w-md leading-relaxed">{subtitle}</p>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-base sm:text-lg lg:text-xl font-bold text-foreground leading-tight tracking-tight truncate">{title}</h1>
+              <p className="text-[11px] sm:text-[12px] text-muted-foreground mt-0.5 leading-relaxed line-clamp-2 sm:line-clamp-none sm:max-w-md">{subtitle}</p>
             </div>
           </div>
           {quickLinks && quickLinks.length > 0 && (
-            <div className="hidden sm:flex flex-wrap gap-2">
+            <div className="flex sm:flex-wrap gap-2 -mx-3 sm:mx-0 px-3 sm:px-0 overflow-x-auto scrollbar-none">
               {quickLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-secondary/60 hover:bg-secondary text-xs font-medium text-secondary-foreground transition-all hover:-translate-y-0.5 border border-border/40"
+                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-secondary/60 hover:bg-secondary text-[11px] sm:text-xs font-medium text-secondary-foreground transition-all hover:-translate-y-0.5 border border-border/40 whitespace-nowrap shrink-0"
                 >
                   <link.icon className="w-3.5 h-3.5" />
                   {link.label}
@@ -71,6 +71,7 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
           )}
         </div>
       </div>
+
 
 
       {/* Tabs */}
