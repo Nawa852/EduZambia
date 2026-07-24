@@ -247,14 +247,17 @@ const TutorTab: React.FC<{ course: Course }> = ({ course }) => {
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
+  const [loadingHistory, setLoadingHistory] = useState(true);
   const [mode, setMode] = useState<'tutor'|'exam'|'writing'|'research'>('tutor');
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     (async () => {
+      setLoadingHistory(true);
       const { data } = await supabase.from('study_chat_messages').select('role, content')
         .eq('course_id', course.id).is('resource_id', null).order('created_at').limit(100);
       setMessages(((data as any) || []) as ChatMsg[]);
+      setLoadingHistory(false);
     })();
   }, [course.id]);
 
@@ -301,6 +304,8 @@ const TutorTab: React.FC<{ course: Course }> = ({ course }) => {
     setBusy(false);
   };
 
+  return (
+  if (loadingHistory) return <StudyChatSkeleton />;
   return (
     <Card className="rounded-3xl overflow-hidden flex flex-col" style={{ height: 'calc(100vh - 280px)', minHeight: 500 }}>
       <div className="p-3 border-b flex items-center gap-1.5 overflow-x-auto">
