@@ -7,12 +7,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { StudyResourceSkeleton } from '@/components/UI/StudySkeleton';
+import { StudyResourceSkeleton, StudyChatSkeleton, StudyQuizSkeleton, StudyFlashcardsSkeleton } from '@/components/UI/StudySkeleton';
+import { EmptyState } from '@/components/UI/EmptyState';
+import { ErrorState, InlineErrorBoundary } from '@/components/UI/ErrorState';
 import ReactMarkdown from 'react-markdown';
 import {
   ArrowLeft, FileText, Sparkles, MessageSquare, Loader2, Send, StickyNote,
   ListChecks, Brain, Youtube, Link as LinkIcon,
 } from 'lucide-react';
+
 
 interface Resource { id: string; title: string; kind: string; mime: string|null; source_url: string|null; storage_path: string|null; extracted_text: string|null; summary: string|null; course_id: string; }
 
