@@ -304,7 +304,6 @@ const TutorTab: React.FC<{ course: Course }> = ({ course }) => {
     setBusy(false);
   };
 
-  return (
   if (loadingHistory) return <StudyChatSkeleton />;
   return (
     <Card className="rounded-3xl overflow-hidden flex flex-col" style={{ height: 'calc(100vh - 280px)', minHeight: 500 }}>
