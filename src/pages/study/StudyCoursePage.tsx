@@ -110,6 +110,11 @@ const StudyCoursePage = () => {
     return <FileText className="w-4 h-4 text-primary" />;
   };
 
+  if (loadError && !course) return (
+    <div className="container mx-auto p-4 lg:p-6 max-w-6xl">
+      <ErrorState title="Could not load this folder" description={loadError} onRetry={load} />
+    </div>
+  );
   if (!course) return <StudyCourseSkeleton />;
 
   const daysLeft = course.exam_date ? Math.max(0, Math.ceil((new Date(course.exam_date).getTime() - Date.now())/(1000*60*60*24))) : null;
@@ -135,25 +140,29 @@ const StudyCoursePage = () => {
         </div>
       </Card>
 
-      {/* Tabs */}
-      <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
-        {[
-          ['overview','Overview',BookOpen],
-          ['resources','Resources',FileText],
-          ['tutor','AI Tutor',MessageSquare],
-          ['notes','Notes',StickyNote],
-          ['flashcards','Flashcards',Sparkles],
-          ['quizzes','Quizzes',ListChecks],
-          ['plan','Study Plan',Calendar],
-        ].map(([id,label,Icon]:any) => (
-          <button key={id} onClick={()=>setTab(id)}
-            className={`shrink-0 flex items-center gap-1.5 px-3.5 h-9 rounded-full text-xs font-medium border transition ${tab===id?'bg-primary text-primary-foreground border-primary':'bg-background text-muted-foreground border-border hover:text-foreground'}`}>
-            <Icon className="w-3.5 h-3.5" />{label}
-          </button>
-        ))}
+      {/* Tabs — sticky on scroll */}
+      <div className="sticky top-0 z-30 -mx-4 lg:-mx-6 px-4 lg:px-6 py-2 bg-background/85 supports-[backdrop-filter]:bg-background/70 backdrop-blur-md">
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-none snap-x">
+          {[
+            ['overview','Overview',BookOpen],
+            ['resources','Resources',FileText],
+            ['tutor','AI Tutor',MessageSquare],
+            ['notes','Notes',StickyNote],
+            ['flashcards','Flashcards',Sparkles],
+            ['quizzes','Quizzes',ListChecks],
+            ['plan','Study Plan',Calendar],
+          ].map(([id,label,Icon]:any) => (
+            <button key={id} onClick={()=>setTab(id)}
+              className={`snap-start shrink-0 flex items-center gap-1.5 px-3.5 h-9 rounded-full text-xs font-medium border transition active:scale-95 ${tab===id?'bg-primary text-primary-foreground border-primary':'bg-background text-muted-foreground border-border hover:text-foreground'}`}>
+              <Icon className="w-3.5 h-3.5" />{label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {tab === 'overview' && <OverviewTab course={course} resources={resources} onTab={setTab} />}
+      <InlineErrorBoundary label="This tab hit an error">
+        <div key={tab} className="animate-in fade-in-50 slide-in-from-bottom-1 duration-200">
+          {tab === 'overview' && <OverviewTab course={course} resources={resources} onTab={setTab} />}
 
       {tab === 'resources' && (
         <div className="space-y-4">
