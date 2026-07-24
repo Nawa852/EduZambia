@@ -9,7 +9,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { StudyCourseSkeleton } from '@/components/UI/StudySkeleton';
+import { StudyCourseSkeleton, StudyChatSkeleton } from '@/components/UI/StudySkeleton';
+import { ErrorState, InlineErrorBoundary } from '@/components/UI/ErrorState';
+import { EmptyState } from '@/components/UI/EmptyState';
 import ReactMarkdown from 'react-markdown';
 import {
   ArrowLeft, Upload, FileText, Image as ImageIcon, Youtube, Link as LinkIcon, MessageSquare,
@@ -27,6 +29,7 @@ const StudyCoursePage = () => {
   const nav = useNavigate();
   const [course, setCourse] = useState<Course | null>(null);
   const [resources, setResources] = useState<Resource[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [tab, setTab] = useState<'overview'|'resources'|'tutor'|'notes'|'flashcards'|'quizzes'|'plan'>('overview');
   const [uploading, setUploading] = useState(false);
   const [addUrl, setAddUrl] = useState('');
@@ -35,10 +38,17 @@ const StudyCoursePage = () => {
 
   const load = async () => {
     if (!courseId) return;
-    const { data: c } = await supabase.from('study_courses').select('*').eq('id', courseId).maybeSingle();
-    setCourse(c as any);
-    const { data: r } = await supabase.from('study_resources').select('*').eq('course_id', courseId).order('created_at', { ascending: false });
-    setResources((r as any) || []);
+    setLoadError(null);
+    try {
+      const { data: c, error: ce } = await supabase.from('study_courses').select('*').eq('id', courseId).maybeSingle();
+      if (ce) throw ce;
+      setCourse(c as any);
+      const { data: r, error: re } = await supabase.from('study_resources').select('*').eq('course_id', courseId).order('created_at', { ascending: false });
+      if (re) throw re;
+      setResources((r as any) || []);
+    } catch (e: any) {
+      setLoadError(e.message || 'Failed to load this folder.');
+    }
   };
   useEffect(() => { load(); }, [courseId]);
 
@@ -100,6 +110,11 @@ const StudyCoursePage = () => {
     return <FileText className="w-4 h-4 text-primary" />;
   };
 
+  if (loadError && !course) return (
+    <div className="container mx-auto p-4 lg:p-6 max-w-6xl">
+      <ErrorState title="Could not load this folder" description={loadError} onRetry={load} />
+    </div>
+  );
   if (!course) return <StudyCourseSkeleton />;
 
   const daysLeft = course.exam_date ? Math.max(0, Math.ceil((new Date(course.exam_date).getTime() - Date.now())/(1000*60*60*24))) : null;
@@ -125,25 +140,29 @@ const StudyCoursePage = () => {
         </div>
       </Card>
 
-      {/* Tabs */}
-      <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
-        {[
-          ['overview','Overview',BookOpen],
-          ['resources','Resources',FileText],
-          ['tutor','AI Tutor',MessageSquare],
-          ['notes','Notes',StickyNote],
-          ['flashcards','Flashcards',Sparkles],
-          ['quizzes','Quizzes',ListChecks],
-          ['plan','Study Plan',Calendar],
-        ].map(([id,label,Icon]:any) => (
-          <button key={id} onClick={()=>setTab(id)}
-            className={`shrink-0 flex items-center gap-1.5 px-3.5 h-9 rounded-full text-xs font-medium border transition ${tab===id?'bg-primary text-primary-foreground border-primary':'bg-background text-muted-foreground border-border hover:text-foreground'}`}>
-            <Icon className="w-3.5 h-3.5" />{label}
-          </button>
-        ))}
+      {/* Tabs — sticky on scroll */}
+      <div className="sticky top-0 z-30 -mx-4 lg:-mx-6 px-4 lg:px-6 py-2 bg-background/85 supports-[backdrop-filter]:bg-background/70 backdrop-blur-md">
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-none snap-x">
+          {[
+            ['overview','Overview',BookOpen],
+            ['resources','Resources',FileText],
+            ['tutor','AI Tutor',MessageSquare],
+            ['notes','Notes',StickyNote],
+            ['flashcards','Flashcards',Sparkles],
+            ['quizzes','Quizzes',ListChecks],
+            ['plan','Study Plan',Calendar],
+          ].map(([id,label,Icon]:any) => (
+            <button key={id} onClick={()=>setTab(id)}
+              className={`snap-start shrink-0 flex items-center gap-1.5 px-3.5 h-9 rounded-full text-xs font-medium border transition active:scale-95 ${tab===id?'bg-primary text-primary-foreground border-primary':'bg-background text-muted-foreground border-border hover:text-foreground'}`}>
+              <Icon className="w-3.5 h-3.5" />{label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {tab === 'overview' && <OverviewTab course={course} resources={resources} onTab={setTab} />}
+      <InlineErrorBoundary label="This tab hit an error">
+        <div key={tab} className="animate-in fade-in-50 slide-in-from-bottom-1 duration-200">
+          {tab === 'overview' && <OverviewTab course={course} resources={resources} onTab={setTab} />}
 
       {tab === 'resources' && (
         <div className="space-y-4">
@@ -196,6 +215,8 @@ const StudyCoursePage = () => {
       {tab === 'flashcards' && <ArtifactTab course={course} resources={resources} kind="flashcards" />}
       {tab === 'quizzes' && <ArtifactTab course={course} resources={resources} kind="quiz" />}
       {tab === 'plan' && <PlanTab course={course} resources={resources} />}
+        </div>
+      </InlineErrorBoundary>
     </div>
   );
 };
@@ -226,14 +247,17 @@ const TutorTab: React.FC<{ course: Course }> = ({ course }) => {
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
+  const [loadingHistory, setLoadingHistory] = useState(true);
   const [mode, setMode] = useState<'tutor'|'exam'|'writing'|'research'>('tutor');
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     (async () => {
+      setLoadingHistory(true);
       const { data } = await supabase.from('study_chat_messages').select('role, content')
         .eq('course_id', course.id).is('resource_id', null).order('created_at').limit(100);
       setMessages(((data as any) || []) as ChatMsg[]);
+      setLoadingHistory(false);
     })();
   }, [course.id]);
 
@@ -280,6 +304,7 @@ const TutorTab: React.FC<{ course: Course }> = ({ course }) => {
     setBusy(false);
   };
 
+  if (loadingHistory) return <StudyChatSkeleton />;
   return (
     <Card className="rounded-3xl overflow-hidden flex flex-col" style={{ height: 'calc(100vh - 280px)', minHeight: 500 }}>
       <div className="p-3 border-b flex items-center gap-1.5 overflow-x-auto">

@@ -2,8 +2,10 @@ import React, { Suspense } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTabFromUrl } from '@/hooks/useTabFromUrl';
 import { HubSkeleton } from '@/components/UI/HubSkeleton';
+import { InlineErrorBoundary } from '@/components/UI/ErrorState';
 import { cn } from '@/lib/utils';
 import type { LucideIcon } from 'lucide-react';
+
 
 export interface HubTab {
   id: string;
@@ -75,39 +77,47 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
 
 
       {/* Tabs */}
-      <Tabs value={tab} onValueChange={setTab} className="w-full">
-        <div className="rounded-2xl border border-border/40 bg-card px-1.5 py-1.5 sm:px-2 sm:py-2 shadow-sm">
-          <TabsList className="w-full justify-start gap-1 bg-transparent h-auto p-0 overflow-x-auto scrollbar-none">
-            {tabs.map((t) => (
-              <TabsTrigger
-                key={t.id}
-                value={t.id}
-                className={cn(
-                   "relative gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs lg:text-[13px] font-medium transition-colors whitespace-nowrap shrink-0",
-                  "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:font-semibold",
-                  "data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-secondary/40 data-[state=inactive]:hover:text-foreground"
-                )}
-              >
-                <t.icon className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
-                <span>{t.label}</span>
-                {t.badge && (
-                  <span className="ml-0.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-primary text-primary-foreground leading-none">
-                    {t.badge}
-                  </span>
-                )}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+      <Tabs value={tab} onValueChange={setTab} className="w-full space-y-3 sm:space-y-4">
+        <div className="sticky top-0 sm:top-2 z-30 -mx-2 sm:mx-0 px-2 sm:px-0">
+          <div className="rounded-none sm:rounded-2xl border-y sm:border border-border/40 bg-card/85 supports-[backdrop-filter]:bg-card/70 backdrop-blur-md px-1.5 py-1.5 sm:px-2 sm:py-2 shadow-sm">
+            <TabsList className="w-full justify-start gap-1 bg-transparent h-auto p-0 overflow-x-auto scrollbar-none scroll-smooth snap-x">
+              {tabs.map((t) => (
+                <TabsTrigger
+                  key={t.id}
+                  value={t.id}
+                  className={cn(
+                    "relative snap-start gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs lg:text-[13px] font-medium transition-all whitespace-nowrap shrink-0 active:scale-95",
+                    "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:font-semibold",
+                    "data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-secondary/40 data-[state=inactive]:hover:text-foreground"
+                  )}
+                >
+                  <t.icon className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
+                  <span>{t.label}</span>
+                  {t.badge && (
+                    <span className="ml-0.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-primary text-primary-foreground leading-none">
+                      {t.badge}
+                    </span>
+                  )}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
         </div>
 
         <div>
-          <Suspense fallback={<Loader />}>
-            {tabs.map((t) => (
-              <TabsContent key={t.id} value={t.id} className="mt-0 focus-visible:outline-none">
-                <t.component />
-              </TabsContent>
-            ))}
-          </Suspense>
+          <InlineErrorBoundary label="This tab hit an error">
+            <Suspense fallback={<Loader />}>
+              {tabs.map((t) => (
+                <TabsContent
+                  key={t.id}
+                  value={t.id}
+                  className="mt-0 focus-visible:outline-none data-[state=active]:animate-in data-[state=active]:fade-in-50 data-[state=active]:slide-in-from-bottom-1 data-[state=active]:duration-200"
+                >
+                  <t.component />
+                </TabsContent>
+              ))}
+            </Suspense>
+          </InlineErrorBoundary>
         </div>
       </Tabs>
     </div>
