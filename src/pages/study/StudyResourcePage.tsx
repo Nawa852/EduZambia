@@ -178,8 +178,10 @@ const QuizView: React.FC<{ pack:any; onGen:()=>void; busy:boolean; mock:boolean 
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number|null>(null);
   const [score, setScore] = useState(0);
+  if (busy) return <StudyQuizSkeleton />;
   if (!pack) return <Empty onGen={onGen} busy={busy} />;
   const qs = pack.quiz || [];
+  if (!qs.length) return <EmptyState icon={ListChecks} title="No questions yet" description="Rebuild the study pack to generate a quiz." actionLabel="Rebuild pack" onAction={onGen} />;
   const q = qs[i];
   if (!q) return null;
   const pick = (n:number) => { if (picked!==null) return; setPicked(n); if (n===q.correct) setScore(s=>s+1); };
