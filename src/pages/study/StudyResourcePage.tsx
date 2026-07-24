@@ -99,14 +99,14 @@ const StudyResourcePage = () => {
         )}
       </div>
 
-      {/* Underline tab bar (SchoolGoat style) */}
-      <div className="border-b overflow-x-auto -mx-4 lg:-mx-6 px-4 lg:px-6">
+      {/* Underline tab bar — sticky on mobile */}
+      <div className="sticky top-0 z-30 border-b overflow-x-auto scrollbar-none -mx-4 lg:-mx-6 px-4 lg:px-6 bg-background/85 supports-[backdrop-filter]:bg-background/70 backdrop-blur-md">
         <div className="flex gap-1 min-w-max">
           {tabs.map(([id,label,Icon])=>(
             <button
               key={id}
               onClick={()=>setTab(id)}
-              className={`relative flex items-center gap-2 px-3 md:px-4 h-11 text-sm font-medium transition ${
+              className={`relative flex items-center gap-2 px-3 md:px-4 h-11 text-sm font-medium transition active:scale-95 ${
                 tab===id
                   ? 'text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
@@ -122,12 +122,16 @@ const StudyResourcePage = () => {
         </div>
       </div>
 
-      {tab === 'source' && <SourceView r={r} signedUrl={signedUrl} />}
-      {tab === 'summary' && <PackView pack={pack} onGen={generatePack} busy={busy} field="summary" />}
-      {tab === 'notes' && <PackView pack={pack} onGen={generatePack} busy={busy} field="notes" />}
-      {tab === 'flashcards' && <FlashView pack={pack} onGen={generatePack} busy={busy} />}
-      {(tab==='quiz'||tab==='test') && <QuizView pack={pack} onGen={generatePack} busy={busy} mock={tab==='test'} />}
-      {(tab==='chat'||tab==='tutor') && <ChatView r={r} pack={pack} />}
+      <InlineErrorBoundary label="This view crashed">
+        <div key={tab} className="animate-in fade-in-50 slide-in-from-bottom-1 duration-200">
+          {tab === 'source' && <SourceView r={r} signedUrl={signedUrl} />}
+          {tab === 'summary' && <PackView pack={pack} onGen={generatePack} busy={busy} field="summary" />}
+          {tab === 'notes' && <PackView pack={pack} onGen={generatePack} busy={busy} field="notes" />}
+          {tab === 'flashcards' && <FlashView pack={pack} onGen={generatePack} busy={busy} />}
+          {(tab==='quiz'||tab==='test') && <QuizView pack={pack} onGen={generatePack} busy={busy} mock={tab==='test'} />}
+          {(tab==='chat'||tab==='tutor') && <ChatView r={r} pack={pack} />}
+        </div>
+      </InlineErrorBoundary>
     </div>
   );
 };
@@ -146,6 +150,7 @@ const SourceView: React.FC<{ r: Resource; signedUrl: string|null }> = ({ r, sign
 };
 
 const PackView: React.FC<{ pack:any; onGen:()=>void; busy:boolean; field:'summary'|'notes' }> = ({ pack, onGen, busy, field }) => {
+  if (busy) return <StudyResourceSkeleton />;
   if (!pack) return <Empty onGen={onGen} busy={busy} />;
   const md = field === 'summary' ? pack.summary : [pack.summary, ...(pack.keyPoints||[]).map((p:string)=>`- ${p}`)].join('\n\n');
   return <Card className="p-5 rounded-2xl"><div className="prose prose-sm dark:prose-invert max-w-none"><ReactMarkdown>{md||''}</ReactMarkdown></div></Card>;
@@ -153,12 +158,14 @@ const PackView: React.FC<{ pack:any; onGen:()=>void; busy:boolean; field:'summar
 
 const FlashView: React.FC<{ pack:any; onGen:()=>void; busy:boolean }> = ({ pack, onGen, busy }) => {
   const [flip, setFlip] = useState<Record<number,boolean>>({});
+  if (busy) return <StudyFlashcardsSkeleton />;
   if (!pack) return <Empty onGen={onGen} busy={busy} />;
   const cards = pack.flashcards || [];
+  if (!cards.length) return <EmptyState icon={Sparkles} title="No flashcards yet" description="Rebuild the study pack to generate flashcards." actionLabel="Rebuild pack" onAction={onGen} />;
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
       {cards.map((c:any,i:number)=>(
-        <button key={i} onClick={()=>setFlip(f=>({...f,[i]:!f[i]}))} className="p-4 rounded-2xl border bg-gradient-to-br from-primary/5 to-transparent hover:shadow-md text-left min-h-[120px]">
+        <button key={i} onClick={()=>setFlip(f=>({...f,[i]:!f[i]}))} className="p-4 rounded-2xl border bg-gradient-to-br from-primary/5 to-transparent hover:shadow-md text-left min-h-[120px] transition active:scale-[0.98]">
           <p className="text-[10px] uppercase text-muted-foreground mb-1">{flip[i]?'Answer':'Question'}</p>
           <p className="text-sm font-medium">{flip[i]?c.a:c.q}</p>
         </button>
