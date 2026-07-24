@@ -215,6 +215,8 @@ const StudyCoursePage = () => {
       {tab === 'flashcards' && <ArtifactTab course={course} resources={resources} kind="flashcards" />}
       {tab === 'quizzes' && <ArtifactTab course={course} resources={resources} kind="quiz" />}
       {tab === 'plan' && <PlanTab course={course} resources={resources} />}
+        </div>
+      </InlineErrorBoundary>
     </div>
   );
 };
