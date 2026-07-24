@@ -9,7 +9,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { StudyCourseSkeleton } from '@/components/UI/StudySkeleton';
+import { StudyCourseSkeleton, StudyChatSkeleton } from '@/components/UI/StudySkeleton';
+import { ErrorState, InlineErrorBoundary } from '@/components/UI/ErrorState';
+import { EmptyState } from '@/components/UI/EmptyState';
 import ReactMarkdown from 'react-markdown';
 import {
   ArrowLeft, Upload, FileText, Image as ImageIcon, Youtube, Link as LinkIcon, MessageSquare,
@@ -27,6 +29,7 @@ const StudyCoursePage = () => {
   const nav = useNavigate();
   const [course, setCourse] = useState<Course | null>(null);
   const [resources, setResources] = useState<Resource[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [tab, setTab] = useState<'overview'|'resources'|'tutor'|'notes'|'flashcards'|'quizzes'|'plan'>('overview');
   const [uploading, setUploading] = useState(false);
   const [addUrl, setAddUrl] = useState('');
@@ -35,10 +38,17 @@ const StudyCoursePage = () => {
 
   const load = async () => {
     if (!courseId) return;
-    const { data: c } = await supabase.from('study_courses').select('*').eq('id', courseId).maybeSingle();
-    setCourse(c as any);
-    const { data: r } = await supabase.from('study_resources').select('*').eq('course_id', courseId).order('created_at', { ascending: false });
-    setResources((r as any) || []);
+    setLoadError(null);
+    try {
+      const { data: c, error: ce } = await supabase.from('study_courses').select('*').eq('id', courseId).maybeSingle();
+      if (ce) throw ce;
+      setCourse(c as any);
+      const { data: r, error: re } = await supabase.from('study_resources').select('*').eq('course_id', courseId).order('created_at', { ascending: false });
+      if (re) throw re;
+      setResources((r as any) || []);
+    } catch (e: any) {
+      setLoadError(e.message || 'Failed to load this folder.');
+    }
   };
   useEffect(() => { load(); }, [courseId]);
 
