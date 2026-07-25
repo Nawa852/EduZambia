@@ -270,24 +270,51 @@ const OverviewTab: React.FC<{ course: Course; resources: Resource[]; onTab: (t: 
 /* ============ Tutor ============ */
 const TutorTab: React.FC<{ course: Course }> = ({ course }) => {
   const { user } = useAuth();
-  const [messages, setMessages] = useState<ChatMsg[]>([]);
-  const [input, setInput] = useState('');
+  const cacheKey = `study:tutor:${course.id}`;
+  const cached = getTabState(cacheKey);
+  const [messages, setMessages] = useState<ChatMsg[]>((cached.messages as ChatMsg[]) || []);
+  const [input, setInput] = useState<string>(cached.input || '');
   const [busy, setBusy] = useState(false);
-  const [loadingHistory, setLoadingHistory] = useState(true);
+  const [loadingHistory, setLoadingHistory] = useState(!cached.messages);
   const [mode, setMode] = useState<'tutor'|'exam'|'writing'|'research'>('tutor');
   const scrollRef = useRef<HTMLDivElement>(null);
+  const restoredRef = useRef(false);
 
   useEffect(() => {
+    if (cached.messages) { setLoadingHistory(false); return; }
     (async () => {
       setLoadingHistory(true);
       const { data } = await supabase.from('study_chat_messages').select('role, content')
         .eq('course_id', course.id).is('resource_id', null).order('created_at').limit(100);
-      setMessages(((data as any) || []) as ChatMsg[]);
+      const list = ((data as any) || []) as ChatMsg[];
+      setMessages(list);
+      setTabState(cacheKey, { messages: list });
       setLoadingHistory(false);
     })();
   }, [course.id]);
 
-  useEffect(() => { scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight); }, [messages]);
+  // Restore scroll position after first paint of messages; sync scroll->cache.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || loadingHistory) return;
+    if (!restoredRef.current) {
+      el.scrollTop = cached.scrollTop ?? el.scrollHeight;
+      restoredRef.current = true;
+    }
+    const onScroll = () => setTabState(cacheKey, { scrollTop: el.scrollTop });
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [loadingHistory, cacheKey]);
+
+  // Auto-stick to bottom only when user is already near bottom.
+  useEffect(() => {
+    const el = scrollRef.current; if (!el) return;
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+    if (nearBottom) el.scrollTo(0, el.scrollHeight);
+    setTabState(cacheKey, { messages });
+  }, [messages]);
+
+  useEffect(() => { setTabState(cacheKey, { input }); }, [input]);
 
   const send = async () => {
     if (!input.trim() || busy) return;
