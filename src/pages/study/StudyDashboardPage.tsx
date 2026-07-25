@@ -155,36 +155,50 @@ const StudyDashboardPage = () => {
     <div className="container mx-auto p-3 sm:p-4 lg:p-6 max-w-6xl space-y-4 sm:space-y-5">
       {/* Heading */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary via-purple-500 to-fuchsia-500 bg-clip-text text-transparent">
-          Your Dashboard
-        </h1>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
-          Organize your study material into folders — upload notes, watch lessons, and let Synapse turn them into flashcards, quizzes and a personal tutor.
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">Your Dashboard</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed max-w-2xl">
+          Organize study material into folders — upload notes, watch lessons, and Synapse turns them into flashcards, quizzes and a personal tutor.
         </p>
       </div>
 
 
       {/* Tabs + primary action */}
       <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-between">
-        <div className="inline-flex bg-muted/60 backdrop-blur rounded-full p-1 border border-border/60 overflow-x-auto scrollbar-none max-w-full">
+        <div
+          role="tablist"
+          aria-label="Study dashboard sections"
+          className="inline-flex bg-muted/60 backdrop-blur rounded-full p-1 border border-border/60 overflow-x-auto scrollbar-none max-w-full"
+          onKeyDown={(e) => {
+            const ids: Tab[] = ['actions','files','folders','history'];
+            const idx = ids.indexOf(tab);
+            if (e.key === 'ArrowRight') { e.preventDefault(); setTab(ids[(idx+1)%ids.length]); }
+            if (e.key === 'ArrowLeft')  { e.preventDefault(); setTab(ids[(idx-1+ids.length)%ids.length]); }
+          }}
+        >
           {([
             ['actions', 'Actions'],
             ['files', 'Files'],
             ['folders', 'Folders'],
             ['history', 'History'],
-          ] as [Tab, string][]).map(([id, label]) => (
-            <button
-              key={id}
-              onClick={() => setTab(id)}
-              className={`px-3 sm:px-4 h-8 sm:h-9 rounded-full text-xs sm:text-sm font-medium transition whitespace-nowrap ${
-                tab === id
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+          ] as [Tab, string][]).map(([id, label]) => {
+            const active = tab === id;
+            return (
+              <button
+                key={id}
+                role="tab"
+                aria-selected={active}
+                tabIndex={active ? 0 : -1}
+                onClick={() => setTab(id)}
+                className={`px-3 sm:px-4 h-8 sm:h-9 rounded-full text-xs sm:text-sm font-medium transition whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 ${
+                  active
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
         <div className="flex items-center gap-2 flex-1 sm:flex-none justify-end">
           <div className="relative flex-1 sm:flex-none min-w-0">
