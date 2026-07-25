@@ -31,11 +31,14 @@ const StudyResourcePage = () => {
   const [tab, setTab] = useState<Tab>('source');
   const [pack, setPack] = useState<any>(null);
   const [busy, setBusy] = useState(false);
+  const [loadError, setLoadError] = useState<string|null>(null);
 
-  useEffect(() => {
-    (async () => {
-      if (!resourceId) return;
-      const { data } = await supabase.from('study_resources').select('*').eq('id', resourceId).maybeSingle();
+  const load = async () => {
+    if (!resourceId) return;
+    setLoadError(null);
+    try {
+      const { data, error } = await supabase.from('study_resources').select('*').eq('id', resourceId).maybeSingle();
+      if (error) throw error;
       setR(data as any);
       if ((data as any)?.storage_path) {
         const { data: s } = await supabase.storage.from('study-resources').createSignedUrl((data as any).storage_path, 3600);
@@ -43,8 +46,11 @@ const StudyResourcePage = () => {
       }
       const { data: art } = await supabase.from('study_artifacts').select('*').eq('resource_id', resourceId).eq('kind','pack').order('created_at',{ascending:false}).limit(1);
       if ((art as any)?.[0]) setPack((art as any)[0].payload);
-    })();
-  }, [resourceId]);
+    } catch (e: any) {
+      setLoadError(e.message || 'Failed to load this resource.');
+    }
+  };
+  useEffect(() => { load(); }, [resourceId]);
 
   const generatePack = async () => {
     if (!r) return;
