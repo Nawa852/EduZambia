@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { StudyResourceSkeleton, StudyChatSkeleton, StudyQuizSkeleton, StudyFlashcardsSkeleton } from '@/components/UI/StudySkeleton';
 import { EmptyState } from '@/components/UI/EmptyState';
 import { ErrorState, InlineErrorBoundary } from '@/components/UI/ErrorState';
+import { getTabState, setTabState } from '@/lib/tabState';
 import ReactMarkdown from 'react-markdown';
 import {
   ArrowLeft, FileText, Sparkles, MessageSquare, Loader2, Send, StickyNote,
