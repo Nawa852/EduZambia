@@ -78,6 +78,11 @@ const StudyResourcePage = () => {
     setBusy(false);
   };
 
+  if (loadError && !r) return (
+    <div className="container mx-auto p-4 lg:p-6 max-w-6xl">
+      <ErrorState title="Couldn't load this resource" description={loadError} onRetry={load} />
+    </div>
+  );
   if (!r) return <StudyResourceSkeleton />;
 
   const tabs: [Tab, string, any][] = [
@@ -85,6 +90,7 @@ const StudyResourcePage = () => {
     ['flashcards','Flashcards',Sparkles],['quiz','Quiz',ListChecks],['test','Test',Brain],
     ['chat','Chat',MessageSquare],['tutor','Tutor',Brain],
   ];
+  const tabIds = tabs.map(t => t[0]);
 
   return (
     <div className="container mx-auto p-4 lg:p-6 max-w-6xl space-y-4">
@@ -106,37 +112,60 @@ const StudyResourcePage = () => {
         )}
       </div>
 
-      {/* Underline tab bar — sticky on mobile */}
+      {/* Underline tab bar — sticky on mobile, keyboard-navigable */}
       <div className="sticky top-0 z-30 border-b overflow-x-auto scrollbar-none -mx-4 lg:-mx-6 px-4 lg:px-6 bg-background/85 supports-[backdrop-filter]:bg-background/70 backdrop-blur-md">
-        <div className="flex gap-1 min-w-max">
-          {tabs.map(([id,label,Icon])=>(
-            <button
-              key={id}
-              onClick={()=>setTab(id)}
-              className={`relative flex items-center gap-2 px-3 md:px-4 h-11 text-sm font-medium transition active:scale-95 ${
-                tab===id
-                  ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              {label}
-              {tab===id && (
-                <span className="absolute left-2 right-2 -bottom-px h-0.5 bg-foreground rounded-full" />
-              )}
-            </button>
-          ))}
+        <div
+          role="tablist"
+          aria-label="Resource views"
+          className="flex gap-1 min-w-max"
+          onKeyDown={(e) => {
+            const idx = tabIds.indexOf(tab);
+            if (e.key === 'ArrowRight') { e.preventDefault(); setTab(tabIds[(idx+1)%tabIds.length]); }
+            if (e.key === 'ArrowLeft')  { e.preventDefault(); setTab(tabIds[(idx-1+tabIds.length)%tabIds.length]); }
+            if (e.key === 'Home')       { e.preventDefault(); setTab(tabIds[0]); }
+            if (e.key === 'End')        { e.preventDefault(); setTab(tabIds[tabIds.length-1]); }
+          }}
+        >
+          {tabs.map(([id,label,Icon])=> {
+            const active = tab === id;
+            return (
+              <button
+                key={id}
+                role="tab"
+                aria-selected={active}
+                aria-controls={`resource-panel-${id}`}
+                id={`resource-tab-${id}`}
+                tabIndex={active ? 0 : -1}
+                onClick={()=>setTab(id)}
+                className={`relative flex items-center gap-2 px-3 md:px-4 h-11 text-sm font-medium transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded-md ${
+                  active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+                {active && (
+                  <span className="absolute left-2 right-2 -bottom-px h-0.5 bg-foreground rounded-full" />
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       <InlineErrorBoundary label="This view crashed">
-        <div key={tab} className="animate-in fade-in-50 slide-in-from-bottom-1 duration-200">
+        <div
+          key={tab}
+          id={`resource-panel-${tab}`}
+          role="tabpanel"
+          aria-labelledby={`resource-tab-${tab}`}
+          className="animate-in fade-in-50 slide-in-from-bottom-1 duration-200"
+        >
           {tab === 'source' && <SourceView r={r} signedUrl={signedUrl} />}
           {tab === 'summary' && <PackView pack={pack} onGen={generatePack} busy={busy} field="summary" />}
           {tab === 'notes' && <PackView pack={pack} onGen={generatePack} busy={busy} field="notes" />}
           {tab === 'flashcards' && <FlashView pack={pack} onGen={generatePack} busy={busy} />}
           {(tab==='quiz'||tab==='test') && <QuizView pack={pack} onGen={generatePack} busy={busy} mock={tab==='test'} />}
-          {(tab==='chat'||tab==='tutor') && <ChatView r={r} pack={pack} />}
+          {(tab==='chat'||tab==='tutor') && <ChatView r={r} pack={pack} kind={tab} />}
         </div>
       </InlineErrorBoundary>
     </div>
