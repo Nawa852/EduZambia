@@ -237,13 +237,36 @@ const QuizView: React.FC<{ pack:any; onGen:()=>void; busy:boolean; mock:boolean 
   );
 };
 
-const ChatView: React.FC<{ r: Resource; pack: any }> = ({ r, pack }) => {
+const ChatView: React.FC<{ r: Resource; pack: any; kind: 'chat'|'tutor' }> = ({ r, pack, kind }) => {
   const { user } = useAuth();
-  const [messages, setMessages] = useState<{role:'user'|'assistant';content:string}[]>([]);
-  const [input, setInput] = useState('');
+  const cacheKey = `resource:${kind}:${r.id}`;
+  const cached = getTabState(cacheKey);
+  const [messages, setMessages] = useState<{role:'user'|'assistant';content:string}[]>((cached.messages as any) || []);
+  const [input, setInput] = useState<string>(cached.input || '');
   const [busy, setBusy] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  useEffect(()=>{ scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight); },[messages]);
+  const restoredRef = useRef(false);
+
+  // Restore scroll on mount, persist scroll on user scroll.
+  useEffect(() => {
+    const el = scrollRef.current; if (!el) return;
+    if (!restoredRef.current) {
+      el.scrollTop = cached.scrollTop ?? el.scrollHeight;
+      restoredRef.current = true;
+    }
+    const onScroll = () => setTabState(cacheKey, { scrollTop: el.scrollTop });
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [cacheKey]);
+
+  useEffect(() => {
+    const el = scrollRef.current; if (!el) return;
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+    if (nearBottom) el.scrollTo(0, el.scrollHeight);
+    setTabState(cacheKey, { messages });
+  }, [messages]);
+
+  useEffect(() => { setTabState(cacheKey, { input }); }, [input]);
 
   const send = async () => {
     if (!input.trim() || busy) return;
@@ -255,7 +278,7 @@ const ChatView: React.FC<{ r: Resource; pack: any }> = ({ r, pack }) => {
       const res = await fetch(`https://pmoxtvuhsupfpfcstlur.supabase.co/functions/v1/ai-study-tutor`,{
         method:'POST',
         headers:{'Content-Type':'application/json',Authorization:`Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`},
-        body: JSON.stringify({ context: `Resource: ${r.title}\n\n${ctx}`, messages: next }),
+        body: JSON.stringify({ mode: kind === 'tutor' ? 'tutor' : 'chat', context: `Resource: ${r.title}\n\n${ctx}`, messages: next }),
       });
       const reader = res.body!.getReader(); const dec = new TextDecoder(); let acc='';
       setMessages(m=>[...m,{role:'assistant',content:''}]);
@@ -273,7 +296,7 @@ const ChatView: React.FC<{ r: Resource; pack: any }> = ({ r, pack }) => {
   return (
     <Card className="rounded-2xl flex flex-col" style={{height:'60vh',minHeight:400}}>
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
-        {messages.length===0 && <div className="text-center text-sm text-muted-foreground py-8">Ask anything about "{r.title}"</div>}
+        {messages.length===0 && <div className="text-center text-sm text-muted-foreground py-8">{kind==='tutor'?'Your personal tutor is ready. ':'Chat about '}"{r.title}"</div>}
         {messages.map((m,i)=>(
           <div key={i} className={`flex ${m.role==='user'?'justify-end':'justify-start'}`}>
             <div className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-sm ${m.role==='user'?'bg-primary text-primary-foreground':'bg-muted'}`}>
@@ -283,8 +306,8 @@ const ChatView: React.FC<{ r: Resource; pack: any }> = ({ r, pack }) => {
         ))}
       </div>
       <div className="p-3 border-t flex gap-2">
-        <Input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder="Ask about this material…" disabled={busy}/>
-        <Button onClick={send} disabled={busy||!input.trim()} size="icon">{busy?<Loader2 className="w-4 h-4 animate-spin"/>:<Send className="w-4 h-4"/>}</Button>
+        <Input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder={kind==='tutor'?'Ask your tutor…':'Ask about this material…'} disabled={busy}/>
+        <Button onClick={send} disabled={busy||!input.trim()} size="icon" aria-label="Send">{busy?<Loader2 className="w-4 h-4 animate-spin"/>:<Send className="w-4 h-4"/>}</Button>
       </div>
     </Card>
   );
