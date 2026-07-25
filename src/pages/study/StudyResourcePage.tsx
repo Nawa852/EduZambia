@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { StudyResourceSkeleton, StudyChatSkeleton, StudyQuizSkeleton, StudyFlashcardsSkeleton } from '@/components/UI/StudySkeleton';
 import { EmptyState } from '@/components/UI/EmptyState';
 import { ErrorState, InlineErrorBoundary } from '@/components/UI/ErrorState';
+import { getTabState, setTabState } from '@/lib/tabState';
 import ReactMarkdown from 'react-markdown';
 import {
   ArrowLeft, FileText, Sparkles, MessageSquare, Loader2, Send, StickyNote,
@@ -30,11 +31,14 @@ const StudyResourcePage = () => {
   const [tab, setTab] = useState<Tab>('source');
   const [pack, setPack] = useState<any>(null);
   const [busy, setBusy] = useState(false);
+  const [loadError, setLoadError] = useState<string|null>(null);
 
-  useEffect(() => {
-    (async () => {
-      if (!resourceId) return;
-      const { data } = await supabase.from('study_resources').select('*').eq('id', resourceId).maybeSingle();
+  const load = async () => {
+    if (!resourceId) return;
+    setLoadError(null);
+    try {
+      const { data, error } = await supabase.from('study_resources').select('*').eq('id', resourceId).maybeSingle();
+      if (error) throw error;
       setR(data as any);
       if ((data as any)?.storage_path) {
         const { data: s } = await supabase.storage.from('study-resources').createSignedUrl((data as any).storage_path, 3600);
@@ -42,8 +46,11 @@ const StudyResourcePage = () => {
       }
       const { data: art } = await supabase.from('study_artifacts').select('*').eq('resource_id', resourceId).eq('kind','pack').order('created_at',{ascending:false}).limit(1);
       if ((art as any)?.[0]) setPack((art as any)[0].payload);
-    })();
-  }, [resourceId]);
+    } catch (e: any) {
+      setLoadError(e.message || 'Failed to load this resource.');
+    }
+  };
+  useEffect(() => { load(); }, [resourceId]);
 
   const generatePack = async () => {
     if (!r) return;
@@ -71,6 +78,11 @@ const StudyResourcePage = () => {
     setBusy(false);
   };
 
+  if (loadError && !r) return (
+    <div className="container mx-auto p-4 lg:p-6 max-w-6xl">
+      <ErrorState title="Couldn't load this resource" description={loadError} onRetry={load} />
+    </div>
+  );
   if (!r) return <StudyResourceSkeleton />;
 
   const tabs: [Tab, string, any][] = [
@@ -78,6 +90,7 @@ const StudyResourcePage = () => {
     ['flashcards','Flashcards',Sparkles],['quiz','Quiz',ListChecks],['test','Test',Brain],
     ['chat','Chat',MessageSquare],['tutor','Tutor',Brain],
   ];
+  const tabIds = tabs.map(t => t[0]);
 
   return (
     <div className="container mx-auto p-4 lg:p-6 max-w-6xl space-y-4">
@@ -99,37 +112,60 @@ const StudyResourcePage = () => {
         )}
       </div>
 
-      {/* Underline tab bar — sticky on mobile */}
+      {/* Underline tab bar — sticky on mobile, keyboard-navigable */}
       <div className="sticky top-0 z-30 border-b overflow-x-auto scrollbar-none -mx-4 lg:-mx-6 px-4 lg:px-6 bg-background/85 supports-[backdrop-filter]:bg-background/70 backdrop-blur-md">
-        <div className="flex gap-1 min-w-max">
-          {tabs.map(([id,label,Icon])=>(
-            <button
-              key={id}
-              onClick={()=>setTab(id)}
-              className={`relative flex items-center gap-2 px-3 md:px-4 h-11 text-sm font-medium transition active:scale-95 ${
-                tab===id
-                  ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              {label}
-              {tab===id && (
-                <span className="absolute left-2 right-2 -bottom-px h-0.5 bg-foreground rounded-full" />
-              )}
-            </button>
-          ))}
+        <div
+          role="tablist"
+          aria-label="Resource views"
+          className="flex gap-1 min-w-max"
+          onKeyDown={(e) => {
+            const idx = tabIds.indexOf(tab);
+            if (e.key === 'ArrowRight') { e.preventDefault(); setTab(tabIds[(idx+1)%tabIds.length]); }
+            if (e.key === 'ArrowLeft')  { e.preventDefault(); setTab(tabIds[(idx-1+tabIds.length)%tabIds.length]); }
+            if (e.key === 'Home')       { e.preventDefault(); setTab(tabIds[0]); }
+            if (e.key === 'End')        { e.preventDefault(); setTab(tabIds[tabIds.length-1]); }
+          }}
+        >
+          {tabs.map(([id,label,Icon])=> {
+            const active = tab === id;
+            return (
+              <button
+                key={id}
+                role="tab"
+                aria-selected={active}
+                aria-controls={`resource-panel-${id}`}
+                id={`resource-tab-${id}`}
+                tabIndex={active ? 0 : -1}
+                onClick={()=>setTab(id)}
+                className={`relative flex items-center gap-2 px-3 md:px-4 h-11 text-sm font-medium transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded-md ${
+                  active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+                {active && (
+                  <span className="absolute left-2 right-2 -bottom-px h-0.5 bg-foreground rounded-full" />
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       <InlineErrorBoundary label="This view crashed">
-        <div key={tab} className="animate-in fade-in-50 slide-in-from-bottom-1 duration-200">
+        <div
+          key={tab}
+          id={`resource-panel-${tab}`}
+          role="tabpanel"
+          aria-labelledby={`resource-tab-${tab}`}
+          className="animate-in fade-in-50 slide-in-from-bottom-1 duration-200"
+        >
           {tab === 'source' && <SourceView r={r} signedUrl={signedUrl} />}
           {tab === 'summary' && <PackView pack={pack} onGen={generatePack} busy={busy} field="summary" />}
           {tab === 'notes' && <PackView pack={pack} onGen={generatePack} busy={busy} field="notes" />}
           {tab === 'flashcards' && <FlashView pack={pack} onGen={generatePack} busy={busy} />}
           {(tab==='quiz'||tab==='test') && <QuizView pack={pack} onGen={generatePack} busy={busy} mock={tab==='test'} />}
-          {(tab==='chat'||tab==='tutor') && <ChatView r={r} pack={pack} />}
+          {(tab==='chat'||tab==='tutor') && <ChatView r={r} pack={pack} kind={tab} />}
         </div>
       </InlineErrorBoundary>
     </div>
@@ -201,13 +237,36 @@ const QuizView: React.FC<{ pack:any; onGen:()=>void; busy:boolean; mock:boolean 
   );
 };
 
-const ChatView: React.FC<{ r: Resource; pack: any }> = ({ r, pack }) => {
+const ChatView: React.FC<{ r: Resource; pack: any; kind: 'chat'|'tutor' }> = ({ r, pack, kind }) => {
   const { user } = useAuth();
-  const [messages, setMessages] = useState<{role:'user'|'assistant';content:string}[]>([]);
-  const [input, setInput] = useState('');
+  const cacheKey = `resource:${kind}:${r.id}`;
+  const cached = getTabState(cacheKey);
+  const [messages, setMessages] = useState<{role:'user'|'assistant';content:string}[]>((cached.messages as any) || []);
+  const [input, setInput] = useState<string>(cached.input || '');
   const [busy, setBusy] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  useEffect(()=>{ scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight); },[messages]);
+  const restoredRef = useRef(false);
+
+  // Restore scroll on mount, persist scroll on user scroll.
+  useEffect(() => {
+    const el = scrollRef.current; if (!el) return;
+    if (!restoredRef.current) {
+      el.scrollTop = cached.scrollTop ?? el.scrollHeight;
+      restoredRef.current = true;
+    }
+    const onScroll = () => setTabState(cacheKey, { scrollTop: el.scrollTop });
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [cacheKey]);
+
+  useEffect(() => {
+    const el = scrollRef.current; if (!el) return;
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+    if (nearBottom) el.scrollTo(0, el.scrollHeight);
+    setTabState(cacheKey, { messages });
+  }, [messages]);
+
+  useEffect(() => { setTabState(cacheKey, { input }); }, [input]);
 
   const send = async () => {
     if (!input.trim() || busy) return;
@@ -219,7 +278,7 @@ const ChatView: React.FC<{ r: Resource; pack: any }> = ({ r, pack }) => {
       const res = await fetch(`https://pmoxtvuhsupfpfcstlur.supabase.co/functions/v1/ai-study-tutor`,{
         method:'POST',
         headers:{'Content-Type':'application/json',Authorization:`Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`},
-        body: JSON.stringify({ context: `Resource: ${r.title}\n\n${ctx}`, messages: next }),
+        body: JSON.stringify({ mode: kind === 'tutor' ? 'tutor' : 'chat', context: `Resource: ${r.title}\n\n${ctx}`, messages: next }),
       });
       const reader = res.body!.getReader(); const dec = new TextDecoder(); let acc='';
       setMessages(m=>[...m,{role:'assistant',content:''}]);
@@ -237,7 +296,7 @@ const ChatView: React.FC<{ r: Resource; pack: any }> = ({ r, pack }) => {
   return (
     <Card className="rounded-2xl flex flex-col" style={{height:'60vh',minHeight:400}}>
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
-        {messages.length===0 && <div className="text-center text-sm text-muted-foreground py-8">Ask anything about "{r.title}"</div>}
+        {messages.length===0 && <div className="text-center text-sm text-muted-foreground py-8">{kind==='tutor'?'Your personal tutor is ready. ':'Chat about '}"{r.title}"</div>}
         {messages.map((m,i)=>(
           <div key={i} className={`flex ${m.role==='user'?'justify-end':'justify-start'}`}>
             <div className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-sm ${m.role==='user'?'bg-primary text-primary-foreground':'bg-muted'}`}>
@@ -247,8 +306,8 @@ const ChatView: React.FC<{ r: Resource; pack: any }> = ({ r, pack }) => {
         ))}
       </div>
       <div className="p-3 border-t flex gap-2">
-        <Input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder="Ask about this material…" disabled={busy}/>
-        <Button onClick={send} disabled={busy||!input.trim()} size="icon">{busy?<Loader2 className="w-4 h-4 animate-spin"/>:<Send className="w-4 h-4"/>}</Button>
+        <Input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder={kind==='tutor'?'Ask your tutor…':'Ask about this material…'} disabled={busy}/>
+        <Button onClick={send} disabled={busy||!input.trim()} size="icon" aria-label="Send">{busy?<Loader2 className="w-4 h-4 animate-spin"/>:<Send className="w-4 h-4"/>}</Button>
       </div>
     </Card>
   );

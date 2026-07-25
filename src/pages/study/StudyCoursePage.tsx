@@ -9,9 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { StudyCourseSkeleton, StudyChatSkeleton } from '@/components/UI/StudySkeleton';
+import {
+  StudyCourseSkeleton, StudyChatSkeleton, StudyFlashcardsSkeleton, StudyQuizSkeleton,
+} from '@/components/UI/StudySkeleton';
 import { ErrorState, InlineErrorBoundary } from '@/components/UI/ErrorState';
 import { EmptyState } from '@/components/UI/EmptyState';
+import { getTabState, setTabState } from '@/lib/tabState';
 import ReactMarkdown from 'react-markdown';
 import {
   ArrowLeft, Upload, FileText, Image as ImageIcon, Youtube, Link as LinkIcon, MessageSquare,
@@ -140,9 +143,21 @@ const StudyCoursePage = () => {
         </div>
       </Card>
 
-      {/* Tabs — sticky on scroll */}
+      {/* Tabs — sticky on scroll, arrow-key navigable */}
       <div className="sticky top-0 z-30 -mx-4 lg:-mx-6 px-4 lg:px-6 py-2 bg-background/85 supports-[backdrop-filter]:bg-background/70 backdrop-blur-md">
-        <div className="flex gap-1.5 overflow-x-auto scrollbar-none snap-x">
+        <div
+          role="tablist"
+          aria-label="Course sections"
+          className="flex gap-1.5 overflow-x-auto scrollbar-none snap-x"
+          onKeyDown={(e) => {
+            const ids = ['overview','resources','tutor','notes','flashcards','quizzes','plan'] as const;
+            const idx = ids.indexOf(tab as any);
+            if (e.key === 'ArrowRight') { e.preventDefault(); setTab(ids[(idx + 1) % ids.length]); }
+            if (e.key === 'ArrowLeft')  { e.preventDefault(); setTab(ids[(idx - 1 + ids.length) % ids.length]); }
+            if (e.key === 'Home')       { e.preventDefault(); setTab(ids[0]); }
+            if (e.key === 'End')        { e.preventDefault(); setTab(ids[ids.length - 1]); }
+          }}
+        >
           {[
             ['overview','Overview',BookOpen],
             ['resources','Resources',FileText],
@@ -151,12 +166,23 @@ const StudyCoursePage = () => {
             ['flashcards','Flashcards',Sparkles],
             ['quizzes','Quizzes',ListChecks],
             ['plan','Study Plan',Calendar],
-          ].map(([id,label,Icon]:any) => (
-            <button key={id} onClick={()=>setTab(id)}
-              className={`snap-start shrink-0 flex items-center gap-1.5 px-3.5 h-9 rounded-full text-xs font-medium border transition active:scale-95 ${tab===id?'bg-primary text-primary-foreground border-primary':'bg-background text-muted-foreground border-border hover:text-foreground'}`}>
-              <Icon className="w-3.5 h-3.5" />{label}
-            </button>
-          ))}
+          ].map(([id,label,Icon]:any) => {
+            const active = tab === id;
+            return (
+              <button
+                key={id}
+                role="tab"
+                aria-selected={active}
+                aria-controls={`course-panel-${id}`}
+                id={`course-tab-${id}`}
+                tabIndex={active ? 0 : -1}
+                onClick={()=>setTab(id)}
+                className={`snap-start shrink-0 flex items-center gap-1.5 px-3.5 h-9 rounded-full text-xs font-medium border transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 ${active?'bg-primary text-primary-foreground border-primary':'bg-background text-muted-foreground border-border hover:text-foreground'}`}
+              >
+                <Icon className="w-3.5 h-3.5" />{label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -244,24 +270,51 @@ const OverviewTab: React.FC<{ course: Course; resources: Resource[]; onTab: (t: 
 /* ============ Tutor ============ */
 const TutorTab: React.FC<{ course: Course }> = ({ course }) => {
   const { user } = useAuth();
-  const [messages, setMessages] = useState<ChatMsg[]>([]);
-  const [input, setInput] = useState('');
+  const cacheKey = `study:tutor:${course.id}`;
+  const cached = getTabState(cacheKey);
+  const [messages, setMessages] = useState<ChatMsg[]>((cached.messages as ChatMsg[]) || []);
+  const [input, setInput] = useState<string>(cached.input || '');
   const [busy, setBusy] = useState(false);
-  const [loadingHistory, setLoadingHistory] = useState(true);
+  const [loadingHistory, setLoadingHistory] = useState(!cached.messages);
   const [mode, setMode] = useState<'tutor'|'exam'|'writing'|'research'>('tutor');
   const scrollRef = useRef<HTMLDivElement>(null);
+  const restoredRef = useRef(false);
 
   useEffect(() => {
+    if (cached.messages) { setLoadingHistory(false); return; }
     (async () => {
       setLoadingHistory(true);
       const { data } = await supabase.from('study_chat_messages').select('role, content')
         .eq('course_id', course.id).is('resource_id', null).order('created_at').limit(100);
-      setMessages(((data as any) || []) as ChatMsg[]);
+      const list = ((data as any) || []) as ChatMsg[];
+      setMessages(list);
+      setTabState(cacheKey, { messages: list });
       setLoadingHistory(false);
     })();
   }, [course.id]);
 
-  useEffect(() => { scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight); }, [messages]);
+  // Restore scroll position after first paint of messages; sync scroll->cache.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || loadingHistory) return;
+    if (!restoredRef.current) {
+      el.scrollTop = cached.scrollTop ?? el.scrollHeight;
+      restoredRef.current = true;
+    }
+    const onScroll = () => setTabState(cacheKey, { scrollTop: el.scrollTop });
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [loadingHistory, cacheKey]);
+
+  // Auto-stick to bottom only when user is already near bottom.
+  useEffect(() => {
+    const el = scrollRef.current; if (!el) return;
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+    if (nearBottom) el.scrollTo(0, el.scrollHeight);
+    setTabState(cacheKey, { messages });
+  }, [messages]);
+
+  useEffect(() => { setTabState(cacheKey, { input }); }, [input]);
 
   const send = async () => {
     if (!input.trim() || busy) return;
@@ -345,12 +398,17 @@ const TutorTab: React.FC<{ course: Course }> = ({ course }) => {
 const ArtifactTab: React.FC<{ course: Course; resources: Resource[]; kind: 'notes'|'flashcards'|'quiz' }> = ({ course, resources, kind }) => {
   const [items, setItems] = useState<any[]>([]);
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const { user } = useAuth();
 
   const load = async () => {
-    const { data } = await supabase.from('study_artifacts').select('*')
+    setLoading(true); setLoadError(null);
+    const { data, error } = await supabase.from('study_artifacts').select('*')
       .eq('course_id', course.id).eq('kind', kind).order('created_at', { ascending: false });
-    setItems((data as any)||[]);
+    if (error) setLoadError(error.message);
+    else setItems((data as any)||[]);
+    setLoading(false);
   };
   useEffect(() => { load(); }, [course.id, kind]);
 
@@ -378,6 +436,12 @@ const ArtifactTab: React.FC<{ course: Course; resources: Resource[]; kind: 'note
     setBusy(false);
   };
 
+  const emptyCopy = kind === 'flashcards'
+    ? { title: 'No flashcards yet', desc: 'Generate a set from your resources — tap any card to flip.' }
+    : kind === 'quiz'
+    ? { title: 'No quizzes yet', desc: 'Turn your material into a quick self-check with instant feedback.' }
+    : { title: 'No notes yet', desc: 'Distill your resources into a clean summary and key points.' };
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -386,10 +450,23 @@ const ArtifactTab: React.FC<{ course: Course; resources: Resource[]; kind: 'note
           {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />} Generate
         </Button>
       </div>
-      {items.length === 0 ? (
-        <Card className="p-8 text-center rounded-2xl border-dashed text-sm text-muted-foreground">
-          Nothing yet — click Generate to create {kind} from your resources.
-        </Card>
+      {loading ? (
+        kind === 'flashcards' ? <StudyFlashcardsSkeleton /> :
+        kind === 'quiz' ? <StudyQuizSkeleton /> :
+        <Card className="p-5 rounded-2xl h-32 animate-pulse bg-muted/40" />
+      ) : loadError ? (
+        <ErrorState title="Couldn't load this section" description={loadError} onRetry={load} />
+      ) : busy && items.length === 0 ? (
+        kind === 'flashcards' ? <StudyFlashcardsSkeleton /> :
+        kind === 'quiz' ? <StudyQuizSkeleton /> : null
+      ) : items.length === 0 ? (
+        <EmptyState
+          icon={kind === 'flashcards' ? Sparkles : kind === 'quiz' ? ListChecks : StickyNote}
+          title={emptyCopy.title}
+          description={emptyCopy.desc}
+          actionLabel={busy ? 'Generating…' : 'Generate now'}
+          onAction={busy ? undefined : generate}
+        />
       ) : items.map((it,i) => (
         <ArtifactCard key={it.id||i} kind={kind} artifact={it} onReload={load} />
       ))}
