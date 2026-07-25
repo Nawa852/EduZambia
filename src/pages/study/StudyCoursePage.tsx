@@ -398,12 +398,17 @@ const TutorTab: React.FC<{ course: Course }> = ({ course }) => {
 const ArtifactTab: React.FC<{ course: Course; resources: Resource[]; kind: 'notes'|'flashcards'|'quiz' }> = ({ course, resources, kind }) => {
   const [items, setItems] = useState<any[]>([]);
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const { user } = useAuth();
 
   const load = async () => {
-    const { data } = await supabase.from('study_artifacts').select('*')
+    setLoading(true); setLoadError(null);
+    const { data, error } = await supabase.from('study_artifacts').select('*')
       .eq('course_id', course.id).eq('kind', kind).order('created_at', { ascending: false });
-    setItems((data as any)||[]);
+    if (error) setLoadError(error.message);
+    else setItems((data as any)||[]);
+    setLoading(false);
   };
   useEffect(() => { load(); }, [course.id, kind]);
 
@@ -431,6 +436,12 @@ const ArtifactTab: React.FC<{ course: Course; resources: Resource[]; kind: 'note
     setBusy(false);
   };
 
+  const emptyCopy = kind === 'flashcards'
+    ? { title: 'No flashcards yet', desc: 'Generate a set from your resources — tap any card to flip.' }
+    : kind === 'quiz'
+    ? { title: 'No quizzes yet', desc: 'Turn your material into a quick self-check with instant feedback.' }
+    : { title: 'No notes yet', desc: 'Distill your resources into a clean summary and key points.' };
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -439,10 +450,23 @@ const ArtifactTab: React.FC<{ course: Course; resources: Resource[]; kind: 'note
           {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />} Generate
         </Button>
       </div>
-      {items.length === 0 ? (
-        <Card className="p-8 text-center rounded-2xl border-dashed text-sm text-muted-foreground">
-          Nothing yet — click Generate to create {kind} from your resources.
-        </Card>
+      {loading ? (
+        kind === 'flashcards' ? <StudyFlashcardsSkeleton /> :
+        kind === 'quiz' ? <StudyQuizSkeleton /> :
+        <Card className="p-5 rounded-2xl h-32 animate-pulse bg-muted/40" />
+      ) : loadError ? (
+        <ErrorState title="Couldn't load this section" description={loadError} onRetry={load} />
+      ) : busy && items.length === 0 ? (
+        kind === 'flashcards' ? <StudyFlashcardsSkeleton /> :
+        kind === 'quiz' ? <StudyQuizSkeleton /> : null
+      ) : items.length === 0 ? (
+        <EmptyState
+          icon={kind === 'flashcards' ? Sparkles : kind === 'quiz' ? ListChecks : StickyNote}
+          title={emptyCopy.title}
+          description={emptyCopy.desc}
+          actionLabel={busy ? 'Generating…' : 'Generate now'}
+          onAction={busy ? undefined : generate}
+        />
       ) : items.map((it,i) => (
         <ArtifactCard key={it.id||i} kind={kind} artifact={it} onReload={load} />
       ))}
