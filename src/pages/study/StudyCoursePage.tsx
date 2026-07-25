@@ -9,9 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { StudyCourseSkeleton, StudyChatSkeleton } from '@/components/UI/StudySkeleton';
+import {
+  StudyCourseSkeleton, StudyChatSkeleton, StudyFlashcardsSkeleton, StudyQuizSkeleton,
+} from '@/components/UI/StudySkeleton';
 import { ErrorState, InlineErrorBoundary } from '@/components/UI/ErrorState';
 import { EmptyState } from '@/components/UI/EmptyState';
+import { getTabState, setTabState } from '@/lib/tabState';
 import ReactMarkdown from 'react-markdown';
 import {
   ArrowLeft, Upload, FileText, Image as ImageIcon, Youtube, Link as LinkIcon, MessageSquare,
