@@ -15,7 +15,7 @@ import {
 } from '@/components/UI/StudySkeleton';
 import { ErrorState, InlineErrorBoundary } from '@/components/UI/ErrorState';
 import { EmptyState } from '@/components/UI/EmptyState';
-import { getTabState, setTabState } from '@/lib/tabState';
+import { getTabState, setTabState, clearTabState } from '@/lib/tabState';
 import ReactMarkdown from 'react-markdown';
 import {
   ArrowLeft, Upload, FileText, Image as ImageIcon, Youtube, Link as LinkIcon, MessageSquare,
@@ -280,6 +280,11 @@ const TutorTab: React.FC<{ course: Course }> = ({ course }) => {
   const [mode, setMode] = useState<'tutor'|'exam'|'writing'|'research'>('tutor');
   const scrollRef = useRef<HTMLDivElement>(null);
   const restoredRef = useRef(false);
+  const busyRef = useRef(false);
+
+  // If the tutor is still streaming when this tab unmounts, drop the cached
+  // (partial) messages so the next mount refetches the complete reply from DB.
+  useEffect(() => () => { if (busyRef.current) clearTabState(cacheKey); }, [cacheKey]);
 
   useEffect(() => {
     if (cached.messages) { setLoadingHistory(false); return; }
@@ -323,7 +328,7 @@ const TutorTab: React.FC<{ course: Course }> = ({ course }) => {
     const next = [...messages, { role: 'user' as const, content: q }];
     setMessages(next);
     setInput('');
-    setBusy(true);
+    setBusy(true); busyRef.current = true;
     await supabase.from('study_chat_messages').insert({ user_id: user!.id, course_id: course.id, role: 'user', content: q } as any);
 
     try {
@@ -355,6 +360,7 @@ const TutorTab: React.FC<{ course: Course }> = ({ course }) => {
       }
       await supabase.from('study_chat_messages').insert({ user_id: user!.id, course_id: course.id, role: 'assistant', content: acc } as any);
     } catch (e:any) { toast.error(e.message); }
+    busyRef.current = false;
     setBusy(false);
   };
 

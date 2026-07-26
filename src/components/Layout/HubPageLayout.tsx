@@ -76,7 +76,7 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
 
       {/* Tabs — segmented control with underline indicator */}
       <Tabs value={tab} onValueChange={setTab} className="w-full space-y-3 sm:space-y-4">
-        <div className="sticky top-0 sm:top-2 z-30 -mx-2 sm:mx-0 px-2 sm:px-0">
+        <div className="sticky top-14 z-30 -mx-2 sm:mx-0 px-2 sm:px-0">
           <div className="rounded-none sm:rounded-[16px] border-y sm:border border-border/40 bg-background/85 supports-[backdrop-filter]:bg-background/70 backdrop-blur-xl px-1 py-1">
             <TabsList className="w-full justify-start gap-0.5 bg-transparent h-auto p-0 overflow-x-auto scrollbar-none scroll-smooth snap-x">
               {tabs.map((t) => (
