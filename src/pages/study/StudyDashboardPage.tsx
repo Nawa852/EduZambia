@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { segmentedBarClass, segmentedListClass, segmentedTriggerClass } from '@/components/UI/SegmentedTabs';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/Auth/AuthProvider';
@@ -17,7 +18,6 @@ import {
 import { toast } from 'sonner';
 import { StudyDashboardSkeleton } from '@/components/UI/StudySkeleton';
 import {
-import { segmentedBarClass, segmentedListClass, segmentedTriggerClass } from '@/components/UI/SegmentedTabs';
   Plus, Folder, FileText, Upload, Sparkles, Mic, PenLine, ListChecks, BookOpen,
   Search, Trash2, Youtube, Link as LinkIcon, ImageIcon, ChevronRight, Clock,
 } from 'lucide-react';

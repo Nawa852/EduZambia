@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { segmentedBarClass, segmentedListClass, segmentedTriggerClass } from '@/components/UI/SegmentedTabs';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/Auth/AuthProvider';
@@ -13,7 +14,6 @@ import { ErrorState, InlineErrorBoundary } from '@/components/UI/ErrorState';
 import { getTabState, setTabState } from '@/lib/tabState';
 import ReactMarkdown from 'react-markdown';
 import {
-import { segmentedBarClass, segmentedListClass, segmentedTriggerClass } from '@/components/UI/SegmentedTabs';
   ArrowLeft, FileText, Sparkles, MessageSquare, Loader2, Send, StickyNote,
   ListChecks, Brain, Youtube, Link as LinkIcon,
 } from 'lucide-react';

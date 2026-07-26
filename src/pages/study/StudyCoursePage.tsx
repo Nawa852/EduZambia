@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { segmentedBarClass, segmentedListClass, segmentedTriggerClass } from '@/components/UI/SegmentedTabs';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/Auth/AuthProvider';
@@ -17,7 +18,6 @@ import { EmptyState } from '@/components/UI/EmptyState';
 import { getTabState, setTabState } from '@/lib/tabState';
 import ReactMarkdown from 'react-markdown';
 import {
-import { segmentedBarClass, segmentedListClass, segmentedTriggerClass } from '@/components/UI/SegmentedTabs';
   ArrowLeft, Upload, FileText, Image as ImageIcon, Youtube, Link as LinkIcon, MessageSquare,
   Sparkles, BookOpen, Calendar, Target, Trash2, PlayCircle, Loader2, Send, Brain, ChevronRight,
   StickyNote, ListChecks, Network,
