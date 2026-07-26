@@ -167,7 +167,7 @@ const StudyDashboardPage = () => {
         <div
           role="tablist"
           aria-label="Study dashboard sections"
-          className="inline-flex bg-muted/60 backdrop-blur rounded-full p-1 border border-border/60 overflow-x-auto scrollbar-none max-w-full"
+          className="inline-flex bg-secondary/50 rounded-[14px] p-1 border border-border/40 overflow-x-auto scrollbar-none max-w-full"
           onKeyDown={(e) => {
             const ids: Tab[] = ['actions','files','folders','history'];
             const idx = ids.indexOf(tab);
@@ -189,11 +189,7 @@ const StudyDashboardPage = () => {
                 aria-selected={active}
                 tabIndex={active ? 0 : -1}
                 onClick={() => setTab(id)}
-                className={`px-3 sm:px-4 h-8 sm:h-9 rounded-full text-xs sm:text-sm font-medium transition whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 ${
-                  active
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
+                className={segmentedTriggerClass(active)}
               >
                 {label}
               </button>
