@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { segmentedBarClass, segmentedListClass, segmentedTriggerClass } from '@/components/UI/SegmentedTabs';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/Auth/AuthProvider';
@@ -144,11 +145,11 @@ const StudyCoursePage = () => {
       </Card>
 
       {/* Tabs — sticky on scroll, arrow-key navigable */}
-      <div className="sticky top-0 z-30 -mx-4 lg:-mx-6 px-4 lg:px-6 py-2 bg-background/85 supports-[backdrop-filter]:bg-background/70 backdrop-blur-md">
+      <div className={segmentedBarClass}>
         <div
           role="tablist"
           aria-label="Course sections"
-          className="flex gap-1.5 overflow-x-auto scrollbar-none snap-x"
+          className={segmentedListClass}
           onKeyDown={(e) => {
             const ids = ['overview','resources','tutor','notes','flashcards','quizzes','plan'] as const;
             const idx = ids.indexOf(tab as any);
@@ -177,7 +178,7 @@ const StudyCoursePage = () => {
                 id={`course-tab-${id}`}
                 tabIndex={active ? 0 : -1}
                 onClick={()=>setTab(id)}
-                className={`snap-start shrink-0 flex items-center gap-1.5 px-3.5 h-9 rounded-full text-xs font-medium border transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 ${active?'bg-primary text-primary-foreground border-primary':'bg-background text-muted-foreground border-border hover:text-foreground'}`}
+                className={segmentedTriggerClass(active)}
               >
                 <Icon className="w-3.5 h-3.5" />{label}
               </button>

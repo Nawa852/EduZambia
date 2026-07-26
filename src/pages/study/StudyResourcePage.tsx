@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { segmentedBarClass, segmentedListClass, segmentedTriggerClass } from '@/components/UI/SegmentedTabs';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/Auth/AuthProvider';
@@ -113,11 +114,11 @@ const StudyResourcePage = () => {
       </div>
 
       {/* Underline tab bar — sticky on mobile, keyboard-navigable */}
-      <div className="sticky top-0 z-30 border-b overflow-x-auto scrollbar-none -mx-4 lg:-mx-6 px-4 lg:px-6 bg-background/85 supports-[backdrop-filter]:bg-background/70 backdrop-blur-md">
+      <div className={segmentedBarClass}>
         <div
           role="tablist"
           aria-label="Resource views"
-          className="flex gap-1 min-w-max"
+          className={segmentedListClass}
           onKeyDown={(e) => {
             const idx = tabIds.indexOf(tab);
             if (e.key === 'ArrowRight') { e.preventDefault(); setTab(tabIds[(idx+1)%tabIds.length]); }
@@ -137,15 +138,10 @@ const StudyResourcePage = () => {
                 id={`resource-tab-${id}`}
                 tabIndex={active ? 0 : -1}
                 onClick={()=>setTab(id)}
-                className={`relative flex items-center gap-2 px-3 md:px-4 h-11 text-sm font-medium transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 rounded-md ${
-                  active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
-                }`}
+                className={segmentedTriggerClass(active)}
               >
                 <Icon className="w-4 h-4" />
                 {label}
-                {active && (
-                  <span className="absolute left-2 right-2 -bottom-px h-0.5 bg-foreground rounded-full" />
-                )}
               </button>
             );
           })}
