@@ -73,6 +73,21 @@ export function StudyResourceSkeleton() {
   );
 }
 
+/** Content-only skeleton for a generating study pack (summary/notes). */
+export function StudyPackSkeleton() {
+  return (
+    <Card className="p-5 rounded-2xl space-y-3 border-border/40 animate-in fade-in duration-300">
+      <Skeleton className="h-4 w-3/4" />
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-5/6" />
+      <Skeleton className="h-4 w-2/3" />
+      <Skeleton className="h-24 w-full rounded-xl" />
+      <Skeleton className="h-4 w-4/5" />
+      <Skeleton className="h-4 w-3/5" />
+    </Card>
+  );
+}
+
 /** Skeleton for the course/folder page (header + tabs + resource list). */
 export function StudyCourseSkeleton() {
   return (

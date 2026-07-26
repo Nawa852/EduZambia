@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { StudyResourceSkeleton, StudyChatSkeleton, StudyQuizSkeleton, StudyFlashcardsSkeleton } from '@/components/UI/StudySkeleton';
+import { StudyResourceSkeleton, StudyPackSkeleton, StudyChatSkeleton, StudyQuizSkeleton, StudyFlashcardsSkeleton } from '@/components/UI/StudySkeleton';
 import { EmptyState } from '@/components/UI/EmptyState';
 import { ErrorState, InlineErrorBoundary } from '@/components/UI/ErrorState';
 import { getTabState, setTabState } from '@/lib/tabState';
@@ -182,7 +182,7 @@ const SourceView: React.FC<{ r: Resource; signedUrl: string|null }> = ({ r, sign
 };
 
 const PackView: React.FC<{ pack:any; onGen:()=>void; busy:boolean; field:'summary'|'notes' }> = ({ pack, onGen, busy, field }) => {
-  if (busy) return <StudyResourceSkeleton />;
+  if (busy) return <StudyPackSkeleton />;
   if (!pack) return <Empty onGen={onGen} busy={busy} />;
   const md = field === 'summary' ? pack.summary : [pack.summary, ...(pack.keyPoints||[]).map((p:string)=>`- ${p}`)].join('\n\n');
   return <Card className="p-5 rounded-2xl"><div className="prose prose-sm dark:prose-invert max-w-none"><ReactMarkdown>{md||''}</ReactMarkdown></div></Card>;
