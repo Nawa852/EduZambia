@@ -22,6 +22,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useProfile } from '@/hooks/useProfile';
 import { supabase } from '@/integrations/supabase/client';
+import ArtifactCanvas, { type Artifact } from '@/components/AI/ArtifactCanvas';
 
 type Part =
   | { type: 'text'; text: string }
