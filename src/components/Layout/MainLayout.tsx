@@ -10,6 +10,8 @@ import { PageContainer } from '@/components/Layout/PageContainer';
 
 import { ScrollToTop } from '@/components/UI/ScrollToTop';
 import { QuickNoteButton } from '@/components/UI/QuickNoteButton';
+import { ComingSoonGate } from '@/components/UI/ComingSoonGate';
+
 import { useSecurityAlerts } from '@/hooks/useSecurityAlerts';
 import { useStudySchedule } from '@/hooks/useStudySchedule';
 import { ScheduleEnforcer } from '@/components/DeviceControl/ScheduleEnforcer';
