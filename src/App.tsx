@@ -225,6 +225,8 @@ function App() {
               <Route path="/study" element={<PG><React.Suspense fallback={null}><StudyDashboardPage /></React.Suspense></PG>} />
               <Route path="/study/course/:courseId" element={<PG><React.Suspense fallback={null}><StudyCoursePage /></React.Suspense></PG>} />
               <Route path="/study/resource/:resourceId" element={<PG><React.Suspense fallback={null}><StudyResourcePage /></React.Suspense></PG>} />
+              <Route path="/know-your-stuff" element={<PG><React.Suspense fallback={null}><KnowYourStuffPage /></React.Suspense></PG>} />
+
               <Route path="/lecture" element={<Navigate to="/prepare?tab=notes" replace />} />
               <Route path="/medical/patients" element={<Navigate to="/medical-patients" replace />} />
               <Route path="/medical/consults" element={<Navigate to="/medical?tab=cases" replace />} />
