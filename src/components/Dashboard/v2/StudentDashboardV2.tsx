@@ -241,10 +241,13 @@ export function StudentDashboardV2({ userName }: Props) {
             </div>
             <button onClick={() => navigate('/study-planner')} className="text-xs text-primary font-medium hover:underline">View all</button>
           </div>
-          <div className="text-[15px] font-bold">Next: Physics Lesson 3</div>
-          <div className="text-xs text-muted-foreground">Mechanics — Motion in 2D</div>
-          <Progress value={45} className="h-1.5 mt-3" />
-          <div className="text-[11px] text-muted-foreground mt-1.5 mb-3">In 45 min</div>
+          <div className="text-[15px] font-bold">{tasks.find(t => !t.done)?.title ?? 'No task scheduled'}</div>
+          <div className="text-xs text-muted-foreground">
+            {tasks.length ? `${tasksDone} of ${tasksGoal} goals complete` : 'Add a study goal to plan your day'}
+          </div>
+          <Progress value={tasksGoal ? (tasksDone / tasksGoal) * 100 : 0} className="h-1.5 mt-3" />
+          <div className="text-[11px] text-muted-foreground mt-1.5 mb-3">{tasks.find(t => !t.done)?.due ?? '—'}</div>
+
           <Button onClick={() => navigate('/study-planner')} className="w-full rounded-full h-10 text-xs font-semibold shadow-md shadow-primary/20">
             Start Session
           </Button>
