@@ -78,14 +78,26 @@ const StudyDashboardPage = () => {
       return;
     }
     setLoading(true);
-    const [{ data: cs }, { data: rs }] = await Promise.all([
-      supabase.from('study_courses').select('*').order('updated_at', { ascending: false }),
-      supabase.from('study_resources').select('id,title,kind,mime,source_url,storage_path,course_id,created_at,updated_at').order('created_at', { ascending: false }).limit(200),
+    // Never spin for more than 7s — show whatever arrived and let the user retry.
+    const [cs, rs] = await Promise.all([
+      softTimeout(
+        supabase.from('study_courses').select('*').order('updated_at', { ascending: false })
+          .then(r => r.data),
+        null,
+      ),
+      softTimeout(
+        supabase.from('study_resources')
+          .select('id,title,kind,mime,source_url,storage_path,course_id,created_at,updated_at')
+          .order('created_at', { ascending: false }).limit(120)
+          .then(r => r.data),
+        null,
+      ),
     ]);
     setCourses((cs as any) || []);
     setResources((rs as any) || []);
     setLoading(false);
   };
+
   useEffect(() => { load(); }, [user?.id]);
 
   const createFolder = async () => {
