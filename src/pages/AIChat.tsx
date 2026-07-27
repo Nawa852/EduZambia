@@ -33,6 +33,9 @@ interface ChatMessage {
   content: string;          // rendered text
   parts?: Part[];           // sent to model
   images?: string[];        // dataURLs for display
+  artifact?: Artifact;      // rendered 3D / mind map / chart / document
+  building?: boolean;       // artifact generation in progress
+  buildStep?: string;       // current build step label
   ts: number;
 }
 
