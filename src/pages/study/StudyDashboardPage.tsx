@@ -172,14 +172,20 @@ const StudyDashboardPage = () => {
   if (loading && courses.length === 0) return <StudyDashboardSkeleton />;
 
   return (
-    <div className="container mx-auto p-3 sm:p-4 lg:p-6 max-w-6xl space-y-4 sm:space-y-5">
+    <div className="w-full mx-auto p-3 sm:p-4 lg:p-6 max-w-[720px] md:max-w-[1024px] lg:max-w-[1320px] xl:max-w-[1560px] 2xl:max-w-[1760px] space-y-4 sm:space-y-5">
       {/* Heading */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">Your Dashboard</h1>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed max-w-2xl">
-          Organize study material into folders — upload notes, watch lessons, and Synapse turns them into flashcards, quizzes and a personal tutor.
-        </p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">Your Dashboard</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed max-w-2xl">
+            Organize study material into folders — upload notes, watch lessons, and Synapse turns them into flashcards, quizzes and a personal tutor.
+          </p>
+        </div>
+        <Button className="rounded-xl shrink-0" onClick={() => nav('/know-your-stuff')}>
+          <Zap className="w-4 h-4 mr-1.5" />Know Your Stuff
+        </Button>
       </div>
+
 
 
       {/* Tabs + primary action */}
