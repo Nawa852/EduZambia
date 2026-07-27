@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import eduIcon from "@/assets/edu-zambia-icon.png";
+import eduIcon from "@/assets/brandLogo";
 
 interface LogoLoaderProps {
   size?: "sm" | "md" | "lg";

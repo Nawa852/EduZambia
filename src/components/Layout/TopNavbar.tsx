@@ -14,7 +14,7 @@ import { useAuth } from '@/components/Auth/AuthProvider';
 import { useProfile } from '@/hooks/useProfile';
 import { roleLabels } from '@/components/Sidebar/sidebarConfig';
 import { MobileSidebarDrawer } from '@/components/Layout/MobileSidebarDrawer';
-import eduMark from '@/assets/edu-zambia-icon.png';
+import eduMark from '@/assets/brandLogo';
 
 export const TopNavbar = () => {
   const navigate = useNavigate();

@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import { getNavigationByRole, matchesNavItem } from "./sidebarConfig";
 import { useProfile } from "@/hooks/useProfile";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import eduIcon from "@/assets/edu-zambia-icon.png";
+import eduIcon from "@/assets/brandLogo";
 
 export function RoleBasedSidebar() {
   const { state, toggleSidebar } = useSidebar();

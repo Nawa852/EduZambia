@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Play, LogIn } from 'lucide-react';
-import eduMark from '@/assets/edu-zambia-icon.png';
+import eduMark from '@/assets/brandLogo';
 
 const SplashLanding = () => {
   const navigate = useNavigate();
