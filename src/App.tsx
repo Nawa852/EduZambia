@@ -303,7 +303,7 @@ function App() {
 
               {/* Tools & Resources — redirect overlapping tool routes to unified hub */}
               <Route path="/all-tools" element={<Navigate to="/tools" replace />} />
-              <Route path="/resources" element={<Navigate to="/tools" replace />} />
+              <Route path="/resources" element={<Navigate to="/repository" replace />} />
               <Route path="/tools-hub" element={<Navigate to="/tools" replace />} />
               <Route path="/study-tools" element={<Navigate to="/tools" replace />} />
               <Route path="/ai-tools" element={<Navigate to="/tools" replace />} />
@@ -453,8 +453,8 @@ function App() {
 
               {/* Operations */}
               <Route path="/pilot" element={<PG><PilotControlPage /></PG>} />
-              <Route path="/resources" element={<PG><ResourceRepositoryPage /></PG>} />
-              <Route path="/repository" element={<Navigate to="/resources" replace />} />
+              <Route path="/repository" element={<PG><ResourceRepositoryPage /></PG>} />
+              <Route path="/repository/:folder" element={<PG><ResourceRepositoryPage /></PG>} />
 
               {/* 404 */}
               <Route path="*" element={<NotFound />} />
