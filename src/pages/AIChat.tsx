@@ -603,6 +603,15 @@ export default function AIChat() {
                         ))}
                       </div>
                     )}
+                    {m.building && (
+                      <Card className="p-3 mb-2 flex items-center gap-2 border-primary/30 bg-primary/5">
+                        <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                        <span className="text-sm">
+                          {m.buildStep || 'Building artifact'}
+                          <span className="text-muted-foreground"> — rendering, please wait…</span>
+                        </span>
+                      </Card>
+                    )}
                     <div className="prose prose-sm dark:prose-invert max-w-none break-words
                       prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-pre:rounded-xl prose-pre:p-3
                       prose-code:before:hidden prose-code:after:hidden prose-code:bg-muted prose-code:px-1 prose-code:rounded
@@ -614,10 +623,20 @@ export default function AIChat() {
                         >
                           {m.content}
                         </ReactMarkdown>
-                      ) : (
+                      ) : !m.building ? (
                         <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-                      )}
+                      ) : null}
                     </div>
+                    {m.artifact && (
+                      <ArtifactCanvas
+                        artifact={m.artifact}
+                        className="mt-3"
+                        onRegenerate={() => {
+                          const prompt = active.messages.find(x => x.ts <= m.ts && x.role === 'user')?.content;
+                          if (prompt) buildArtifact(prompt, m.id, active.id);
+                        }}
+                      />
+                    )}
                     {m.role === 'assistant' && m.content && !isStreaming && (
                       <div className="flex items-center gap-1 mt-2">
                         <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { navigator.clipboard.writeText(m.content); toast.success('Copied'); }}>
