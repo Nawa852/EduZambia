@@ -1,180 +1,228 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { EmptyState } from '@/components/UI/EmptyState';
 import {
-  BookOpen, FileText, Video, Globe, Download, ExternalLink,
-  Search, GraduationCap, Calculator, FlaskConical, Languages,
-  Microscope, Scale, Leaf, Monitor, Heart, Briefcase
+  UploadCloud, FileText, Image as ImageIcon, Film, Music, FileSpreadsheet,
+  Presentation, File as FileIcon, Trash2, ExternalLink, Loader2, Search, Download,
 } from 'lucide-react';
+import { toast } from 'sonner';
+import { useProfile } from '@/hooks/useProfile';
+import {
+  uploadToRepository, listRepository, getResourceUrl, deleteResource,
+  type RepositoryItem, type ResourceKind,
+} from '@/lib/resourceRepository';
 
-interface Resource {
-  title: string;
-  description: string;
-  type: 'pdf' | 'video' | 'link' | 'practice';
-  grade: string;
-  subject: string;
-  url: string;
-  icon: any;
-}
+const KIND_ICON: Record<ResourceKind, React.ElementType> = {
+  pdf: FileText, document: FileText, slides: Presentation, spreadsheet: FileSpreadsheet,
+  image: ImageIcon, video: Film, audio: Music, other: FileIcon,
+};
 
-const resources: Resource[] = [
-  // Grade 7
-  { title: 'Grade 7 Mathematics Past Paper 2023', description: 'Official ECZ examination paper with marking scheme', type: 'pdf', grade: '7', subject: 'Mathematics', url: '#', icon: Calculator },
-  { title: 'Grade 7 English Language Past Paper 2023', description: 'Comprehension, grammar, and composition sections', type: 'pdf', grade: '7', subject: 'English', url: '#', icon: Languages },
-  { title: 'Grade 7 Science Past Paper 2023', description: 'Integrated science with practical questions', type: 'pdf', grade: '7', subject: 'Science', url: '#', icon: FlaskConical },
-  { title: 'Grade 7 Social Studies Past Paper 2023', description: 'Geography, history, and civic education', type: 'pdf', grade: '7', subject: 'Social Studies', url: '#', icon: Globe },
-  { title: 'Grade 7 Mathematics Past Paper 2022', description: 'Full paper with solutions guide', type: 'pdf', grade: '7', subject: 'Mathematics', url: '#', icon: Calculator },
-  { title: 'Grade 7 English Past Paper 2022', description: 'Complete language assessment', type: 'pdf', grade: '7', subject: 'English', url: '#', icon: Languages },
-  // Grade 9
-  { title: 'Grade 9 Mathematics Paper 1 & 2 (2023)', description: 'Both papers with detailed marking scheme', type: 'pdf', grade: '9', subject: 'Mathematics', url: '#', icon: Calculator },
-  { title: 'Grade 9 English Language (2023)', description: 'Reading, writing, and listening components', type: 'pdf', grade: '9', subject: 'English', url: '#', icon: Languages },
-  { title: 'Grade 9 Integrated Science (2023)', description: 'Biology, chemistry, and physics combined', type: 'pdf', grade: '9', subject: 'Science', url: '#', icon: FlaskConical },
-  { title: 'Grade 9 Biology (2023)', description: 'Cell biology, ecology, and human anatomy', type: 'pdf', grade: '9', subject: 'Biology', url: '#', icon: Microscope },
-  { title: 'Grade 9 Civic Education (2023)', description: 'Governance, rights, and responsibilities', type: 'pdf', grade: '9', subject: 'Civic Education', url: '#', icon: Scale },
-  { title: 'Grade 9 Agriculture Science (2023)', description: 'Crop production, animal husbandry', type: 'pdf', grade: '9', subject: 'Agriculture', url: '#', icon: Leaf },
-  { title: 'Grade 9 Computer Studies (2023)', description: 'Theory and practical components', type: 'pdf', grade: '9', subject: 'Computer Studies', url: '#', icon: Monitor },
-  // Grade 12
-  { title: 'Grade 12 Mathematics Paper 1 (2023)', description: 'Pure mathematics – algebra, calculus, trigonometry', type: 'pdf', grade: '12', subject: 'Mathematics', url: '#', icon: Calculator },
-  { title: 'Grade 12 Mathematics Paper 2 (2023)', description: 'Applied mathematics – statistics, mechanics', type: 'pdf', grade: '12', subject: 'Mathematics', url: '#', icon: Calculator },
-  { title: 'Grade 12 English Language (2023)', description: 'Advanced composition and comprehension', type: 'pdf', grade: '12', subject: 'English', url: '#', icon: Languages },
-  { title: 'Grade 12 Biology Paper 1 & 2 (2023)', description: 'Theory and practical papers', type: 'pdf', grade: '12', subject: 'Biology', url: '#', icon: Microscope },
-  { title: 'Grade 12 Chemistry Paper 1 & 2 (2023)', description: 'Organic, inorganic, and physical chemistry', type: 'pdf', grade: '12', subject: 'Chemistry', url: '#', icon: FlaskConical },
-  { title: 'Grade 12 Physics Paper 1 & 2 (2023)', description: 'Mechanics, waves, electricity, modern physics', type: 'pdf', grade: '12', subject: 'Physics', url: '#', icon: FlaskConical },
-  { title: 'Grade 12 Civic Education (2023)', description: 'Constitution, governance, human rights', type: 'pdf', grade: '12', subject: 'Civic Education', url: '#', icon: Scale },
-  { title: 'Grade 12 Business Studies (2023)', description: 'Accounting, marketing, management', type: 'pdf', grade: '12', subject: 'Business Studies', url: '#', icon: Briefcase },
-  // Video Resources
-  { title: 'ECZ Mathematics Walkthrough – Grade 9', description: 'Step-by-step solutions for 2023 paper', type: 'video', grade: '9', subject: 'Mathematics', url: 'https://youtube.com', icon: Calculator },
-  { title: 'Biology Revision – Grade 12', description: 'Cell division, genetics, and ecology review', type: 'video', grade: '12', subject: 'Biology', url: 'https://youtube.com', icon: Microscope },
-  { title: 'Chemistry Revision – Grade 12', description: 'Organic chemistry and stoichiometry', type: 'video', grade: '12', subject: 'Chemistry', url: 'https://youtube.com', icon: FlaskConical },
-  { title: 'English Language Tips – All Grades', description: 'Comprehension and essay writing techniques', type: 'video', grade: 'all', subject: 'English', url: 'https://youtube.com', icon: Languages },
-  // External Links
-  { title: 'ZEDPastPapers.com', description: 'Complete archive of ECZ past examination papers', type: 'link', grade: 'all', subject: 'All', url: 'https://zedpastpapers.com', icon: Globe },
-  { title: 'ECZ Official Website', description: 'Examinations Council of Zambia official portal', type: 'link', grade: 'all', subject: 'All', url: 'https://www.exams-council.org.zm', icon: Globe },
-  { title: 'Khan Academy Zambia', description: 'Free math and science lessons aligned to curriculum', type: 'link', grade: 'all', subject: 'All', url: 'https://khanacademy.org', icon: Globe },
-  { title: 'BBC Bitesize', description: 'Revision materials for science and English', type: 'link', grade: 'all', subject: 'All', url: 'https://bbc.co.uk/bitesize', icon: Globe },
-];
+const formatSize = (bytes: number | null) => {
+  if (!bytes) return '—';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+};
 
 const ECZResourcesExpandedPage = () => {
-  const [search, setSearch] = useState('');
-  const [gradeFilter, setGradeFilter] = useState('all');
-  const [subjectFilter, setSubjectFilter] = useState('all');
+  const { profile } = useProfile();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [items, setItems] = useState<RepositoryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const [query, setQuery] = useState('');
 
-  const grades = ['all', '7', '9', '12'];
-  const subjects = [...new Set(resources.map(r => r.subject))];
+  // File opener
+  const [openItem, setOpenItem] = useState<RepositoryItem | null>(null);
+  const [openUrl, setOpenUrl] = useState<string | null>(null);
+  const [openLoading, setOpenLoading] = useState(false);
 
-  const filtered = resources.filter(r => {
-    const matchSearch = r.title.toLowerCase().includes(search.toLowerCase()) || r.description.toLowerCase().includes(search.toLowerCase());
-    const matchGrade = gradeFilter === 'all' || r.grade === gradeFilter || r.grade === 'all';
-    const matchSubject = subjectFilter === 'all' || r.subject === subjectFilter;
-    return matchSearch && matchGrade && matchSubject;
-  });
+  const load = useCallback(async () => {
+    try {
+      setItems(await listRepository());
+    } catch {
+      toast.error('Could not load your resources');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const pdfs = filtered.filter(r => r.type === 'pdf');
-  const videos = filtered.filter(r => r.type === 'video');
-  const links = filtered.filter(r => r.type === 'link');
+  useEffect(() => { load(); }, [load]);
 
-  const ResourceCard = ({ r }: { r: Resource }) => (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-      <Card className="hover:shadow-md transition-all group">
-        <CardContent className="p-4">
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-primary/10 shrink-0">
-              <r.icon className="w-5 h-5 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors">{r.title}</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">{r.description}</p>
-              <div className="flex items-center gap-2 mt-2">
-                {r.grade !== 'all' && <Badge variant="outline" className="text-xs">Grade {r.grade}</Badge>}
-                <Badge variant="secondary" className="text-xs">{r.subject}</Badge>
-              </div>
-            </div>
-            <Button variant="ghost" size="icon" className="shrink-0" asChild>
-              <a href={r.url} target="_blank" rel="noopener noreferrer">
-                {r.type === 'pdf' ? <Download className="w-4 h-4" /> :
-                 r.type === 'video' ? <Video className="w-4 h-4" /> :
-                 <ExternalLink className="w-4 h-4" />}
-              </a>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
+  const handleFiles = async (files: FileList | null) => {
+    if (!files?.length) return;
+    setUploading(true);
+    let ok = 0;
+    for (const file of Array.from(files)) {
+      try {
+        await uploadToRepository({ file, role: profile?.role ?? null, source: 'repository' });
+        ok += 1;
+      } catch (err) {
+        toast.error((err as Error).message);
+      }
+    }
+    setUploading(false);
+    if (ok) toast.success(`${ok} file${ok > 1 ? 's' : ''} added to your repository`);
+    load();
+  };
+
+  const open = async (item: RepositoryItem) => {
+    setOpenItem(item);
+    setOpenUrl(null);
+    setOpenLoading(true);
+    const url = await getResourceUrl(item);
+    setOpenUrl(url);
+    setOpenLoading(false);
+    if (!url) toast.error('Could not open this file');
+  };
+
+  const remove = async (item: RepositoryItem) => {
+    await deleteResource(item);
+    toast.success('Removed');
+    load();
+  };
+
+  const filtered = items.filter((i) =>
+    !query.trim() || i.title.toLowerCase().includes(query.toLowerCase()) ||
+    i.folder_path.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <div className="max-w-5xl mx-auto py-6 px-4 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <GraduationCap className="w-6 h-6 text-primary" /> ECZ Resource Library
-        </h1>
-        <p className="text-sm text-muted-foreground">{resources.length} resources · Past papers, videos & study materials</p>
+    <div className="space-y-5">
+      {/* Drop zone */}
+      <div
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files); }}
+        onClick={() => inputRef.current?.click()}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') inputRef.current?.click(); }}
+        aria-label="Upload files to your repository"
+        className={`rounded-2xl border-2 border-dashed p-8 text-center cursor-pointer transition-colors ${
+          dragOver ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 bg-muted/20'
+        }`}
+      >
+        <input
+          ref={inputRef}
+          type="file"
+          multiple
+          className="hidden"
+          onChange={(e) => { handleFiles(e.target.files); e.target.value = ''; }}
+        />
+        {uploading ? (
+          <Loader2 className="w-8 h-8 mx-auto text-primary animate-spin" />
+        ) : (
+          <UploadCloud className="w-8 h-8 mx-auto text-primary" />
+        )}
+        <p className="mt-3 text-sm font-medium">
+          {uploading ? 'Uploading…' : 'Drop files here or tap to upload'}
+        </p>
+        <p className="text-xs text-muted-foreground mt-1">
+          PDFs, documents, slides, images, audio and video — sorted automatically into folders.
+        </p>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search resources..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+      {/* Search */}
+      {items.length > 0 && (
+        <div className="relative">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search your files…"
+            className="pl-9"
+            aria-label="Search files"
+          />
         </div>
-        <div className="flex gap-1">
-          {grades.map(g => (
-            <Button
-              key={g}
-              size="sm"
-              variant={gradeFilter === g ? 'default' : 'outline'}
-              onClick={() => setGradeFilter(g)}
-            >
-              {g === 'all' ? 'All Grades' : `Grade ${g}`}
-            </Button>
-          ))}
+      )}
+
+      {/* Files */}
+      {loading ? (
+        <div className="space-y-2">{[0, 1, 2].map((i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</div>
+      ) : filtered.length === 0 ? (
+        <EmptyState
+          icon={UploadCloud}
+          title={items.length ? 'No matches' : 'Your repository is empty'}
+          description={items.length
+            ? 'Try a different search term.'
+            : 'Everything you upload anywhere in Synapse lands here, neatly organised.'}
+        />
+      ) : (
+        <div className="space-y-2">
+          {filtered.map((item) => {
+            const Icon = KIND_ICON[item.kind] ?? FileIcon;
+            return (
+              <Card key={item.id} className="border-border/60 hover:border-primary/40 transition-colors">
+                <CardContent className="p-3 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                    <Icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <button
+                    onClick={() => open(item)}
+                    className="flex-1 min-w-0 text-left"
+                    aria-label={`Open ${item.title}`}
+                  >
+                    <p className="text-sm font-medium truncate">{item.title}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {item.folder_path} · {formatSize(item.size_bytes)}
+                    </p>
+                  </button>
+                  <Badge variant="secondary" className="text-[10px] hidden sm:inline-flex">{item.kind}</Badge>
+                  <Button size="icon" variant="ghost" onClick={() => open(item)} aria-label="Open file">
+                    <ExternalLink className="w-4 h-4" />
+                  </Button>
+                  <Button size="icon" variant="ghost" onClick={() => remove(item)} aria-label="Delete file">
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
-      </div>
+      )}
 
-      {/* Subject Pills */}
-      <div className="flex flex-wrap gap-1.5">
-        <Badge
-          variant={subjectFilter === 'all' ? 'default' : 'outline'}
-          className="cursor-pointer"
-          onClick={() => setSubjectFilter('all')}
-        >All Subjects</Badge>
-        {subjects.filter(s => s !== 'All').map(s => (
-          <Badge
-            key={s}
-            variant={subjectFilter === s ? 'default' : 'outline'}
-            className="cursor-pointer"
-            onClick={() => setSubjectFilter(s)}
-          >{s}</Badge>
-        ))}
-      </div>
-
-      {/* Content Tabs */}
-      <Tabs defaultValue="papers">
-        <TabsList>
-          <TabsTrigger value="papers"><FileText className="w-3 h-3 mr-1" /> Past Papers ({pdfs.length})</TabsTrigger>
-          <TabsTrigger value="videos"><Video className="w-3 h-3 mr-1" /> Videos ({videos.length})</TabsTrigger>
-          <TabsTrigger value="links"><Globe className="w-3 h-3 mr-1" /> Study Sites ({links.length})</TabsTrigger>
-        </TabsList>
-        <TabsContent value="papers" className="space-y-2 mt-4">
-          {pdfs.length === 0 ? (
-            <Card><CardContent className="py-8 text-center text-muted-foreground">No papers match your filters.</CardContent></Card>
-          ) : pdfs.map((r, i) => <ResourceCard key={i} r={r} />)}
-        </TabsContent>
-        <TabsContent value="videos" className="space-y-2 mt-4">
-          {videos.length === 0 ? (
-            <Card><CardContent className="py-8 text-center text-muted-foreground">No videos match your filters.</CardContent></Card>
-          ) : videos.map((r, i) => <ResourceCard key={i} r={r} />)}
-        </TabsContent>
-        <TabsContent value="links" className="space-y-2 mt-4">
-          {links.length === 0 ? (
-            <Card><CardContent className="py-8 text-center text-muted-foreground">No links match your filters.</CardContent></Card>
-          ) : links.map((r, i) => <ResourceCard key={i} r={r} />)}
-        </TabsContent>
-      </Tabs>
+      {/* Embedded file opener */}
+      <Dialog open={!!openItem} onOpenChange={(o) => { if (!o) { setOpenItem(null); setOpenUrl(null); } }}>
+        <DialogContent className="max-w-4xl w-[95vw] h-[85vh] flex flex-col p-0 gap-0">
+          <DialogHeader className="px-4 py-3 border-b border-border/60">
+            <DialogTitle className="text-sm truncate pr-8">{openItem?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 min-h-0 bg-muted/30">
+            {openLoading || !openUrl ? (
+              <div className="h-full flex items-center justify-center">
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              </div>
+            ) : openItem?.kind === 'image' ? (
+              <div className="h-full overflow-auto flex items-center justify-center p-4">
+                <img src={openUrl} alt={openItem.title} className="max-w-full max-h-full object-contain rounded-lg" />
+              </div>
+            ) : openItem?.kind === 'video' ? (
+              <video src={openUrl} controls className="w-full h-full bg-black" />
+            ) : openItem?.kind === 'audio' ? (
+              <div className="h-full flex items-center justify-center p-6">
+                <audio src={openUrl} controls className="w-full max-w-md" />
+              </div>
+            ) : (
+              <iframe src={openUrl} title={openItem?.title ?? 'File'} className="w-full h-full border-0" />
+            )}
+          </div>
+          {openUrl && (
+            <div className="px-4 py-3 border-t border-border/60 flex justify-end">
+              <Button size="sm" variant="outline" asChild>
+                <a href={openUrl} target="_blank" rel="noreferrer" download>
+                  <Download className="w-4 h-4 mr-2" /> Download
+                </a>
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
