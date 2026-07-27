@@ -80,7 +80,7 @@ export const useUserStats = () => {
   }, [user]);
 
   const recalculateStreak = useCallback(async () => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const { data: streak } = await supabase.rpc('calculate_user_streak', { p_user_id: user.id });
     const newStreak = streak ?? 0;
     await (supabase as any).from('user_stats')
@@ -90,7 +90,7 @@ export const useUserStats = () => {
   }, [user, stats.longest_streak]);
 
   const addXP = useCallback(async (amount: number) => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     await supabase.rpc('award_xp' as any, { p_user_id: user.id, p_xp: amount, p_coins: 0 });
   }, [user]);
 

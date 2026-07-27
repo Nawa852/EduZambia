@@ -5,7 +5,7 @@ import { Joyride, STATUS, type Step } from 'react-joyride';
 const TOUR_KEY = 'nexus_student_tour_v1';
 
 const studentSteps: Step[] = [
-  { target: 'body', placement: 'center', title: 'Welcome to Nexus Learning 🎓', content: 'Your AI-powered ECZ study companion. Let me show you around in 60 seconds.' },
+  { target: 'body', placement: 'center', title: 'Welcome to Synapse 🎓', content: 'Your AI-powered ECZ study companion. Let me show you around in 60 seconds.' },
   { target: '[data-tour="streak"]', title: 'Study streaks 🔥', content: 'Study a little every day to grow your streak and earn XP.' },
   { target: '[data-tour="study-plan"]', title: 'Your daily plan', content: 'Your next lesson is always one click away. Tap Start Session to dive in.' },
   { target: '[data-tour="quick-tools"]', title: 'Quick tools', content: 'Quick capture, Periodic Table, Calculator and AI Assistant — one tap.' },

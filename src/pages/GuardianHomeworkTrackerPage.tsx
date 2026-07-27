@@ -14,7 +14,7 @@ const GuardianHomeworkTrackerPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     (async () => {
       const { data: links, error } = await (supabase as any).from('guardian_links').select('student_id').eq('guardian_id', user.id).eq('status', 'active');
       if (error) { toast.error('Failed to load data'); setLoading(false); return; }

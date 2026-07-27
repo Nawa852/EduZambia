@@ -42,7 +42,7 @@ const MyCoursesPage = () => {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const load = async () => {
       const { data: enrollments } = await supabase
         .from('enrollments')

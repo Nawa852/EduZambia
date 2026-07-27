@@ -31,7 +31,7 @@ const TeacherAnnouncementsPage = () => {
   const [priority, setPriority] = useState('normal');
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     (async () => {
       const { data: c, error: cErr } = await supabase.from('courses').select('id, title').eq('created_by', user.id);
       if (cErr) { toast.error('Failed to load courses'); setLoading(false); return; }

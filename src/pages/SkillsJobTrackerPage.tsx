@@ -37,7 +37,7 @@ const SkillsJobTrackerPage = () => {
   const [form, setForm] = useState({ company: '', position: '', notes: '', status: 'applied' as Status });
 
   const fetchApps = async () => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const { data } = await supabase
       .from('job_applications')
       .select('*')

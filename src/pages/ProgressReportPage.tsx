@@ -28,7 +28,7 @@ const ProgressReportPage = () => {
   const [stats, setStats] = useState({ courses: 0, avgProgress: 0, lessonsCompleted: 0, avgGrade: 0 });
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const load = async () => {
       const [{ data: enrollments }, { data: completions }, { data: grades }] = await Promise.all([
         supabase.from('enrollments').select('course_id, progress, courses(title, subject)').eq('user_id', user.id),

@@ -35,7 +35,7 @@ const ParentalControlsPage = () => {
   const [autoLock, setAutoLock] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const fetchStudents = async () => {
       const { data: links } = await supabase
         .from('guardian_links')

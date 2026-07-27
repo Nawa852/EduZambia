@@ -19,7 +19,7 @@ const BookmarksPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     (async () => {
       const { data, error } = await (supabase as any).from('bookmarks').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
       if (error) { toast.error('Failed to load bookmarks'); setLoading(false); return; }

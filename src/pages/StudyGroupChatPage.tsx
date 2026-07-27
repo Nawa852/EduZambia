@@ -50,7 +50,7 @@ const StudyGroupChatPage = () => {
 
   // Fetch user's rooms
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const fetchRooms = async () => {
       const { data, error } = await supabase
         .from('chat_members')

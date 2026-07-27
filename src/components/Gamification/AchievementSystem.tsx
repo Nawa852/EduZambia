@@ -53,7 +53,7 @@ const AchievementSystem = () => {
   const [playerData, setPlayerData] = useState({ lessons: 0, quizzes: 0, goals: 0, streak: 0, courses: 0, xp: 0 });
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const load = async () => {
       const [{ count: lessonCount }, { count: quizCount }, { count: goalCount }, { count: courseCount }, { data: statsData }] = await Promise.all([
         supabase.from('lesson_completions').select('*', { count: 'exact', head: true }).eq('user_id', user.id),

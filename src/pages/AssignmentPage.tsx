@@ -147,7 +147,7 @@ const AssignmentPage = () => {
   };
 
   const submitAssignment = async (assignmentId: string) => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     setSubmitting(true);
 
     let fileUrl: string | null = null;

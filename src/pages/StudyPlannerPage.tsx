@@ -48,12 +48,12 @@ const StudyPlannerPage = () => {
   );
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     fetchGoals();
   }, [user]);
 
   const fetchGoals = async () => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const { data } = await supabase
       .from('study_goals')
       .select('*')

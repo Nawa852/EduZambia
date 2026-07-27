@@ -16,7 +16,7 @@ const CertificatesPage = () => {
   const [profile, setProfile] = useState<{ full_name: string } | null>(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const fetch = async () => {
       const [{ data: certs }, { data: prof }] = await Promise.all([
         supabase.from('certificates').select('*, courses(title)').eq('user_id', user.id).order('issued_at', { ascending: false }),

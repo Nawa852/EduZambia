@@ -32,8 +32,9 @@ export const TopNavbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur-xl border-b border-border/40">
+    <nav className="sticky top-0 z-40 w-full bg-nav/80 supports-[backdrop-filter]:bg-nav/65 backdrop-blur-2xl border-b border-border/50">
       <div className="flex h-14 items-center px-3 sm:px-4 gap-2">
+
         {/* Desktop sidebar trigger */}
         <SidebarTrigger className="hidden lg:flex shrink-0 -ml-1 text-muted-foreground hover:text-foreground transition-colors" />
         

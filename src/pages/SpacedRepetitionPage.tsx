@@ -46,7 +46,7 @@ const SpacedRepetitionPage = () => {
   const [addCardOpen, setAddCardOpen] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     loadDecks();
   }, [user]);
 

@@ -99,7 +99,7 @@ const MessengerChat = () => {
   }, []);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const fetchRooms = async () => {
       setLoading(true);
       const { data: memberRows } = await supabase

@@ -69,7 +69,12 @@ const StudyDashboardPage = () => {
   });
 
   const load = async () => {
-    if (!user) return;
+    if (!user) {
+      setCourses([]);
+      setResources([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const [{ data: cs }, { data: rs }] = await Promise.all([
       supabase.from('study_courses').select('*').order('updated_at', { ascending: false }),

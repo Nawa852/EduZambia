@@ -223,7 +223,7 @@ export function EntrepreneurDashboardV2({ userName }: Props) {
         <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
           <div>
             <div className="text-lg font-extrabold flex items-center gap-2"><Rocket className="w-5 h-5" /> Launch your idea</div>
-            <div className="text-sm opacity-90 mt-1">Turn your vision into impact with Nexus Learning.</div>
+            <div className="text-sm opacity-90 mt-1">Turn your vision into impact with Synapse.</div>
           </div>
           <Button onClick={() => navigate('/entrepreneur/idea/new')} variant="secondary" className="rounded-full font-semibold">Start Building</Button>
         </div>

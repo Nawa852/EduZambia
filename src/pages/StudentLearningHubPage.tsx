@@ -21,7 +21,7 @@ const StudentLearningHubPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     (async () => {
       const [enr, courses, gls] = await Promise.all([
         supabase.from('enrollments').select('course_id, progress, courses(id,title,subject,description)').eq('user_id', user.id),
