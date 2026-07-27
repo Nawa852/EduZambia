@@ -195,18 +195,57 @@ const FlashcardStudio: React.FC = () => {
     const card = cards[index];
     if (!card) return;
     const patch = schedule(card, quality);
+    const seconds = Math.min(600, Math.round((Date.now() - cardShownAt) / 1000));
     setCards(prev => prev.map(c => (c.id === card.id ? { ...c, ...patch } : c)));
     setReviewed(prev => ({ ...prev, [card.id]: true }));
     setFlipped(false);
     setIndex(i => (i + 1 < cards.length ? i + 1 : i));
+    setCardShownAt(Date.now());
     const { error } = await supabase.from('flashcard_cards').update(patch).eq('id', card.id);
     if (error) toast.error('Progress not saved');
+    if (user) {
+      await supabase.from('flashcard_reviews').insert({
+        user_id: user.id,
+        deck_id: card.deck_id,
+        card_id: card.id,
+        quality,
+        seconds_spent: seconds,
+        ease_after: patch.ease_factor,
+        interval_after: patch.interval_days,
+      });
+    }
+  };
+
+  const saveTags = async (deck: Deck, tags: string[]) => {
+    const clean = Array.from(new Set(tags.map(t => t.trim().toLowerCase()).filter(Boolean))).slice(0, 12);
+    const { error } = await supabase.from('flashcard_decks').update({ tags: clean }).eq('id', deck.id);
+    if (error) { toast.error('Could not save tags'); return; }
+    setDecks(prev => prev.map(d => (d.id === deck.id ? { ...d, tags: clean } : d)));
+    setActiveDeck(prev => (prev && prev.id === deck.id ? { ...prev, tags: clean } : prev));
   };
 
   const reviewedCount = Object.keys(reviewed).length;
   const current = cards[index];
   const progress = cards.length ? (reviewedCount / cards.length) * 100 : 0;
   const dueToday = useMemo(() => decks.reduce((n, d) => n + (d.due_count ?? 0), 0), [decks]);
+
+  const allTags = useMemo(
+    () => Array.from(new Set(decks.flatMap(d => d.tags ?? []))).sort(),
+    [decks],
+  );
+
+  const visibleDecks = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return decks.filter(d => {
+      const matchesQuery = !q
+        || d.title.toLowerCase().includes(q)
+        || (d.subject ?? '').toLowerCase().includes(q)
+        || (d.tags ?? []).some(t => t.includes(q));
+      const matchesTag = !tagFilter || (d.tags ?? []).includes(tagFilter);
+      return matchesQuery && matchesTag;
+    });
+  }, [decks, query, tagFilter]);
+
 
   if (!user) {
     return (
