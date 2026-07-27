@@ -17,6 +17,8 @@ import { useSecureAuth } from '@/hooks/useSecureAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { GuardianLinkCard } from '@/components/Connect/GuardianLinkCard';
+
 
 interface ChildLink {
   id: string;
