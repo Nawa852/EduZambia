@@ -424,37 +424,35 @@ export function StudentDashboardV2({ userName }: Props) {
               This Week <ChevronDown className="w-3 h-3" />
             </button>
           </div>
-          <svg className="w-full h-20" viewBox="0 0 200 60" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="progressArea" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <path d="M0,45 L28,40 L56,42 L85,30 L114,32 L142,20 L171,22 L200,12 L200,60 L0,60 Z" fill="url(#progressArea)" />
-            <polyline fill="none" stroke="hsl(var(--primary))" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-              points="0,45 28,40 56,42 85,30 114,32 142,20 171,22 200,12" />
-            {[0, 28, 56, 85, 114, 142, 171, 200].map((x, i) => {
-              const ys = [45, 40, 42, 30, 32, 20, 22, 12];
-              return <circle key={i} cx={x} cy={ys[i]} r="2" fill="hsl(var(--primary))" />;
+          {(() => {
+            const max = Math.max(...weekFocus, 1);
+            return (
+              <div className="flex items-end gap-1.5 h-20">
+                {weekFocus.map((m, i) => (
+                  <div key={i} className="flex-1 rounded-t-md bg-primary/70 min-h-[2px]" style={{ height: `${(m / max) * 100}%` }} title={`${m} min`} />
+                ))}
+              </div>
+            );
+          })()}
+          <div className="grid grid-cols-7 text-[9px] text-muted-foreground text-center mb-3 mt-1">
+            {Array.from({ length: 7 }).map((_, i) => {
+              const d = new Date(Date.now() - (6 - i) * 864e5);
+              return <span key={i}>{d.toLocaleDateString(undefined, { weekday: 'short' }).slice(0, 3)}</span>;
             })}
-          </svg>
-          <div className="grid grid-cols-7 text-[9px] text-muted-foreground text-center mb-3 mt-0.5">
-            {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => <span key={d}>{d}</span>)}
           </div>
           <div className="grid grid-cols-3 gap-2 mt-auto">
             {[
-              { label: 'Study Time', val: '12h 30m', delta: '+15%' },
-              { label: 'Sessions', val: '8', delta: '+20%' },
-              { label: 'Accuracy', val: '78%', delta: '+8%' },
+              { label: 'Study time', val: `${Math.floor(weekMinutes / 60)}h ${weekMinutes % 60}m` },
+              { label: 'Sessions', val: String(weekSessions) },
+              { label: 'Streak', val: `${streak}d` },
             ].map(m => (
               <div key={m.label} className="rounded-xl bg-muted/40 p-2 text-center">
                 <div className="text-[10px] text-muted-foreground">{m.label}</div>
                 <div className="text-sm font-extrabold mt-0.5">{m.val}</div>
-                <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">{m.delta}</div>
               </div>
             ))}
           </div>
+
         </Card>
       </div>
 
