@@ -17,6 +17,8 @@ import { useSecureAuth } from '@/hooks/useSecureAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { GuardianLinkCard } from '@/components/Connect/GuardianLinkCard';
+
 
 interface ChildLink {
   id: string;
@@ -124,6 +126,9 @@ const ParentChildrenPage = () => {
           <UserPlus className="w-4 h-4" /> {showAdd ? 'Cancel' : 'Add a child'}
         </Button>
       </div>
+
+      <GuardianLinkCard />
+
 
       {/* Add Child Wizard */}
       {showAdd && (
