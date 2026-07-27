@@ -7,7 +7,8 @@ import { cn } from '@/lib/utils';
  */
 
 export const segmentedBarClass =
-  'sticky top-14 z-30 -mx-4 lg:-mx-6 px-4 lg:px-6 py-1 bg-background/85 supports-[backdrop-filter]:bg-background/70 backdrop-blur-xl border-b border-border/40';
+  'sticky top-14 z-30 -mx-4 lg:-mx-6 px-4 lg:px-6 py-1 bg-nav/85 supports-[backdrop-filter]:bg-nav/70 backdrop-blur-xl border-b border-border/50';
+
 
 export const segmentedListClass =
   'flex gap-0.5 overflow-x-auto scrollbar-none snap-x min-w-full';
