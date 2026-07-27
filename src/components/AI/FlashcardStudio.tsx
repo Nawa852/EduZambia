@@ -83,12 +83,21 @@ const FlashcardStudio: React.FC = () => {
   const [creating, setCreating] = useState(false);
   const [generating, setGenerating] = useState(false);
 
+  // search / tagging / analytics
+  const [query, setQuery] = useState('');
+  const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [showAnalytics, setShowAnalytics] = useState(false);
+  const [newTag, setNewTag] = useState('');
+  const [cardShownAt, setCardShownAt] = useState<number>(Date.now());
+
   // create form
   const [topic, setTopic] = useState('');
   const [subject, setSubject] = useState('General');
   const [notes, setNotes] = useState('');
+  const [tagsInput, setTagsInput] = useState('');
   const [manualFront, setManualFront] = useState('');
   const [manualBack, setManualBack] = useState('');
+
 
   const loadDecks = useCallback(async () => {
     if (!user) { setLoading(false); return; }
