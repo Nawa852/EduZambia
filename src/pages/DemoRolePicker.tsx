@@ -11,10 +11,11 @@ const ROLES = [
   { id: 'teacher',     title: 'Teacher',      desc: 'Plan lessons, generate tests with charts, grade with AI.', icon: Users, gradient: 'from-emerald-500 to-teal-600' },
   { id: 'guardian',    title: 'Parent / Guardian', desc: 'Track your child\'s progress, attendance, performance.', icon: Heart, gradient: 'from-rose-500 to-pink-600' },
   { id: 'institution', title: 'School Admin', desc: 'Run a school: students, staff, fees, analytics.',     icon: Building2, gradient: 'from-amber-500 to-orange-600' },
-  { id: 'entrepreneur',title: 'Entrepreneur', desc: 'Ventures, funding, bounties, pitch decks, market research.', icon: Briefcase, gradient: 'from-violet-500 to-purple-600' },
-  { id: 'developer',   title: 'Developer',    desc: 'IDE, AI code review, hackathons, skill challenges.',  icon: Code2, gradient: 'from-cyan-500 to-blue-600' },
   { id: 'ministry',    title: 'Ministry / NGO', desc: 'Policy, school registry, interventions, donor impact.', icon: Landmark, gradient: 'from-slate-600 to-zinc-700' },
+  { id: 'entrepreneur',title: 'Entrepreneur', desc: 'Ventures, funding, bounties, pitch decks, market research.', icon: Briefcase, gradient: 'from-violet-500 to-purple-600', comingSoon: true },
+  { id: 'developer',   title: 'Developer',    desc: 'IDE, AI code review, hackathons, skill challenges.',  icon: Code2, gradient: 'from-cyan-500 to-blue-600', comingSoon: true },
 ];
+
 
 export default function DemoRolePicker() {
   const navigate = useNavigate();
