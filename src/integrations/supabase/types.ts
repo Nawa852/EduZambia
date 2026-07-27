@@ -1949,6 +1949,7 @@ export type Database = {
           guardian_id: string | null
           guardian_name: string
           id: string
+          link_code: string | null
           mode: string
           phone: string
           relationship: string
@@ -1961,6 +1962,7 @@ export type Database = {
           guardian_id?: string | null
           guardian_name: string
           id?: string
+          link_code?: string | null
           mode?: string
           phone: string
           relationship: string
@@ -1973,6 +1975,7 @@ export type Database = {
           guardian_id?: string | null
           guardian_name?: string
           id?: string
+          link_code?: string | null
           mode?: string
           phone?: string
           relationship?: string
@@ -4791,6 +4794,7 @@ export type Database = {
         Returns: undefined
       }
       calculate_user_streak: { Args: { p_user_id: string }; Returns: number }
+      create_guardian_link_code: { Args: never; Returns: string }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -4934,6 +4938,7 @@ export type Database = {
           read_ct: number
         }[]
       }
+      redeem_guardian_link_code: { Args: { _code: string }; Returns: string }
     }
     Enums: {
       app_role:
