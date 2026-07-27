@@ -125,6 +125,9 @@ const ParentChildrenPage = () => {
         </Button>
       </div>
 
+      <GuardianLinkCard />
+
+
       {/* Add Child Wizard */}
       {showAdd && (
         <Card className="border-primary/30 bg-primary/[0.03]">
