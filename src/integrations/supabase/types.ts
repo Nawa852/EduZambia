@@ -4629,6 +4629,14 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      get_assessment_answer_key: {
+        Args: { _assessment_id: string }
+        Returns: {
+          correct_answer: string
+          explanation: string
+          question_id: string
+        }[]
+      }
       get_assessment_review: {
         Args: { _attempt_id: string }
         Returns: {
