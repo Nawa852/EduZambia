@@ -37,33 +37,67 @@ export function StudentDashboardV2({ userName }: Props) {
   const stats = useUserStats();
   const [subjects, setSubjects] = useState<Array<{ name: string; progress: number; notes: number }>>([]);
   const [tasks, setTasks] = useState<Array<{ id: string; title: string; due: string; done: boolean }>>([]);
+  const [recentNotes, setRecentNotes] = useState<Array<{ id: string; title: string; subject: string; when: string }>>([]);
+  const [flashDecks, setFlashDecks] = useState<Array<{ id: string; title: string; cards: number; pct: number }>>([]);
+  const [weekFocus, setWeekFocus] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
+  const [weekSessions, setWeekSessions] = useState(0);
 
   useEffect(() => {
     if (!user) return;
+    let cancelled = false;
     (async () => {
-      const { data } = await supabase
-        .from('enrollments')
-        .select('progress, courses(subject)')
-        .eq('user_id', user.id);
+      const weekAgo = new Date(Date.now() - 6 * 864e5); weekAgo.setHours(0, 0, 0, 0);
+      const [enr, notesRes, decksRes, goalsRes, focusRes] = await Promise.all([
+        supabase.from('enrollments').select('progress, courses(subject)').eq('user_id', user.id),
+        supabase.from('student_notes').select('id, title, updated_at').eq('user_id', user.id).order('updated_at', { ascending: false }).limit(4),
+        supabase.from('flashcard_decks').select('id, title, subject, flashcard_cards(id, repetitions)').eq('user_id', user.id).limit(4),
+        supabase.from('study_goals').select('id, title, due_date, completed').eq('user_id', user.id).order('due_date', { ascending: true }).limit(5),
+        supabase.from('focus_sessions').select('focus_minutes, started_at, sessions_completed').eq('user_id', user.id).gte('started_at', weekAgo.toISOString()),
+      ]);
+      if (cancelled) return;
+
       const bySubject = new Map<string, { total: number; count: number }>();
-      (data || []).forEach((e: any) => {
+      (enr.data || []).forEach((e: any) => {
         const s = e.courses?.subject || 'General';
         const prev = bySubject.get(s) || { total: 0, count: 0 };
         bySubject.set(s, { total: prev.total + (e.progress || 0), count: prev.count + 1 });
       });
-      const list = Array.from(bySubject.entries()).slice(0, 4).map(([name, v]) => ({
+      setSubjects(Array.from(bySubject.entries()).slice(0, 4).map(([name, v]) => ({
         name, progress: Math.round(v.total / Math.max(v.count, 1)), notes: v.count,
+      })));
+
+      setRecentNotes((notesRes.data || []).map((n: any) => ({
+        id: n.id, title: n.title || 'Untitled note', subject: 'Note',
+        when: new Date(n.updated_at).toLocaleDateString(),
+      })));
+
+      setFlashDecks((decksRes.data || []).map((d: any) => {
+        const cards = d.flashcard_cards || [];
+        const reviewed = cards.filter((c: any) => (c.repetitions ?? 0) > 0).length;
+        return {
+          id: d.id, title: d.title, cards: cards.length,
+          pct: cards.length ? Math.round((reviewed / cards.length) * 100) : 0,
+        };
       }));
-      if (list.length) setSubjects(list);
-      else if (isDemo) setSubjects([
-        { name: 'Physics', progress: 80, notes: 12 },
-        { name: 'Biology', progress: 60, notes: 8 },
-        { name: 'Mathematics', progress: 70, notes: 15 },
-        { name: 'Chemistry', progress: 75, notes: 10 },
-      ]);
-      else setSubjects([]);
+
+      setTasks((goalsRes.data || []).map((g: any) => ({
+        id: g.id, title: g.title,
+        due: g.due_date ? new Date(g.due_date).toLocaleDateString() : 'No date',
+        done: !!g.completed,
+      })));
+
+      const buckets = [0, 0, 0, 0, 0, 0, 0];
+      let sessions = 0;
+      (focusRes.data || []).forEach((f: any) => {
+        const idx = 6 - Math.min(6, Math.floor((Date.now() - new Date(f.started_at).getTime()) / 864e5));
+        if (idx >= 0) buckets[idx] += f.focus_minutes || 0;
+        sessions += f.sessions_completed || 1;
+      });
+      setWeekFocus(buckets);
+      setWeekSessions(sessions);
     })();
-  }, [user, isDemo]);
+    return () => { cancelled = true; };
+  }, [user]);
 
   const greeting = () => {
     const h = new Date().getHours();
@@ -71,12 +105,13 @@ export function StudentDashboardV2({ userName }: Props) {
   };
 
   const firstName = userName.split(' ')[0];
-  const streak = stats?.stats?.current_streak ?? (isDemo ? 7 : 0);
-  const focusMin = (stats?.stats?.total_focus_minutes ?? (isDemo ? 165 : 0)) % 600;
-  const focusHrs = Math.floor(focusMin / 60);
-  const focusRem = focusMin % 60;
-  const tasksDone = isDemo ? 5 : 0;
-  const tasksGoal = isDemo ? 8 : 0;
+  const streak = stats?.stats?.current_streak ?? 0;
+  const todayFocus = weekFocus[6] || 0;
+  const focusHrs = Math.floor(todayFocus / 60);
+  const focusRem = todayFocus % 60;
+  const tasksDone = tasks.filter(t => t.done).length;
+  const tasksGoal = tasks.length;
+  const weekMinutes = weekFocus.reduce((a, b) => a + b, 0);
 
   const createChips = [
     { icon: StickyNote, label: 'New Note', tint: 'text-violet-600 bg-violet-500/10', to: '/student-notes?action=new' },
@@ -86,36 +121,15 @@ export function StudentDashboardV2({ userName }: Props) {
     { icon: HelpCircle, label: 'New Quiz', tint: 'text-rose-600 bg-rose-500/10', to: '/ai-quiz?action=new' },
   ];
 
-  const knowledgeHub = [
-    { name: 'Physics', notes: 12, cards: 34, icon: Atom, tint: 'bg-blue-500/10 text-blue-600' },
-    { name: 'Biology', notes: 8, cards: 21, icon: Leaf, tint: 'bg-emerald-500/10 text-emerald-600' },
-    { name: 'Mathematics', notes: 15, cards: 40, icon: Calculator, tint: 'bg-amber-500/10 text-amber-600' },
-    { name: 'Past Papers', notes: 5, cards: 12, icon: FileText, tint: 'bg-rose-500/10 text-rose-600' },
-  ];
+  const knowledgeHub = subjects.map((s) => ({
+    name: s.name,
+    notes: s.notes,
+    cards: 0,
+    icon: subjectMeta[s.name]?.icon ?? BookOpen,
+    tint: subjectMeta[s.name]?.tint ?? 'bg-primary/10 text-primary',
+    progress: s.progress,
+  }));
 
-  const recentNotes = [
-    { title: 'Cell Structure', subject: 'Biology', when: 'Today' },
-    { title: 'Kinematics Summary', subject: 'Physics', when: 'Yesterday' },
-    { title: 'Integration Techniques', subject: 'Mathematics', when: '2 days ago' },
-  ];
-
-  const flashDecks = [
-    { title: 'Physics Formulas', cards: 24, pct: 80, color: 'text-blue-600 stroke-blue-500' },
-    { title: 'Biology Terms', cards: 18, pct: 60, color: 'text-emerald-600 stroke-emerald-500' },
-    { title: 'Math Concepts', cards: 30, pct: 40, color: 'text-amber-600 stroke-amber-500' },
-  ];
-
-  const smartTools = [
-    { icon: Bot, label: 'AI Chat', desc: 'Streaming · markdown · LaTeX · voice · images.', tint: 'bg-purple-500/10 text-purple-600', to: '/ai?tab=chat' },
-    { icon: Camera, label: 'Snap & Solve', desc: 'Photo of homework → instant step-by-step.', tint: 'bg-rose-500/10 text-rose-600', to: '/snap-solve' },
-    { icon: ScanLine, label: 'Document Scanner', desc: 'Scan notes and extract text.', tint: 'bg-blue-500/10 text-blue-600', to: '/scan' },
-    { icon: FileType2, label: 'PDF Reader', desc: 'Read, highlight, and annotate.', tint: 'bg-amber-500/10 text-amber-600', to: '/pdf-reader' },
-    { icon: Link2, label: 'Web Clipper', desc: 'Save articles and resources.', tint: 'bg-cyan-500/10 text-cyan-600', to: '/student-notes?source=web' },
-    { icon: Layers, label: 'Flashcards', desc: 'Create and review active recall cards.', tint: 'bg-emerald-500/10 text-emerald-600', to: '/flashcards' },
-    { icon: HelpCircle, label: 'Quiz Generator', desc: 'Generate quizzes from your notes.', tint: 'bg-amber-500/10 text-amber-600', to: '/ai-quiz' },
-    { icon: Share2, label: 'Mind Maps', desc: 'Visualize and connect ideas.', tint: 'bg-teal-500/10 text-teal-600', to: '/mind-maps' },
-    { icon: Repeat, label: 'Spaced Repetition', desc: 'Smart review, better retention.', tint: 'bg-indigo-500/10 text-indigo-600', to: '/flashcards?mode=spaced' },
-  ];
 
   return (
     <div className="space-y-5 lg:space-y-6">
