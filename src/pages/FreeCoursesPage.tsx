@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import VideoThumbnail from '@/components/Video/VideoThumbnail';
 import { useNavigate, useParams, useSearchParams, Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,10 +26,9 @@ const CourseCard: React.FC<{ course: FreeCourse }> = ({ course }) => {
     <Link to={`/free-courses/${course.id}`} className="group">
       <Card className="overflow-hidden hover:shadow-lg transition-shadow border-border/40 h-full flex flex-col">
         <div className="relative aspect-video bg-muted overflow-hidden">
-          <img
+          <VideoThumbnail
             src={course.thumbnail}
             alt={course.title}
-            loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
@@ -152,7 +152,7 @@ const FreeCourseDetail: React.FC<{ course: FreeCourse }> = ({ course }) => {
 
         <Card className="overflow-hidden mb-5 border-border/40">
           <div className="relative aspect-video sm:aspect-[21/9] bg-muted">
-            <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+            <VideoThumbnail src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
               <Badge className="bg-white/90 text-foreground border-0 mb-2">{meta.emoji} {course.provider}</Badge>
@@ -214,11 +214,10 @@ const FreeCourseDetail: React.FC<{ course: FreeCourse }> = ({ course }) => {
                       ? <CheckCircle2 className="w-7 h-7 text-primary" />
                       : <Circle className="w-7 h-7 text-muted-foreground/50 hover:text-primary" />}
                   </button>
-                  <img
-                    src={`https://i.ytimg.com/vi/${l.videoId}/default.jpg`}
-                    alt=""
+                  <VideoThumbnail
+                    videoId={l.videoId}
+                    alt={l.title}
                     className="w-20 h-12 object-cover rounded hidden sm:block"
-                    loading="lazy"
                   />
                   <div className="flex-1 min-w-0">
                     <p className={`font-medium truncate ${isDone ? 'text-muted-foreground line-through' : 'text-foreground'}`}>

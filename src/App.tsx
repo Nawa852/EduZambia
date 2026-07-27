@@ -15,6 +15,8 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import DemoBanner from '@/components/Auth/DemoBanner';
 import RoleGuard from '@/components/Auth/RoleGuard';
 import ScrollToTop from '@/components/ScrollToTop';
+import AppBootstrap from '@/components/AppBootstrap';
+import { FeatureFlagProvider } from '@/hooks/useFeatureFlags';
 
 // Stakeholders allowed to access ECZ content (K-12 only)
 const ECZ_ROLES = ['student', 'teacher', 'guardian', 'institution', 'ministry'] as const;
@@ -72,6 +74,8 @@ const SchoolAnnouncementsPage = React.lazy(() => import('@/pages/SchoolAnnouncem
 const DonorImpactPage = React.lazy(() => import('@/pages/DonorImpactPage'));
 const ToolsHub = React.lazy(() => import('@/pages/hubs/ToolsHub'));
 const FreeCoursesPage = React.lazy(() => import('@/pages/FreeCoursesPage'));
+const PilotControlPage = React.lazy(() => import('@/pages/PilotControlPage'));
+const ResourceRepositoryPage = React.lazy(() => import('@/pages/ResourceRepositoryPage'));
 const StudyHub = React.lazy(() => import('@/pages/hubs/StudyHub'));
 const MedicalHub = React.lazy(() => import('@/pages/hubs/MedicalHub'));
 const DeveloperHub = React.lazy(() => import('@/pages/hubs/DeveloperHub'));
@@ -155,8 +159,10 @@ function App() {
     <ThemeProvider>
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
+       <FeatureFlagProvider>
         <Router>
           <ScrollToTop />
+          <AppBootstrap />
           <DemoBanner />
           <SuspenseWrap>
             <Routes>
@@ -297,7 +303,7 @@ function App() {
 
               {/* Tools & Resources — redirect overlapping tool routes to unified hub */}
               <Route path="/all-tools" element={<Navigate to="/tools" replace />} />
-              <Route path="/resources" element={<Navigate to="/tools" replace />} />
+              <Route path="/resources" element={<Navigate to="/repository" replace />} />
               <Route path="/tools-hub" element={<Navigate to="/tools" replace />} />
               <Route path="/study-tools" element={<Navigate to="/tools" replace />} />
               <Route path="/ai-tools" element={<Navigate to="/tools" replace />} />
@@ -445,6 +451,11 @@ function App() {
               <Route path="/admin/scheduling" element={<Navigate to="/admin?tab=scheduling" replace />} />
               <Route path="/admin/analytics" element={<Navigate to="/admin?tab=analytics" replace />} />
 
+              {/* Operations */}
+              <Route path="/pilot" element={<PG><PilotControlPage /></PG>} />
+              <Route path="/repository" element={<PG><ResourceRepositoryPage /></PG>} />
+              <Route path="/repository/:folder" element={<PG><ResourceRepositoryPage /></PG>} />
+
               {/* 404 */}
               <Route path="*" element={<NotFound />} />
             </Routes>
@@ -454,6 +465,7 @@ function App() {
           <InstallPrompt />
           <OfflineBanner />
         </Router>
+       </FeatureFlagProvider>
       </QueryClientProvider>
     </AuthProvider>
     </ThemeProvider>

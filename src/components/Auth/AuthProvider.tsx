@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { EVENTS, logEvent, logError } from '@/lib/monitoring';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -61,8 +62,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Safety net: never let the app hang on a loading screen if the auth
     // client stalls (lock contention / offline / slow network).
+    const bootStart = Date.now();
     const failsafe = setTimeout(() => {
-      if (active) setLoading(false);
+      if (!active) return;
+      setLoading(false);
+      void logEvent({
+        type: EVENTS.AUTH_BOOTSTRAP_FAILSAFE,
+        severity: 'critical',
+        message: 'Auth bootstrap did not resolve within 3s; failsafe released the UI.',
+        durationMs: Date.now() - bootStart,
+      });
     }, 3000);
 
     // Set up auth state listener FIRST. This always fires an INITIAL_SESSION
@@ -91,7 +100,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSession(session);
         setUser(session?.user ?? null);
       })
-      .catch(() => {})
+      .catch((err) => {
+        void logError(EVENTS.AUTH_HANG, err, { durationMs: Date.now() - bootStart });
+      })
       .finally(() => {
         if (active) setLoading(false);
       });

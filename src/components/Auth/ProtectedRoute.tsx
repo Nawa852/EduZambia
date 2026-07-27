@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthProvider';
 import { useProfile } from '@/hooks/useProfile';
 import { LogoLoader } from '@/components/UI/LogoLoader';
+import { useLoadingWatchdog } from '@/hooks/useLoadingWatchdog';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -13,10 +14,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { profile, loading: profileLoading } = useProfile();
   const location = useLocation();
 
+  const blocking = !isDemo && (authLoading || profileLoading);
+  useLoadingWatchdog(blocking, 'Loading your experience');
+
   // Demo mode bypasses auth
   if (isDemo) return <>{children}</>;
 
-  if (authLoading || profileLoading) {
+  if (blocking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-background">
         <LogoLoader size="lg" text="Loading your experience..." />

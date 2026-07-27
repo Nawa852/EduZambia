@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
+import VideoThumbnail from '@/components/Video/VideoThumbnail';
 import { useProfile } from '@/hooks/useProfile';
 import { toast } from 'sonner';
 import {
@@ -269,11 +270,12 @@ const VideoWatchPage: React.FC = () => {
                       className={`w-full text-left p-2.5 flex gap-2.5 hover:bg-muted/40 transition-colors ${v.id === activeId ? 'bg-primary/5' : ''}`}
                     >
                       <div className="relative w-28 sm:w-32 aspect-video rounded overflow-hidden bg-muted flex-shrink-0">
-                        {v.thumbnail ? (
-                          <img src={v.thumbnail} alt={v.title} loading="lazy" className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center"><Play className="w-5 h-5 text-muted-foreground" /></div>
-                        )}
+                        <VideoThumbnail
+                          videoId={v.id}
+                          src={v.thumbnail || undefined}
+                          alt={v.title}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs sm:text-sm font-medium line-clamp-2 leading-snug">{v.title}</p>
