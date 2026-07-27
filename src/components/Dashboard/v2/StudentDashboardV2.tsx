@@ -336,11 +336,14 @@ export function StudentDashboardV2({ userName }: Props) {
             <button onClick={() => navigate('/flashcards?action=new')} className="text-muted-foreground hover:text-primary"><Plus className="w-4 h-4" /></button>
           </div>
           <div className="space-y-3.5">
+            {flashDecks.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-6">No decks yet — generate one from your notes.</p>
+            )}
             {flashDecks.map((d) => {
               const circ = 2 * Math.PI * 16;
               const offset = circ * (1 - d.pct / 100);
               return (
-                <button key={d.title} onClick={() => navigate('/flashcards')} className="w-full flex items-center gap-3 group">
+                <button key={d.id} onClick={() => navigate('/flashcards')} className="w-full flex items-center gap-3 group">
                   <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
                     <Layers className="w-4 h-4" />
                   </div>
@@ -351,14 +354,15 @@ export function StudentDashboardV2({ userName }: Props) {
                   <div className="relative w-10 h-10 shrink-0">
                     <svg className="w-10 h-10 -rotate-90" viewBox="0 0 40 40">
                       <circle cx="20" cy="20" r="16" className="stroke-muted" strokeWidth="3" fill="none" />
-                      <circle cx="20" cy="20" r="16" className={d.color} strokeWidth="3" fill="none" strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset} />
+                      <circle cx="20" cy="20" r="16" className="stroke-emerald-500" strokeWidth="3" fill="none" strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset} />
                     </svg>
-                    <span className={`absolute inset-0 flex items-center justify-center text-[10px] font-bold ${d.color.split(' ')[0]}`}>{d.pct}%</span>
+                    <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-emerald-600">{d.pct}%</span>
                   </div>
                 </button>
               );
             })}
           </div>
+
           <button onClick={() => navigate('/flashcards')} className="text-xs text-primary font-medium mt-4 block mx-auto hover:underline">Review Now</button>
         </Card>
       </div>
