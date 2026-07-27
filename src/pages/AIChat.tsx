@@ -16,12 +16,13 @@ import { Card } from '@/components/ui/card';
 import {
   Send, Sparkles, User, Bot, RotateCcw, Copy, Loader2, Mic, MicOff,
   Image as ImageIcon, X, MessageSquarePlus, Volume2, VolumeX, Trash2,
-  Search, Brain, Camera, StopCircle, Plus,
+  Search, Brain, Camera, StopCircle, Plus, Boxes,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useProfile } from '@/hooks/useProfile';
 import { supabase } from '@/integrations/supabase/client';
+import ArtifactCanvas, { type Artifact } from '@/components/AI/ArtifactCanvas';
 
 type Part =
   | { type: 'text'; text: string }
@@ -33,6 +34,9 @@ interface ChatMessage {
   content: string;          // rendered text
   parts?: Part[];           // sent to model
   images?: string[];        // dataURLs for display
+  artifact?: Artifact;      // rendered 3D / mind map / chart / document
+  building?: boolean;       // artifact generation in progress
+  buildStep?: string;       // current build step label
   ts: number;
 }
 
@@ -41,7 +45,7 @@ interface Thread {
   title: string;
   messages: ChatMessage[];
   model: string;
-  mode: 'chat' | 'snap-solve' | 'deep-research' | 'voice';
+  mode: 'chat' | 'snap-solve' | 'deep-research' | 'voice' | 'artifact';
   updatedAt: number;
 }
 
@@ -57,8 +61,32 @@ const MODES = [
   { id: 'chat', label: 'Chat', icon: Sparkles },
   { id: 'snap-solve', label: 'Snap & Solve', icon: Camera },
   { id: 'deep-research', label: 'Deep Research', icon: Search },
+  { id: 'artifact', label: 'Build', icon: Boxes },
   { id: 'voice', label: 'Voice', icon: Mic },
 ] as const;
+
+/** Heuristic: does this prompt ask for something that must be *rendered*? */
+const ARTIFACT_RE =
+  /\b(3d|three\.?js|mind ?map|concept map|flow ?chart|flowchart|diagram|chart|graph|plot|simulation|simulate|animate|visuali[sz]e|visualisation|visualization|worksheet|exam paper|question paper|printable|poster|timeline)\b/i;
+const BUILD_VERB_RE =
+  /\b(build|make|create|generate|draw|render|design|show me|give me|produce|export)\b/i;
+
+const detectArtifactKind = (text: string): string => {
+  const t = text.toLowerCase();
+  if (/\b(3d|three\.?js|molecule|anatomy|globe)\b/.test(t)) return '3d';
+  if (/\b(mind ?map|concept map)\b/.test(t)) return 'mindmap';
+  if (/\b(chart|graph|plot|bar|pie|histogram)\b/.test(t)) return 'chart';
+  if (/\b(worksheet|exam|question paper|printable|handout|report|document)\b/.test(t)) return 'document';
+  if (/\b(simulat|animate|interactive)/.test(t)) return 'simulation';
+  return 'diagram';
+};
+
+const BUILD_STEPS = [
+  'Planning the artifact structure',
+  'Writing the rendering code',
+  'Wiring up data and labels',
+  'Rendering and checking the output',
+];
 
 const STORAGE_KEY = 'nexus_unified_chat_threads_v1';
 
@@ -233,6 +261,55 @@ export default function AIChat() {
     }
   };
 
+  /** Calls the Artifact Engine and renders the result inline in the thread. */
+  const buildArtifact = async (text: string, assistantId: string, threadId: string) => {
+    const kind = detectArtifactKind(text);
+    const patch = (fn: (m: ChatMessage) => ChatMessage) =>
+      setThreads(prev => prev.map(t => t.id === threadId
+        ? { ...t, messages: t.messages.map(m => (m.id === assistantId ? fn(m) : m)) }
+        : t));
+
+    patch(m => ({ ...m, building: true, buildStep: BUILD_STEPS[0], content: '' }));
+    let stepIndex = 0;
+    const ticker = window.setInterval(() => {
+      stepIndex = Math.min(stepIndex + 1, BUILD_STEPS.length - 1);
+      patch(m => ({ ...m, buildStep: BUILD_STEPS[stepIndex] }));
+    }, 6000);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-artifact', {
+        body: { prompt: text, kind, role },
+      });
+      if (error) throw new Error(error.message);
+      if (!data?.code) throw new Error(data?.error || 'No artifact was returned.');
+
+      // Only clear the building state once the artifact is fully in hand.
+      patch(m => ({
+        ...m,
+        building: false,
+        buildStep: undefined,
+        content: data.explanation || '',
+        artifact: {
+          title: data.title,
+          kind: data.kind || kind,
+          code: data.code,
+          explanation: data.explanation,
+          steps: data.steps,
+        },
+      }));
+    } catch (e: any) {
+      patch(m => ({
+        ...m,
+        building: false,
+        buildStep: undefined,
+        content: `⚠️ ${e.message || 'Could not build that artifact'}. Try describing it more specifically.`,
+      }));
+      toast.error(e.message || 'Artifact generation failed');
+    } finally {
+      window.clearInterval(ticker);
+    }
+  };
+
   const send = async (overrideText?: string) => {
     const text = (overrideText ?? input).trim();
     if ((!text && images.length === 0) || isStreaming) return;
@@ -249,9 +326,20 @@ export default function AIChat() {
     setIsStreaming(true);
 
     const assistantId = crypto.randomUUID();
+    const threadId = active.id;
     setThreads(prev => prev.map(t => t.id === active.id
       ? { ...t, messages: [...nextMsgs, { id: assistantId, role: 'assistant', content: '', ts: Date.now() }] }
       : t));
+
+    // Route renderable requests to the Artifact Engine instead of plain text.
+    const wantsArtifact =
+      active.mode === 'artifact' ||
+      (ARTIFACT_RE.test(text) && BUILD_VERB_RE.test(text));
+    if (wantsArtifact && images.length === 0) {
+      await buildArtifact(text, assistantId, threadId);
+      setIsStreaming(false);
+      return;
+    }
 
     abortRef.current = new AbortController();
     try {
@@ -515,6 +603,15 @@ export default function AIChat() {
                         ))}
                       </div>
                     )}
+                    {m.building && (
+                      <Card className="p-3 mb-2 flex items-center gap-2 border-primary/30 bg-primary/5">
+                        <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                        <span className="text-sm">
+                          {m.buildStep || 'Building artifact'}
+                          <span className="text-muted-foreground"> — rendering, please wait…</span>
+                        </span>
+                      </Card>
+                    )}
                     <div className="prose prose-sm dark:prose-invert max-w-none break-words
                       prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-pre:rounded-xl prose-pre:p-3
                       prose-code:before:hidden prose-code:after:hidden prose-code:bg-muted prose-code:px-1 prose-code:rounded
@@ -526,10 +623,20 @@ export default function AIChat() {
                         >
                           {m.content}
                         </ReactMarkdown>
-                      ) : (
+                      ) : !m.building ? (
                         <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-                      )}
+                      ) : null}
                     </div>
+                    {m.artifact && (
+                      <ArtifactCanvas
+                        artifact={m.artifact}
+                        className="mt-3"
+                        onRegenerate={() => {
+                          const prompt = active.messages.find(x => x.ts <= m.ts && x.role === 'user')?.content;
+                          if (prompt) buildArtifact(prompt, m.id, active.id);
+                        }}
+                      />
+                    )}
                     {m.role === 'assistant' && m.content && !isStreaming && (
                       <div className="flex items-center gap-1 mt-2">
                         <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => { navigator.clipboard.writeText(m.content); toast.success('Copied'); }}>
