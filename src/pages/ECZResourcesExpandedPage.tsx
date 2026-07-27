@@ -33,7 +33,9 @@ const ECZResourcesExpandedPage = () => {
   const [subject, setSubject] = useState(ALL);
   const [classLevel, setClassLevel] = useState(ALL);
   const [year, setYear] = useState(ALL);
+  const [kind, setKind] = useState(ALL);
   const [grouped, setGrouped] = useState(true);
+
 
   const [openItem, setOpenItem] = useState<RepositoryItem | null>(null);
   const [openUrl, setOpenUrl] = useState<string | null>(null);
