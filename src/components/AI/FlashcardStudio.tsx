@@ -104,7 +104,7 @@ const FlashcardStudio: React.FC = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('flashcard_decks')
-      .select('id, title, subject, created_at, flashcard_cards(id, next_review_date)')
+      .select('id, title, subject, tags, created_at, flashcard_cards(id, next_review_date)')
       .order('created_at', { ascending: false });
     if (error) {
       toast.error('Could not load your decks');
@@ -116,7 +116,9 @@ const FlashcardStudio: React.FC = () => {
       id: d.id,
       title: d.title,
       subject: d.subject,
+      tags: d.tags ?? [],
       created_at: d.created_at,
+
       card_count: d.flashcard_cards?.length ?? 0,
       due_count: (d.flashcard_cards ?? []).filter((c: any) => !c.next_review_date || c.next_review_date <= today).length,
     })));
