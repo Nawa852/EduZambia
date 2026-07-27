@@ -1,53 +1,50 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { EmptyState } from '@/components/UI/EmptyState';
 import {
-  UploadCloud, FileText, Image as ImageIcon, Film, Music, FileSpreadsheet,
-  Presentation, File as FileIcon, Trash2, ExternalLink, Loader2, Search, Download,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { EmptyState } from '@/components/UI/EmptyState';
+import { ErrorState } from '@/components/UI/ErrorState';
+import {
+  UploadCloud, Search, Loader2, Download, Folder, List, LayoutGrid,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProfile } from '@/hooks/useProfile';
-import {
-  uploadToRepository, listRepository, getResourceUrl, deleteResource,
-  type RepositoryItem, type ResourceKind,
-} from '@/lib/resourceRepository';
+import { listRepository, getResourceUrl, deleteResource, type RepositoryItem } from '@/lib/resourceRepository';
+import { getResourcePermissions } from '@/lib/resourcePermissions';
+import { ResourceUploader } from '@/components/Resources/ResourceUploader';
+import { ResourceCard, tagValue } from '@/components/Resources/ResourceCard';
 
-const KIND_ICON: Record<ResourceKind, React.ElementType> = {
-  pdf: FileText, document: FileText, slides: Presentation, spreadsheet: FileSpreadsheet,
-  image: ImageIcon, video: Film, audio: Music, other: FileIcon,
-};
-
-const formatSize = (bytes: number | null) => {
-  if (!bytes) return '—';
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
-};
+const ALL = '__all__';
 
 const ECZResourcesExpandedPage = () => {
   const { profile } = useProfile();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const role = (profile?.role as string) || 'student';
+  const perms = useMemo(() => getResourcePermissions(role), [role]);
+
   const [items, setItems] = useState<RepositoryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
-  const [dragOver, setDragOver] = useState(false);
+  const [error, setError] = useState(false);
   const [query, setQuery] = useState('');
+  const [subject, setSubject] = useState(ALL);
+  const [classLevel, setClassLevel] = useState(ALL);
+  const [year, setYear] = useState(ALL);
+  const [grouped, setGrouped] = useState(true);
 
-  // File opener
   const [openItem, setOpenItem] = useState<RepositoryItem | null>(null);
   const [openUrl, setOpenUrl] = useState<string | null>(null);
   const [openLoading, setOpenLoading] = useState(false);
 
   const load = useCallback(async () => {
     try {
+      setError(false);
       setItems(await listRepository());
     } catch {
-      toast.error('Could not load your resources');
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -55,22 +52,31 @@ const ECZResourcesExpandedPage = () => {
 
   useEffect(() => { load(); }, [load]);
 
-  const handleFiles = async (files: FileList | null) => {
-    if (!files?.length) return;
-    setUploading(true);
-    let ok = 0;
-    for (const file of Array.from(files)) {
-      try {
-        await uploadToRepository({ file, role: profile?.role ?? null, source: 'repository' });
-        ok += 1;
-      } catch (err) {
-        toast.error((err as Error).message);
-      }
+  const options = useMemo(() => ({
+    subjects: Array.from(new Set(items.map((i) => i.subject).filter(Boolean))) as string[],
+    classes: Array.from(new Set(items.map((i) => tagValue(i, 'class')).filter(Boolean))) as string[],
+    years: Array.from(new Set(items.map((i) => tagValue(i, 'year')).filter(Boolean))).sort().reverse() as string[],
+  }), [items]);
+
+  const filtered = useMemo(() => items.filter((i) => {
+    if (subject !== ALL && i.subject !== subject) return false;
+    if (classLevel !== ALL && tagValue(i, 'class') !== classLevel) return false;
+    if (year !== ALL && tagValue(i, 'year') !== year) return false;
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      if (!i.title.toLowerCase().includes(q) && !i.folder_path.toLowerCase().includes(q)) return false;
     }
-    setUploading(false);
-    if (ok) toast.success(`${ok} file${ok > 1 ? 's' : ''} added to your repository`);
-    load();
-  };
+    return true;
+  }), [items, subject, classLevel, year, query]);
+
+  const folders = useMemo(() => {
+    return filtered.reduce<Record<string, RepositoryItem[]>>((acc, item) => {
+      const key = [item.subject || 'Unsorted', tagValue(item, 'class') || 'General', tagValue(item, 'year') || '—']
+        .join(' · ');
+      (acc[key] ||= []).push(item);
+      return acc;
+    }, {});
+  }, [filtered]);
 
   const open = async (item: RepositoryItem) => {
     setOpenItem(item);
@@ -83,111 +89,96 @@ const ECZResourcesExpandedPage = () => {
   };
 
   const remove = async (item: RepositoryItem) => {
-    await deleteResource(item);
-    toast.success('Removed');
-    load();
+    try {
+      await deleteResource(item);
+      toast.success('Removed');
+      load();
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
   };
 
-  const filtered = items.filter((i) =>
-    !query.trim() || i.title.toLowerCase().includes(query.toLowerCase()) ||
-    i.folder_path.toLowerCase().includes(query.toLowerCase()));
+  const renderList = (list: RepositoryItem[]) => (
+    <div className="space-y-2">
+      {list.map((item) => (
+        <ResourceCard key={item.id} item={item} canDelete={perms.canDelete} onOpen={open} onDelete={remove} />
+      ))}
+    </div>
+  );
 
   return (
     <div className="space-y-5">
-      {/* Drop zone */}
-      <div
-        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-        onDragLeave={() => setDragOver(false)}
-        onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files); }}
-        onClick={() => inputRef.current?.click()}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') inputRef.current?.click(); }}
-        aria-label="Upload files to your repository"
-        className={`rounded-2xl border-2 border-dashed p-8 text-center cursor-pointer transition-colors ${
-          dragOver ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 bg-muted/20'
-        }`}
-      >
-        <input
-          ref={inputRef}
-          type="file"
-          multiple
-          className="hidden"
-          onChange={(e) => { handleFiles(e.target.files); e.target.value = ''; }}
-        />
-        {uploading ? (
-          <Loader2 className="w-8 h-8 mx-auto text-primary animate-spin" />
-        ) : (
-          <UploadCloud className="w-8 h-8 mx-auto text-primary" />
-        )}
-        <p className="mt-3 text-sm font-medium">
-          {uploading ? 'Uploading…' : 'Drop files here or tap to upload'}
-        </p>
-        <p className="text-xs text-muted-foreground mt-1">
-          PDFs, documents, slides, images, audio and video — sorted automatically into folders.
-        </p>
-      </div>
+      {perms.canUpload && <ResourceUploader perms={perms} role={role} onUploaded={load} />}
 
-      {/* Search */}
+      {/* Filters */}
       {items.length > 0 && (
-        <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search your files…"
-            className="pl-9"
-            aria-label="Search files"
-          />
+        <div className="space-y-3">
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search your files…"
+              className="pl-9" aria-label="Search files" />
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            <Select value={subject} onValueChange={setSubject}>
+              <SelectTrigger className="w-[140px] h-9 text-xs"><SelectValue placeholder="Subject" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ALL}>All subjects</SelectItem>
+                {options.subjects.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={classLevel} onValueChange={setClassLevel}>
+              <SelectTrigger className="w-[130px] h-9 text-xs"><SelectValue placeholder="Class" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ALL}>All classes</SelectItem>
+                {options.classes.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={year} onValueChange={setYear}>
+              <SelectTrigger className="w-[110px] h-9 text-xs"><SelectValue placeholder="Year" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ALL}>All years</SelectItem>
+                {options.years.map((y) => <SelectItem key={y} value={y}>{y}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="sm" className="h-9 ml-auto" onClick={() => setGrouped((g) => !g)}>
+              {grouped ? <List className="w-4 h-4 mr-1.5" /> : <LayoutGrid className="w-4 h-4 mr-1.5" />}
+              {grouped ? 'Flat list' : 'Folders'}
+            </Button>
+          </div>
         </div>
       )}
 
       {/* Files */}
       {loading ? (
-        <div className="space-y-2">{[0, 1, 2].map((i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</div>
+        <div className="space-y-2">{[0, 1, 2].map((i) => <Skeleton key={i} className="h-20 rounded-xl" />)}</div>
+      ) : error ? (
+        <ErrorState title="Could not load your resources" onRetry={load} />
       ) : filtered.length === 0 ? (
         <EmptyState
           icon={UploadCloud}
           title={items.length ? 'No matches' : 'Your repository is empty'}
           description={items.length
-            ? 'Try a different search term.'
-            : 'Everything you upload anywhere in Synapse lands here, neatly organised.'}
+            ? 'Try a different search term or clear the filters.'
+            : 'Everything you upload anywhere in Synapse lands here, organised by subject, class and year.'}
         />
-      ) : (
-        <div className="space-y-2">
-          {filtered.map((item) => {
-            const Icon = KIND_ICON[item.kind] ?? FileIcon;
-            return (
-              <Card key={item.id} className="border-border/60 hover:border-primary/40 transition-colors">
-                <CardContent className="p-3 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                    <Icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <button
-                    onClick={() => open(item)}
-                    className="flex-1 min-w-0 text-left"
-                    aria-label={`Open ${item.title}`}
-                  >
-                    <p className="text-sm font-medium truncate">{item.title}</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {item.folder_path} · {formatSize(item.size_bytes)}
-                    </p>
-                  </button>
-                  <Badge variant="secondary" className="text-[10px] hidden sm:inline-flex">{item.kind}</Badge>
-                  <Button size="icon" variant="ghost" onClick={() => open(item)} aria-label="Open file">
-                    <ExternalLink className="w-4 h-4" />
-                  </Button>
-                  <Button size="icon" variant="ghost" onClick={() => remove(item)} aria-label="Delete file">
-                    <Trash2 className="w-4 h-4 text-destructive" />
-                  </Button>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
+      ) : grouped ? (
+        <Accordion type="multiple" defaultValue={Object.keys(folders).slice(0, 3)} className="space-y-2">
+          {Object.entries(folders).map(([folder, list]) => (
+            <AccordionItem key={folder} value={folder} className="border border-border/60 rounded-xl px-3">
+              <AccordionTrigger className="text-sm hover:no-underline">
+                <span className="flex items-center gap-2">
+                  <Folder className="w-4 h-4 text-primary" />
+                  {folder}
+                  <span className="text-xs text-muted-foreground">({list.length})</span>
+                </span>
+              </AccordionTrigger>
+              <AccordionContent className="pb-3">{renderList(list)}</AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      ) : renderList(filtered)}
 
-      {/* Embedded file opener */}
+      {/* File opener */}
       <Dialog open={!!openItem} onOpenChange={(o) => { if (!o) { setOpenItem(null); setOpenUrl(null); } }}>
         <DialogContent className="max-w-4xl w-[95vw] h-[85vh] flex flex-col p-0 gap-0">
           <DialogHeader className="px-4 py-3 border-b border-border/60">
