@@ -70,7 +70,10 @@ const studentNavigation: NavGroup[] = [
   {
     label: "Study",
     items: [
+      { title: "Know Your Stuff", url: "/know-your-stuff", icon: Zap, shortTitle: "Know", badge: "NEW" },
+      { title: "Study Folders", url: "/study", icon: FolderOpen, shortTitle: "Folders" },
       { title: "Knowledge Hub", url: "/prepare?tab=notes", icon: FolderOpen, shortTitle: "Notes" },
+
       { title: "Journal", url: "/prepare?tab=journal", icon: BookOpen, shortTitle: "Journal" },
       { title: "Flashcards", url: "/ai?tab=flashcards", icon: Layers, shortTitle: "Cards" },
       { title: "Tasks & Planner", url: "/prepare?tab=planner", icon: ClipboardCheck, shortTitle: "Tasks" },

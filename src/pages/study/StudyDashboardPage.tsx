@@ -19,8 +19,10 @@ import { toast } from 'sonner';
 import { StudyDashboardSkeleton } from '@/components/UI/StudySkeleton';
 import {
   Plus, Folder, FileText, Upload, Sparkles, Mic, PenLine, ListChecks, BookOpen,
-  Search, Trash2, Youtube, Link as LinkIcon, ImageIcon, ChevronRight, Clock,
+  Search, Trash2, Youtube, Link as LinkIcon, ImageIcon, ChevronRight, Clock, Zap,
 } from 'lucide-react';
+import { softTimeout } from '@/lib/withTimeout';
+
 
 type Tab = 'actions' | 'files' | 'folders' | 'history';
 
@@ -76,14 +78,26 @@ const StudyDashboardPage = () => {
       return;
     }
     setLoading(true);
-    const [{ data: cs }, { data: rs }] = await Promise.all([
-      supabase.from('study_courses').select('*').order('updated_at', { ascending: false }),
-      supabase.from('study_resources').select('id,title,kind,mime,source_url,storage_path,course_id,created_at,updated_at').order('created_at', { ascending: false }).limit(200),
+    // Never spin for more than 7s — show whatever arrived and let the user retry.
+    const [cs, rs] = await Promise.all([
+      softTimeout(
+        supabase.from('study_courses').select('*').order('updated_at', { ascending: false })
+          .then(r => r.data),
+        null,
+      ),
+      softTimeout(
+        supabase.from('study_resources')
+          .select('id,title,kind,mime,source_url,storage_path,course_id,created_at,updated_at')
+          .order('created_at', { ascending: false }).limit(120)
+          .then(r => r.data),
+        null,
+      ),
     ]);
     setCourses((cs as any) || []);
     setResources((rs as any) || []);
     setLoading(false);
   };
+
   useEffect(() => { load(); }, [user?.id]);
 
   const createFolder = async () => {
@@ -158,14 +172,20 @@ const StudyDashboardPage = () => {
   if (loading && courses.length === 0) return <StudyDashboardSkeleton />;
 
   return (
-    <div className="container mx-auto p-3 sm:p-4 lg:p-6 max-w-6xl space-y-4 sm:space-y-5">
+    <div className="w-full mx-auto p-3 sm:p-4 lg:p-6 max-w-[720px] md:max-w-[1024px] lg:max-w-[1320px] xl:max-w-[1560px] 2xl:max-w-[1760px] space-y-4 sm:space-y-5">
       {/* Heading */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">Your Dashboard</h1>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed max-w-2xl">
-          Organize study material into folders — upload notes, watch lessons, and Synapse turns them into flashcards, quizzes and a personal tutor.
-        </p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">Your Dashboard</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed max-w-2xl">
+            Organize study material into folders — upload notes, watch lessons, and Synapse turns them into flashcards, quizzes and a personal tutor.
+          </p>
+        </div>
+        <Button className="rounded-xl shrink-0" onClick={() => nav('/know-your-stuff')}>
+          <Zap className="w-4 h-4 mr-1.5" />Know Your Stuff
+        </Button>
       </div>
+
 
 
       {/* Tabs + primary action */}
@@ -230,12 +250,14 @@ const StudyDashboardPage = () => {
       {tab === 'actions' && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[
+            { icon: Zap, title: 'Know Your Stuff', desc: 'Drop anything → points, cards, quiz & a visual', onClick: () => nav('/know-your-stuff'), tint: 'from-primary/20 to-primary/0' },
             { icon: Upload, title: 'Upload file', desc: 'PDF, DOCX, image or notes → instant study pack', onClick: () => { setUploadCourseId(courses[0]?.id || ''); setOpenUpload(true); }, tint: 'from-blue-500/15 to-blue-500/0' },
             { icon: Folder, title: 'New folder', desc: 'Group material by subject or exam', onClick: () => setOpenFolder(true), tint: 'from-purple-500/15 to-purple-500/0' },
             { icon: Mic, title: 'Record lecture', desc: 'Live transcript, notes & summary', onClick: () => nav('/lecture'), tint: 'from-rose-500/15 to-rose-500/0' },
             { icon: PenLine, title: 'Ask AI Tutor', desc: 'Chat with your personal tutor', onClick: () => nav('/ai-chat'), tint: 'from-emerald-500/15 to-emerald-500/0' },
             { icon: ListChecks, title: 'Quick quiz', desc: 'Pick any folder to test yourself', onClick: () => setTab('folders'), tint: 'from-amber-500/15 to-amber-500/0' },
             { icon: BookOpen, title: 'Assignment help', desc: 'Solve problems step-by-step', onClick: () => nav('/ai-chat?mode=assignment'), tint: 'from-indigo-500/15 to-indigo-500/0' },
+
           ].map((a) => (
             <button
               key={a.title}
