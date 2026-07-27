@@ -46,7 +46,7 @@ export function LogoLoader({ size = "md", text }: LogoLoaderProps) {
           className="absolute inset-0 flex items-center justify-center rounded-2xl bg-card border border-border/30 shadow-elevated"
           style={{ animation: 'fadeIn 0.5s ease-out' }}
         >
-          <img src={eduIcon} alt="Nexus Learning" style={{ width: s.logo, height: s.logo }} className="rounded-xl" />
+          <img src={eduIcon} alt="Synapse" style={{ width: s.logo, height: s.logo }} className="rounded-xl" />
         </div>
       </div>
 
