@@ -55,23 +55,39 @@ export default function DemoRolePicker() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {ROLES.map(r => {
             const Icon = r.icon;
+            const locked = 'comingSoon' in r && r.comingSoon;
             return (
               <Card
                 key={r.id}
-                onClick={() => pick(r.id)}
-                className="group p-5 cursor-pointer hover:shadow-xl hover:-translate-y-0.5 transition-all border-border/60"
+                onClick={() => !locked && pick(r.id)}
+                aria-disabled={locked}
+                className={`group relative p-5 transition-all border-border/60 ${
+                  locked
+                    ? 'cursor-not-allowed overflow-hidden'
+                    : 'cursor-pointer hover:shadow-xl hover:-translate-y-0.5'
+                }`}
               >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${r.gradient} flex items-center justify-center mb-4 shadow-md`}>
-                  <Icon className="w-6 h-6 text-white" />
+                <div className={locked ? 'blur-[3px] opacity-40 saturate-50 select-none' : ''}>
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${r.gradient} flex items-center justify-center mb-4 shadow-md`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="font-semibold mb-1">{r.title}</h3>
+                  <p className="text-xs text-muted-foreground mb-4 leading-relaxed">{r.desc}</p>
+                  <div className="flex items-center text-xs font-medium text-primary gap-1">
+                    Start demo <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
                 </div>
-                <h3 className="font-semibold mb-1">{r.title}</h3>
-                <p className="text-xs text-muted-foreground mb-4 leading-relaxed">{r.desc}</p>
-                <div className="flex items-center text-xs font-medium text-primary group-hover:gap-2 gap-1 transition-all">
-                  Start demo <ArrowRight className="w-3.5 h-3.5" />
-                </div>
+                {locked && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="px-3 py-1.5 rounded-full bg-background/85 backdrop-blur-md border border-border/60 text-xs font-semibold shadow-sm">
+                      Coming soon
+                    </span>
+                  </div>
+                )}
               </Card>
             );
           })}
+
         </div>
         <div className="mt-10 text-center">
           <Button variant="ghost" onClick={() => navigate('/auth')} className="text-xs">
