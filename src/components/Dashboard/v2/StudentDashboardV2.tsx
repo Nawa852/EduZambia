@@ -380,12 +380,10 @@ export function StudentDashboardV2({ userName }: Props) {
             </button>
           </div>
           <div className="space-y-2.5">
-            {[
-              { id: '1', title: 'Revise Mechanics', due: 'Today', done: false },
-              { id: '2', title: 'Complete Past Paper', due: 'Today', done: true },
-              { id: '3', title: 'Read Chapter 5', due: 'Tomorrow', done: false },
-              { id: '4', title: 'Do Quiz on Cell', due: 'Tomorrow', done: false },
-            ].map((t) => (
+            {tasks.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-6">No tasks yet — add a study goal to get started.</p>
+            )}
+            {tasks.map((t) => (
               <div key={t.id} className="flex items-center gap-2.5">
                 <Checkbox checked={t.done} className="rounded" />
                 <span className={`flex-1 text-sm ${t.done ? 'line-through text-muted-foreground' : ''}`}>{t.title}</span>
@@ -393,6 +391,7 @@ export function StudentDashboardV2({ userName }: Props) {
               </div>
             ))}
           </div>
+
           <button onClick={() => navigate('/study-planner')} className="text-xs text-primary font-medium mt-3 block mx-auto hover:underline">View all tasks</button>
         </Card>
 
