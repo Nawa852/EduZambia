@@ -481,7 +481,10 @@ const FlashcardStudio: React.FC = () => {
         </Card>
       ) : (
         <div className="grid gap-2 sm:grid-cols-2">
-          {decks.map(deck => (
+          {visibleDecks.length === 0 && (
+            <p className="text-sm text-muted-foreground col-span-full text-center py-8">No decks match that search.</p>
+          )}
+          {visibleDecks.map(deck => (
             <Card key={deck.id} className="rounded-2xl border-border/50 hover:border-primary/40 transition-colors">
               <CardContent className="p-4 flex items-center gap-3">
                 <button className="flex-1 min-w-0 text-left" onClick={() => openDeck(deck)}>
@@ -494,8 +497,12 @@ const FlashcardStudio: React.FC = () => {
                         {deck.due_count} due
                       </Badge>
                     )}
+                    {(deck.tags ?? []).map(t => (
+                      <Badge key={t} variant="outline" className="rounded-full text-[10px]">#{t}</Badge>
+                    ))}
                   </div>
                 </button>
+
                 <button onClick={() => deleteDeck(deck.id)} className="text-muted-foreground hover:text-destructive p-1.5" aria-label="Delete deck">
                   <Trash2 className="w-4 h-4" />
                 </button>
