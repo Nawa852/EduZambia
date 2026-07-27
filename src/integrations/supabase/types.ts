@@ -1617,6 +1617,39 @@ export type Database = {
           },
         ]
       }
+      feature_flags: {
+        Row: {
+          allowed_roles: string[]
+          created_at: string
+          description: string | null
+          enabled: boolean
+          id: string
+          key: string
+          rollout_percentage: number
+          updated_at: string
+        }
+        Insert: {
+          allowed_roles?: string[]
+          created_at?: string
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          key: string
+          rollout_percentage?: number
+          updated_at?: string
+        }
+        Update: {
+          allowed_roles?: string[]
+          created_at?: string
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          key?: string
+          rollout_percentage?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       flashcard_cards: {
         Row: {
           back: string
@@ -2596,6 +2629,45 @@ export type Database = {
           },
         ]
       }
+      monitoring_alerts: {
+        Row: {
+          created_at: string
+          details: string | null
+          event_type: string
+          id: string
+          occurrences: number
+          severity: string
+          status: string
+          title: string
+          updated_at: string
+          window_start: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          event_type: string
+          id?: string
+          occurrences?: number
+          severity?: string
+          status?: string
+          title: string
+          updated_at?: string
+          window_start?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          event_type?: string
+          id?: string
+          occurrences?: number
+          severity?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       ngo_beneficiaries: {
         Row: {
           age: number | null
@@ -3213,6 +3285,63 @@ export type Database = {
           item_type?: string | null
           title?: string
           url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      resource_repository: {
+        Row: {
+          bucket: string
+          created_at: string
+          folder_path: string
+          id: string
+          is_public: boolean
+          kind: string
+          metadata: Json
+          mime_type: string | null
+          size_bytes: number | null
+          source: string | null
+          storage_path: string
+          subject: string | null
+          tags: string[]
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bucket?: string
+          created_at?: string
+          folder_path?: string
+          id?: string
+          is_public?: boolean
+          kind?: string
+          metadata?: Json
+          mime_type?: string | null
+          size_bytes?: number | null
+          source?: string | null
+          storage_path: string
+          subject?: string | null
+          tags?: string[]
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bucket?: string
+          created_at?: string
+          folder_path?: string
+          id?: string
+          is_public?: boolean
+          kind?: string
+          metadata?: Json
+          mime_type?: string | null
+          size_bytes?: number | null
+          source?: string | null
+          storage_path?: string
+          subject?: string | null
+          tags?: string[]
+          title?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -4047,6 +4176,48 @@ export type Database = {
           id?: string
           metadata?: Json | null
           reason?: string
+        }
+        Relationships: []
+      }
+      system_events: {
+        Row: {
+          created_at: string
+          duration_ms: number | null
+          event_type: string
+          id: string
+          message: string | null
+          metadata: Json
+          role: string | null
+          route: string | null
+          severity: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number | null
+          event_type: string
+          id?: string
+          message?: string | null
+          metadata?: Json
+          role?: string | null
+          route?: string | null
+          severity?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number | null
+          event_type?: string
+          id?: string
+          message?: string | null
+          metadata?: Json
+          role?: string | null
+          route?: string | null
+          severity?: string
+          user_agent?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
