@@ -299,7 +299,7 @@ export default function AIChat() {
         },
       }));
     } catch (e: any) {
-      void logError(EVENTS.ARTIFACT_FAILED, e, { context: { kind, surface: 'ai-chat' } });
+      void logError(EVENTS.ARTIFACT_FAILED, e, { metadata: { kind, surface: 'ai-chat' } });
       patch(m => ({
         ...m,
         building: false,

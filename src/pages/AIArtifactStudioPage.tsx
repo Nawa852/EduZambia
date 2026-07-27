@@ -78,7 +78,7 @@ const AIArtifactStudioPage: React.FC = () => {
         setArtifact(data as Artifact);
       } catch (e) {
         setError((e as Error).message || 'Generation failed.');
-        void logError(EVENTS.ARTIFACT_FAILED, e, { context: { kind, surface: 'artifact-studio' } });
+        void logError(EVENTS.ARTIFACT_FAILED, e, { metadata: { kind, surface: 'artifact-studio' } });
       } finally {
         if (timer.current) window.clearInterval(timer.current);
         setBusy(false);
