@@ -26,7 +26,7 @@ const roles: { value: AppRole; label: string; icon: React.ElementType; descripti
   { value: 'developer', label: 'Developer', icon: Code, description: 'Code challenges & project builder', color: 'from-cyan-500 to-blue-600', home: '/developer', goals: ['Practice coding', 'AI code review', 'Build a portfolio', 'Hackathons'], comingSoon: true },
   { value: 'skills', label: 'Skills Training', icon: Wrench, description: 'Vocational & trade skills', color: 'from-yellow-500 to-orange-600', home: '/dashboard', goals: ['Learn a trade', 'Get certified', 'Find work', 'Upskill'], comingSoon: true },
   { value: 'cybersecurity', label: 'Cybersecurity', icon: Shield, description: 'Ethical hacking & CTF labs', color: 'from-red-500 to-rose-600', home: '/cybersecurity', goals: ['CTF challenges', 'SOC simulator', 'Skill tree', 'Career prep'], comingSoon: true },
-  { value: 'institution', label: 'School Admin', icon: School, description: 'Manage your institution', color: 'from-slate-500 to-gray-600', home: '/admin', goals: ['Manage students', 'Track teachers', 'School analytics', 'Communications'], comingSoon: true },
+  { value: 'institution', label: 'School Admin', icon: School, description: 'Manage your institution', color: 'from-slate-500 to-gray-600', home: '/admin', goals: ['Manage students', 'Track teachers', 'School analytics', 'Communications'] },
   { value: 'ministry', label: 'Ministry / NGO', icon: Building2, description: 'Oversee education programs', color: 'from-green-500 to-emerald-600', home: '/ministry', goals: ['Policy tracking', 'School registry', 'Interventions', 'Donor impact'], comingSoon: true },
 ];
 
