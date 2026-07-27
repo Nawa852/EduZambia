@@ -17,6 +17,7 @@ import RoleGuard from '@/components/Auth/RoleGuard';
 import ScrollToTop from '@/components/ScrollToTop';
 import AppBootstrap from '@/components/AppBootstrap';
 import { FeatureFlagProvider } from '@/hooks/useFeatureFlags';
+import { FocusModeProvider } from '@/hooks/useFocusMode';
 
 // Stakeholders allowed to access ECZ content (K-12 only)
 const ECZ_ROLES = ['student', 'teacher', 'guardian', 'institution', 'ministry'] as const;
@@ -160,6 +161,7 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
        <FeatureFlagProvider>
+        <FocusModeProvider>
         <Router>
           <ScrollToTop />
           <AppBootstrap />
@@ -465,6 +467,7 @@ function App() {
           <InstallPrompt />
           <OfflineBanner />
         </Router>
+        </FocusModeProvider>
        </FeatureFlagProvider>
       </QueryClientProvider>
     </AuthProvider>

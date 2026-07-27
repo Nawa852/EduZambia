@@ -1,75 +1,77 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/components/Auth/AuthProvider';
+import { useTeacherStats } from '@/hooks/useTeacherStats';
 import {
   BookOpen, Users, ClipboardCheck, TrendingUp, Calendar, Plus,
-  Megaphone, GraduationCap, Trophy, Sparkles, FileText, BookText,
-  FlaskConical, Video, ListChecks, ArrowRight,
+  Megaphone, Sparkles, FileText, BookText, FlaskConical, Video,
+  ListChecks, ArrowRight, GraduationCap, MessageCircle, UserPlus,
 } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 interface Props { userName: string; }
 
+interface AnnouncementRow { id: string; title: string; body: string; created_at: string; }
+interface AssignmentRow { id: string; title: string; due_date: string | null; course_id: string; }
+
+const resources = [
+  { label: 'Lesson Plans', icon: BookText, to: '/ai-lesson-generator', color: 'bg-blue-50 text-blue-600 dark:bg-blue-500/10' },
+  { label: 'ECZ Syllabus', icon: FileText, to: '/repository', color: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10' },
+  { label: 'Past Papers', icon: ListChecks, to: '/ecz', color: 'bg-amber-50 text-amber-600 dark:bg-amber-500/10' },
+  { label: 'Simulations', icon: FlaskConical, to: '/learn', color: 'bg-purple-50 text-purple-600 dark:bg-purple-500/10' },
+  { label: 'Video Lessons', icon: Video, to: '/learn?tab=videos', color: 'bg-rose-50 text-rose-600 dark:bg-rose-500/10' },
+  { label: 'Question Bank', icon: ClipboardCheck, to: '/ai?tab=exam-gen', color: 'bg-cyan-50 text-cyan-600 dark:bg-cyan-500/10' },
+];
+
 export function TeacherDashboardV2({ userName }: Props) {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { courses, totalStudents, pendingCount, avgPerformance, loading } = useTeacherStats();
+  const [announcements, setAnnouncements] = useState<AnnouncementRow[]>([]);
+  const [assignments, setAssignments] = useState<AssignmentRow[]>([]);
+  const [extraLoading, setExtraLoading] = useState(true);
+
   const greeting = () => {
     const h = new Date().getHours();
     return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
   };
   const firstName = userName.split(' ')[0];
 
-  const classes = [
-    { name: 'Mathematics - Grade 11A', students: 32, progress: 82, icon: '√' },
-    { name: 'Mathematics - Grade 10B', students: 28, progress: 76, icon: 'x²' },
-    { name: 'Mathematics - Grade 12A', students: 24, progress: 85, icon: 'π' },
-    { name: 'Additional Mathematics - 11B', students: 20, progress: 72, icon: 'ƒx' },
-    { name: 'Mathematics Club', students: 15, progress: 68, icon: '★' },
-  ];
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!user) { setExtraLoading(false); return; }
+      const [{ data: ann }, { data: asg }] = await Promise.all([
+        supabase.from('school_announcements')
+          .select('id, title, body, created_at')
+          .order('created_at', { ascending: false }).limit(4),
+        supabase.from('assignments')
+          .select('id, title, due_date, course_id')
+          .eq('created_by', user.id)
+          .order('created_at', { ascending: false }).limit(5),
+      ]);
+      if (cancelled) return;
+      setAnnouncements((ann ?? []) as AnnouncementRow[]);
+      setAssignments((asg ?? []) as AssignmentRow[]);
+      setExtraLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, [user]);
 
-  const schedule = [
-    { time: '08:00 AM', subject: 'Mathematics - Grade 11A', topic: 'Algebraic Expressions', room: 'Room 12', tone: 'bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300' },
-    { time: '10:00 AM', subject: 'Mathematics - Grade 10B', topic: 'Quadratic Equations', room: 'Room 08', tone: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' },
-    { time: '01:00 PM', subject: 'Additional Mathematics - 11B', topic: 'Trigonometric Ratios', room: 'Room 15', tone: 'bg-purple-50 text-purple-700 dark:bg-purple-500/10 dark:text-purple-300' },
-    { time: '02:30 PM', subject: 'Mathematics - Grade 12A', topic: 'Calculus - Derivatives', room: 'Room 05', tone: 'bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:text-orange-300' },
-  ];
+  const chartData = courses
+    .filter(c => c.avg_score != null)
+    .map(c => ({ name: (c.title || '').slice(0, 12), score: c.avg_score as number }));
 
-  const assignments = [
-    { title: 'Quadratic Equations Worksheet', grade: 'Grade 10B', score: '12/28' },
-    { title: 'Algebraic Expressions Quiz', grade: 'Grade 11A', score: '26/32' },
-    { title: 'Trigonometry Problem Set', grade: 'Grade 11B', score: '8/20' },
-    { title: 'Calculus Derivatives Assignment', grade: 'Grade 12A', score: '18/24' },
-  ];
-
-  const announcements = [
-    { title: 'ECZ Curriculum Update', desc: 'New Mathematics syllabus guidelines have been released. Please review the updates.', when: '2 days ago', icon: Megaphone, tone: 'text-rose-600 bg-rose-500/10' },
-    { title: "Teachers' Workshop", desc: 'Join us for a workshop on AI in Education this Friday.', when: '5 days ago', icon: GraduationCap, tone: 'text-blue-600 bg-blue-500/10' },
-    { title: 'End of Term Exams', desc: 'Examination schedule has been published.', when: '1 week ago', icon: FileText, tone: 'text-emerald-600 bg-emerald-500/10' },
-  ];
-
-  const resources = [
-    { label: 'Lesson Plan Templates', icon: BookText, color: 'bg-blue-50 text-blue-600 dark:bg-blue-500/10' },
-    { label: 'ECZ Syllabus Documents', icon: FileText, color: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10' },
-    { label: 'Past Exam Papers', icon: ListChecks, color: 'bg-amber-50 text-amber-600 dark:bg-amber-500/10' },
-    { label: 'Interactive Simulations', icon: FlaskConical, color: 'bg-purple-50 text-purple-600 dark:bg-purple-500/10' },
-    { label: 'Video Lessons', icon: Video, color: 'bg-rose-50 text-rose-600 dark:bg-rose-500/10' },
-    { label: 'Question Bank', icon: ClipboardCheck, color: 'bg-cyan-50 text-cyan-600 dark:bg-cyan-500/10' },
-  ];
-
-  const progressSeries = [
-    { week: 'Apr 20', '11A': 68, '10B': 60, '12A': 72, '11B': 58, 'Club': 55 },
-    { week: 'Apr 27', '11A': 72, '10B': 64, '12A': 74, '11B': 62, 'Club': 60 },
-    { week: 'May 4',  '11A': 76, '10B': 68, '12A': 78, '11B': 66, 'Club': 63 },
-    { week: 'May 11', '11A': 79, '10B': 72, '12A': 81, '11B': 70, 'Club': 65 },
-    { week: 'May 18', '11A': 82, '10B': 76, '12A': 85, '11B': 72, 'Club': 68 },
-  ];
-  const progressLines = [
-    { key: '11A', label: 'Gr 11A', color: '#3b82f6' },
-    { key: '10B', label: 'Gr 10B', color: '#10b981' },
-    { key: '12A', label: 'Gr 12A', color: '#f59e0b' },
-    { key: '11B', label: 'Add Math 11B', color: '#8b5cf6' },
-    { key: 'Club', label: 'Math Club', color: '#ef4444' },
+  const stats = [
+    { icon: BookOpen, label: 'My Classes', value: courses.length, sub: 'Active courses', tint: 'bg-blue-500/10 text-blue-600', link: '/teach' },
+    { icon: Users, label: 'Students', value: totalStudents, sub: 'Enrolled', tint: 'bg-emerald-500/10 text-emerald-600', link: '/teach?tab=students' },
+    { icon: ClipboardCheck, label: 'To grade', value: pendingCount, sub: 'Submissions', tint: 'bg-purple-500/10 text-purple-600', link: '/teacher/completions' },
+    { icon: TrendingUp, label: 'Avg. score', value: avgPerformance ? `${avgPerformance}%` : '—', sub: 'All graded work', tint: 'bg-orange-500/10 text-orange-600', link: '/analytics' },
   ];
 
   return (
@@ -78,7 +80,7 @@ export function TeacherDashboardV2({ userName }: Props) {
         <div>
           <Badge variant="secondary" className="mb-2 uppercase tracking-wider text-[10px]">Teacher</Badge>
           <h1 className="text-2xl lg:text-[28px] font-extrabold tracking-tight">{greeting()}, {firstName}! 👋</h1>
-          <p className="text-sm text-muted-foreground mt-1">Here's what's happening in your classes today.</p>
+          <p className="text-sm text-muted-foreground mt-1">Everything from your own classes — nothing simulated.</p>
         </div>
         <Card className="px-3 py-2 rounded-2xl border-border/40 flex items-center gap-2">
           <Calendar className="w-4 h-4 text-muted-foreground" />
@@ -86,188 +88,196 @@ export function TeacherDashboardV2({ userName }: Props) {
         </Card>
       </div>
 
-      {/* Stat grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {loading
+          ? [0, 1, 2, 3].map(i => <Skeleton key={i} className="h-[124px] rounded-2xl" />)
+          : stats.map(s => (
+            <Card key={s.label} onClick={() => navigate(s.link)} className="p-4 rounded-2xl border-border/40 cursor-pointer hover:shadow-md transition-all">
+              <div className={`w-9 h-9 rounded-xl ${s.tint} flex items-center justify-center mb-3`}>
+                <s.icon className="w-4 h-4" />
+              </div>
+              <div className="text-xs font-medium text-muted-foreground">{s.label}</div>
+              <div className="text-2xl font-extrabold mt-1">{s.value}</div>
+              <div className="text-[11px] text-muted-foreground">{s.sub}</div>
+              <div className="text-[11px] text-primary font-medium mt-2 flex items-center gap-1">View <ArrowRight className="w-3 h-3" /></div>
+            </Card>
+          ))}
+      </div>
+
+      {/* Teacher → parent → student connectivity */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         {[
-          { icon: BookOpen, label: 'My Classes', value: '5', sub: 'Active classes', tint: 'bg-blue-500/10 text-blue-600', link: '/teach' },
-          { icon: Users, label: 'Students', value: '126', sub: 'Total students', tint: 'bg-emerald-500/10 text-emerald-600', link: '/teach?tab=students' },
-          { icon: ClipboardCheck, label: 'Assignments', value: '8', sub: 'Pending to grade', tint: 'bg-purple-500/10 text-purple-600', link: '/assignments' },
-          { icon: TrendingUp, label: 'Avg. Class Progress', value: '78%', sub: 'This month', tint: 'bg-orange-500/10 text-orange-600', link: '/analytics' },
-        ].map((s) => (
-          <Card key={s.label} onClick={() => navigate(s.link)} className="p-4 rounded-2xl border-border/40 cursor-pointer hover:shadow-md transition-all">
-            <div className={`w-9 h-9 rounded-xl ${s.tint} flex items-center justify-center mb-3`}>
-              <s.icon className="w-4 h-4" />
+          { icon: MessageCircle, label: 'Message parents', desc: 'Send a class or private update', to: '/connect?tab=messenger', tint: 'bg-pink-500/10 text-pink-600' },
+          { icon: UserPlus, label: 'Invite students', desc: 'Share a class join code', to: '/teach?tab=students', tint: 'bg-blue-500/10 text-blue-600' },
+          { icon: GraduationCap, label: 'Mark completions', desc: 'Review and notify students', to: '/teacher/completions', tint: 'bg-emerald-500/10 text-emerald-600' },
+        ].map(a => (
+          <Card key={a.label} onClick={() => navigate(a.to)} className="p-4 rounded-2xl border-border/40 cursor-pointer hover:shadow-md transition-all flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-xl ${a.tint} flex items-center justify-center shrink-0`}>
+              <a.icon className="w-5 h-5" />
             </div>
-            <div className="text-xs font-medium text-muted-foreground">{s.label}</div>
-            <div className="text-2xl font-extrabold mt-1">{s.value}</div>
-            <div className="text-[11px] text-muted-foreground">{s.sub}</div>
-            <div className="text-[11px] text-primary font-medium mt-2 flex items-center gap-1">View <ArrowRight className="w-3 h-3" /></div>
+            <div className="min-w-0">
+              <div className="text-sm font-semibold truncate">{a.label}</div>
+              <div className="text-[11px] text-muted-foreground truncate">{a.desc}</div>
+            </div>
           </Card>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* My Classes */}
         <Card className="p-4 rounded-2xl border-border/40">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-bold">My Classes</h2>
             <button onClick={() => navigate('/teach')} className="text-xs text-primary font-medium">View all</button>
           </div>
-          <div className="space-y-3">
-            {classes.map((c) => (
-              <div key={c.name} className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0">{c.icon}</div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold truncate">{c.name}</div>
-                  <div className="text-[11px] text-muted-foreground">{c.students} students</div>
-                </div>
-                <div className="text-xs font-semibold text-emerald-600 shrink-0">{c.progress}%</div>
-              </div>
-            ))}
-            <button onClick={() => navigate('/teach')} className="w-full text-xs text-primary font-medium mt-2 flex items-center justify-center gap-1">
-              <Plus className="w-3.5 h-3.5" /> Add New Class
-            </button>
-          </div>
+          {loading ? (
+            <div className="space-y-2">{[0, 1, 2].map(i => <Skeleton key={i} className="h-10 rounded-xl" />)}</div>
+          ) : courses.length === 0 ? (
+            <div className="py-8 text-center space-y-2">
+              <BookOpen className="w-7 h-7 mx-auto text-muted-foreground/40" />
+              <p className="text-sm text-muted-foreground">You haven't created a class yet.</p>
+              <Button size="sm" className="rounded-full" onClick={() => navigate('/create-course')}>
+                <Plus className="w-3.5 h-3.5 mr-1.5" />Create your first class
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {courses.slice(0, 6).map(c => (
+                <button key={c.id} onClick={() => navigate(`/course/${c.id}`)} className="w-full flex items-center gap-3 text-left">
+                  <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0">
+                    {(c.subject || c.title || '?').charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold truncate">{c.title}</div>
+                    <div className="text-[11px] text-muted-foreground">{c.enrollment_count} students · {c.is_published ? 'Published' : 'Draft'}</div>
+                  </div>
+                  {c.avg_score != null && <div className="text-xs font-semibold text-emerald-600 shrink-0">{c.avg_score}%</div>}
+                </button>
+              ))}
+              <button onClick={() => navigate('/create-course')} className="w-full text-xs text-primary font-medium mt-1 flex items-center justify-center gap-1">
+                <Plus className="w-3.5 h-3.5" /> Add new class
+              </button>
+            </div>
+          )}
         </Card>
-
-        {/* Today's Schedule */}
-        <Card className="p-4 rounded-2xl border-border/40">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-bold">Today's Schedule</h2>
-            <button onClick={() => navigate('/calendar')} className="text-xs text-primary font-medium">View full calendar</button>
-          </div>
-          <div className="space-y-3">
-            {schedule.map((s) => (
-              <div key={s.time} className="flex items-start gap-3">
-                <div className="text-[11px] font-semibold text-muted-foreground w-16 shrink-0 pt-0.5">{s.time}</div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold truncate">{s.subject}</div>
-                  <div className="text-[11px] text-muted-foreground">{s.topic}</div>
-                </div>
-                <Badge className={`${s.tone} border-0 text-[10px] shrink-0`}>{s.room}</Badge>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         <Card className="p-4 rounded-2xl border-border/40">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-bold">Recent Assignments</h2>
             <button onClick={() => navigate('/assignments')} className="text-xs text-primary font-medium">View all</button>
           </div>
-          <div className="space-y-3">
-            {assignments.map((a) => (
-              <div key={a.title} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                  <FileText className="w-4 h-4 text-muted-foreground" />
+          {extraLoading ? (
+            <div className="space-y-2">{[0, 1, 2].map(i => <Skeleton key={i} className="h-10 rounded-xl" />)}</div>
+          ) : assignments.length === 0 ? (
+            <div className="py-8 text-center space-y-2">
+              <FileText className="w-7 h-7 mx-auto text-muted-foreground/40" />
+              <p className="text-sm text-muted-foreground">No assignments created yet.</p>
+              <Button size="sm" variant="outline" className="rounded-full" onClick={() => navigate('/assignments')}>
+                <Plus className="w-3.5 h-3.5 mr-1.5" />New assignment
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {assignments.map(a => (
+                <div key={a.id} className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                    <FileText className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold truncate">{a.title}</div>
+                    <div className="text-[11px] text-muted-foreground">
+                      {a.due_date ? `Due ${new Date(a.due_date).toLocaleDateString()}` : 'No due date'}
+                    </div>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold truncate">{a.title}</div>
-                  <div className="text-[11px] text-muted-foreground">{a.grade}</div>
-                </div>
-                <div className="text-right shrink-0">
-                  <div className="text-xs font-bold">{a.score}</div>
-                  <div className="text-[10px] text-emerald-600">Submitted</div>
-                </div>
-              </div>
-            ))}
-            <button onClick={() => navigate('/assignments/new')} className="w-full text-xs text-primary font-medium mt-1 flex items-center justify-center gap-1">
-              <Plus className="w-3.5 h-3.5" /> Create New Assignment
-            </button>
-          </div>
-        </Card>
-
-        {/* Class Progress Overview */}
-        <Card className="p-4 rounded-2xl border-border/40">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-bold">Class Progress Overview</h2>
-            <Badge variant="secondary" className="text-[10px]">This Month</Badge>
-          </div>
-          <div className="h-[200px] -ml-2">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={progressSeries} margin={{ top: 5, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} vertical={false} />
-                <XAxis dataKey="week" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
-                <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tickFormatter={(v) => `${v}%`} />
-                <Tooltip contentStyle={{ borderRadius: 12, fontSize: 11, border: '1px solid hsl(var(--border))', background: 'hsl(var(--card))' }} />
-                {progressLines.map((l) => (
-                  <Line key={l.key} type="monotone" dataKey={l.key} stroke={l.color} strokeWidth={2} dot={{ r: 2.5 }} activeDot={{ r: 4 }} name={l.label} />
-                ))}
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2 justify-center">
-            {progressLines.map((l) => (
-              <div key={l.key} className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ background: l.color }} />
-                {l.label}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Announcements */}
         <Card className="p-4 rounded-2xl border-border/40">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-bold">School Announcements</h2>
-            <button className="text-xs text-primary font-medium">View all</button>
+            <h2 className="font-bold">Class performance</h2>
+            <Badge variant="secondary" className="text-[10px]">Graded work</Badge>
           </div>
-          <div className="space-y-3">
-            {announcements.map((a) => (
-              <div key={a.title} className="flex items-start gap-3">
-                <div className={`w-8 h-8 rounded-lg ${a.tone} flex items-center justify-center shrink-0`}>
-                  <a.icon className="w-4 h-4" />
+          {chartData.length === 0 ? (
+            <div className="py-10 text-center space-y-1.5">
+              <TrendingUp className="w-7 h-7 mx-auto text-muted-foreground/40" />
+              <p className="text-sm text-muted-foreground">Performance appears once you grade submissions.</p>
+            </div>
+          ) : (
+            <div className="h-[200px] -ml-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ top: 5, right: 8, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                  <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" domain={[0, 100]} tickFormatter={v => `${v}%`} />
+                  <Tooltip contentStyle={{ borderRadius: 12, fontSize: 11, border: '1px solid hsl(var(--border))', background: 'hsl(var(--card))' }} />
+                  <Bar dataKey="score" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </Card>
+
+        <Card className="p-4 rounded-2xl border-border/40">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-bold">School announcements</h2>
+            <button onClick={() => navigate('/teach')} className="text-xs text-primary font-medium">Post</button>
+          </div>
+          {extraLoading ? (
+            <Skeleton className="h-24 rounded-xl" />
+          ) : announcements.length === 0 ? (
+            <div className="py-8 text-center space-y-1.5">
+              <Megaphone className="w-7 h-7 mx-auto text-muted-foreground/40" />
+              <p className="text-sm text-muted-foreground">No announcements from your school yet.</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {announcements.map(a => (
+                <div key={a.id} className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
+                    <Megaphone className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold">{a.title}</div>
+                    <div className="text-[11px] text-muted-foreground line-clamp-2">{a.body}</div>
+                    <div className="text-[10px] text-muted-foreground mt-0.5">{new Date(a.created_at).toLocaleDateString()}</div>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold">{a.title}</div>
-                  <div className="text-[11px] text-muted-foreground line-clamp-2">{a.desc}</div>
-                  <div className="text-[10px] text-muted-foreground mt-0.5">{a.when}</div>
+              ))}
+            </div>
+          )}
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card className="p-4 rounded-2xl border-border/40 bg-gradient-to-br from-primary/5 via-card to-purple-500/5 relative overflow-hidden">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <h2 className="font-bold">Curriculum Co-Pilot</h2>
+            <Badge className="bg-primary text-primary-foreground text-[9px] h-4">AI</Badge>
+          </div>
+          <p className="text-xs text-muted-foreground mb-3">
+            Generate ECZ-aligned lessons, quizzes and activities in seconds.
+          </p>
+          <Button onClick={() => navigate('/ai-lesson-generator')} className="rounded-full px-4 h-9 text-xs">Create with Co-Pilot</Button>
+        </Card>
+
+        <Card className="p-4 rounded-2xl border-border/40">
+          <h2 className="font-bold mb-3">Quick resources</h2>
+          <div className="grid grid-cols-3 gap-2.5">
+            {resources.map(r => (
+              <button key={r.label} onClick={() => navigate(r.to)} className="flex flex-col items-center gap-2 p-2 rounded-xl hover:bg-muted transition-colors">
+                <div className={`w-10 h-10 rounded-xl ${r.color} flex items-center justify-center`}>
+                  <r.icon className="w-5 h-5" />
                 </div>
-              </div>
+                <span className="text-[10px] font-medium text-center leading-tight">{r.label}</span>
+              </button>
             ))}
           </div>
         </Card>
-
-        {/* Right column: Co-Pilot + Quick Resources */}
-        <div className="space-y-4">
-          <Card className="p-4 rounded-2xl border-border/40 bg-gradient-to-br from-primary/5 via-card to-purple-500/5 relative overflow-hidden">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-primary" />
-                <h2 className="font-bold">Curriculum Co-Pilot</h2>
-                <Badge className="bg-primary text-primary-foreground text-[9px] h-4">AI</Badge>
-              </div>
-              <button onClick={() => navigate('/ai-lesson-generator')} className="text-xs text-primary font-medium">Generate with AI</button>
-            </div>
-            <p className="text-xs text-muted-foreground mb-3">
-              Need help with lesson planning? Let Curriculum Co-Pilot create engaging lessons, quizzes, and activities aligned with the ECZ curriculum.
-            </p>
-            <Button onClick={() => navigate('/ai-lesson-generator')} className="rounded-full px-4 h-9 text-xs">Create with Co-Pilot</Button>
-            <div className="absolute -bottom-2 -right-2 text-5xl opacity-40 select-none">🤖</div>
-          </Card>
-
-          <Card className="p-4 rounded-2xl border-border/40">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-bold">Quick Resources</h2>
-              <button onClick={() => navigate('/resource-library')} className="text-xs text-primary font-medium">View all</button>
-            </div>
-            <div className="grid grid-cols-3 gap-2.5">
-              {resources.map((r) => (
-                <button key={r.label} onClick={() => navigate('/resource-library')} className="flex flex-col items-center gap-2 p-2 rounded-xl hover:bg-muted transition-colors">
-                  <div className={`w-10 h-10 rounded-xl ${r.color} flex items-center justify-center`}>
-                    <r.icon className="w-5 h-5" />
-                  </div>
-                  <span className="text-[10px] font-medium text-center leading-tight">{r.label}</span>
-                </button>
-              ))}
-            </div>
-          </Card>
-        </div>
       </div>
     </div>
   );

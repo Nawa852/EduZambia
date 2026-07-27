@@ -37,33 +37,67 @@ export function StudentDashboardV2({ userName }: Props) {
   const stats = useUserStats();
   const [subjects, setSubjects] = useState<Array<{ name: string; progress: number; notes: number }>>([]);
   const [tasks, setTasks] = useState<Array<{ id: string; title: string; due: string; done: boolean }>>([]);
+  const [recentNotes, setRecentNotes] = useState<Array<{ id: string; title: string; subject: string; when: string }>>([]);
+  const [flashDecks, setFlashDecks] = useState<Array<{ id: string; title: string; cards: number; pct: number }>>([]);
+  const [weekFocus, setWeekFocus] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
+  const [weekSessions, setWeekSessions] = useState(0);
 
   useEffect(() => {
     if (!user) return;
+    let cancelled = false;
     (async () => {
-      const { data } = await supabase
-        .from('enrollments')
-        .select('progress, courses(subject)')
-        .eq('user_id', user.id);
+      const weekAgo = new Date(Date.now() - 6 * 864e5); weekAgo.setHours(0, 0, 0, 0);
+      const [enr, notesRes, decksRes, goalsRes, focusRes] = await Promise.all([
+        supabase.from('enrollments').select('progress, courses(subject)').eq('user_id', user.id),
+        supabase.from('student_notes').select('id, title, updated_at').eq('user_id', user.id).order('updated_at', { ascending: false }).limit(4),
+        supabase.from('flashcard_decks').select('id, title, subject, flashcard_cards(id, repetitions)').eq('user_id', user.id).limit(4),
+        supabase.from('study_goals').select('id, title, due_date, completed').eq('user_id', user.id).order('due_date', { ascending: true }).limit(5),
+        supabase.from('focus_sessions').select('focus_minutes, started_at, sessions_completed').eq('user_id', user.id).gte('started_at', weekAgo.toISOString()),
+      ]);
+      if (cancelled) return;
+
       const bySubject = new Map<string, { total: number; count: number }>();
-      (data || []).forEach((e: any) => {
+      (enr.data || []).forEach((e: any) => {
         const s = e.courses?.subject || 'General';
         const prev = bySubject.get(s) || { total: 0, count: 0 };
         bySubject.set(s, { total: prev.total + (e.progress || 0), count: prev.count + 1 });
       });
-      const list = Array.from(bySubject.entries()).slice(0, 4).map(([name, v]) => ({
+      setSubjects(Array.from(bySubject.entries()).slice(0, 4).map(([name, v]) => ({
         name, progress: Math.round(v.total / Math.max(v.count, 1)), notes: v.count,
+      })));
+
+      setRecentNotes((notesRes.data || []).map((n: any) => ({
+        id: n.id, title: n.title || 'Untitled note', subject: 'Note',
+        when: new Date(n.updated_at).toLocaleDateString(),
+      })));
+
+      setFlashDecks((decksRes.data || []).map((d: any) => {
+        const cards = d.flashcard_cards || [];
+        const reviewed = cards.filter((c: any) => (c.repetitions ?? 0) > 0).length;
+        return {
+          id: d.id, title: d.title, cards: cards.length,
+          pct: cards.length ? Math.round((reviewed / cards.length) * 100) : 0,
+        };
       }));
-      if (list.length) setSubjects(list);
-      else if (isDemo) setSubjects([
-        { name: 'Physics', progress: 80, notes: 12 },
-        { name: 'Biology', progress: 60, notes: 8 },
-        { name: 'Mathematics', progress: 70, notes: 15 },
-        { name: 'Chemistry', progress: 75, notes: 10 },
-      ]);
-      else setSubjects([]);
+
+      setTasks((goalsRes.data || []).map((g: any) => ({
+        id: g.id, title: g.title,
+        due: g.due_date ? new Date(g.due_date).toLocaleDateString() : 'No date',
+        done: !!g.completed,
+      })));
+
+      const buckets = [0, 0, 0, 0, 0, 0, 0];
+      let sessions = 0;
+      (focusRes.data || []).forEach((f: any) => {
+        const idx = 6 - Math.min(6, Math.floor((Date.now() - new Date(f.started_at).getTime()) / 864e5));
+        if (idx >= 0) buckets[idx] += f.focus_minutes || 0;
+        sessions += f.sessions_completed || 1;
+      });
+      setWeekFocus(buckets);
+      setWeekSessions(sessions);
     })();
-  }, [user, isDemo]);
+    return () => { cancelled = true; };
+  }, [user]);
 
   const greeting = () => {
     const h = new Date().getHours();
@@ -71,12 +105,13 @@ export function StudentDashboardV2({ userName }: Props) {
   };
 
   const firstName = userName.split(' ')[0];
-  const streak = stats?.stats?.current_streak ?? (isDemo ? 7 : 0);
-  const focusMin = (stats?.stats?.total_focus_minutes ?? (isDemo ? 165 : 0)) % 600;
-  const focusHrs = Math.floor(focusMin / 60);
-  const focusRem = focusMin % 60;
-  const tasksDone = isDemo ? 5 : 0;
-  const tasksGoal = isDemo ? 8 : 0;
+  const streak = stats?.stats?.current_streak ?? 0;
+  const todayFocus = weekFocus[6] || 0;
+  const focusHrs = Math.floor(todayFocus / 60);
+  const focusRem = todayFocus % 60;
+  const tasksDone = tasks.filter(t => t.done).length;
+  const tasksGoal = tasks.length;
+  const weekMinutes = weekFocus.reduce((a, b) => a + b, 0);
 
   const createChips = [
     { icon: StickyNote, label: 'New Note', tint: 'text-violet-600 bg-violet-500/10', to: '/student-notes?action=new' },
@@ -86,24 +121,14 @@ export function StudentDashboardV2({ userName }: Props) {
     { icon: HelpCircle, label: 'New Quiz', tint: 'text-rose-600 bg-rose-500/10', to: '/ai-quiz?action=new' },
   ];
 
-  const knowledgeHub = [
-    { name: 'Physics', notes: 12, cards: 34, icon: Atom, tint: 'bg-blue-500/10 text-blue-600' },
-    { name: 'Biology', notes: 8, cards: 21, icon: Leaf, tint: 'bg-emerald-500/10 text-emerald-600' },
-    { name: 'Mathematics', notes: 15, cards: 40, icon: Calculator, tint: 'bg-amber-500/10 text-amber-600' },
-    { name: 'Past Papers', notes: 5, cards: 12, icon: FileText, tint: 'bg-rose-500/10 text-rose-600' },
-  ];
-
-  const recentNotes = [
-    { title: 'Cell Structure', subject: 'Biology', when: 'Today' },
-    { title: 'Kinematics Summary', subject: 'Physics', when: 'Yesterday' },
-    { title: 'Integration Techniques', subject: 'Mathematics', when: '2 days ago' },
-  ];
-
-  const flashDecks = [
-    { title: 'Physics Formulas', cards: 24, pct: 80, color: 'text-blue-600 stroke-blue-500' },
-    { title: 'Biology Terms', cards: 18, pct: 60, color: 'text-emerald-600 stroke-emerald-500' },
-    { title: 'Math Concepts', cards: 30, pct: 40, color: 'text-amber-600 stroke-amber-500' },
-  ];
+  const knowledgeHub = subjects.map((s) => ({
+    name: s.name,
+    notes: s.notes,
+    cards: 0,
+    icon: subjectMeta[s.name]?.icon ?? BookOpen,
+    tint: subjectMeta[s.name]?.tint ?? 'bg-primary/10 text-primary',
+    progress: s.progress,
+  }));
 
   const smartTools = [
     { icon: Bot, label: 'AI Chat', desc: 'Streaming · markdown · LaTeX · voice · images.', tint: 'bg-purple-500/10 text-purple-600', to: '/ai?tab=chat' },
@@ -116,6 +141,9 @@ export function StudentDashboardV2({ userName }: Props) {
     { icon: Share2, label: 'Mind Maps', desc: 'Visualize and connect ideas.', tint: 'bg-teal-500/10 text-teal-600', to: '/mind-maps' },
     { icon: Repeat, label: 'Spaced Repetition', desc: 'Smart review, better retention.', tint: 'bg-indigo-500/10 text-indigo-600', to: '/flashcards?mode=spaced' },
   ];
+
+
+
 
   return (
     <div className="space-y-5 lg:space-y-6">
@@ -153,9 +181,10 @@ export function StudentDashboardV2({ userName }: Props) {
               <div className="text-3xl font-extrabold leading-none">{streak}</div>
               <div className="text-[11px] text-muted-foreground mt-0.5">days</div>
               <div className="flex items-end gap-[3px] h-6 mt-2">
-                {[30, 45, 35, 55, 50, 70, 90].map((h, i) => (
-                  <div key={i} className="flex-1 rounded-sm bg-blue-500/70" style={{ height: `${h}%` }} />
-                ))}
+                {weekFocus.map((m, i) => {
+                  const max = Math.max(...weekFocus, 1);
+                  return <div key={i} className="flex-1 rounded-sm bg-blue-500/70 min-h-[2px]" style={{ height: `${(m / max) * 100}%` }} />;
+                })}
               </div>
             </Card>
 
@@ -168,11 +197,14 @@ export function StudentDashboardV2({ userName }: Props) {
               </div>
               <div className="text-xl lg:text-2xl font-extrabold">{focusHrs}h {focusRem}m</div>
               <div className="text-[11px] text-muted-foreground">today</div>
-              <svg className="mt-1 w-full h-5" viewBox="0 0 100 24" preserveAspectRatio="none">
-                <polyline fill="none" stroke="currentColor" strokeWidth="1.6" className="text-emerald-500"
-                  points="0,18 12,16 24,17 36,12 48,14 60,8 72,11 84,6 100,9" />
-              </svg>
+              <div className="flex items-end gap-[3px] h-5 mt-1.5">
+                {weekFocus.map((m, i) => {
+                  const max = Math.max(...weekFocus, 1);
+                  return <div key={i} className="flex-1 rounded-sm bg-emerald-500/70 min-h-[2px]" style={{ height: `${(m / max) * 100}%` }} />;
+                })}
+              </div>
             </Card>
+
 
             <Card className="p-3 lg:p-4 rounded-2xl border-border/40 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
@@ -194,9 +226,10 @@ export function StudentDashboardV2({ userName }: Props) {
                 </div>
                 <span className="text-xs font-medium text-muted-foreground">Study Goal</span>
               </div>
-              <div className="text-xl font-extrabold">3/5</div>
-              <div className="text-[11px] text-muted-foreground">tasks completed</div>
-              <Progress value={60} className="h-1 mt-1.5" />
+              <div className="text-xl font-extrabold">{tasksGoal > 0 ? `${tasksDone}/${tasksGoal}` : '—'}</div>
+              <div className="text-[11px] text-muted-foreground">{tasksGoal > 0 ? 'tasks completed' : 'Add a study goal'}</div>
+              <Progress value={tasksGoal > 0 ? (tasksDone / tasksGoal) * 100 : 0} className="h-1 mt-1.5" />
+
             </Card>
           </div>
         </div>
@@ -212,10 +245,13 @@ export function StudentDashboardV2({ userName }: Props) {
             </div>
             <button onClick={() => navigate('/study-planner')} className="text-xs text-primary font-medium hover:underline">View all</button>
           </div>
-          <div className="text-[15px] font-bold">Next: Physics Lesson 3</div>
-          <div className="text-xs text-muted-foreground">Mechanics — Motion in 2D</div>
-          <Progress value={45} className="h-1.5 mt-3" />
-          <div className="text-[11px] text-muted-foreground mt-1.5 mb-3">In 45 min</div>
+          <div className="text-[15px] font-bold">{tasks.find(t => !t.done)?.title ?? 'No task scheduled'}</div>
+          <div className="text-xs text-muted-foreground">
+            {tasks.length ? `${tasksDone} of ${tasksGoal} goals complete` : 'Add a study goal to plan your day'}
+          </div>
+          <Progress value={tasksGoal ? (tasksDone / tasksGoal) * 100 : 0} className="h-1.5 mt-3" />
+          <div className="text-[11px] text-muted-foreground mt-1.5 mb-3">{tasks.find(t => !t.done)?.due ?? '—'}</div>
+
           <Button onClick={() => navigate('/study-planner')} className="w-full rounded-full h-10 text-xs font-semibold shadow-md shadow-primary/20">
             Start Session
           </Button>
@@ -250,6 +286,9 @@ export function StudentDashboardV2({ userName }: Props) {
             <button onClick={() => navigate('/student-notes')} className="text-muted-foreground hover:text-primary"><Plus className="w-4 h-4" /></button>
           </div>
           <div className="space-y-3">
+            {knowledgeHub.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-6">Enroll in a course or upload material to build your hub.</p>
+            )}
             {knowledgeHub.map((h) => (
               <button
                 key={h.name}
@@ -261,11 +300,12 @@ export function StudentDashboardV2({ userName }: Props) {
                 </div>
                 <div className="flex-1 text-left">
                   <div className="text-sm font-semibold group-hover:text-primary transition-colors">{h.name}</div>
-                  <div className="text-[11px] text-muted-foreground">{h.notes} notes · {h.cards} flashcards</div>
+                  <div className="text-[11px] text-muted-foreground">{h.notes} courses · {h.progress}% complete</div>
                 </div>
               </button>
             ))}
           </div>
+
           <button onClick={() => navigate('/student-notes')} className="text-xs text-primary font-medium mt-4 block mx-auto hover:underline">View all</button>
         </Card>
 
@@ -279,7 +319,11 @@ export function StudentDashboardV2({ userName }: Props) {
             <button onClick={() => navigate('/student-notes?action=new')} className="text-muted-foreground hover:text-primary"><Plus className="w-4 h-4" /></button>
           </div>
           <div className="space-y-3.5">
+            {recentNotes.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-6">No notes yet — capture your first one.</p>
+            )}
             {recentNotes.map((n) => (
+
               <button
                 key={n.title}
                 onClick={() => navigate('/student-notes')}
@@ -308,11 +352,14 @@ export function StudentDashboardV2({ userName }: Props) {
             <button onClick={() => navigate('/flashcards?action=new')} className="text-muted-foreground hover:text-primary"><Plus className="w-4 h-4" /></button>
           </div>
           <div className="space-y-3.5">
+            {flashDecks.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-6">No decks yet — generate one from your notes.</p>
+            )}
             {flashDecks.map((d) => {
               const circ = 2 * Math.PI * 16;
               const offset = circ * (1 - d.pct / 100);
               return (
-                <button key={d.title} onClick={() => navigate('/flashcards')} className="w-full flex items-center gap-3 group">
+                <button key={d.id} onClick={() => navigate('/flashcards')} className="w-full flex items-center gap-3 group">
                   <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
                     <Layers className="w-4 h-4" />
                   </div>
@@ -323,14 +370,15 @@ export function StudentDashboardV2({ userName }: Props) {
                   <div className="relative w-10 h-10 shrink-0">
                     <svg className="w-10 h-10 -rotate-90" viewBox="0 0 40 40">
                       <circle cx="20" cy="20" r="16" className="stroke-muted" strokeWidth="3" fill="none" />
-                      <circle cx="20" cy="20" r="16" className={d.color} strokeWidth="3" fill="none" strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset} />
+                      <circle cx="20" cy="20" r="16" className="stroke-emerald-500" strokeWidth="3" fill="none" strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset} />
                     </svg>
-                    <span className={`absolute inset-0 flex items-center justify-center text-[10px] font-bold ${d.color.split(' ')[0]}`}>{d.pct}%</span>
+                    <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-emerald-600">{d.pct}%</span>
                   </div>
                 </button>
               );
             })}
           </div>
+
           <button onClick={() => navigate('/flashcards')} className="text-xs text-primary font-medium mt-4 block mx-auto hover:underline">Review Now</button>
         </Card>
       </div>
@@ -348,12 +396,10 @@ export function StudentDashboardV2({ userName }: Props) {
             </button>
           </div>
           <div className="space-y-2.5">
-            {[
-              { id: '1', title: 'Revise Mechanics', due: 'Today', done: false },
-              { id: '2', title: 'Complete Past Paper', due: 'Today', done: true },
-              { id: '3', title: 'Read Chapter 5', due: 'Tomorrow', done: false },
-              { id: '4', title: 'Do Quiz on Cell', due: 'Tomorrow', done: false },
-            ].map((t) => (
+            {tasks.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-6">No tasks yet — add a study goal to get started.</p>
+            )}
+            {tasks.map((t) => (
               <div key={t.id} className="flex items-center gap-2.5">
                 <Checkbox checked={t.done} className="rounded" />
                 <span className={`flex-1 text-sm ${t.done ? 'line-through text-muted-foreground' : ''}`}>{t.title}</span>
@@ -361,6 +407,7 @@ export function StudentDashboardV2({ userName }: Props) {
               </div>
             ))}
           </div>
+
           <button onClick={() => navigate('/study-planner')} className="text-xs text-primary font-medium mt-3 block mx-auto hover:underline">View all tasks</button>
         </Card>
 
@@ -393,37 +440,35 @@ export function StudentDashboardV2({ userName }: Props) {
               This Week <ChevronDown className="w-3 h-3" />
             </button>
           </div>
-          <svg className="w-full h-20" viewBox="0 0 200 60" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="progressArea" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <path d="M0,45 L28,40 L56,42 L85,30 L114,32 L142,20 L171,22 L200,12 L200,60 L0,60 Z" fill="url(#progressArea)" />
-            <polyline fill="none" stroke="hsl(var(--primary))" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-              points="0,45 28,40 56,42 85,30 114,32 142,20 171,22 200,12" />
-            {[0, 28, 56, 85, 114, 142, 171, 200].map((x, i) => {
-              const ys = [45, 40, 42, 30, 32, 20, 22, 12];
-              return <circle key={i} cx={x} cy={ys[i]} r="2" fill="hsl(var(--primary))" />;
+          {(() => {
+            const max = Math.max(...weekFocus, 1);
+            return (
+              <div className="flex items-end gap-1.5 h-20">
+                {weekFocus.map((m, i) => (
+                  <div key={i} className="flex-1 rounded-t-md bg-primary/70 min-h-[2px]" style={{ height: `${(m / max) * 100}%` }} title={`${m} min`} />
+                ))}
+              </div>
+            );
+          })()}
+          <div className="grid grid-cols-7 text-[9px] text-muted-foreground text-center mb-3 mt-1">
+            {Array.from({ length: 7 }).map((_, i) => {
+              const d = new Date(Date.now() - (6 - i) * 864e5);
+              return <span key={i}>{d.toLocaleDateString(undefined, { weekday: 'short' }).slice(0, 3)}</span>;
             })}
-          </svg>
-          <div className="grid grid-cols-7 text-[9px] text-muted-foreground text-center mb-3 mt-0.5">
-            {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => <span key={d}>{d}</span>)}
           </div>
           <div className="grid grid-cols-3 gap-2 mt-auto">
             {[
-              { label: 'Study Time', val: '12h 30m', delta: '+15%' },
-              { label: 'Sessions', val: '8', delta: '+20%' },
-              { label: 'Accuracy', val: '78%', delta: '+8%' },
+              { label: 'Study time', val: `${Math.floor(weekMinutes / 60)}h ${weekMinutes % 60}m` },
+              { label: 'Sessions', val: String(weekSessions) },
+              { label: 'Streak', val: `${streak}d` },
             ].map(m => (
               <div key={m.label} className="rounded-xl bg-muted/40 p-2 text-center">
                 <div className="text-[10px] text-muted-foreground">{m.label}</div>
                 <div className="text-sm font-extrabold mt-0.5">{m.val}</div>
-                <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">{m.delta}</div>
               </div>
             ))}
           </div>
+
         </Card>
       </div>
 

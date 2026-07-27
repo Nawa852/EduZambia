@@ -1,173 +1,156 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useAuth } from '@/components/Auth/AuthProvider';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Timer, Play, Pause, RotateCcw, Coffee, Brain, Volume2, VolumeX } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Slider } from '@/components/ui/slider';
+import { Timer, Play, Pause, Square, Coffee, Brain, Volume2, VolumeX, Settings2 } from 'lucide-react';
+import { useFocusMode } from '@/hooks/useFocusMode';
 
-type Mode = 'focus' | 'short-break' | 'long-break';
+const SUBJECTS = ['General', 'Mathematics', 'Science', 'English', 'Biology', 'Chemistry', 'Physics', 'History', 'Geography', 'ICT'];
 
-const DURATIONS: Record<Mode, number> = { focus: 25 * 60, 'short-break': 5 * 60, 'long-break': 15 * 60 };
-const SUBJECTS = ['Mathematics', 'Science', 'English', 'History', 'Geography', 'Biology', 'Chemistry', 'Physics', 'ICT', 'General'];
-
-function playBeep() {
-  try {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.value = 880;
-    osc.type = 'sine';
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.8);
-  } catch {}
+function fmt(total: number) {
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
 const PomodoroPage = () => {
-  const { user } = useAuth();
-  const [mode, setMode] = useState<Mode>('focus');
-  const [timeLeft, setTimeLeft] = useState(DURATIONS.focus);
-  const [running, setRunning] = useState(false);
-  const [sessions, setSessions] = useState(0);
+  const { state, settings, startFocus, startBreak, pauseResume, stop, updateSettings, getDailyStats } = useFocusMode();
   const [subject, setSubject] = useState('General');
-  const [soundOn, setSoundOn] = useState(true);
-  const intervalRef = useRef<ReturnType<typeof setInterval>>();
-  const startTimeRef = useRef<Date>();
+  const [showSettings, setShowSettings] = useState(false);
+  const stats = getDailyStats();
 
-  const totalTime = DURATIONS[mode];
-  const progress = ((totalTime - timeLeft) / totalTime) * 100;
+  const phaseSeconds = useMemo(() => {
+    if (state.phase === 'focus') return settings.focusMinutes * 60;
+    if (state.phase === 'break') return settings.breakMinutes * 60;
+    if (state.phase === 'longBreak') return settings.longBreakMinutes * 60;
+    return settings.focusMinutes * 60;
+  }, [state.phase, settings]);
 
-  const playSound = useCallback(() => {
-    if (!soundOn) return;
-    playBeep();
-  }, [soundOn]);
+  const remaining = state.phase === 'idle' ? phaseSeconds : state.secondsRemaining;
+  const progress = Math.min(100, Math.max(0, ((phaseSeconds - remaining) / phaseSeconds) * 100));
+  const isBreak = state.phase === 'break' || state.phase === 'longBreak';
 
-  useEffect(() => {
-    if (!running) { clearInterval(intervalRef.current); return; }
-    intervalRef.current = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          clearInterval(intervalRef.current);
-          setRunning(false);
-          playSound();
-          if (mode === 'focus') {
-            const newSessions = sessions + 1;
-            setSessions(newSessions);
-            saveSession();
-            toast.success(`Focus session #${newSessions} complete! 🎉`);
-            setMode(newSessions % 4 === 0 ? 'long-break' : 'short-break');
-          } else {
-            toast.info('Break over! Ready to focus?');
-            setMode('focus');
-          }
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(intervalRef.current);
-  }, [running, mode, sessions]);
-
-  useEffect(() => { setTimeLeft(DURATIONS[mode]); }, [mode]);
-
-  const saveSession = async () => {
-    if (!user) return;
-    const { error } = await (supabase as any).from('focus_sessions').insert({
-      user_id: user.id, subject, focus_minutes: 25, sessions_completed: 1,
-      started_at: startTimeRef.current?.toISOString() || new Date().toISOString(),
-      ended_at: new Date().toISOString(), gave_up: false, distraction_count: 0,
-    });
-    if (error) toast.error('Failed to save session');
-  };
-
-  const toggle = () => {
-    if (!running) startTimeRef.current = new Date();
-    setRunning(!running);
-  };
-  const reset = () => { setRunning(false); setTimeLeft(DURATIONS[mode]); };
-
-  const mins = Math.floor(timeLeft / 60);
-  const secs = timeLeft % 60;
-
-  const modeColors: Record<Mode, string> = {
-    focus: 'text-primary', 'short-break': 'text-green-500', 'long-break': 'text-blue-500',
-  };
+  const R = 132;
+  const C = 2 * Math.PI * R;
 
   return (
-    <div className="max-w-lg mx-auto py-6 px-4 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Timer className="w-6 h-6 text-primary" /> Pomodoro Timer
-        </h1>
-        <p className="text-sm text-muted-foreground">Stay focused with timed study sessions</p>
+    <div className="max-w-xl mx-auto space-y-4">
+      <div className="text-center space-y-1">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Focus Timer</h1>
+        <p className="text-sm text-muted-foreground">
+          Keeps running in the background — switch pages or minimise the app.
+        </p>
       </div>
 
-      <Card>
-        <CardContent className="p-6 text-center space-y-6">
-          <div className="flex justify-center gap-2">
-            {(['focus', 'short-break', 'long-break'] as Mode[]).map(m => (
-              <Button key={m} variant={mode === m ? 'default' : 'outline'} size="sm"
-                onClick={() => { setMode(m); setRunning(false); }}
-                disabled={running}>
-                {m === 'focus' ? <Brain className="w-3 h-3 mr-1" /> : <Coffee className="w-3 h-3 mr-1" />}
-                {m === 'focus' ? 'Focus' : m === 'short-break' ? 'Short Break' : 'Long Break'}
+      <Card className="border-border/50 rounded-3xl overflow-hidden">
+        <CardContent className="p-6 space-y-6">
+          <div className="flex justify-center">
+            <Badge variant="outline" className="rounded-full px-3 py-1 text-xs">
+              {isBreak ? <Coffee className="w-3 h-3 mr-1.5" /> : <Brain className="w-3 h-3 mr-1.5" />}
+              {state.phase === 'idle' ? 'Ready' : state.phase === 'focus' ? `Focusing · ${state.subject}` : state.phase === 'break' ? 'Short break' : 'Long break'}
+            </Badge>
+          </div>
+
+          <div className="relative mx-auto w-[300px] h-[300px] max-w-full">
+            <svg viewBox="0 0 300 300" className="w-full h-full -rotate-90">
+              <circle cx="150" cy="150" r={R} fill="none" strokeWidth="10"
+                className="stroke-muted/50" />
+              <motion.circle
+                cx="150" cy="150" r={R} fill="none" strokeWidth="10" strokeLinecap="round"
+                className={isBreak ? 'stroke-emerald-500' : 'stroke-primary'}
+                strokeDasharray={C}
+                animate={{ strokeDashoffset: C - (C * progress) / 100 }}
+                transition={{ duration: 0.6, ease: 'linear' }}
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="font-mono text-6xl font-semibold tabular-nums tracking-tight text-foreground">
+                {fmt(remaining)}
+              </span>
+              <span className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">
+                {state.phase === 'idle' ? 'Tap start' : state.isActive ? 'Running' : 'Paused'}
+              </span>
+            </div>
+          </div>
+
+          {state.phase === 'idle' ? (
+            <div className="space-y-3">
+              <Select value={subject} onValueChange={setSubject}>
+                <SelectTrigger className="w-full rounded-xl"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {SUBJECTS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <div className="flex gap-2">
+                <Button size="lg" className="flex-1 rounded-xl" onClick={() => startFocus(subject)}>
+                  <Play className="w-4 h-4 mr-2" />Start focus
+                </Button>
+                <Button size="lg" variant="outline" className="rounded-xl" onClick={() => startBreak(false)}>
+                  <Coffee className="w-4 h-4 mr-2" />Break
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <Button size="lg" className="flex-1 rounded-xl" onClick={pauseResume}>
+                {state.isActive ? <><Pause className="w-4 h-4 mr-2" />Pause</> : <><Play className="w-4 h-4 mr-2" />Resume</>}
               </Button>
-            ))}
-          </div>
+              <Button size="lg" variant="outline" className="rounded-xl" onClick={stop}>
+                <Square className="w-4 h-4 mr-2" />End
+              </Button>
+            </div>
+          )}
 
-          <motion.div className={`text-7xl font-mono font-bold ${modeColors[mode]}`}
-            key={timeLeft} initial={{ scale: 1.05 }} animate={{ scale: 1 }}>
-            {String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}
-          </motion.div>
-
-          <Progress value={progress} className="h-2" />
-
-          <div className="flex justify-center gap-3">
-            <Button size="lg" onClick={toggle} className="min-w-[120px]">
-              {running ? <><Pause className="w-4 h-4 mr-2" />Pause</> : <><Play className="w-4 h-4 mr-2" />Start</>}
+          <div className="flex items-center justify-between pt-1">
+            <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => setShowSettings(s => !s)}>
+              <Settings2 className="w-4 h-4 mr-1.5" />Settings
             </Button>
-            <Button size="lg" variant="outline" onClick={reset}><RotateCcw className="w-4 h-4" /></Button>
-            <Button size="icon" variant="ghost" onClick={() => setSoundOn(!soundOn)}>
-              {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            <Button variant="ghost" size="icon" onClick={() => updateSettings({ soundOn: !settings.soundOn })}
+              aria-label={settings.soundOn ? 'Mute alerts' : 'Unmute alerts'}>
+              {settings.soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
             </Button>
           </div>
 
-          <Select value={subject} onValueChange={setSubject}>
-            <SelectTrigger className="w-48 mx-auto"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {SUBJECTS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          {showSettings && (
+            <div className="space-y-4 rounded-2xl bg-muted/40 p-4">
+              {([
+                ['Focus', 'focusMinutes', 5, 90, 5],
+                ['Short break', 'breakMinutes', 1, 30, 1],
+                ['Long break', 'longBreakMinutes', 5, 45, 5],
+                ['Sessions before long break', 'sessionsBeforeLongBreak', 2, 8, 1],
+              ] as const).map(([label, key, min, max, step]) => (
+                <div key={key} className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">{label}</span>
+                    <span className="font-medium text-foreground">{settings[key]}</span>
+                  </div>
+                  <Slider value={[settings[key]]} min={min} max={max} step={step}
+                    onValueChange={v => updateSettings({ [key]: v[0] } as any)}
+                    disabled={state.phase !== 'idle'} />
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Today's Progress</CardTitle>
-        </CardHeader>
-        <CardContent className="flex gap-4">
-          <div className="text-center flex-1">
-            <p className="text-3xl font-bold text-primary">{sessions}</p>
-            <p className="text-xs text-muted-foreground">Sessions</p>
-          </div>
-          <div className="text-center flex-1">
-            <p className="text-3xl font-bold text-primary">{sessions * 25}</p>
-            <p className="text-xs text-muted-foreground">Minutes</p>
-          </div>
-          <div className="text-center flex-1">
-            <Badge variant="secondary" className="text-xs">{subject}</Badge>
-            <p className="text-xs text-muted-foreground mt-1">Subject</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-3 gap-2">
+        {[
+          { label: 'Sessions today', value: stats.sessions },
+          { label: 'Minutes focused', value: Math.round(stats.totalSeconds / 60) },
+          { label: 'Given up', value: stats.giveUps },
+        ].map(s => (
+          <Card key={s.label} className="border-border/50 rounded-2xl">
+            <CardContent className="p-3 text-center">
+              <div className="text-xl font-semibold text-foreground tabular-nums">{s.value}</div>
+              <div className="text-[11px] text-muted-foreground">{s.label}</div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };
