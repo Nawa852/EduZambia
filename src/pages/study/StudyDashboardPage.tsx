@@ -19,8 +19,10 @@ import { toast } from 'sonner';
 import { StudyDashboardSkeleton } from '@/components/UI/StudySkeleton';
 import {
   Plus, Folder, FileText, Upload, Sparkles, Mic, PenLine, ListChecks, BookOpen,
-  Search, Trash2, Youtube, Link as LinkIcon, ImageIcon, ChevronRight, Clock,
+  Search, Trash2, Youtube, Link as LinkIcon, ImageIcon, ChevronRight, Clock, Zap,
 } from 'lucide-react';
+import { softTimeout } from '@/lib/withTimeout';
+
 
 type Tab = 'actions' | 'files' | 'folders' | 'history';
 
