@@ -86,7 +86,8 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
 
       {/* Segmented quick-switcher — opens tools as sheets */}
       <div className="sticky top-14 z-30 -mx-2 sm:mx-0 px-2 sm:px-0">
-        <div className="rounded-none sm:rounded-[16px] border-y sm:border border-border/40 bg-background/85 supports-[backdrop-filter]:bg-background/70 backdrop-blur-xl px-1 py-1">
+        <div className="rounded-none sm:rounded-[16px] border-y sm:border border-border/50 bg-nav/85 supports-[backdrop-filter]:bg-nav/70 backdrop-blur-xl px-1 py-1">
+
           <div
             role="tablist"
             aria-label={`${title} sections`}
