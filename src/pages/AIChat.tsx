@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { EVENTS, logError } from '@/lib/monitoring';
 import { useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
@@ -298,6 +299,7 @@ export default function AIChat() {
         },
       }));
     } catch (e: any) {
+      void logError(EVENTS.ARTIFACT_FAILED, e, { context: { kind, surface: 'ai-chat' } });
       patch(m => ({
         ...m,
         building: false,
