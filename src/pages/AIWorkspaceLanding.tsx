@@ -98,6 +98,15 @@ export default function AIWorkspaceLanding() {
           </div>
         </section>
       ))}
+
+      <section>
+        <div className="mb-2.5">
+          <h2 className="text-sm font-semibold text-foreground">Continue where you left off</h2>
+          <p className="text-[11px] text-muted-foreground">Your saved chats, artifacts, quizzes and study packs.</p>
+        </div>
+        <SavedProgressList />
+      </section>
     </div>
+
   );
 }
