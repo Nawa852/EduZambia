@@ -154,8 +154,14 @@ const FlashcardStudio: React.FC = () => {
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       toast.success(`Created ${(data as any).count} cards`);
-      setTopic(''); setNotes(''); setCreating(false);
+      const deckId = (data as any)?.deck_id ?? (data as any)?.deckId;
+      const tags = tagsInput.split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
+      if (deckId && tags.length) {
+        await supabase.from('flashcard_decks').update({ tags }).eq('id', deckId);
+      }
+      setTopic(''); setNotes(''); setTagsInput(''); setCreating(false);
       await loadDecks();
+
     } catch (e: any) {
       toast.error(e.message || 'Generation failed');
     } finally {
