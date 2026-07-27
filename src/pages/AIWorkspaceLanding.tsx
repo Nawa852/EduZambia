@@ -6,6 +6,8 @@ import {
   Brain, MessageSquare, Mic, FileText, Upload, Calendar, Calculator,
   Zap, PenTool, Swords, Lightbulb, Layers, Target, Map, Sparkles,
 } from 'lucide-react';
+import { SavedProgressList } from '@/components/Progress/SavedProgressList';
+
 
 type Tool = {
   title: string; desc: string; href: string;
