@@ -58,18 +58,23 @@ const ECZResourcesExpandedPage = () => {
     subjects: Array.from(new Set(items.map((i) => i.subject).filter(Boolean))) as string[],
     classes: Array.from(new Set(items.map((i) => tagValue(i, 'class')).filter(Boolean))) as string[],
     years: Array.from(new Set(items.map((i) => tagValue(i, 'year')).filter(Boolean))).sort().reverse() as string[],
+    kinds: Array.from(new Set(items.map((i) => i.kind).filter(Boolean))) as string[],
   }), [items]);
+
+  const hasFilters = subject !== ALL || classLevel !== ALL || year !== ALL || kind !== ALL || !!query.trim();
 
   const filtered = useMemo(() => items.filter((i) => {
     if (subject !== ALL && i.subject !== subject) return false;
     if (classLevel !== ALL && tagValue(i, 'class') !== classLevel) return false;
     if (year !== ALL && tagValue(i, 'year') !== year) return false;
+    if (kind !== ALL && i.kind !== kind) return false;
     if (query.trim()) {
       const q = query.toLowerCase();
       if (!i.title.toLowerCase().includes(q) && !i.folder_path.toLowerCase().includes(q)) return false;
     }
     return true;
-  }), [items, subject, classLevel, year, query]);
+  }), [items, subject, classLevel, year, kind, query]);
+
 
   const folders = useMemo(() => {
     return filtered.reduce<Record<string, RepositoryItem[]>>((acc, item) => {
