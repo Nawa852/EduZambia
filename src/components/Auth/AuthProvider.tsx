@@ -57,12 +57,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    let active = true;
+
+    // Safety net: never let the app hang on a loading screen if the auth
+    // client stalls (lock contention / offline / slow network).
+    const failsafe = setTimeout(() => {
+      if (active) setLoading(false);
+    }, 3000);
+
+    // Set up auth state listener FIRST. This always fires an INITIAL_SESSION
+    // event, so it is the authoritative signal that bootstrapping is done.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        if (!active) return;
         setSession(session);
         setUser(session?.user ?? null);
-        
+        setLoading(false);
+
         // Defer user type storage
         if (session?.user) {
           setTimeout(() => {
@@ -73,14 +84,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    // THEN check for existing session (best effort — never blocks the UI)
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        if (!active) return;
+        setSession(session);
+        setUser(session?.user ?? null);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (active) setLoading(false);
+      });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      active = false;
+      clearTimeout(failsafe);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {
@@ -102,7 +122,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         email,
         password,
         options: {
-          emailRedirectTo: `https://eduzambia.netlify.app/dashboard`,
+          emailRedirectTo: `${window.location.origin}/choose-role`,
           data: {
             full_name: fullName,
             user_type: userType || 'student',
@@ -208,7 +228,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const { error } = await supabase.auth.resend({
         type: 'signup',
         email,
-        options: { emailRedirectTo: `https://eduzambia.netlify.app/dashboard` },
+        options: { emailRedirectTo: `${window.location.origin}/choose-role` },
       });
       if (error) {
         toast.error(error.message);
