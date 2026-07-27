@@ -44,7 +44,7 @@ export const JitsiRoom: React.FC<Props> = ({ roomCode, displayName, onLeave, hei
           parentNode: containerRef.current,
           width: '100%',
           height,
-          userInfo: { displayName: displayName || 'Nexus Learner' },
+          userInfo: { displayName: displayName || 'Synapse Learner' },
           configOverwrite: { prejoinPageEnabled: false, startWithAudioMuted: true },
           interfaceConfigOverwrite: { MOBILE_APP_PROMO: false },
         });
