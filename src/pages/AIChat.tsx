@@ -16,7 +16,7 @@ import { Card } from '@/components/ui/card';
 import {
   Send, Sparkles, User, Bot, RotateCcw, Copy, Loader2, Mic, MicOff,
   Image as ImageIcon, X, MessageSquarePlus, Volume2, VolumeX, Trash2,
-  Search, Brain, Camera, StopCircle, Plus,
+  Search, Brain, Camera, StopCircle, Plus, Boxes,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
