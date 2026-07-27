@@ -230,12 +230,14 @@ const StudyDashboardPage = () => {
       {tab === 'actions' && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[
+            { icon: Zap, title: 'Know Your Stuff', desc: 'Drop anything → points, cards, quiz & a visual', onClick: () => nav('/know-your-stuff'), tint: 'from-primary/20 to-primary/0' },
             { icon: Upload, title: 'Upload file', desc: 'PDF, DOCX, image or notes → instant study pack', onClick: () => { setUploadCourseId(courses[0]?.id || ''); setOpenUpload(true); }, tint: 'from-blue-500/15 to-blue-500/0' },
             { icon: Folder, title: 'New folder', desc: 'Group material by subject or exam', onClick: () => setOpenFolder(true), tint: 'from-purple-500/15 to-purple-500/0' },
             { icon: Mic, title: 'Record lecture', desc: 'Live transcript, notes & summary', onClick: () => nav('/lecture'), tint: 'from-rose-500/15 to-rose-500/0' },
             { icon: PenLine, title: 'Ask AI Tutor', desc: 'Chat with your personal tutor', onClick: () => nav('/ai-chat'), tint: 'from-emerald-500/15 to-emerald-500/0' },
             { icon: ListChecks, title: 'Quick quiz', desc: 'Pick any folder to test yourself', onClick: () => setTab('folders'), tint: 'from-amber-500/15 to-amber-500/0' },
             { icon: BookOpen, title: 'Assignment help', desc: 'Solve problems step-by-step', onClick: () => nav('/ai-chat?mode=assignment'), tint: 'from-indigo-500/15 to-indigo-500/0' },
+
           ].map((a) => (
             <button
               key={a.title}
