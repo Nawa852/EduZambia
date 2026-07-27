@@ -9,7 +9,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/components/Auth/AuthProvider';
 import { getNavigationByRole, matchesNavItem, roleLabels } from '@/components/Sidebar/sidebarConfig';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import eduIcon from '@/assets/edu-zambia-icon.png';
+import eduIcon from '@/assets/brandLogo';
 
 export const MobileSidebarDrawer: React.FC = () => {
   const navigate = useNavigate();

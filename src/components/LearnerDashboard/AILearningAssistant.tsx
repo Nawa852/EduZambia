@@ -10,7 +10,7 @@ import {
   Zap, Volume2, Globe, ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import EduZambiaLogo from "@/assets/edu-zambia-icon.png";
+import EduZambiaLogo from "@/assets/brandLogo";
 
 export const AILearningAssistant = () => {
   const [query, setQuery] = useState('');

@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import eduMark from '@/assets/edu-zambia-icon.png';
+import eduMark from '@/assets/brandLogo';
 
 const pillars = [
   { icon: Brain, title: 'BrightSphere AI Tutor', desc: 'Adaptive multi-model tutor in English, Bemba, Nyanja, Tonga & Lozi — works offline.', tint: 'from-blue-500/20 to-cyan-500/20' },

@@ -6,7 +6,7 @@ import {
   Smile, Meh, Frown, Heart, Sparkles, Sun, Moon, Cloud,
   Brain, Zap, Target, Clock, BookOpen, TrendingUp
 } from 'lucide-react';
-import EduZambiaLogo from "@/assets/edu-zambia-icon.png";
+import EduZambiaLogo from "@/assets/brandLogo";
 
 interface SmartWelcomePanelProps {
   userName: string;

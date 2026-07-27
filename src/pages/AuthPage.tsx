@@ -14,7 +14,7 @@ import {
 import { z } from 'zod';
 import { lovable } from '@/integrations/lovable';
 import eduLogo from '@/assets/edu-zambia-logo-new.png';
-import eduIcon from '@/assets/edu-zambia-icon.png';
+import eduIcon from '@/assets/brandLogo';
 
 const emailSchema = z.string().email('Please enter a valid email address');
 const passwordSchema = z.string().min(8, 'Password must be at least 8 characters');
