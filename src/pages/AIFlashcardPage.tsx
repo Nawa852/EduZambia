@@ -1,9 +1,6 @@
-
 import React from 'react';
-import AIFlashcardGenerator from '@/components/AI/AIFlashcardGenerator';
+import FlashcardStudio from '@/components/AI/FlashcardStudio';
 
-const AIFlashcardPage = () => {
-  return <AIFlashcardGenerator />;
-};
+const AIFlashcardPage = () => <FlashcardStudio />;
 
 export default AIFlashcardPage;

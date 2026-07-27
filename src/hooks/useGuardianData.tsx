@@ -71,7 +71,7 @@ export function useGuardianData() {
         .from('guardian_links')
         .select('id, student_id, guardian_id, guardian_name, relationship, mode, status, created_at')
         .eq('guardian_id', user.id)
-        .eq('status', 'active');
+        .in('status', ['active', 'accepted']);
 
       if (linksErr || !links || links.length === 0) {
         setStudents([]);

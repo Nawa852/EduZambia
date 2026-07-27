@@ -11,6 +11,7 @@ import { PageContainer } from '@/components/Layout/PageContainer';
 import { ScrollToTop } from '@/components/UI/ScrollToTop';
 import { QuickNoteButton } from '@/components/UI/QuickNoteButton';
 import { ComingSoonGate } from '@/components/UI/ComingSoonGate';
+import { FocusMiniWidget } from '@/components/Focus/FocusMiniWidget';
 
 import { useSecurityAlerts } from '@/hooks/useSecurityAlerts';
 import { useStudySchedule } from '@/hooks/useStudySchedule';
@@ -156,6 +157,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
           <MobileBottomNav />
           <QuickNoteButton />
+          <FocusMiniWidget />
           <ScrollToTop />
           <OfflineBanner />
 

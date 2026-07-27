@@ -1,135 +1,147 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
-        },
-      }
-    )
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
-    
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } },
+    );
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    const { topic, difficulty, count = 10, subject } = await req.json();
-    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+    const body = await req.json().catch(() => ({}));
+    const topic = String(body.topic ?? "").slice(0, 300).trim();
+    const subject = String(body.subject ?? "General").slice(0, 120);
+    const difficulty = ["easy", "medium", "hard"].includes(body.difficulty) ? body.difficulty : "medium";
+    const count = Math.min(Math.max(Number(body.count) || 10, 3), 30);
+    const notes = String(body.notes ?? "").slice(0, 6000);
 
-    if (!openaiApiKey) {
-      throw new Error('OpenAI API key not configured');
+    if (!topic && !notes) {
+      return new Response(JSON.stringify({ error: "Provide a topic or some notes" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    const prompt = `Create ${count} educational flashcards for "${topic}" at ${difficulty} level in ${subject}. 
-    
-    Format as JSON array:
-    [
-      {
-        "front": "Question or term",
-        "back": "Answer or definition",
-        "difficulty": "${difficulty}",
-        "subject": "${subject}",
-        "tags": ["tag1", "tag2"]
-      }
-    ]
-    
-    Make questions educational, clear, and appropriate for Zambian curriculum.`;
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!apiKey) throw new Error("AI gateway not configured");
 
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
-        'Content-Type': 'application/json',
-      },
+    const prompt = `Create exactly ${count} study flashcards at ${difficulty} difficulty.
+Subject: ${subject}
+Topic: ${topic || "(derive from the notes)"}
+${notes ? `Source notes:\n"""${notes}"""` : ""}
+
+Rules:
+- Front = a short precise question or term (max 120 chars).
+- Back = a clear, complete answer (max 320 chars).
+- Align with the Zambian ECZ curriculum and use local examples where natural.
+- No duplicates, no numbering in the text.`;
+
+    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: "google/gemini-2.5-flash",
         messages: [
-          {
-            role: 'system',
-            content: 'You are an expert educational content creator for Zambian students. Create high-quality flashcards.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
+          { role: "system", content: "You are an expert Zambian curriculum teacher who writes excellent flashcards." },
+          { role: "user", content: prompt },
         ],
-        temperature: 0.7,
-        max_tokens: 2000
+        tools: [{
+          type: "function",
+          function: {
+            name: "emit_flashcards",
+            description: "Return the generated flashcards",
+            parameters: {
+              type: "object",
+              properties: {
+                cards: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: { front: { type: "string" }, back: { type: "string" } },
+                    required: ["front", "back"],
+                    additionalProperties: false,
+                  },
+                },
+              },
+              required: ["cards"],
+              additionalProperties: false,
+            },
+          },
+        }],
+        tool_choice: { type: "function", function: { name: "emit_flashcards" } },
       }),
     });
 
-    const openaiData = await openaiResponse.json();
-    let flashcards;
-    
+    if (aiRes.status === 429) {
+      return new Response(JSON.stringify({ error: "Rate limit reached, please try again shortly." }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (aiRes.status === 402) {
+      return new Response(JSON.stringify({ error: "AI credits exhausted. Please top up to continue." }), {
+        status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!aiRes.ok) {
+      const text = await aiRes.text();
+      console.error("gateway error", aiRes.status, text);
+      throw new Error("AI generation failed");
+    }
+
+    const data = await aiRes.json();
+    const call = data?.choices?.[0]?.message?.tool_calls?.[0];
+    let cards: Array<{ front: string; back: string }> = [];
     try {
-      flashcards = JSON.parse(openaiData.choices[0].message.content);
-    } catch (parseError) {
-      // Fallback flashcards
-      flashcards = [
-        {
-          front: `What is ${topic}?`,
-          back: `${topic} is an important concept in ${subject}.`,
-          difficulty: difficulty,
-          subject: subject,
-          tags: [topic.toLowerCase(), subject.toLowerCase()]
-        }
-      ];
-    }
+      cards = JSON.parse(call?.function?.arguments ?? "{}").cards ?? [];
+    } catch { cards = []; }
 
-    // Store flashcards in database
-    const flashcardsToInsert = flashcards.map((card: any) => ({
-      user_id: user.id,
-      front_content: card.front,
-      back_content: card.back,
-      subject: card.subject || subject,
-      difficulty_level: card.difficulty || difficulty,
-      tags: card.tags || [topic.toLowerCase()]
-    }));
+    cards = cards
+      .filter((c) => c?.front && c?.back)
+      .slice(0, count)
+      .map((c) => ({ front: String(c.front).slice(0, 300), back: String(c.back).slice(0, 800) }));
 
-    const { data: insertedFlashcards, error: insertError } = await supabaseClient
-      .from('flashcards')
-      .insert(flashcardsToInsert)
-      .select();
+    if (!cards.length) throw new Error("No flashcards were generated");
 
-    if (insertError) {
-      console.error('Error inserting flashcards:', insertError);
-    }
+    // Persist into a deck owned by the caller
+    const { data: deck, error: deckError } = await supabase
+      .from("flashcard_decks")
+      .insert({ user_id: user.id, title: topic || `${subject} deck`, subject })
+      .select("id, title, subject, created_at")
+      .single();
+    if (deckError) throw deckError;
 
-    return new Response(JSON.stringify({ 
-      flashcards: insertedFlashcards || flashcards,
-      success: true
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    const { error: cardsError } = await supabase.from("flashcard_cards").insert(
+      cards.map((c) => ({ deck_id: deck.id, front: c.front, back: c.back })),
+    );
+    if (cardsError) throw cardsError;
+
+    return new Response(JSON.stringify({ deck, cards, count: cards.length }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-
-  } catch (error) {
-    console.error('Error in ai-flashcard-generator function:', error);
-    return new Response(JSON.stringify({ 
-      error: error.message,
-      success: false
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  } catch (err) {
+    console.error("ai-flashcard-generator", err);
+    return new Response(JSON.stringify({ error: (err as Error).message ?? "Unexpected error" }), {
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });

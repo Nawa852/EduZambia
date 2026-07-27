@@ -189,7 +189,7 @@ const AIQuizGeneratorPage = () => {
     const isAnswered = selectedAnswers[q.id] !== undefined;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-6">
+      <div className="space-y-4">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
@@ -310,7 +310,7 @@ const AIQuizGeneratorPage = () => {
     const score = calculateScore();
     
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-6">
+      <div className="space-y-4">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -395,7 +395,7 @@ const AIQuizGeneratorPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-6">
+    <div className="space-y-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

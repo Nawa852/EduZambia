@@ -4,7 +4,7 @@ import LearningAnalytics from '@/components/Dashboard/LearningAnalytics';
 
 const LearningAnalyticsPage = () => {
   return (
-    <div className="min-h-screen bg-background py-8">
+    <div className="space-y-4">
       <div className="container mx-auto px-4">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 text-foreground">Learning Analytics</h1>

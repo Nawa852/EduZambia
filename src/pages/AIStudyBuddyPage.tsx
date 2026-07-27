@@ -6,7 +6,7 @@ import { Users, MessageSquare, Calendar, Globe, Lightbulb } from 'lucide-react';
 
 const AIStudyBuddyPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-6">
+    <div className="space-y-4">
       <div className="w-full">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4 flex items-center gap-3">
