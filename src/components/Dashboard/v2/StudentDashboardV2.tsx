@@ -181,9 +181,10 @@ export function StudentDashboardV2({ userName }: Props) {
               <div className="text-3xl font-extrabold leading-none">{streak}</div>
               <div className="text-[11px] text-muted-foreground mt-0.5">days</div>
               <div className="flex items-end gap-[3px] h-6 mt-2">
-                {[30, 45, 35, 55, 50, 70, 90].map((h, i) => (
-                  <div key={i} className="flex-1 rounded-sm bg-blue-500/70" style={{ height: `${h}%` }} />
-                ))}
+                {weekFocus.map((m, i) => {
+                  const max = Math.max(...weekFocus, 1);
+                  return <div key={i} className="flex-1 rounded-sm bg-blue-500/70 min-h-[2px]" style={{ height: `${(m / max) * 100}%` }} />;
+                })}
               </div>
             </Card>
 
@@ -196,11 +197,14 @@ export function StudentDashboardV2({ userName }: Props) {
               </div>
               <div className="text-xl lg:text-2xl font-extrabold">{focusHrs}h {focusRem}m</div>
               <div className="text-[11px] text-muted-foreground">today</div>
-              <svg className="mt-1 w-full h-5" viewBox="0 0 100 24" preserveAspectRatio="none">
-                <polyline fill="none" stroke="currentColor" strokeWidth="1.6" className="text-emerald-500"
-                  points="0,18 12,16 24,17 36,12 48,14 60,8 72,11 84,6 100,9" />
-              </svg>
+              <div className="flex items-end gap-[3px] h-5 mt-1.5">
+                {weekFocus.map((m, i) => {
+                  const max = Math.max(...weekFocus, 1);
+                  return <div key={i} className="flex-1 rounded-sm bg-emerald-500/70 min-h-[2px]" style={{ height: `${(m / max) * 100}%` }} />;
+                })}
+              </div>
             </Card>
+
 
             <Card className="p-3 lg:p-4 rounded-2xl border-border/40 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
