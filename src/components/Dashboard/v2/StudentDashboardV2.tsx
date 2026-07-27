@@ -279,6 +279,9 @@ export function StudentDashboardV2({ userName }: Props) {
             <button onClick={() => navigate('/student-notes')} className="text-muted-foreground hover:text-primary"><Plus className="w-4 h-4" /></button>
           </div>
           <div className="space-y-3">
+            {knowledgeHub.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-6">Enroll in a course or upload material to build your hub.</p>
+            )}
             {knowledgeHub.map((h) => (
               <button
                 key={h.name}
@@ -290,11 +293,12 @@ export function StudentDashboardV2({ userName }: Props) {
                 </div>
                 <div className="flex-1 text-left">
                   <div className="text-sm font-semibold group-hover:text-primary transition-colors">{h.name}</div>
-                  <div className="text-[11px] text-muted-foreground">{h.notes} notes · {h.cards} flashcards</div>
+                  <div className="text-[11px] text-muted-foreground">{h.notes} courses · {h.progress}% complete</div>
                 </div>
               </button>
             ))}
           </div>
+
           <button onClick={() => navigate('/student-notes')} className="text-xs text-primary font-medium mt-4 block mx-auto hover:underline">View all</button>
         </Card>
 
