@@ -130,6 +130,20 @@ export function StudentDashboardV2({ userName }: Props) {
     progress: s.progress,
   }));
 
+  const smartTools = [
+    { icon: Bot, label: 'AI Chat', desc: 'Streaming · markdown · LaTeX · voice · images.', tint: 'bg-purple-500/10 text-purple-600', to: '/ai?tab=chat' },
+    { icon: Camera, label: 'Snap & Solve', desc: 'Photo of homework → instant step-by-step.', tint: 'bg-rose-500/10 text-rose-600', to: '/snap-solve' },
+    { icon: ScanLine, label: 'Document Scanner', desc: 'Scan notes and extract text.', tint: 'bg-blue-500/10 text-blue-600', to: '/scan' },
+    { icon: FileType2, label: 'PDF Reader', desc: 'Read, highlight, and annotate.', tint: 'bg-amber-500/10 text-amber-600', to: '/pdf-reader' },
+    { icon: Link2, label: 'Web Clipper', desc: 'Save articles and resources.', tint: 'bg-cyan-500/10 text-cyan-600', to: '/student-notes?source=web' },
+    { icon: Layers, label: 'Flashcards', desc: 'Create and review active recall cards.', tint: 'bg-emerald-500/10 text-emerald-600', to: '/flashcards' },
+    { icon: HelpCircle, label: 'Quiz Generator', desc: 'Generate quizzes from your notes.', tint: 'bg-amber-500/10 text-amber-600', to: '/ai-quiz' },
+    { icon: Share2, label: 'Mind Maps', desc: 'Visualize and connect ideas.', tint: 'bg-teal-500/10 text-teal-600', to: '/mind-maps' },
+    { icon: Repeat, label: 'Spaced Repetition', desc: 'Smart review, better retention.', tint: 'bg-indigo-500/10 text-indigo-600', to: '/flashcards?mode=spaced' },
+  ];
+
+
+
 
   return (
     <div className="space-y-5 lg:space-y-6">
