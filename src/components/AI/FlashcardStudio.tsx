@@ -399,10 +399,48 @@ const FlashcardStudio: React.FC = () => {
             </p>
           </div>
         </div>
-        <Button className="mt-4 w-full rounded-xl" onClick={() => setCreating(c => !c)}>
-          <Sparkles className="w-4 h-4 mr-2" />{creating ? 'Close' : 'New deck with AI'}
-        </Button>
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <Button className="rounded-xl" onClick={() => setCreating(c => !c)}>
+            <Sparkles className="w-4 h-4 mr-2" />{creating ? 'Close' : 'New deck'}
+          </Button>
+          <Button variant="outline" className="rounded-xl" onClick={() => setShowAnalytics(a => !a)}>
+            <BarChart3 className="w-4 h-4 mr-2" />{showAnalytics ? 'Hide stats' : 'Analytics'}
+          </Button>
+        </div>
       </div>
+
+      {showAnalytics && <SpacedRepetitionAnalytics />}
+
+      {decks.length > 0 && (
+        <div className="space-y-2">
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="Search decks, subjects or tags"
+              className="rounded-xl pl-9"
+              aria-label="Search decks"
+            />
+          </div>
+          {allTags.length > 0 && (
+            <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
+              <Badge
+                onClick={() => setTagFilter(null)}
+                className={`rounded-full text-[11px] cursor-pointer shrink-0 ${tagFilter === null ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted'}`}
+              >All</Badge>
+              {allTags.map(t => (
+                <Badge
+                  key={t}
+                  onClick={() => setTagFilter(tagFilter === t ? null : t)}
+                  className={`rounded-full text-[11px] cursor-pointer shrink-0 ${tagFilter === t ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted'}`}
+                >#{t}</Badge>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
 
       <AnimatePresence initial={false}>
         {creating && (
