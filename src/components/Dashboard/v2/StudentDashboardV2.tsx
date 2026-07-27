@@ -312,7 +312,11 @@ export function StudentDashboardV2({ userName }: Props) {
             <button onClick={() => navigate('/student-notes?action=new')} className="text-muted-foreground hover:text-primary"><Plus className="w-4 h-4" /></button>
           </div>
           <div className="space-y-3.5">
+            {recentNotes.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-6">No notes yet — capture your first one.</p>
+            )}
             {recentNotes.map((n) => (
+
               <button
                 key={n.title}
                 onClick={() => navigate('/student-notes')}
