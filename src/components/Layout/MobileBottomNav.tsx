@@ -34,15 +34,16 @@ export const MobileBottomNav = () => {
   return (
     <>
       <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden pointer-events-none">
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-2xl border-t border-border/30 pointer-events-none" />
+        <div className="absolute inset-0 bg-nav/80 supports-[backdrop-filter]:bg-nav/70 backdrop-blur-2xl border-t border-border/50 pointer-events-none" />
 
-        <div className="relative flex items-stretch justify-around h-[58px] max-w-lg mx-auto px-1 pb-[env(safe-area-inset-bottom,2px)] pointer-events-auto">
+        <div className="relative flex items-stretch justify-around h-[60px] max-w-lg mx-auto px-1.5 pb-[env(safe-area-inset-bottom,2px)] pointer-events-auto">
           {items.map((item) => {
             const isActive = matchesNavItem(location.pathname, item);
             const isCurr = isCurriculumTab(item.url);
             return (
               <button
                 key={item.url}
+                aria-current={isActive ? 'page' : undefined}
                 onClick={() => {
                   if (isCurr) {
                     setCurriculumOpen(true);
@@ -56,13 +57,13 @@ export const MobileBottomNav = () => {
                 onTouchStart={() => handlePressStart(item.url)}
                 onTouchEnd={handlePressEnd}
                 className={cn(
-                  'relative flex flex-col items-center justify-center gap-1 flex-1 transition-colors duration-150 active:opacity-60 touch-manipulation',
-                  isActive ? 'text-primary' : 'text-muted-foreground/70'
+                  'relative flex flex-col items-center justify-center gap-[3px] flex-1 rounded-[14px] my-1.5 transition-all duration-200 active:scale-[0.94] touch-manipulation',
+                  isActive ? 'text-primary bg-primary/[0.09]' : 'text-muted-foreground'
                 )}
               >
                 <item.icon
-                  className="w-[22px] h-[22px] transition-colors duration-150"
-                  strokeWidth={isActive ? 2.2 : 1.7}
+                  className="w-[21px] h-[21px] transition-colors duration-150"
+                  strokeWidth={isActive ? 2.3 : 1.8}
                 />
                 <span className={cn(
                   "text-[10px] leading-none tracking-[-0.01em] transition-colors duration-150",
@@ -75,6 +76,7 @@ export const MobileBottomNav = () => {
           })}
         </div>
       </nav>
+
 
 
       <CurriculumSwitcher open={curriculumOpen} onOpenChange={setCurriculumOpen} />
