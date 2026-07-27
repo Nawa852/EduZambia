@@ -453,8 +453,11 @@ const FlashcardStudio: React.FC = () => {
                   <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>{SUBJECTS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
                 </Select>
+                <Input placeholder="Tags, comma separated (e.g. ecz, grade9, revision)" value={tagsInput}
+                  onChange={e => setTagsInput(e.target.value)} className="rounded-xl" />
                 <Textarea placeholder="Optional: paste notes to turn into cards" rows={4}
                   value={notes} onChange={e => setNotes(e.target.value)} className="rounded-xl" />
+
                 <Button className="w-full rounded-xl" onClick={generate} disabled={generating}>
                   {generating
                     ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating…</>
