@@ -75,17 +75,19 @@ export default function UpcomingClassesCard() {
     return `https://calendar.google.com/calendar/render?${params.toString()}`;
   };
 
-  const icsFeedUrl = () => {
-    if (!user) return '';
-    const base = (import.meta.env.VITE_SUPABASE_URL as string) || '';
-    return `${base}/functions/v1/calendar-feed?uid=${user.id}`;
+  // The feed URL is signed server-side and is unique to the signed-in user.
+  const copyFeed = async () => {
+    if (!user) { toast.error('Sign in to get your calendar feed'); return; }
+    try {
+      const { data, error } = await supabase.functions.invoke('calendar-feed', { body: {} });
+      if (error || !data?.url) throw new Error(error?.message || 'Could not create feed link');
+      await navigator.clipboard.writeText(data.url);
+      toast.success('Subscribe URL copied — paste into Google/Apple Calendar');
+    } catch (e: any) {
+      toast.error(e.message || 'Could not create your calendar feed');
+    }
   };
 
-  const copyFeed = async () => {
-    const u = icsFeedUrl();
-    if (!u) { toast.error('Sign in to get your calendar feed'); return; }
-    try { await navigator.clipboard.writeText(u); toast.success('Subscribe URL copied — paste into Google/Apple Calendar'); } catch { toast.message(u); }
-  };
 
   const demoRooms: Klass[] = [
     { id: 'demo-1', title: 'Physics · Motion in 2D', scheduled_at: new Date(Date.now() + 60*60*1000).toISOString(), started_at: null, ended_at: null, room_code: 'phys-12', provider: 'jitsi', scope: 'class' },

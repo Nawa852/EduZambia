@@ -38,7 +38,7 @@ const AdminUserManagementPage = () => {
       if (!schoolName) return [];
       const { data } = await supabase
         .from('profiles')
-        .select('id, full_name, role, created_at, phone, bio')
+        .select('id, full_name, role, created_at, bio')
         .eq('school', schoolName)
         .in('role', ['teacher', 'institution']);
       return data || [];
@@ -161,7 +161,7 @@ const AdminUserManagementPage = () => {
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-sm truncate">{user.full_name || 'Unknown'}</p>
-                  <p className="text-xs text-muted-foreground truncate">{user.phone || 'No phone'}</p>
+                  <p className="text-xs text-muted-foreground truncate">{user.bio || 'No bio'}</p>
                 </div>
                 <Badge variant="outline" className={`capitalize text-[10px] px-2 rounded-lg ${roleColors[user.role] || ''}`}>
                   {user.role === 'institution' ? 'admin' : user.role}

@@ -33,10 +33,41 @@ function normaliseRedirect(url: string): string {
   }
 }
 
+/**
+ * Only the signed-in owner of an account (or the auth hook holding
+ * CRON_SECRET) may trigger a branded verification email. Without this the
+ * function is an open relay that can mail arbitrary addresses.
+ */
+async function authorize(req: Request): Promise<boolean> {
+  const hookSecret = Deno.env.get("CRON_SECRET") ?? "";
+  if (hookSecret && req.headers.get("x-cron-secret") === hookSecret) return true;
+
+  const authHeader = req.headers.get("Authorization") ?? "";
+  if (!authHeader.startsWith("Bearer ")) return false;
+
+  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+  const sb = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    { global: { headers: { Authorization: authHeader } } },
+  );
+  const { data, error } = await sb.auth.getClaims(authHeader.replace("Bearer ", ""));
+  return !error && !!data?.claims?.sub;
+}
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+
+  if (!(await authorize(req))) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+
 
   try {
     const { email, confirmationUrl, fullName }: EmailVerificationRequest = await req.json();

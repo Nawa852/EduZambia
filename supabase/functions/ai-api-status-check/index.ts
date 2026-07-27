@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const corsHeaders = {
@@ -6,97 +5,125 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+/**
+ * Fixed allowlist. Callers may only ask about these provider names — they can
+ * never supply an arbitrary environment-variable name to probe.
+ */
+const PROVIDERS: Record<string, string> = {
+  "GPT-4o": "OPENAI_API_KEY",
+  Whisper: "OPENAI_API_KEY",
+  "Claude 3": "ANTHROPIC_API_KEY",
+  Gemini: "GEMINI_API_KEY",
+  DeepSeek: "DEEPSEEK_API_KEY",
+  "Lovable AI": "LOVABLE_API_KEY",
+};
+
+async function requireUser(req: Request): Promise<Response | { id: string }> {
+  const unauthorized = () =>
+    new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+
+  const authHeader = req.headers.get("Authorization") ?? "";
+  if (!authHeader.startsWith("Bearer ")) return unauthorized();
+
+  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+  const sb = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    { global: { headers: { Authorization: authHeader } } },
+  );
+  const { data, error } = await sb.auth.getClaims(authHeader.replace("Bearer ", ""));
+  const sub = data?.claims?.sub;
+  if (error || !sub) return unauthorized();
+  return { id: sub as string };
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const authResult = await requireUser(req);
+  if (authResult instanceof Response) return authResult;
+
   try {
-    const { apis } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const requested: string[] = Array.isArray(body?.apis)
+      ? body.apis.map((a: unknown) =>
+          typeof a === "string" ? a : String((a as { name?: unknown })?.name ?? ""),
+        )
+      : [];
+
+    // Anything outside the allowlist is silently dropped.
+    const names = requested.filter((n) => Object.prototype.hasOwnProperty.call(PROVIDERS, n));
     const results: Record<string, boolean> = {};
 
-    // Check each API by testing with simple requests
-    for (const api of apis) {
+    for (const name of names) {
+      const apiKey = Deno.env.get(PROVIDERS[name]);
+      if (!apiKey) {
+        results[name] = false;
+        continue;
+      }
+
       try {
-        let isActive = false;
-        const apiKey = Deno.env.get(api.secretKey);
-        
-        if (!apiKey) {
-          console.warn(`No API key found for ${api.name} (${api.secretKey})`);
-          results[api.name] = false;
-          continue;
-        }
-
-        switch (api.name) {
-          case 'GPT-4o':
-          case 'Whisper':
-            // Test OpenAI API
-            const openaiResponse = await fetch('https://api.openai.com/v1/models', {
-              headers: {
-                'Authorization': `Bearer ${apiKey}`,
-              },
+        switch (name) {
+          case "GPT-4o":
+          case "Whisper": {
+            const res = await fetch("https://api.openai.com/v1/models", {
+              headers: { Authorization: `Bearer ${apiKey}` },
             });
-            isActive = openaiResponse.ok;
+            results[name] = res.ok;
             break;
-
-          case 'Claude 3':
-            // Test Anthropic API
-            const claudeResponse = await fetch('https://api.anthropic.com/v1/messages', {
-              method: 'POST',
+          }
+          case "Claude 3": {
+            const res = await fetch("https://api.anthropic.com/v1/messages", {
+              method: "POST",
               headers: {
-                'x-api-key': apiKey,
-                'anthropic-version': '2023-06-01',
-                'content-type': 'application/json'
+                "x-api-key": apiKey,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
               },
               body: JSON.stringify({
-                model: 'claude-3-haiku-20240307',
+                model: "claude-3-haiku-20240307",
                 max_tokens: 10,
-                messages: [{ role: 'user', content: 'Hi' }]
-              })
+                messages: [{ role: "user", content: "Hi" }],
+              }),
             });
-            isActive = claudeResponse.status !== 401 && claudeResponse.status !== 403;
+            results[name] = res.status !== 401 && res.status !== 403;
             break;
-
-          case 'Gemini':
-            // Test Google Gemini API
-            const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
-            isActive = geminiResponse.ok;
-            break;
-
-          case 'DeepSeek':
-            // Test DeepSeek API
-            const deepseekResponse = await fetch('https://api.deepseek.com/v1/models', {
-              headers: {
-                'Authorization': `Bearer ${apiKey}`,
-              },
+          }
+          case "Gemini": {
+            const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models", {
+              headers: { "x-goog-api-key": apiKey },
             });
-            isActive = deepseekResponse.ok;
+            results[name] = res.ok;
             break;
-
+          }
+          case "DeepSeek": {
+            const res = await fetch("https://api.deepseek.com/v1/models", {
+              headers: { Authorization: `Bearer ${apiKey}` },
+            });
+            results[name] = res.ok;
+            break;
+          }
           default:
-            // For other APIs, assume active if key exists
-            isActive = !!apiKey;
+            results[name] = true;
             break;
         }
-
-        results[api.name] = isActive;
-      } catch (error) {
-        console.error(`Error checking ${api.name}:`, error);
-        results[api.name] = false;
+      } catch (_e) {
+        results[name] = false;
       }
     }
 
     return new Response(JSON.stringify(results), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (error) {
-    console.error("Error in ai-api-status-check:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to check API status" }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
-    );
+  } catch (_error) {
+    return new Response(JSON.stringify({ error: "Failed to check API status" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });
