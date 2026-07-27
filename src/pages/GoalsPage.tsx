@@ -36,7 +36,7 @@ const GoalsPage = () => {
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const fetch = async () => {
       const { data } = await supabase
         .from('study_goals' as any)

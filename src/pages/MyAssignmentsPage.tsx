@@ -51,7 +51,7 @@ const MyAssignmentsPage = () => {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const fetch = async () => {
       // Get enrolled course IDs
       const { data: enrollments } = await supabase
@@ -93,7 +93,7 @@ const MyAssignmentsPage = () => {
   }, [user]);
 
   const submitAssignment = async (assignmentId: string) => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     setSubmitting(true);
     let fileUrl: string | null = null;
     if (submitFile) {

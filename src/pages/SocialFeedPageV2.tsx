@@ -81,7 +81,7 @@ export default function SocialFeedPageV2() {
   };
 
   const toggleLike = async (post: Post) => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     if (post.liked_by_me) {
       await supabase.from('social_reactions').delete().eq('post_id', post.id).eq('user_id', user.id);
     } else {

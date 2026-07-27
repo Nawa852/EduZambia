@@ -23,7 +23,7 @@ export const DailyCheckin = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const checkToday = async () => {
       const today = new Date().toISOString().split('T')[0];
       const { data } = await supabase

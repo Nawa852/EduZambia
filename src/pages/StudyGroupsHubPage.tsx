@@ -85,7 +85,7 @@ const StudyGroupsHubPage: React.FC = () => {
 
   const join = async (g: Group, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const { error } = await supabase.from('study_group_members').insert({ group_id: g.id, user_id: user.id });
     if (error) toast.error(error.message); else { toast.success(`Joined ${g.name}`); load(); }
   };

@@ -21,7 +21,7 @@ export function useVentureFinancials(ventureId?: string) {
   const [loading, setLoading] = useState(true);
 
   const fetchFinancials = async () => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     setLoading(true);
     let query = supabase.from('venture_financials').select('*').eq('user_id', user.id).order('transaction_date', { ascending: false });
     if (ventureId) query = query.eq('venture_id', ventureId);
@@ -41,7 +41,7 @@ export function useVentureFinancials(ventureId?: string) {
   const netProfit = totalRevenue - totalExpenses;
 
   const addFinancial = async (entry: { venture_id?: string; type: string; category?: string; amount: number; description?: string; transaction_date: string }) => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const { error } = await supabase.from('venture_financials').insert({ ...entry, user_id: user.id });
     if (error) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });

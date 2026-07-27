@@ -17,7 +17,7 @@ export function useStudySchedule() {
   const [loading, setLoading] = useState(true);
 
   const fetchSchedules = useCallback(async () => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -48,7 +48,7 @@ export function useStudySchedule() {
   }, [fetchSchedules]);
 
   const addSchedule = useCallback(async (schedule: Omit<StudySchedule, 'id' | 'isActive'>) => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     try {
       const { error } = await supabase.from('study_schedules' as any).insert({
         user_id: user.id,
@@ -66,7 +66,7 @@ export function useStudySchedule() {
   }, [user, fetchSchedules]);
 
   const removeSchedule = useCallback(async (id: string) => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     try {
       await supabase.from('study_schedules' as any).delete().eq('id', id);
       await fetchSchedules();

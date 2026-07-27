@@ -57,12 +57,12 @@ export function useGuardianData() {
   const [weeklySummary, setWeeklySummary] = useState<WeeklySummary>({ lessonsCompleted: 0, quizzesTaken: 0, avgScore: 0, focusMinutes: 0, focusSessions: 0, gaveUpCount: 0 });
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     fetchData();
   }, [user]);
 
   async function fetchData() {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     setLoading(true);
 
     try {

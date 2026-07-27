@@ -17,7 +17,7 @@ const StudentAnalyticsPage = () => {
   const [goals, setGoals] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     (async () => {
       const since = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
       const [stat, streakRes, focus, quiz, goalsRes] = await Promise.all([

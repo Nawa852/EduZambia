@@ -80,7 +80,7 @@ export const StudentDashboardView = ({ userName }: { userName: string }) => {
   const { todayMinutes } = useScreenTime();
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const load = async () => {
       const { data: enrollments } = await supabase
         .from('enrollments')

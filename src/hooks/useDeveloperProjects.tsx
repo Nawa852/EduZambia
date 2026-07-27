@@ -21,7 +21,7 @@ export function useDeveloperProjects() {
   const [loading, setLoading] = useState(true);
 
   const fetchProjects = async () => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     setLoading(true);
     const { data, error } = await supabase
       .from('developer_projects')
@@ -39,7 +39,7 @@ export function useDeveloperProjects() {
   useEffect(() => { fetchProjects(); }, [user]);
 
   const addProject = async (project: { name: string; language?: string; description?: string; repo_url?: string }) => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const { error } = await supabase.from('developer_projects').insert({ ...project, user_id: user.id });
     if (error) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });

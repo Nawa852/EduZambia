@@ -62,13 +62,13 @@ const MyNotesPage = () => {
   const [filterCourse, setFilterCourse] = useState('all');
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     loadNotes();
     loadEnrolledCourses();
   }, [user]);
 
   const loadEnrolledCourses = async () => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const { data: enrollments } = await supabase
       .from('enrollments')
       .select('course_id')
@@ -86,7 +86,7 @@ const MyNotesPage = () => {
   };
 
   const loadNotes = async () => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const { data, error } = await (supabase as any)
       .from('student_notes')
       .select('*')

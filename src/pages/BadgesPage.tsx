@@ -25,7 +25,7 @@ const BadgesPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const fetchBadges = async () => {
       const [{ data: allBadges }, { data: userBadges }] = await Promise.all([
         (supabase.from('badges') as any).select('*').order('category').order('condition_value'),

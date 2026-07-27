@@ -37,7 +37,7 @@ export function useVentures() {
 
   const fetchVentures = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
 
     const { data, error } = await supabase
       .from('ventures')
@@ -54,7 +54,7 @@ export function useVentures() {
 
   const fetchMilestones = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
 
     const { data, error } = await supabase
       .from('business_milestones')
@@ -71,7 +71,7 @@ export function useVentures() {
 
   const addVenture = async (venture: Omit<Venture, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
 
     const { error } = await supabase.from('ventures').insert({
       ...venture,
@@ -108,7 +108,7 @@ export function useVentures() {
 
   const addMilestone = async (milestone: { venture_id: string; title: string; order_index?: number }) => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
 
     const { error } = await supabase.from('business_milestones').insert({
       ...milestone,

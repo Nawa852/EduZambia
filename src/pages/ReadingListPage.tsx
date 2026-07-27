@@ -24,7 +24,7 @@ const ReadingListPage = () => {
   const [type, setType] = useState('article');
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     (async () => {
       const { data, error } = await (supabase as any).from('reading_list').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
       if (error) { toast.error('Failed to load reading list'); setLoading(false); return; }

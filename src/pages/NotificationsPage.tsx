@@ -38,7 +38,7 @@ const NotificationsPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     const fetch = async () => {
       const { data } = await supabase
         .from('notifications')
@@ -65,7 +65,7 @@ const NotificationsPage = () => {
   }, [user]);
 
   const markAllRead = async () => {
-    if (!user) return;
+    if (!user) { setLoading(false); return; }
     await supabase.from('notifications').update({ is_read: true }).eq('user_id', user.id).eq('is_read', false);
     setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
     toast.success('All notifications marked as read');
