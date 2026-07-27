@@ -140,13 +140,31 @@ const ECZResourcesExpandedPage = () => {
                 {options.years.map((y) => <SelectItem key={y} value={y}>{y}</SelectItem>)}
               </SelectContent>
             </Select>
+            <Select value={kind} onValueChange={setKind}>
+              <SelectTrigger className="w-[120px] h-9 text-xs"><SelectValue placeholder="Type" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ALL}>All types</SelectItem>
+                {options.kinds.map((k) => <SelectItem key={k} value={k} className="capitalize">{k}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            {hasFilters && (
+              <Button variant="ghost" size="sm" className="h-9 text-xs"
+                onClick={() => { setSubject(ALL); setClassLevel(ALL); setYear(ALL); setKind(ALL); setQuery(''); }}>
+                Clear filters
+              </Button>
+            )}
             <Button variant="outline" size="sm" className="h-9 ml-auto" onClick={() => setGrouped((g) => !g)}>
               {grouped ? <List className="w-4 h-4 mr-1.5" /> : <LayoutGrid className="w-4 h-4 mr-1.5" />}
               {grouped ? 'Flat list' : 'Folders'}
             </Button>
           </div>
+          <p className="text-[11px] text-muted-foreground">
+            Showing {filtered.length} of {items.length} files · {perms.canUpload ? 'you can upload' : 'view only'}
+            {perms.canDelete ? ' and delete' : ''} as {role}.
+          </p>
         </div>
       )}
+
 
       {/* Files */}
       {loading ? (
