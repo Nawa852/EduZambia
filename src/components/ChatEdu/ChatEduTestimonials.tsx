@@ -41,7 +41,7 @@ const testimonials: Testimonial[] = [
     school: 'Kabulonga Girls Secondary',
     location: 'Lusaka',
     avatar: 'CM',
-    quote: 'Edu Zambia has cut my lesson planning time by 70%. The AI generates ECZ-aligned content that I just need to review. I now have more time for actual teaching.',
+    quote: 'Synapse has cut my lesson planning time by 70%. The AI generates ECZ-aligned content that I just need to review. I now have more time for actual teaching.',
     rating: 5,
     type: 'teacher',
     improvement: '70% time saved'
@@ -64,7 +64,7 @@ const testimonials: Testimonial[] = [
     school: 'Chibombo Day Secondary',
     location: 'Chibombo',
     avatar: 'MK',
-    quote: 'Our school\'s pass rate improved by 23% after implementing Edu Zambia. The analytics help us identify struggling students before they fall behind.',
+    quote: 'Our school\'s pass rate improved by 23% after implementing Synapse. The analytics help us identify struggling students before they fall behind.',
     rating: 5,
     type: 'admin',
     improvement: '23% better pass rate'
@@ -147,7 +147,7 @@ const ChatEduTestimonials = () => {
             </span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Join thousands of learners who have transformed their education with Edu Zambia
+            Join thousands of learners who have transformed their education with Synapse
           </p>
         </motion.div>
 

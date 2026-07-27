@@ -153,7 +153,7 @@ const ComprehensiveAIAssistant = () => {
     setMessages([{
       id: '1',
       role: 'assistant',
-      content: `Muli bwanji! Welcome to EduZambia's AI Study Assistant! I'm here to help you with your studies using advanced AI technology. I can:
+      content: `Muli bwanji! Welcome to Synapse's AI Study Assistant! I'm here to help you with your studies using advanced AI technology. I can:
 
 • Answer questions in multiple Zambian languages
 • Process documents and images
@@ -367,10 +367,10 @@ How can I help you today?`,
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
+    <div className="w-full p-6 space-y-6">
       <div className="text-center">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mb-4">
-          EduZambia AI Study Assistant
+          Synapse AI Study Assistant
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
           Advanced AI-powered learning with multilingual support, document processing, and ECZ-aligned content

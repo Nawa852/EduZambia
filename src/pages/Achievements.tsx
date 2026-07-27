@@ -10,7 +10,7 @@ const Achievements = () => {
   const { copy } = useClipboard();
 
   const handleShare = () => {
-    copy(`🏆 Check out my achievements on Edu Zambia! ${window.location.origin}/achievements`);
+    copy(`🏆 Check out my achievements on Synapse! ${window.location.origin}/achievements`);
     toast.success('Achievement link copied to clipboard!');
   };
 

@@ -25,7 +25,7 @@ const Privacy: React.FC = () => {
         <p className="text-xs text-muted-foreground mb-8">Last updated: 30 June 2026</p>
 
         <Section title="1. Who we are">
-          <p>Edu Zambia ("we", "us") provides an ECZ-aligned learning platform for students, teachers, parents and institutions in Zambia. Contact: privacy@eduzambia.xyz.</p>
+          <p>Synapse ("we", "us") provides an ECZ-aligned learning platform for students, teachers, parents and institutions in Zambia. Contact: privacy@eduzambia.xyz.</p>
         </Section>
         <Section title="2. Data we collect">
           <p>Account details (name, email, phone, role), learning activity (lessons, quizzes, attendance, grades), AI prompts you submit, device and usage diagnostics, and optional profile data such as school and grade.</p>

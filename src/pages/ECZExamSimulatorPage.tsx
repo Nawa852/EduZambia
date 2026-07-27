@@ -95,7 +95,7 @@ const ECZExamSimulatorPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4 flex items-center gap-3">
             <BookOpen className="w-10 h-10 text-purple-600" />

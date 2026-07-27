@@ -400,7 +400,7 @@ export const OnboardingExtrasWizard: React.FC<{ onComplete?: () => void }> = ({ 
                       <div>
                         <p className="text-sm font-semibold text-foreground">Allow study-time app blocking</p>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          During timetable slots marked "block apps", Edu Zambia will mute notifications and remind you to stay focused. You can revoke this anytime.
+                          During timetable slots marked "block apps", Synapse will mute notifications and remind you to stay focused. You can revoke this anytime.
                         </p>
                       </div>
                     </div>

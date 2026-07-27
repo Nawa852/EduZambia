@@ -35,7 +35,7 @@ const SCENARIOS = [
 
 const CyberTerminalSandboxPage = () => {
   const [lines, setLines] = useState<Line[]>([
-    { type: 'sys', text: 'Edu Zambia Cyber Sandbox v1.0 — type `help` to begin.' },
+    { type: 'sys', text: 'Synapse Cyber Sandbox v1.0 — type `help` to begin.' },
     { type: 'sys', text: 'This is a SAFE simulated terminal. Nothing runs on real systems.' },
   ]);
   const [input, setInput] = useState('');

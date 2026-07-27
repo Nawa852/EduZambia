@@ -54,7 +54,7 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
   const ActiveComponent = activeTool?.component;
 
   return (
-    <div className="space-y-3 sm:space-y-4 max-w-[1280px] mx-auto px-2 sm:px-0">
+    <div className="space-y-3 sm:space-y-4">
       {/* Hero header — tinted card, Apple-style */}
       <div className="relative overflow-hidden rounded-[20px] bg-primary/[0.07] dark:bg-primary/[0.12] border border-primary/10">
         <div className="relative px-3.5 py-3.5 sm:px-5 sm:py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

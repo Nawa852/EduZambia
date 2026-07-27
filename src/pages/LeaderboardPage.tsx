@@ -72,7 +72,7 @@ const LeaderboardPage = () => {
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <Trophy className="w-8 h-8 text-yellow-500" /> Leaderboard
         </h1>
-        <p className="text-muted-foreground mt-1">Top learners across Edu Zambia</p>
+        <p className="text-muted-foreground mt-1">Top learners across Synapse</p>
       </div>
 
       <Tabs defaultValue="xp" onValueChange={(v) => setSortBy(v as any)}>

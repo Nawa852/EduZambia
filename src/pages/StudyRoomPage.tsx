@@ -69,7 +69,7 @@ const StudyRoomPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
-      <div className="container max-w-6xl mx-auto p-4 lg:p-6 space-y-6">
+      <div className="container w-full p-4 lg:p-6 space-y-6">
         {/* Hero */}
         <div className="rounded-3xl p-6 md:p-8 bg-gradient-to-br from-primary/10 via-purple-500/5 to-transparent border border-primary/10 backdrop-blur-xl">
           <div className="flex items-center gap-3 mb-2">

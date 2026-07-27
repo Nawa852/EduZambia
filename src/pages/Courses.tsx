@@ -26,7 +26,7 @@ function TeacherCoursesView() {
 
   return (
     <div className="bg-background py-4">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="w-full space-y-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-foreground">My Courses</h1>
@@ -115,7 +115,7 @@ function StudentCoursesView() {
 
   return (
     <div className="bg-background py-4">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="w-full space-y-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-foreground mb-4">Learning Courses</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">Discover courses created by teachers on the platform</p>

@@ -6,7 +6,7 @@ import {
   Smile, Meh, Frown, Heart, Sparkles, Sun, Moon, Cloud,
   Brain, Zap, Target, Clock, BookOpen, TrendingUp
 } from 'lucide-react';
-import EduZambiaLogo from "@/assets/brandLogo";
+import SynapseLogo from "@/assets/brandLogo";
 
 interface SmartWelcomePanelProps {
   userName: string;
@@ -62,7 +62,7 @@ export const SmartWelcomePanel = ({ userName, onMoodSelect }: SmartWelcomePanelP
       <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-accent/20 to-transparent rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
       <div className="absolute top-4 right-4 opacity-10">
-        <img src={EduZambiaLogo} alt="" className="w-24 h-24" />
+        <img src={SynapseLogo} alt="" className="w-24 h-24" />
       </div>
       
       <div className="relative z-10">
@@ -71,7 +71,7 @@ export const SmartWelcomePanel = ({ userName, onMoodSelect }: SmartWelcomePanelP
           <div className="p-2 rounded-lg bg-primary/10">
             <TimeIcon className="w-5 h-5 text-primary" />
           </div>
-          <img src={EduZambiaLogo} alt="Synapse" className="w-6 h-6" />
+          <img src={SynapseLogo} alt="Synapse" className="w-6 h-6" />
           <span className="text-sm font-medium text-muted-foreground">BrightSphere AI</span>
         </div>
 

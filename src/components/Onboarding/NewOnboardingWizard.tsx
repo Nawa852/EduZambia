@@ -98,8 +98,8 @@ export const NewOnboardingWizard = ({ onComplete }: NewOnboardingWizardProps) =>
     if (data.theme === 'dark') root.classList.add('dark');
     else if (data.theme !== 'light') root.classList.add(`theme-${data.theme}`);
     localStorage.setItem('edu-zambia-theme', data.theme);
-    speakText("Welcome to Edu Zambia! Your journey begins now.");
-    toast.success("🎉 Welcome to Edu Zambia!", { description: "Your account has been set up successfully." });
+    speakText("Welcome to Synapse! Your journey begins now.");
+    toast.success("🎉 Welcome to Synapse!", { description: "Your account has been set up successfully." });
     onComplete(data);
   };
 
@@ -115,7 +115,7 @@ export const NewOnboardingWizard = ({ onComplete }: NewOnboardingWizardProps) =>
                 </div>
               </motion.div>
               <h1 className="text-4xl md:text-5xl font-bold">
-                Welcome to <span className="text-primary font-semibold">Edu Zambia</span>
+                Welcome to <span className="text-primary font-semibold">Synapse</span>
               </h1>
               <p className="text-xl text-muted-foreground">
                 Powered by <span className="font-semibold text-primary">BrightSphere</span> AI
@@ -286,7 +286,7 @@ export const NewOnboardingWizard = ({ onComplete }: NewOnboardingWizardProps) =>
             <div className="text-center space-y-2">
               <Palette className="w-12 h-12 text-primary mx-auto" />
               <h2 className="text-3xl font-bold text-primary">Choose Your Theme</h2>
-              <p className="text-muted-foreground">Personalize your Edu Zambia experience</p>
+              <p className="text-muted-foreground">Personalize your Synapse experience</p>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -329,7 +329,7 @@ export const NewOnboardingWizard = ({ onComplete }: NewOnboardingWizardProps) =>
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-primary-foreground" />
           </div>
-          <span className="font-bold text-lg text-foreground">Edu Zambia</span>
+          <span className="font-bold text-lg text-foreground">Synapse</span>
         </div>
         {supported && (
           <Button variant="ghost" size="icon" className="border border-border hover:border-primary/50" onClick={() => { if (speaking) cancel(); setVoiceEnabled(!voiceEnabled); }}>

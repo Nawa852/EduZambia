@@ -62,7 +62,7 @@ const PasswordResetPage = () => {
                   <BookOpenCheck size={24} className="text-primary-foreground" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-foreground">Edu Zambia</h1>
+                  <h1 className="text-2xl font-bold text-foreground">Synapse</h1>
                 </div>
               </div>
             </motion.div>
@@ -146,7 +146,7 @@ const PasswordResetPage = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              © 2025 Edu Zambia. Empowering Zambian students with AI-driven education.
+              © 2025 Synapse. Empowering Zambian students with AI-driven education.
             </motion.div>
           </motion.div>
         </Card>

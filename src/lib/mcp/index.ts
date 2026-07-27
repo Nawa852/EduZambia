@@ -7,10 +7,10 @@ const projectRef = import.meta.env.VITE_SUPABASE_PROJECT_ID ?? "project-ref-unse
 
 export default defineMcp({
   name: "eduzambia-mcp",
-  title: "EduZambia MCP",
+  title: "Synapse MCP",
   version: "0.1.0",
   instructions:
-    "Tools for EduZambia (Nexus Learning). Use `search_courses` to find ECZ-aligned courses, `list_my_assignments` to see the signed-in student's assignments, and `ask_ai_tutor` to get tutor answers for Zambian curriculum questions.",
+    "Tools for Synapse (Nexus Learning). Use `search_courses` to find ECZ-aligned courses, `list_my_assignments` to see the signed-in student's assignments, and `ask_ai_tutor` to get tutor answers for Zambian curriculum questions.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",

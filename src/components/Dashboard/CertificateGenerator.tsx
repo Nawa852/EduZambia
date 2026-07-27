@@ -37,7 +37,7 @@ export const CertificateGenerator: React.FC<CertificateGeneratorProps> = ({
       </style></head><body>
       <div class="cert">
         <p class="subtitle">Certificate of Completion</p>
-        <h1>🎓 Edu Zambia</h1>
+        <h1>🎓 Synapse</h1>
         <p>This certifies that</p>
         <p class="name">${userName}</p>
         <p>has successfully completed</p>

@@ -50,9 +50,9 @@ export const MobileSidebarDrawer: React.FC = () => {
         <SheetHeader className="px-4 py-4 border-b border-border/40">
           <SheetTitle asChild>
             <div className="flex items-center gap-2.5">
-              <img src={eduIcon} alt="Edu Zambia" className="w-9 h-9 rounded-lg" />
+              <img src={eduIcon} alt="Synapse" className="w-9 h-9 rounded-lg" />
               <div className="flex flex-col items-start">
-                <span className="font-bold text-[15px] text-foreground tracking-tight">Edu Zambia</span>
+                <span className="font-bold text-[15px] text-foreground tracking-tight">Synapse</span>
                 <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{roleLabel}</span>
               </div>
             </div>

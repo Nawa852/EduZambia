@@ -177,7 +177,7 @@ export const StudentOnboardingWizard: React.FC<Props> = ({ onComplete }) => {
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-foreground">Welcome to Edu Zambia</h1>
+        <h1 className="text-3xl font-bold text-foreground">Welcome to Synapse</h1>
         <p className="text-muted-foreground">Let's set up your learning profile in a minute</p>
       </div>
 

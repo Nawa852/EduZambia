@@ -86,7 +86,7 @@ const ChooseRolePage = () => {
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 flex items-center justify-center p-4">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-3xl">
         <div className="flex flex-col items-center mb-6">
-          <img src={synapseLogo} alt="Synapse Edu Zambia" className="w-20 h-20 rounded-2xl shadow-xl mb-3" />
+          <img src={synapseLogo} alt="Synapse Synapse" className="w-20 h-20 rounded-2xl shadow-xl mb-3" />
           <p className="text-xs font-semibold tracking-widest text-muted-foreground">LEARN · CONNECT · GROW</p>
         </div>
 

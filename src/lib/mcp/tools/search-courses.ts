@@ -12,7 +12,7 @@ function supabaseForUser(ctx: ToolContext) {
 export default defineTool({
   name: "search_courses",
   title: "Search courses",
-  description: "Search the EduZambia course catalog by title or subject keyword.",
+  description: "Search the Synapse course catalog by title or subject keyword.",
   inputSchema: {
     query: z.string().trim().min(1).describe("Keyword to match against course titles and subjects."),
     limit: z.number().int().min(1).max(50).optional().describe("Max results to return (default 10)."),

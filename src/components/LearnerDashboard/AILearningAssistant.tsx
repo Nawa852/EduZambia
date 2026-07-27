@@ -10,7 +10,7 @@ import {
   Zap, Volume2, Globe, ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import EduZambiaLogo from "@/assets/brandLogo";
+import SynapseLogo from "@/assets/brandLogo";
 
 export const AILearningAssistant = () => {
   const [query, setQuery] = useState('');
@@ -77,7 +77,7 @@ export const AILearningAssistant = () => {
     <Card className="border-border/50">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <img src={EduZambiaLogo} alt="" className="w-6 h-6" />
+          <img src={SynapseLogo} alt="" className="w-6 h-6" />
           AI Learning Assistant
           <Badge variant="secondary" className="gap-1">
             <Sparkles className="w-3 h-3" />

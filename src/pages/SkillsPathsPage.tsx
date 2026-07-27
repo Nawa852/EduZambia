@@ -53,7 +53,7 @@ export default function SkillsPathsPage() {
   };
 
   return (
-    <div className="p-4 lg:p-6 max-w-6xl mx-auto space-y-6">
+    <div className="p-4 lg:p-6 w-full space-y-6">
       <div className="flex items-center gap-3">
         <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><Route className="w-5 h-5" /></div>
         <div><h1 className="text-2xl font-bold">Learning Paths</h1><p className="text-sm text-muted-foreground">AI-generated roadmaps to job-ready skills</p></div>

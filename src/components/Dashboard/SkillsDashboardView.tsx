@@ -76,7 +76,7 @@ export default function SkillsDashboardView() {
   ];
 
   return (
-    <div className="space-y-5 pb-24 lg:pb-8 max-w-[1280px] mx-auto">
+    <div className="space-y-5">
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
           <Badge className="mb-2 uppercase tracking-wider text-[10px] bg-violet-500/10 text-violet-700 border-0">Skills & Development</Badge>

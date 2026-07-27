@@ -62,7 +62,7 @@ export default function MarketplacePage() {
   };
 
   return (
-    <div className="space-y-4 max-w-6xl mx-auto">
+    <div className="space-y-4 w-full">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2"><Store className="w-6 h-6" />Student Marketplace</h2>

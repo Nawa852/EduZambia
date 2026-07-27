@@ -25,7 +25,7 @@ const Terms: React.FC = () => {
         <p className="text-xs text-muted-foreground mb-8">Last updated: 30 June 2026</p>
 
         <Section title="1. Acceptance">
-          <p>By using Edu Zambia you agree to these terms. If you do not agree, do not use the service.</p>
+          <p>By using Synapse you agree to these terms. If you do not agree, do not use the service.</p>
         </Section>
         <Section title="2. Accounts">
           <p>You are responsible for the accuracy of your information and the security of your password. One person per account; teachers and guardians must use their real identity.</p>

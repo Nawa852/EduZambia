@@ -17,7 +17,7 @@ const ECZVideoLibraryPage: React.FC = () => {
   const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-background p-4 lg:p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full">
         <PageHeader
           icon={Video}
           title="ECZ Video Library"

@@ -5,6 +5,8 @@ import { RoleBasedSidebar } from '@/components/Sidebar/RoleBasedSidebar';
 import { TopNavbar } from '@/components/Layout/TopNavbar';
 import { MobileBottomNav } from '@/components/Layout/MobileBottomNav';
 import { TeacherQuickActionsBar } from '@/components/Layout/TeacherQuickActionsBar';
+import { PageContainer } from '@/components/Layout/PageContainer';
+
 
 import { ScrollToTop } from '@/components/UI/ScrollToTop';
 import { QuickNoteButton } from '@/components/UI/QuickNoteButton';
@@ -130,11 +132,22 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             </div>
           )}
 
-          {/* Main content — extra bottom padding on mobile for bottom nav */}
-          <main id="main-content" className="flex-1 w-full max-w-full overflow-visible px-3 py-3 pb-28 lg:px-5 lg:py-5 lg:pb-5">
-            {children}
-            <TeacherQuickActionsBar />
+          {/* Main content — unified iOS container + safe-area gutters */}
+          <main
+            id="main-content"
+            className="flex-1 w-full max-w-full overflow-visible px-3 py-3 pb-28 lg:px-5 lg:py-5 lg:pb-5"
+            style={{
+              paddingLeft: 'max(0.75rem, env(safe-area-inset-left))',
+              paddingRight: 'max(0.75rem, env(safe-area-inset-right))',
+              paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))',
+            }}
+          >
+            <PageContainer>
+              {children}
+              <TeacherQuickActionsBar />
+            </PageContainer>
           </main>
+
 
           <MobileBottomNav />
           <QuickNoteButton />
