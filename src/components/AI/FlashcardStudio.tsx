@@ -15,17 +15,20 @@ import {
 } from '@/components/ui/select';
 import {
   Layers, Sparkles, Plus, Trash2, ChevronLeft, ChevronRight, RotateCcw,
-  Check, X, ArrowLeft, Loader2, BookOpen,
+  Check, X, ArrowLeft, Loader2, BookOpen, Search, Tag, BarChart3,
 } from 'lucide-react';
+import SpacedRepetitionAnalytics from '@/components/Analytics/SpacedRepetitionAnalytics';
 
 interface Deck {
   id: string;
   title: string;
   subject: string | null;
+  tags?: string[] | null;
   created_at: string;
   card_count?: number;
   due_count?: number;
 }
+
 
 interface CardRow {
   id: string;
