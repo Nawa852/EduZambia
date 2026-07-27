@@ -274,7 +274,41 @@ const FlashcardStudio: React.FC = () => {
             <h2 className="text-base font-semibold truncate text-foreground">{activeDeck.title}</h2>
             <p className="text-xs text-muted-foreground">{activeDeck.subject || 'General'} · {cards.length} cards</p>
           </div>
+          <Button variant="ghost" size="sm" className="rounded-full" onClick={() => setShowAnalytics(a => !a)} aria-label="Deck analytics">
+            <BarChart3 className="w-4 h-4" />
+          </Button>
         </div>
+
+        {/* Tags */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <Tag className="w-3.5 h-3.5 text-muted-foreground" />
+          {(activeDeck.tags ?? []).map(t => (
+            <Badge key={t} variant="secondary" className="rounded-full text-[10px] gap-1">
+              #{t}
+              <button
+                onClick={() => saveTags(activeDeck, (activeDeck.tags ?? []).filter(x => x !== t))}
+                aria-label={`Remove tag ${t}`}
+              ><X className="w-3 h-3" /></button>
+            </Badge>
+          ))}
+          <input
+            value={newTag}
+            onChange={e => setNewTag(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && newTag.trim()) {
+                saveTags(activeDeck, [...(activeDeck.tags ?? []), newTag]);
+                setNewTag('');
+              }
+            }}
+            placeholder="Add tag…"
+            aria-label="Add tag"
+            className="text-[11px] bg-transparent border-b border-dashed border-border/60 focus:outline-none focus:border-primary w-24 py-0.5"
+          />
+        </div>
+
+        {showAnalytics && <SpacedRepetitionAnalytics deckId={activeDeck.id} />}
+
+
 
         {cardsLoading ? (
           <Skeleton className="h-64 w-full rounded-3xl" />
