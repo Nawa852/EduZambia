@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Users, School, Heart, Volume2, VolumeX, GraduationCap, ChevronRight } from "lucide-react";
 import { useTextToSpeech } from "@/hooks/useTextToSpeech";
-import EduZambiaLogo from "@/assets/edu-zambia-logo.svg";
+import SynapseLogo from "@/assets/edu-zambia-logo.svg";
 
 interface WelcomeScreenProps {
   onRoleSelect: (role: 'student' | 'teacher' | 'institution' | 'guardian') => void;
@@ -19,14 +19,14 @@ export const WelcomeScreen = ({ onRoleSelect }: WelcomeScreenProps) => {
     setTimeout(() => {
       setShowContent(true);
       if (supported && autoSpeak) {
-        speak("Welcome, Dreamer. You've entered Edu Zambia — a living learning system powered by BrightSphere.");
+        speak("Welcome, Dreamer. You've entered Synapse — a living learning system powered by BrightSphere.");
       }
     }, 1000);
   }, [supported, autoSpeak, speak]);
 
   const toggleSpeech = () => {
     if (speaking) cancel();
-    else speak("Welcome, Dreamer. You've entered Edu Zambia — a living learning system powered by BrightSphere.");
+    else speak("Welcome, Dreamer. You've entered Synapse — a living learning system powered by BrightSphere.");
   };
 
   const roles = [
@@ -55,14 +55,14 @@ export const WelcomeScreen = ({ onRoleSelect }: WelcomeScreenProps) => {
 
               <motion.div className="inline-block mb-6 relative" initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.3 }}>
                 <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
-                  <motion.img src={EduZambiaLogo} alt="Synapse" className="w-28 h-28 mx-auto rounded-2xl" whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }} transition={{ duration: 0.4 }} />
+                  <motion.img src={SynapseLogo} alt="Synapse" className="w-28 h-28 mx-auto rounded-2xl" whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }} transition={{ duration: 0.4 }} />
                 </motion.div>
               </motion.div>
               
               <h1 className="text-5xl md:text-7xl font-bold mb-4 text-primary">Welcome, Dreamer.</h1>
               
               <motion.p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
-                You've entered <span className="text-primary font-semibold">Edu Zambia</span> — a living learning system
+                You've entered <span className="text-primary font-semibold">Synapse</span> — a living learning system
               </motion.p>
               
               <motion.p className="text-lg text-muted-foreground" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}>

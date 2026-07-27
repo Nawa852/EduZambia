@@ -73,11 +73,11 @@ const FreeCoursesListing: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background p-4 lg:p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full">
         <PageHeader
           icon={GraduationCap}
           title="Free World-Class Courses"
-          subtitle="Curated from Harvard, MIT, Stanford, Yale, YC, freeCodeCamp & WHO — take them right here on Edu Zambia."
+          subtitle="Curated from Harvard, MIT, Stanford, Yale, YC, freeCodeCamp & WHO — take them right here on Synapse."
           actions={
             <Badge variant="secondary" className="text-xs">
               <Award className="w-3 h-3 mr-1" /> {FREE_COURSES.length} courses · 100% free

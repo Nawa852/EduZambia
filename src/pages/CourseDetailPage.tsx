@@ -271,7 +271,7 @@ const CourseDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto py-12 px-4">
+      <div className="w-full py-12 px-4">
         <LogoLoader text="Loading course..." />
       </div>
     );
@@ -279,7 +279,7 @@ const CourseDetailPage = () => {
 
   if (!course) {
     return (
-      <div className="max-w-6xl mx-auto py-12 px-4 text-center">
+      <div className="w-full py-12 px-4 text-center">
         <BookOpen className="w-14 h-14 mx-auto mb-4 text-muted-foreground/30" />
         <h2 className="text-xl font-semibold mb-2">Course not found</h2>
         <Button onClick={() => navigate('/course-catalog')}>Back to Catalog</Button>
@@ -288,7 +288,7 @@ const CourseDetailPage = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto py-6 px-4 space-y-6">
+    <div className="w-full py-6 px-4 space-y-6">
       {/* Header */}
       <div className="flex items-start gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate('/course-catalog')}>

@@ -258,7 +258,7 @@ const EnhancedSocialFeed = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="w-full space-y-6">
       {/* Stories Section */}
       <Card className="glass-card border-0 shadow-lg">
         <CardHeader className="pb-3">

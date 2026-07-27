@@ -72,7 +72,7 @@ const ECZPastPapersPage = () => {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="w-full space-y-6">
         <Card className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
           <CardHeader>
             <div className="flex items-center gap-3">

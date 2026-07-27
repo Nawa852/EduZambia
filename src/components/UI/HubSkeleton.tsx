@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 /** Skeleton matching HubPageLayout: hero + tab bar + content grid. */
 export function HubSkeleton({ tiles = 6 }: { tiles?: number }) {
   return (
-    <div className="space-y-4 max-w-[1280px] mx-auto animate-in fade-in">
+    <div className="space-y-4 animate-in fade-in">
       <Card className="p-4 lg:p-5 rounded-2xl border-border/40">
         <div className="flex items-center gap-3.5">
           <Skeleton className="w-11 h-11 rounded-2xl shrink-0" />

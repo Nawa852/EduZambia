@@ -38,7 +38,7 @@ export default function DeveloperReputationPage() {
   const badges = (rep?.badges as any[]) || [];
 
   return (
-    <div className="p-4 lg:p-6 max-w-6xl mx-auto space-y-6">
+    <div className="p-4 lg:p-6 w-full space-y-6">
       <div className="flex items-center gap-3">
         <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><Award className="w-5 h-5" /></div>
         <div><h1 className="text-2xl font-bold">Reputation & Badges</h1><p className="text-sm text-muted-foreground">Your standing in the developer community</p></div>

@@ -13,13 +13,13 @@
     "server": {
       "name": "eduzambia-mcp",
       "version": "0.1.0",
-      "title": "EduZambia MCP"
+      "title": "Synapse MCP"
     },
     "tools": [
       {
         "name": "search_courses",
         "title": "Search courses",
-        "description": "Search the EduZambia course catalog by title or subject keyword.",
+        "description": "Search the Synapse course catalog by title or subject keyword.",
         "annotations": {
           "readOnlyHint": true,
           "openWorldHint": false
@@ -81,7 +81,7 @@
       {
         "name": "ask_ai_tutor",
         "title": "Ask BrightSphere AI Tutor",
-        "description": "Ask the EduZambia AI tutor a question about the Zambian ECZ curriculum. Returns a plain-text tutor response.",
+        "description": "Ask the Synapse AI tutor a question about the Zambian ECZ curriculum. Returns a plain-text tutor response.",
         "annotations": {
           "readOnlyHint": true,
           "openWorldHint": false

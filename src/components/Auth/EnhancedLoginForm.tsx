@@ -57,7 +57,7 @@ const EnhancedLoginForm = ({ onSuccess }: EnhancedLoginFormProps) => {
       user_type: 'student',
     };
     localStorage.setItem('edu-zambia-current-user', JSON.stringify(demoUser));
-    toast.success("Welcome to Edu Zambia!");
+    toast.success("Welcome to Synapse!");
     navigate('/dashboard');
   };
 

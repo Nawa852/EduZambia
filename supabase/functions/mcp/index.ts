@@ -18,7 +18,7 @@ function supabaseForUser(ctx) {
 var search_courses_default = defineTool({
   name: "search_courses",
   title: "Search courses",
-  description: "Search the EduZambia course catalog by title or subject keyword.",
+  description: "Search the Synapse course catalog by title or subject keyword.",
   inputSchema: {
     query: z.string().trim().min(1).describe("Keyword to match against course titles and subjects."),
     limit: z.number().int().min(1).max(50).optional().describe("Max results to return (default 10).")
@@ -83,7 +83,7 @@ import { z as z3 } from "npm:zod@^3.25.76";
 var ask_ai_tutor_default = defineTool3({
   name: "ask_ai_tutor",
   title: "Ask BrightSphere AI Tutor",
-  description: "Ask the EduZambia AI tutor a question about the Zambian ECZ curriculum. Returns a plain-text tutor response.",
+  description: "Ask the Synapse AI tutor a question about the Zambian ECZ curriculum. Returns a plain-text tutor response.",
   inputSchema: {
     question: z3.string().trim().min(1).describe("The student's question."),
     grade: z3.string().optional().describe("Grade level (e.g. 'Grade 9', 'Grade 12')."),
@@ -130,9 +130,9 @@ var ask_ai_tutor_default = defineTool3({
 var projectRef = "pmoxtvuhsupfpfcstlur";
 var mcp_default = defineMcp({
   name: "eduzambia-mcp",
-  title: "EduZambia MCP",
+  title: "Synapse MCP",
   version: "0.1.0",
-  instructions: "Tools for EduZambia (Nexus Learning). Use `search_courses` to find ECZ-aligned courses, `list_my_assignments` to see the signed-in student's assignments, and `ask_ai_tutor` to get tutor answers for Zambian curriculum questions.",
+  instructions: "Tools for Synapse (Nexus Learning). Use `search_courses` to find ECZ-aligned courses, `list_my_assignments` to see the signed-in student's assignments, and `ask_ai_tutor` to get tutor answers for Zambian curriculum questions.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated"

@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/Auth/AuthProvider';
-import EduZambiaLogo from '@/assets/edu-zambia-logo.svg';
+import SynapseLogo from '@/assets/edu-zambia-logo.svg';
 
 interface DocumentScannerProps {
   onUploadComplete?: (url: string, fileName: string) => void;
@@ -137,7 +137,7 @@ export function DocumentScanner({ onUploadComplete }: DocumentScannerProps) {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-3 text-lg">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center overflow-hidden">
-            <img src={EduZambiaLogo} alt="" className="w-6 h-6" />
+            <img src={SynapseLogo} alt="" className="w-6 h-6" />
           </div>
           Scan & Upload Documents
         </CardTitle>

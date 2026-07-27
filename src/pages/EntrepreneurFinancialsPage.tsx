@@ -37,7 +37,7 @@ export default function EntrepreneurFinancialsPage() {
   };
 
   return (
-    <div className="p-6 space-y-6 max-w-6xl mx-auto">
+    <div className="p-6 space-y-6 w-full">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2"><DollarSign className="w-8 h-8 text-primary" /> Financial Tracker</h1>

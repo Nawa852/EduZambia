@@ -69,7 +69,7 @@ export default function UpcomingClassesCard() {
       action: 'TEMPLATE',
       text: k.title,
       dates: `${fmt(start)}/${fmt(end)}`,
-      details: `Live class on Edu Zambia. Join: ${absJoin}`,
+      details: `Live class on Synapse. Join: ${absJoin}`,
       location: absJoin,
     });
     return `https://calendar.google.com/calendar/render?${params.toString()}`;

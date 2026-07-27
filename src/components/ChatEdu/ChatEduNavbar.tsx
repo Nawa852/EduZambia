@@ -47,7 +47,7 @@ const ChatEduNavbar = () => {
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
-              <span className="font-bold text-xl text-foreground">Edu Zambia</span>
+              <span className="font-bold text-xl text-foreground">Synapse</span>
               <span className="hidden sm:inline text-xs text-muted-foreground ml-2">Powered by BrightSphere</span>
             </div>
           </Link>

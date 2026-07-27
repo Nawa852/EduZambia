@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { z } from 'zod';
 import { lovable } from '@/integrations/lovable';
-import eduLogo from '@/assets/edu-zambia-logo-new.png';
 import eduIcon from '@/assets/brandLogo';
 
 const emailSchema = z.string().email('Please enter a valid email address');
@@ -152,7 +151,16 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex">
+    <div
+      className="min-h-dvh bg-background flex"
+      style={{
+        paddingTop: 'env(safe-area-inset-top)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+        paddingLeft: 'env(safe-area-inset-left)',
+        paddingRight: 'env(safe-area-inset-right)',
+      }}
+    >
+
       {/* Left Panel */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-primary to-primary/80 p-12 text-primary-foreground">
         <div className="absolute inset-0 opacity-10" style={{backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"}} />
@@ -162,7 +170,7 @@ const AuthPage = () => {
               <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm overflow-hidden">
                 <img src={eduIcon} alt="Synapse" className="w-9 h-9" />
               </div>
-              <span className="text-2xl font-bold">Edu Zambia</span>
+              <span className="text-2xl font-bold">Synapse</span>
             </div>
             <h1 className="text-4xl font-bold mb-4">AI-Powered Learning</h1>
             <p className="text-lg opacity-90">Smart education for students, teachers, parents, and institutions across Zambia.</p>

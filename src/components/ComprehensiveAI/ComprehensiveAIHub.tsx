@@ -136,7 +136,7 @@ const ComprehensiveAIHub = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="w-full space-y-8">
         
         {/* Header */}
         <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-100 to-blue-100">

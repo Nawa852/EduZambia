@@ -47,7 +47,7 @@ export default function EntrepreneurNetworkPage() {
   const list = people.filter(p => filterFn(p) && (p.name + p.role + p.company).toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <div className="max-w-7xl mx-auto p-4 lg:p-6 space-y-5 pb-20 lg:pb-6">
+    <div className="w-full p-4 lg:p-6 space-y-5 pb-20 lg:pb-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight">My Network</h1>

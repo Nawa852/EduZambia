@@ -249,7 +249,7 @@ export default function TeacherTestGeneratorPage() {
                   ) : (
                     <>
                       <header className="text-center border-b border-gray-300 pb-4 mb-6">
-                        <div className="text-xs uppercase tracking-widest text-gray-500">Edu Zambia · ECZ aligned</div>
+                        <div className="text-xs uppercase tracking-widest text-gray-500">Synapse · ECZ aligned</div>
                         <h1 className="text-2xl font-bold mt-1">{test.title}</h1>
                         <div className="text-xs text-gray-600 mt-2 flex flex-wrap justify-center gap-x-4 gap-y-1">
                           <span>Subject: <strong>{test.subject}</strong></span>

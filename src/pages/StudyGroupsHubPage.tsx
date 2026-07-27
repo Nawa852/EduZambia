@@ -140,7 +140,7 @@ const StudyGroupsHubPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4 max-w-6xl mx-auto">
+    <div className="space-y-4 w-full">
       {/* Hero */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/80 to-accent text-primary-foreground p-4 lg:p-6">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_20%_20%,white_2px,transparent_2px)] [background-size:24px_24px]" />

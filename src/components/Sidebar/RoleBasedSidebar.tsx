@@ -43,7 +43,7 @@ export function RoleBasedSidebar() {
               <img src={eduIcon} alt="Synapse" className="w-8 h-8 flex-shrink-0" />
               {!collapsed && (
                 <div className="flex-1 flex items-center justify-between min-w-0">
-                  <span className="font-bold text-sm text-foreground">Edu Zambia</span>
+                  <span className="font-bold text-sm text-foreground">Synapse</span>
                   <button onClick={toggleSidebar} className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
                     <ChevronLeft className="w-4 h-4" />
                   </button>

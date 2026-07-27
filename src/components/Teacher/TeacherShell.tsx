@@ -23,7 +23,7 @@ const NAV = [
 
 export function TeacherShell({ children, title }: { children: ReactNode; title?: string }) {
   return (
-    <section className="max-w-[1280px] mx-auto space-y-4 pb-8">
+    <section className="space-y-4">
       <div className="rounded-2xl bg-card border border-border/40 shadow-sm p-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>

@@ -4,7 +4,7 @@ import { z } from "zod";
 export default defineTool({
   name: "ask_ai_tutor",
   title: "Ask BrightSphere AI Tutor",
-  description: "Ask the EduZambia AI tutor a question about the Zambian ECZ curriculum. Returns a plain-text tutor response.",
+  description: "Ask the Synapse AI tutor a question about the Zambian ECZ curriculum. Returns a plain-text tutor response.",
   inputSchema: {
     question: z.string().trim().min(1).describe("The student's question."),
     grade: z.string().optional().describe("Grade level (e.g. 'Grade 9', 'Grade 12')."),

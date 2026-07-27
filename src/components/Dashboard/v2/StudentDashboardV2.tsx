@@ -118,7 +118,7 @@ export function StudentDashboardV2({ userName }: Props) {
   ];
 
   return (
-    <div className="space-y-5 lg:space-y-6 pb-24 lg:pb-8 max-w-[1280px] mx-auto">
+    <div className="space-y-5 lg:space-y-6">
       <ProductTour role="student" />
       {/* Greeting + Study Plan (desktop side-by-side) */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-4 lg:gap-5 items-start">

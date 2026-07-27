@@ -47,7 +47,7 @@ export default function MentorDirectoryPage() {
   const filtered = filter === 'all' ? list : list.filter(m => m.directory_type === filter);
 
   return (
-    <div className="space-y-4 max-w-6xl mx-auto">
+    <div className="space-y-4 w-full">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2"><Users className="w-6 h-6" />Mentors & Investors</h2>

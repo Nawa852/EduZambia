@@ -129,10 +129,10 @@ const APIFlowchartVisualization = () => {
   }, []);
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-6">
+    <div className="w-full w-full p-6">
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-orange-600 bg-clip-text text-transparent mb-4">
-          Edu Zambia API Integration Flowcharts
+          Synapse API Integration Flowcharts
         </h1>
         <p className="text-xl text-gray-600 max-w-4xl mx-auto">
           Visualizing how our AI-powered APIs work together to deliver personalized, culturally relevant education for Zambian students

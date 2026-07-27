@@ -51,7 +51,7 @@ export const DeviceSetupWizard = ({ onComplete, onSkip }: DeviceSetupWizardProps
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <Smartphone className="w-16 h-16 text-primary mx-auto" />
-              <h2 className="text-2xl font-bold">Install Edu Zambia</h2>
+              <h2 className="text-2xl font-bold">Install Synapse</h2>
               <p className="text-muted-foreground">Install the app on your home screen for the best experience</p>
             </div>
 
@@ -144,7 +144,7 @@ export const DeviceSetupWizard = ({ onComplete, onSkip }: DeviceSetupWizardProps
                     <ol className="space-y-3 text-sm text-muted-foreground">
                       <li className="flex gap-3"><Badge variant="secondary" className="shrink-0">1</Badge>Open <strong>Settings → Focus</strong></li>
                       <li className="flex gap-3"><Badge variant="secondary" className="shrink-0">2</Badge>Create a new Focus called <strong>"Study"</strong></li>
-                      <li className="flex gap-3"><Badge variant="secondary" className="shrink-0">3</Badge>Allow only <strong>Edu Zambia</strong> notifications</li>
+                      <li className="flex gap-3"><Badge variant="secondary" className="shrink-0">3</Badge>Allow only <strong>Synapse</strong> notifications</li>
                       <li className="flex gap-3"><Badge variant="secondary" className="shrink-0">4</Badge>Set a <strong>schedule</strong> matching your study hours</li>
                     </ol>
                   </>
@@ -154,7 +154,7 @@ export const DeviceSetupWizard = ({ onComplete, onSkip }: DeviceSetupWizardProps
                     <ol className="space-y-3 text-sm text-muted-foreground">
                       <li className="flex gap-3"><Badge variant="secondary" className="shrink-0">1</Badge>Open <strong>Settings → Sound → Do Not Disturb</strong></li>
                       <li className="flex gap-3"><Badge variant="secondary" className="shrink-0">2</Badge>Create a <strong>schedule</strong> for your study hours</li>
-                      <li className="flex gap-3"><Badge variant="secondary" className="shrink-0">3</Badge>Under exceptions, allow only <strong>Edu Zambia</strong></li>
+                      <li className="flex gap-3"><Badge variant="secondary" className="shrink-0">3</Badge>Under exceptions, allow only <strong>Synapse</strong></li>
                     </ol>
                   </>
                 )}

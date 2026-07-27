@@ -83,7 +83,7 @@ const ChatEduFooter = () => {
               <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-primary to-accent flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span className="font-bold text-xl">Edu Zambia</span>
+              <span className="font-bold text-xl">Synapse</span>
             </Link>
             <p className="text-background/70 text-sm mb-6 max-w-xs">
               Zambia's #1 AI-powered learning platform. Built for students, 
@@ -194,7 +194,7 @@ const ChatEduFooter = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-background/70">
             <p>
-              © 2024 Edu Zambia. All rights reserved. Made with{' '}
+              © 2024 Synapse. All rights reserved. Made with{' '}
               <Heart className="w-4 h-4 inline text-red-500 fill-red-500" />{' '}
               in Zambia
             </p>

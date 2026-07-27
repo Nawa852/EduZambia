@@ -98,11 +98,11 @@ export default function OAuthConsent() {
     <main className="min-h-screen flex items-center justify-center p-6 bg-background">
       <Card className="max-w-md w-full">
         <CardHeader>
-          <CardTitle>Connect {clientName} to EduZambia</CardTitle>
+          <CardTitle>Connect {clientName} to Synapse</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            {clientName} is requesting access to use EduZambia as you. It will be able to call the
+            {clientName} is requesting access to use Synapse as you. It will be able to call the
             tools your account can access (courses, assignments, AI tutor).
           </p>
           <div className="flex gap-2">

@@ -135,13 +135,13 @@ const ChatEduRoles = () => {
             </span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Edu Zambia connects students, teachers, parents, schools, and policymakers
+            Synapse connects students, teachers, parents, schools, and policymakers
             in one unified educational ecosystem.
           </p>
         </motion.div>
 
         {/* Roles Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
           {roles.map((role, idx) => (
             <motion.div
               key={role.id}

@@ -1,5 +1,5 @@
 // Curated free courses from Harvard, MIT, Stanford, YC, freeCodeCamp, Khan Academy, etc.
-// Lessons reference YouTube video IDs so they play inside Edu Zambia (/watch/:videoId).
+// Lessons reference YouTube video IDs so they play inside Synapse (/watch/:videoId).
 
 export type CourseTrack = 'developer' | 'entrepreneur' | 'healthcare' | 'skills';
 

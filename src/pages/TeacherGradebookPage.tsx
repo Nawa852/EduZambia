@@ -141,7 +141,7 @@ export default function TeacherGradebookPage() {
   if (coursesLoading) return <div className="py-20"><LogoLoader size="lg" text="Loading..." /></div>;
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="w-full space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
           <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
