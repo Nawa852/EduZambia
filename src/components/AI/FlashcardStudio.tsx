@@ -15,17 +15,20 @@ import {
 } from '@/components/ui/select';
 import {
   Layers, Sparkles, Plus, Trash2, ChevronLeft, ChevronRight, RotateCcw,
-  Check, X, ArrowLeft, Loader2, BookOpen,
+  Check, X, ArrowLeft, Loader2, BookOpen, Search, Tag, BarChart3,
 } from 'lucide-react';
+import SpacedRepetitionAnalytics from '@/components/Analytics/SpacedRepetitionAnalytics';
 
 interface Deck {
   id: string;
   title: string;
   subject: string | null;
+  tags?: string[] | null;
   created_at: string;
   card_count?: number;
   due_count?: number;
 }
+
 
 interface CardRow {
   id: string;
@@ -80,19 +83,28 @@ const FlashcardStudio: React.FC = () => {
   const [creating, setCreating] = useState(false);
   const [generating, setGenerating] = useState(false);
 
+  // search / tagging / analytics
+  const [query, setQuery] = useState('');
+  const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [showAnalytics, setShowAnalytics] = useState(false);
+  const [newTag, setNewTag] = useState('');
+  const [cardShownAt, setCardShownAt] = useState<number>(Date.now());
+
   // create form
   const [topic, setTopic] = useState('');
   const [subject, setSubject] = useState('General');
   const [notes, setNotes] = useState('');
+  const [tagsInput, setTagsInput] = useState('');
   const [manualFront, setManualFront] = useState('');
   const [manualBack, setManualBack] = useState('');
+
 
   const loadDecks = useCallback(async () => {
     if (!user) { setLoading(false); return; }
     setLoading(true);
     const { data, error } = await supabase
       .from('flashcard_decks')
-      .select('id, title, subject, created_at, flashcard_cards(id, next_review_date)')
+      .select('id, title, subject, tags, created_at, flashcard_cards(id, next_review_date)')
       .order('created_at', { ascending: false });
     if (error) {
       toast.error('Could not load your decks');
@@ -104,7 +116,9 @@ const FlashcardStudio: React.FC = () => {
       id: d.id,
       title: d.title,
       subject: d.subject,
+      tags: d.tags ?? [],
       created_at: d.created_at,
+
       card_count: d.flashcard_cards?.length ?? 0,
       due_count: (d.flashcard_cards ?? []).filter((c: any) => !c.next_review_date || c.next_review_date <= today).length,
     })));
@@ -140,8 +154,14 @@ const FlashcardStudio: React.FC = () => {
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       toast.success(`Created ${(data as any).count} cards`);
-      setTopic(''); setNotes(''); setCreating(false);
+      const deckId = (data as any)?.deck_id ?? (data as any)?.deckId;
+      const tags = tagsInput.split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
+      if (deckId && tags.length) {
+        await supabase.from('flashcard_decks').update({ tags }).eq('id', deckId);
+      }
+      setTopic(''); setNotes(''); setTagsInput(''); setCreating(false);
       await loadDecks();
+
     } catch (e: any) {
       toast.error(e.message || 'Generation failed');
     } finally {
@@ -181,18 +201,57 @@ const FlashcardStudio: React.FC = () => {
     const card = cards[index];
     if (!card) return;
     const patch = schedule(card, quality);
+    const seconds = Math.min(600, Math.round((Date.now() - cardShownAt) / 1000));
     setCards(prev => prev.map(c => (c.id === card.id ? { ...c, ...patch } : c)));
     setReviewed(prev => ({ ...prev, [card.id]: true }));
     setFlipped(false);
     setIndex(i => (i + 1 < cards.length ? i + 1 : i));
+    setCardShownAt(Date.now());
     const { error } = await supabase.from('flashcard_cards').update(patch).eq('id', card.id);
     if (error) toast.error('Progress not saved');
+    if (user) {
+      await supabase.from('flashcard_reviews').insert({
+        user_id: user.id,
+        deck_id: card.deck_id,
+        card_id: card.id,
+        quality,
+        seconds_spent: seconds,
+        ease_after: patch.ease_factor,
+        interval_after: patch.interval_days,
+      });
+    }
+  };
+
+  const saveTags = async (deck: Deck, tags: string[]) => {
+    const clean = Array.from(new Set(tags.map(t => t.trim().toLowerCase()).filter(Boolean))).slice(0, 12);
+    const { error } = await supabase.from('flashcard_decks').update({ tags: clean }).eq('id', deck.id);
+    if (error) { toast.error('Could not save tags'); return; }
+    setDecks(prev => prev.map(d => (d.id === deck.id ? { ...d, tags: clean } : d)));
+    setActiveDeck(prev => (prev && prev.id === deck.id ? { ...prev, tags: clean } : prev));
   };
 
   const reviewedCount = Object.keys(reviewed).length;
   const current = cards[index];
   const progress = cards.length ? (reviewedCount / cards.length) * 100 : 0;
   const dueToday = useMemo(() => decks.reduce((n, d) => n + (d.due_count ?? 0), 0), [decks]);
+
+  const allTags = useMemo(
+    () => Array.from(new Set(decks.flatMap(d => d.tags ?? []))).sort(),
+    [decks],
+  );
+
+  const visibleDecks = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return decks.filter(d => {
+      const matchesQuery = !q
+        || d.title.toLowerCase().includes(q)
+        || (d.subject ?? '').toLowerCase().includes(q)
+        || (d.tags ?? []).some(t => t.includes(q));
+      const matchesTag = !tagFilter || (d.tags ?? []).includes(tagFilter);
+      return matchesQuery && matchesTag;
+    });
+  }, [decks, query, tagFilter]);
+
 
   if (!user) {
     return (
@@ -215,7 +274,41 @@ const FlashcardStudio: React.FC = () => {
             <h2 className="text-base font-semibold truncate text-foreground">{activeDeck.title}</h2>
             <p className="text-xs text-muted-foreground">{activeDeck.subject || 'General'} · {cards.length} cards</p>
           </div>
+          <Button variant="ghost" size="sm" className="rounded-full" onClick={() => setShowAnalytics(a => !a)} aria-label="Deck analytics">
+            <BarChart3 className="w-4 h-4" />
+          </Button>
         </div>
+
+        {/* Tags */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <Tag className="w-3.5 h-3.5 text-muted-foreground" />
+          {(activeDeck.tags ?? []).map(t => (
+            <Badge key={t} variant="secondary" className="rounded-full text-[10px] gap-1">
+              #{t}
+              <button
+                onClick={() => saveTags(activeDeck, (activeDeck.tags ?? []).filter(x => x !== t))}
+                aria-label={`Remove tag ${t}`}
+              ><X className="w-3 h-3" /></button>
+            </Badge>
+          ))}
+          <input
+            value={newTag}
+            onChange={e => setNewTag(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && newTag.trim()) {
+                saveTags(activeDeck, [...(activeDeck.tags ?? []), newTag]);
+                setNewTag('');
+              }
+            }}
+            placeholder="Add tag…"
+            aria-label="Add tag"
+            className="text-[11px] bg-transparent border-b border-dashed border-border/60 focus:outline-none focus:border-primary w-24 py-0.5"
+          />
+        </div>
+
+        {showAnalytics && <SpacedRepetitionAnalytics deckId={activeDeck.id} />}
+
+
 
         {cardsLoading ? (
           <Skeleton className="h-64 w-full rounded-3xl" />
@@ -340,10 +433,48 @@ const FlashcardStudio: React.FC = () => {
             </p>
           </div>
         </div>
-        <Button className="mt-4 w-full rounded-xl" onClick={() => setCreating(c => !c)}>
-          <Sparkles className="w-4 h-4 mr-2" />{creating ? 'Close' : 'New deck with AI'}
-        </Button>
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <Button className="rounded-xl" onClick={() => setCreating(c => !c)}>
+            <Sparkles className="w-4 h-4 mr-2" />{creating ? 'Close' : 'New deck'}
+          </Button>
+          <Button variant="outline" className="rounded-xl" onClick={() => setShowAnalytics(a => !a)}>
+            <BarChart3 className="w-4 h-4 mr-2" />{showAnalytics ? 'Hide stats' : 'Analytics'}
+          </Button>
+        </div>
       </div>
+
+      {showAnalytics && <SpacedRepetitionAnalytics />}
+
+      {decks.length > 0 && (
+        <div className="space-y-2">
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="Search decks, subjects or tags"
+              className="rounded-xl pl-9"
+              aria-label="Search decks"
+            />
+          </div>
+          {allTags.length > 0 && (
+            <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
+              <Badge
+                onClick={() => setTagFilter(null)}
+                className={`rounded-full text-[11px] cursor-pointer shrink-0 ${tagFilter === null ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted'}`}
+              >All</Badge>
+              {allTags.map(t => (
+                <Badge
+                  key={t}
+                  onClick={() => setTagFilter(tagFilter === t ? null : t)}
+                  className={`rounded-full text-[11px] cursor-pointer shrink-0 ${tagFilter === t ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted'}`}
+                >#{t}</Badge>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
 
       <AnimatePresence initial={false}>
         {creating && (
@@ -356,8 +487,11 @@ const FlashcardStudio: React.FC = () => {
                   <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>{SUBJECTS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
                 </Select>
+                <Input placeholder="Tags, comma separated (e.g. ecz, grade9, revision)" value={tagsInput}
+                  onChange={e => setTagsInput(e.target.value)} className="rounded-xl" />
                 <Textarea placeholder="Optional: paste notes to turn into cards" rows={4}
                   value={notes} onChange={e => setNotes(e.target.value)} className="rounded-xl" />
+
                 <Button className="w-full rounded-xl" onClick={generate} disabled={generating}>
                   {generating
                     ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Generating…</>
@@ -381,7 +515,10 @@ const FlashcardStudio: React.FC = () => {
         </Card>
       ) : (
         <div className="grid gap-2 sm:grid-cols-2">
-          {decks.map(deck => (
+          {visibleDecks.length === 0 && (
+            <p className="text-sm text-muted-foreground col-span-full text-center py-8">No decks match that search.</p>
+          )}
+          {visibleDecks.map(deck => (
             <Card key={deck.id} className="rounded-2xl border-border/50 hover:border-primary/40 transition-colors">
               <CardContent className="p-4 flex items-center gap-3">
                 <button className="flex-1 min-w-0 text-left" onClick={() => openDeck(deck)}>
@@ -394,8 +531,12 @@ const FlashcardStudio: React.FC = () => {
                         {deck.due_count} due
                       </Badge>
                     )}
+                    {(deck.tags ?? []).map(t => (
+                      <Badge key={t} variant="outline" className="rounded-full text-[10px]">#{t}</Badge>
+                    ))}
                   </div>
                 </button>
+
                 <button onClick={() => deleteDeck(deck.id)} className="text-muted-foreground hover:text-destructive p-1.5" aria-label="Delete deck">
                   <Trash2 className="w-4 h-4" />
                 </button>

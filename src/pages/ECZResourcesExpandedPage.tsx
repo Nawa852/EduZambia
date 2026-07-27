@@ -33,7 +33,9 @@ const ECZResourcesExpandedPage = () => {
   const [subject, setSubject] = useState(ALL);
   const [classLevel, setClassLevel] = useState(ALL);
   const [year, setYear] = useState(ALL);
+  const [kind, setKind] = useState(ALL);
   const [grouped, setGrouped] = useState(true);
+
 
   const [openItem, setOpenItem] = useState<RepositoryItem | null>(null);
   const [openUrl, setOpenUrl] = useState<string | null>(null);
@@ -56,18 +58,23 @@ const ECZResourcesExpandedPage = () => {
     subjects: Array.from(new Set(items.map((i) => i.subject).filter(Boolean))) as string[],
     classes: Array.from(new Set(items.map((i) => tagValue(i, 'class')).filter(Boolean))) as string[],
     years: Array.from(new Set(items.map((i) => tagValue(i, 'year')).filter(Boolean))).sort().reverse() as string[],
+    kinds: Array.from(new Set(items.map((i) => i.kind).filter(Boolean))) as string[],
   }), [items]);
+
+  const hasFilters = subject !== ALL || classLevel !== ALL || year !== ALL || kind !== ALL || !!query.trim();
 
   const filtered = useMemo(() => items.filter((i) => {
     if (subject !== ALL && i.subject !== subject) return false;
     if (classLevel !== ALL && tagValue(i, 'class') !== classLevel) return false;
     if (year !== ALL && tagValue(i, 'year') !== year) return false;
+    if (kind !== ALL && i.kind !== kind) return false;
     if (query.trim()) {
       const q = query.toLowerCase();
       if (!i.title.toLowerCase().includes(q) && !i.folder_path.toLowerCase().includes(q)) return false;
     }
     return true;
-  }), [items, subject, classLevel, year, query]);
+  }), [items, subject, classLevel, year, kind, query]);
+
 
   const folders = useMemo(() => {
     return filtered.reduce<Record<string, RepositoryItem[]>>((acc, item) => {
@@ -140,13 +147,31 @@ const ECZResourcesExpandedPage = () => {
                 {options.years.map((y) => <SelectItem key={y} value={y}>{y}</SelectItem>)}
               </SelectContent>
             </Select>
+            <Select value={kind} onValueChange={setKind}>
+              <SelectTrigger className="w-[120px] h-9 text-xs"><SelectValue placeholder="Type" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ALL}>All types</SelectItem>
+                {options.kinds.map((k) => <SelectItem key={k} value={k} className="capitalize">{k}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            {hasFilters && (
+              <Button variant="ghost" size="sm" className="h-9 text-xs"
+                onClick={() => { setSubject(ALL); setClassLevel(ALL); setYear(ALL); setKind(ALL); setQuery(''); }}>
+                Clear filters
+              </Button>
+            )}
             <Button variant="outline" size="sm" className="h-9 ml-auto" onClick={() => setGrouped((g) => !g)}>
               {grouped ? <List className="w-4 h-4 mr-1.5" /> : <LayoutGrid className="w-4 h-4 mr-1.5" />}
               {grouped ? 'Flat list' : 'Folders'}
             </Button>
           </div>
+          <p className="text-[11px] text-muted-foreground">
+            Showing {filtered.length} of {items.length} files · {perms.canUpload ? 'you can upload' : 'view only'}
+            {perms.canDelete ? ' and delete' : ''} as {role}.
+          </p>
         </div>
       )}
+
 
       {/* Files */}
       {loading ? (
