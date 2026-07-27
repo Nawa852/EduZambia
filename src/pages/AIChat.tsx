@@ -261,6 +261,55 @@ export default function AIChat() {
     }
   };
 
+  /** Calls the Artifact Engine and renders the result inline in the thread. */
+  const buildArtifact = async (text: string, assistantId: string, threadId: string) => {
+    const kind = detectArtifactKind(text);
+    const patch = (fn: (m: ChatMessage) => ChatMessage) =>
+      setThreads(prev => prev.map(t => t.id === threadId
+        ? { ...t, messages: t.messages.map(m => (m.id === assistantId ? fn(m) : m)) }
+        : t));
+
+    patch(m => ({ ...m, building: true, buildStep: BUILD_STEPS[0], content: '' }));
+    let stepIndex = 0;
+    const ticker = window.setInterval(() => {
+      stepIndex = Math.min(stepIndex + 1, BUILD_STEPS.length - 1);
+      patch(m => ({ ...m, buildStep: BUILD_STEPS[stepIndex] }));
+    }, 6000);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-artifact', {
+        body: { prompt: text, kind, role },
+      });
+      if (error) throw new Error(error.message);
+      if (!data?.code) throw new Error(data?.error || 'No artifact was returned.');
+
+      // Only clear the building state once the artifact is fully in hand.
+      patch(m => ({
+        ...m,
+        building: false,
+        buildStep: undefined,
+        content: data.explanation || '',
+        artifact: {
+          title: data.title,
+          kind: data.kind || kind,
+          code: data.code,
+          explanation: data.explanation,
+          steps: data.steps,
+        },
+      }));
+    } catch (e: any) {
+      patch(m => ({
+        ...m,
+        building: false,
+        buildStep: undefined,
+        content: `⚠️ ${e.message || 'Could not build that artifact'}. Try describing it more specifically.`,
+      }));
+      toast.error(e.message || 'Artifact generation failed');
+    } finally {
+      window.clearInterval(ticker);
+    }
+  };
+
   const send = async (overrideText?: string) => {
     const text = (overrideText ?? input).trim();
     if ((!text && images.length === 0) || isStreaming) return;
@@ -277,9 +326,20 @@ export default function AIChat() {
     setIsStreaming(true);
 
     const assistantId = crypto.randomUUID();
+    const threadId = active.id;
     setThreads(prev => prev.map(t => t.id === active.id
       ? { ...t, messages: [...nextMsgs, { id: assistantId, role: 'assistant', content: '', ts: Date.now() }] }
       : t));
+
+    // Route renderable requests to the Artifact Engine instead of plain text.
+    const wantsArtifact =
+      active.mode === 'artifact' ||
+      (ARTIFACT_RE.test(text) && BUILD_VERB_RE.test(text));
+    if (wantsArtifact && images.length === 0) {
+      await buildArtifact(text, assistantId, threadId);
+      setIsStreaming(false);
+      return;
+    }
 
     abortRef.current = new AbortController();
     try {
