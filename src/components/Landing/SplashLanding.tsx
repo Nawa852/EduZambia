@@ -8,14 +8,17 @@ const SplashLanding = () => {
   const tryDemo = () => navigate('/demo');
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-6 text-center">
-      <div className="flex flex-col items-center max-w-md w-full">
-        <img
-          src={eduMark}
-          alt="Synapse"
-          className="w-24 h-24 rounded-3xl shadow-xl mb-8"
-        />
-        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">Synapse</h1>
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-6 text-center overflow-hidden">
+      <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[420px] h-[420px] rounded-full bg-primary/10 blur-3xl" />
+      <div className="relative flex flex-col items-center max-w-md w-full">
+        <div className="mb-8 p-3 rounded-[28px] bg-card border border-border/40 shadow-xl">
+          <img
+            src={eduMark}
+            alt="Synapse"
+            className="w-20 h-20 rounded-[20px]"
+          />
+        </div>
+        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-[-0.03em]">Synapse</h1>
         <p className="mt-3 text-base text-muted-foreground">
           Learn anything. Grow anywhere.
         </p>
