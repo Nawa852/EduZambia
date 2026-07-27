@@ -143,9 +143,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             }}
           >
             <PageContainer>
-              {children}
-              <TeacherQuickActionsBar />
+              <ComingSoonGate>
+                {children}
+                <TeacherQuickActionsBar />
+              </ComingSoonGate>
             </PageContainer>
+
           </main>
 
 
