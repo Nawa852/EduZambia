@@ -45,7 +45,7 @@ interface Thread {
   title: string;
   messages: ChatMessage[];
   model: string;
-  mode: 'chat' | 'snap-solve' | 'deep-research' | 'voice';
+  mode: 'chat' | 'snap-solve' | 'deep-research' | 'voice' | 'artifact';
   updatedAt: number;
 }
 
@@ -61,8 +61,32 @@ const MODES = [
   { id: 'chat', label: 'Chat', icon: Sparkles },
   { id: 'snap-solve', label: 'Snap & Solve', icon: Camera },
   { id: 'deep-research', label: 'Deep Research', icon: Search },
+  { id: 'artifact', label: 'Build', icon: Boxes },
   { id: 'voice', label: 'Voice', icon: Mic },
 ] as const;
+
+/** Heuristic: does this prompt ask for something that must be *rendered*? */
+const ARTIFACT_RE =
+  /\b(3d|three\.?js|mind ?map|concept map|flow ?chart|flowchart|diagram|chart|graph|plot|simulation|simulate|animate|visuali[sz]e|visualisation|visualization|worksheet|exam paper|question paper|printable|poster|timeline)\b/i;
+const BUILD_VERB_RE =
+  /\b(build|make|create|generate|draw|render|design|show me|give me|produce|export)\b/i;
+
+const detectArtifactKind = (text: string): string => {
+  const t = text.toLowerCase();
+  if (/\b(3d|three\.?js|molecule|anatomy|globe)\b/.test(t)) return '3d';
+  if (/\b(mind ?map|concept map)\b/.test(t)) return 'mindmap';
+  if (/\b(chart|graph|plot|bar|pie|histogram)\b/.test(t)) return 'chart';
+  if (/\b(worksheet|exam|question paper|printable|handout|report|document)\b/.test(t)) return 'document';
+  if (/\b(simulat|animate|interactive)/.test(t)) return 'simulation';
+  return 'diagram';
+};
+
+const BUILD_STEPS = [
+  'Planning the artifact structure',
+  'Writing the rendering code',
+  'Wiring up data and labels',
+  'Rendering and checking the output',
+];
 
 const STORAGE_KEY = 'nexus_unified_chat_threads_v1';
 
