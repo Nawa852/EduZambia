@@ -708,6 +708,95 @@ export type Database = {
         }
         Relationships: []
       }
+      community_activity: {
+        Row: {
+          action: string
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          metadata: Json
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          metadata?: Json
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          metadata?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      community_contributions: {
+        Row: {
+          body: string | null
+          created_at: string
+          grade_level: string | null
+          id: string
+          kind: string
+          link_url: string | null
+          resource_id: string | null
+          status: string
+          subject: string | null
+          tags: string[]
+          title: string
+          updated_at: string
+          user_id: string
+          view_count: number
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          grade_level?: string | null
+          id?: string
+          kind?: string
+          link_url?: string | null
+          resource_id?: string | null
+          status?: string
+          subject?: string | null
+          tags?: string[]
+          title: string
+          updated_at?: string
+          user_id: string
+          view_count?: number
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          grade_level?: string | null
+          id?: string
+          kind?: string
+          link_url?: string | null
+          resource_id?: string | null
+          status?: string
+          subject?: string | null
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          user_id?: string
+          view_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_contributions_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resource_repository"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_events: {
         Row: {
           created_at: string
@@ -758,6 +847,95 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      community_pages: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          cover_url: string | null
+          created_at: string
+          follower_count: number
+          handle: string
+          id: string
+          is_published: boolean
+          is_verified: boolean
+          location: string | null
+          name: string
+          owner_id: string
+          page_type: string
+          subjects: string[]
+          updated_at: string
+          website_url: string | null
+          youtube_url: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          cover_url?: string | null
+          created_at?: string
+          follower_count?: number
+          handle: string
+          id?: string
+          is_published?: boolean
+          is_verified?: boolean
+          location?: string | null
+          name: string
+          owner_id: string
+          page_type?: string
+          subjects?: string[]
+          updated_at?: string
+          website_url?: string | null
+          youtube_url?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          cover_url?: string | null
+          created_at?: string
+          follower_count?: number
+          handle?: string
+          id?: string
+          is_published?: boolean
+          is_verified?: boolean
+          location?: string | null
+          name?: string
+          owner_id?: string
+          page_type?: string
+          subjects?: string[]
+          updated_at?: string
+          website_url?: string | null
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
+      contribution_votes: {
+        Row: {
+          contribution_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          contribution_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          contribution_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contribution_votes_contribution_id_fkey"
+            columns: ["contribution_id"]
+            isOneToOne: false
+            referencedRelation: "community_contributions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       course_assessments: {
         Row: {
@@ -2948,6 +3126,79 @@ export type Database = {
         }
         Relationships: []
       }
+      page_followers: {
+        Row: {
+          created_at: string
+          id: string
+          page_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          page_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          page_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_followers_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "community_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      page_posts: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          id: string
+          link_url: string | null
+          media_url: string | null
+          page_id: string
+          post_type: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          id?: string
+          link_url?: string | null
+          media_url?: string | null
+          page_id: string
+          post_type?: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          link_url?: string | null
+          media_url?: string | null
+          page_id?: string
+          post_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_posts_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "community_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       parent_updates: {
         Row: {
           ai_generated: boolean | null
@@ -3990,18 +4241,21 @@ export type Database = {
           group_id: string
           id: string
           joined_at: string
+          role: string
           user_id: string
         }
         Insert: {
           group_id: string
           id?: string
           joined_at?: string
+          role?: string
           user_id: string
         }
         Update: {
           group_id?: string
           id?: string
           joined_at?: string
+          role?: string
           user_id?: string
         }
         Relationships: [
@@ -4400,6 +4654,27 @@ export type Database = {
           },
         ]
       }
+      user_follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
       user_materials: {
         Row: {
           category: string | null
@@ -4773,11 +5048,13 @@ export type Database = {
       video_rooms: {
         Row: {
           created_at: string
+          description: string | null
           ended_at: string | null
           host_id: string
           id: string
           is_recording: boolean
           provider: string
+          recording_url: string | null
           room_code: string
           scheduled_at: string | null
           scope: string
@@ -4787,11 +5064,13 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          description?: string | null
           ended_at?: string | null
           host_id: string
           id?: string
           is_recording?: boolean
           provider?: string
+          recording_url?: string | null
           room_code?: string
           scheduled_at?: string | null
           scope?: string
@@ -4801,11 +5080,13 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          description?: string | null
           ended_at?: string | null
           host_id?: string
           id?: string
           is_recording?: boolean
           provider?: string
+          recording_url?: string | null
           room_code?: string
           scheduled_at?: string | null
           scope?: string
