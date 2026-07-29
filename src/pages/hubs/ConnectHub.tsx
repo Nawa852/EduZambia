@@ -10,6 +10,7 @@ const tabs: HubTab[] = [
   { id: 'peers', label: 'Peers', icon: Sparkles, component: React.lazy(() => import('@/pages/PeerMatchingPage')) },
   { id: 'mentorship', label: 'Mentors', icon: Heart, component: React.lazy(() => import('@/pages/MentorConnectPage')) },
   { id: 'events', label: 'Events', icon: CalendarDays, component: React.lazy(() => import('@/pages/CommunityEventsPage')) },
+  { id: 'pages', label: 'Pages', icon: Globe, component: React.lazy(() => import('@/pages/community/CommunityPagesPage')) },
 ];
 
 const ConnectHub = () => (

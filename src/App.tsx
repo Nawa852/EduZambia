@@ -131,6 +131,7 @@ const StudyDashboardPage = React.lazy(() => import('@/pages/study/StudyDashboard
 const StudyCoursePage = React.lazy(() => import('@/pages/study/StudyCoursePage'));
 const StudyResourcePage = React.lazy(() => import('@/pages/study/StudyResourcePage'));
 const KnowYourStuffPage = React.lazy(() => import('@/pages/study/KnowYourStuffPage'));
+const PageProfilePage = React.lazy(() => import('@/pages/community/PageProfilePage'));
 
 const StudentAnalyticsPage = React.lazy(() => import('@/pages/StudentAnalyticsPage'));
 const StudentQuizzesPage = React.lazy(() => import('@/pages/StudentQuizzesPage'));
@@ -226,6 +227,7 @@ function App() {
               <Route path="/study/course/:courseId" element={<PG><React.Suspense fallback={null}><StudyCoursePage /></React.Suspense></PG>} />
               <Route path="/study/resource/:resourceId" element={<PG><React.Suspense fallback={null}><StudyResourcePage /></React.Suspense></PG>} />
               <Route path="/know-your-stuff" element={<PG><React.Suspense fallback={null}><KnowYourStuffPage /></React.Suspense></PG>} />
+              <Route path="/page/:handle" element={<PG><React.Suspense fallback={null}><PageProfilePage /></React.Suspense></PG>} />
 
               <Route path="/lecture" element={<Navigate to="/prepare?tab=notes" replace />} />
               <Route path="/medical/patients" element={<Navigate to="/medical-patients" replace />} />
