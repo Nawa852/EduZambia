@@ -131,6 +131,7 @@ const StudyDashboardPage = React.lazy(() => import('@/pages/study/StudyDashboard
 const StudyCoursePage = React.lazy(() => import('@/pages/study/StudyCoursePage'));
 const StudyResourcePage = React.lazy(() => import('@/pages/study/StudyResourcePage'));
 const KnowYourStuffPage = React.lazy(() => import('@/pages/study/KnowYourStuffPage'));
+const PageProfilePage = React.lazy(() => import('@/pages/community/PageProfilePage'));
 
 const StudentAnalyticsPage = React.lazy(() => import('@/pages/StudentAnalyticsPage'));
 const StudentQuizzesPage = React.lazy(() => import('@/pages/StudentQuizzesPage'));
