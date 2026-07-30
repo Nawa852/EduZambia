@@ -124,7 +124,9 @@ const GroupWorkspacePage: React.FC = () => {
               <div className="flex-1 min-w-0">
                 <h1 className="text-xl lg:text-2xl font-bold truncate">{group.name}</h1>
                 <div className="flex items-center gap-2 flex-wrap text-xs text-muted-foreground mt-1">
+                  {isMember && <Badge className="capitalize">{myRole}</Badge>}
                   {group.subject && <Badge variant="secondary">{group.subject}</Badge>}
+
                   {group.grade_level && <Badge variant="outline">{group.grade_level}</Badge>}
                   <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" />{members.length} member{members.length !== 1 ? 's' : ''}</span>
                 </div>
