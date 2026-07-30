@@ -195,9 +195,22 @@ export default function SocialFeedPageV2() {
                     <p className="font-semibold text-sm">{post.author?.full_name || 'Anonymous'}</p>
                     <p className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</p>
                   </div>
-                  {post.user_id === user?.id && (
+                  {post.user_id === user?.id ? (
                     <Button size="icon" variant="ghost" onClick={() => deletePost(post.id)}><Trash2 className="w-4 h-4" /></Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant={following.has(post.user_id) ? 'outline' : 'default'}
+                      className="h-8 rounded-full text-xs shrink-0"
+                      disabled={followBusy === post.user_id}
+                      onClick={() => onToggleFollow(post.user_id)}
+                    >
+                      {followBusy === post.user_id ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        : following.has(post.user_id) ? <><UserCheck className="w-3.5 h-3.5 mr-1" />Following</>
+                        : <><UserPlus className="w-3.5 h-3.5 mr-1" />Follow</>}
+                    </Button>
                   )}
+
                 </div>
                 <p className="mt-2 text-sm whitespace-pre-wrap">{post.content}</p>
               </div>
