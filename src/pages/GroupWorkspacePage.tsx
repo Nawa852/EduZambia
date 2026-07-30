@@ -148,22 +148,43 @@ const GroupWorkspacePage: React.FC = () => {
             <TabsContent value="members" className="mt-0">
               <Card>
                 <CardContent className="p-4 space-y-2">
+                  {isOwner && <p className="text-xs text-muted-foreground pb-1">As the owner you can assign roles and remove members.</p>}
                   {members.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">No members yet</p>}
-                  {members.map(m => (
-                    <div key={m.user_id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50">
-                      <Avatar className="h-9 w-9">
-                        {m.profile?.avatar_url && <img src={m.profile.avatar_url} alt="" />}
-                        <AvatarFallback>{(m.profile?.full_name || 'M').charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm truncate">{m.profile?.full_name || 'Member'}</p>
-                        <p className="text-xs text-muted-foreground capitalize">{m.user_id === group.created_by ? 'Owner' : 'Member'}</p>
+                  {members.map(m => {
+                    const owner = m.user_id === group.created_by;
+                    return (
+                      <div key={m.user_id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50">
+                        <Avatar className="h-9 w-9">
+                          {m.profile?.avatar_url && <img src={m.profile.avatar_url} alt="" />}
+                          <AvatarFallback>{(m.profile?.full_name || 'M').charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">{m.profile?.full_name || 'Member'}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{owner ? 'Owner' : (m.role || 'member')}</p>
+                        </div>
+                        {isOwner && !owner && (
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <Select value={m.role || 'member'} onValueChange={(v) => changeRole(m.user_id, v)}>
+                              <SelectTrigger className="h-8 w-[130px] text-xs"><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                {ROLES.map(r => <SelectItem key={r} value={r} className="text-xs capitalize">{r}</SelectItem>)}
+                              </SelectContent>
+                            </Select>
+                            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => removeMember(m.user_id)}>
+                              <UserMinus className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        )}
+                        {!isOwner && !owner && (m.role && m.role !== 'member') && (
+                          <Badge variant="secondary" className="capitalize text-[10px]">{m.role}</Badge>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </CardContent>
               </Card>
             </TabsContent>
+
             <TabsContent value="about" className="mt-0 space-y-3">
               <Card>
                 <CardContent className="p-4 space-y-3">
