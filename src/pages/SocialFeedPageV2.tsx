@@ -76,6 +76,51 @@ export default function SocialFeedPageV2() {
 
   useEffect(() => { load(); }, [user?.id]);
 
+  useEffect(() => {
+    if (!user) { setFollowing(new Set()); return; }
+    listMyFollowing().then(setFollowing).catch(() => {});
+  }, [user?.id]);
+
+  // Realtime: new posts and notifications (posts / live classes) arrive instantly
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel('social-feed-live')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'social_posts' }, () => { load(); })
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.id}` },
+        (payload) => {
+          const n = payload.new as { type: string; title: string; message: string };
+          if (['new_post', 'live_class', 'scheduled_class', 'follow', 'page_post'].includes(n.type)) {
+            toast(n.title, { description: n.message });
+          }
+        },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user?.id]);
+
+  const onToggleFollow = async (targetId: string) => {
+    if (!user) { toast.error('Sign in to follow people'); return; }
+    const isFollowing = following.has(targetId);
+    setFollowBusy(targetId);
+    try {
+      await toggleUserFollow(targetId, isFollowing);
+      setFollowing(prev => {
+        const next = new Set(prev);
+        if (isFollowing) next.delete(targetId); else next.add(targetId);
+        return next;
+      });
+      toast.success(isFollowing ? 'Unfollowed' : 'Following — you will get their updates');
+    } catch (e: any) {
+      toast.error(e?.message || 'Could not update follow');
+    } finally {
+      setFollowBusy(null);
+    }
+  };
+
+
   const submitPost = async () => {
     if (!content.trim() || !user) return;
     setPosting(true);
