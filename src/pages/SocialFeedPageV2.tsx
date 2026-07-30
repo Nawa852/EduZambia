@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Heart, MessageCircle, Send, Trash2, Loader2 } from 'lucide-react';
+import { Heart, MessageCircle, Send, Trash2, Loader2, UserPlus, UserCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
+import { listMyFollowing, toggleUserFollow } from '@/lib/community';
 
 interface Post {
   id: string;
@@ -39,6 +40,9 @@ export default function SocialFeedPageV2() {
   const [posting, setPosting] = useState(false);
   const [openComments, setOpenComments] = useState<Record<string, Comment[] | null>>({});
   const [commentDraft, setCommentDraft] = useState<Record<string, string>>({});
+  const [following, setFollowing] = useState<Set<string>>(new Set());
+  const [followBusy, setFollowBusy] = useState<string | null>(null);
+
 
   const load = async () => {
     setLoading(true);
