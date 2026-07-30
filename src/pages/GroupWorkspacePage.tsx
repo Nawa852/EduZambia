@@ -6,19 +6,23 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { ArrowLeft, MessageSquare, FileText, Video, Users, Info, LogOut, Share2, BookOpen, Loader2 } from 'lucide-react';
+import { ArrowLeft, MessageSquare, FileText, Video, Users, Info, LogOut, Share2, BookOpen, Loader2, UserMinus } from 'lucide-react';
 import { toast } from 'sonner';
 
 const GroupChatPage = React.lazy(() => import('@/pages/GroupChatPage'));
 const GroupFilesPage = React.lazy(() => import('@/pages/GroupFilesPage'));
 const GroupVideoPage = React.lazy(() => import('@/pages/GroupVideoPage'));
 
+const ROLES = ['member', 'moderator', 'teacher'] as const;
+
 interface Group {
   id: string; name: string; description: string | null; subject: string | null;
   grade_level: string | null; is_public: boolean; created_by: string; created_at: string;
 }
-interface Member { user_id: string; joined_at?: string; profile?: { full_name: string | null; avatar_url: string | null } }
+interface Member { user_id: string; joined_at?: string; role?: string | null; profile?: { full_name: string | null; avatar_url: string | null } }
+
 
 const TABS = [
   { id: 'chat', label: 'Chat', icon: MessageSquare },
