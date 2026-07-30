@@ -5050,6 +5050,7 @@ export type Database = {
           created_at: string
           description: string | null
           ended_at: string | null
+          ended_by: string | null
           host_id: string
           id: string
           is_recording: boolean
@@ -5066,6 +5067,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           ended_at?: string | null
+          ended_by?: string | null
           host_id: string
           id?: string
           is_recording?: boolean
@@ -5082,6 +5084,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           ended_at?: string | null
+          ended_by?: string | null
           host_id?: string
           id?: string
           is_recording?: boolean

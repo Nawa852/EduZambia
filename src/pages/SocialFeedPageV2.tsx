@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Heart, MessageCircle, Send, Trash2, Loader2 } from 'lucide-react';
+import { Heart, MessageCircle, Send, Trash2, Loader2, UserPlus, UserCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
+import { listMyFollowing, toggleUserFollow } from '@/lib/community';
 
 interface Post {
   id: string;
@@ -39,6 +40,9 @@ export default function SocialFeedPageV2() {
   const [posting, setPosting] = useState(false);
   const [openComments, setOpenComments] = useState<Record<string, Comment[] | null>>({});
   const [commentDraft, setCommentDraft] = useState<Record<string, string>>({});
+  const [following, setFollowing] = useState<Set<string>>(new Set());
+  const [followBusy, setFollowBusy] = useState<string | null>(null);
+
 
   const load = async () => {
     setLoading(true);
@@ -71,6 +75,51 @@ export default function SocialFeedPageV2() {
   };
 
   useEffect(() => { load(); }, [user?.id]);
+
+  useEffect(() => {
+    if (!user) { setFollowing(new Set()); return; }
+    listMyFollowing().then(setFollowing).catch(() => {});
+  }, [user?.id]);
+
+  // Realtime: new posts and notifications (posts / live classes) arrive instantly
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel('social-feed-live')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'social_posts' }, () => { load(); })
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.id}` },
+        (payload) => {
+          const n = payload.new as { type: string; title: string; message: string };
+          if (['new_post', 'live_class', 'scheduled_class', 'follow', 'page_post'].includes(n.type)) {
+            toast(n.title, { description: n.message });
+          }
+        },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user?.id]);
+
+  const onToggleFollow = async (targetId: string) => {
+    if (!user) { toast.error('Sign in to follow people'); return; }
+    const isFollowing = following.has(targetId);
+    setFollowBusy(targetId);
+    try {
+      await toggleUserFollow(targetId, isFollowing);
+      setFollowing(prev => {
+        const next = new Set(prev);
+        if (isFollowing) next.delete(targetId); else next.add(targetId);
+        return next;
+      });
+      toast.success(isFollowing ? 'Unfollowed' : 'Following — you will get their updates');
+    } catch (e: any) {
+      toast.error(e?.message || 'Could not update follow');
+    } finally {
+      setFollowBusy(null);
+    }
+  };
+
 
   const submitPost = async () => {
     if (!content.trim() || !user) return;
@@ -146,9 +195,22 @@ export default function SocialFeedPageV2() {
                     <p className="font-semibold text-sm">{post.author?.full_name || 'Anonymous'}</p>
                     <p className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</p>
                   </div>
-                  {post.user_id === user?.id && (
+                  {post.user_id === user?.id ? (
                     <Button size="icon" variant="ghost" onClick={() => deletePost(post.id)}><Trash2 className="w-4 h-4" /></Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant={following.has(post.user_id) ? 'outline' : 'default'}
+                      className="h-8 rounded-full text-xs shrink-0"
+                      disabled={followBusy === post.user_id}
+                      onClick={() => onToggleFollow(post.user_id)}
+                    >
+                      {followBusy === post.user_id ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        : following.has(post.user_id) ? <><UserCheck className="w-3.5 h-3.5 mr-1" />Following</>
+                        : <><UserPlus className="w-3.5 h-3.5 mr-1" />Follow</>}
+                    </Button>
                   )}
+
                 </div>
                 <p className="mt-2 text-sm whitespace-pre-wrap">{post.content}</p>
               </div>

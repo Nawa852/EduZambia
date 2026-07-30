@@ -6,19 +6,23 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { ArrowLeft, MessageSquare, FileText, Video, Users, Info, LogOut, Share2, BookOpen, Loader2 } from 'lucide-react';
+import { ArrowLeft, MessageSquare, FileText, Video, Users, Info, LogOut, Share2, BookOpen, Loader2, UserMinus } from 'lucide-react';
 import { toast } from 'sonner';
 
 const GroupChatPage = React.lazy(() => import('@/pages/GroupChatPage'));
 const GroupFilesPage = React.lazy(() => import('@/pages/GroupFilesPage'));
 const GroupVideoPage = React.lazy(() => import('@/pages/GroupVideoPage'));
 
+const ROLES = ['member', 'moderator', 'teacher'] as const;
+
 interface Group {
   id: string; name: string; description: string | null; subject: string | null;
   grade_level: string | null; is_public: boolean; created_by: string; created_at: string;
 }
-interface Member { user_id: string; joined_at?: string; profile?: { full_name: string | null; avatar_url: string | null } }
+interface Member { user_id: string; joined_at?: string; role?: string | null; profile?: { full_name: string | null; avatar_url: string | null } }
+
 
 const TABS = [
   { id: 'chat', label: 'Chat', icon: MessageSquare },
@@ -79,6 +83,27 @@ const GroupWorkspacePage: React.FC = () => {
     catch { navigator.clipboard.writeText(url); toast.success('Link copied'); }
   };
 
+  const isOwner = !!user && !!group && group.created_by === user.id;
+  const myRole = group?.created_by === user?.id ? 'owner' : (members.find(m => m.user_id === user?.id)?.role || 'member');
+
+  const changeRole = async (memberId: string, role: string) => {
+    if (!group) return;
+    const { error } = await supabase.from('study_group_members').update({ role }).eq('group_id', group.id).eq('user_id', memberId);
+    if (error) { toast.error(error.message); return; }
+    setMembers(prev => prev.map(m => m.user_id === memberId ? { ...m, role } : m));
+    toast.success(`Role updated to ${role}`);
+  };
+
+  const removeMember = async (memberId: string) => {
+    if (!group || !confirm('Remove this member from the group?')) return;
+    const { error } = await supabase.from('study_group_members').delete().eq('group_id', group.id).eq('user_id', memberId);
+    if (error) { toast.error(error.message); return; }
+    setMembers(prev => prev.filter(m => m.user_id !== memberId));
+    toast.success('Member removed');
+  };
+
+
+
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
   if (!group) return <div className="text-center py-20"><p className="text-muted-foreground mb-4">Group not found</p><Button asChild><Link to="/groups">Back to groups</Link></Button></div>;
 
@@ -99,7 +124,9 @@ const GroupWorkspacePage: React.FC = () => {
               <div className="flex-1 min-w-0">
                 <h1 className="text-xl lg:text-2xl font-bold truncate">{group.name}</h1>
                 <div className="flex items-center gap-2 flex-wrap text-xs text-muted-foreground mt-1">
+                  {isMember && <Badge className="capitalize">{myRole}</Badge>}
                   {group.subject && <Badge variant="secondary">{group.subject}</Badge>}
+
                   {group.grade_level && <Badge variant="outline">{group.grade_level}</Badge>}
                   <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" />{members.length} member{members.length !== 1 ? 's' : ''}</span>
                 </div>
@@ -148,22 +175,43 @@ const GroupWorkspacePage: React.FC = () => {
             <TabsContent value="members" className="mt-0">
               <Card>
                 <CardContent className="p-4 space-y-2">
+                  {isOwner && <p className="text-xs text-muted-foreground pb-1">As the owner you can assign roles and remove members.</p>}
                   {members.length === 0 && <p className="text-sm text-muted-foreground text-center py-8">No members yet</p>}
-                  {members.map(m => (
-                    <div key={m.user_id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50">
-                      <Avatar className="h-9 w-9">
-                        {m.profile?.avatar_url && <img src={m.profile.avatar_url} alt="" />}
-                        <AvatarFallback>{(m.profile?.full_name || 'M').charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm truncate">{m.profile?.full_name || 'Member'}</p>
-                        <p className="text-xs text-muted-foreground capitalize">{m.user_id === group.created_by ? 'Owner' : 'Member'}</p>
+                  {members.map(m => {
+                    const owner = m.user_id === group.created_by;
+                    return (
+                      <div key={m.user_id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50">
+                        <Avatar className="h-9 w-9">
+                          {m.profile?.avatar_url && <img src={m.profile.avatar_url} alt="" />}
+                          <AvatarFallback>{(m.profile?.full_name || 'M').charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">{m.profile?.full_name || 'Member'}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{owner ? 'Owner' : (m.role || 'member')}</p>
+                        </div>
+                        {isOwner && !owner && (
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <Select value={m.role || 'member'} onValueChange={(v) => changeRole(m.user_id, v)}>
+                              <SelectTrigger className="h-8 w-[130px] text-xs"><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                {ROLES.map(r => <SelectItem key={r} value={r} className="text-xs capitalize">{r}</SelectItem>)}
+                              </SelectContent>
+                            </Select>
+                            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => removeMember(m.user_id)}>
+                              <UserMinus className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        )}
+                        {!isOwner && !owner && (m.role && m.role !== 'member') && (
+                          <Badge variant="secondary" className="capitalize text-[10px]">{m.role}</Badge>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </CardContent>
               </Card>
             </TabsContent>
+
             <TabsContent value="about" className="mt-0 space-y-3">
               <Card>
                 <CardContent className="p-4 space-y-3">
