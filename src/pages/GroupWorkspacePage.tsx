@@ -83,6 +83,27 @@ const GroupWorkspacePage: React.FC = () => {
     catch { navigator.clipboard.writeText(url); toast.success('Link copied'); }
   };
 
+  const isOwner = !!user && !!group && group.created_by === user.id;
+  const myRole = group?.created_by === user?.id ? 'owner' : (members.find(m => m.user_id === user?.id)?.role || 'member');
+
+  const changeRole = async (memberId: string, role: string) => {
+    if (!group) return;
+    const { error } = await supabase.from('study_group_members').update({ role }).eq('group_id', group.id).eq('user_id', memberId);
+    if (error) { toast.error(error.message); return; }
+    setMembers(prev => prev.map(m => m.user_id === memberId ? { ...m, role } : m));
+    toast.success(`Role updated to ${role}`);
+  };
+
+  const removeMember = async (memberId: string) => {
+    if (!group || !confirm('Remove this member from the group?')) return;
+    const { error } = await supabase.from('study_group_members').delete().eq('group_id', group.id).eq('user_id', memberId);
+    if (error) { toast.error(error.message); return; }
+    setMembers(prev => prev.filter(m => m.user_id !== memberId));
+    toast.success('Member removed');
+  };
+
+
+
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
   if (!group) return <div className="text-center py-20"><p className="text-muted-foreground mb-4">Group not found</p><Button asChild><Link to="/groups">Back to groups</Link></Button></div>;
 
