@@ -258,7 +258,27 @@ export function StudentDashboardV2({ userName }: Props) {
         </Card>
       </div>
 
+      {/* Synapse It — the one input that produces everything */}
+      <button
+        onClick={() => navigate('/synapse')}
+        className="w-full text-left rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4 lg:p-5 hover:shadow-elevated transition-all group"
+      >
+        <div className="flex items-center gap-3">
+          <span className="w-11 h-11 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <Sparkles className="w-5 h-5 text-primary" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="font-bold text-[15px] leading-tight">Synapse It</div>
+            <p className="text-xs text-muted-foreground truncate">
+              Drop notes, a past paper or a photo — get key points, flashcards and a quiz.
+            </p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+        </div>
+      </button>
+
       {/* Quick-create chip row */}
+
       <div data-tour="quick-tools" className="grid grid-cols-3 sm:grid-cols-5 gap-2 lg:gap-3">
         {createChips.map((c) => (
           <button
