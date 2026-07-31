@@ -9,6 +9,8 @@ import {
   DollarSign, Flag, Lock, Search, Bookmark, Code,
   type LucideIcon
 } from "lucide-react";
+import { isStudentNavVisible } from "@/config/studentFeatures";
+
 
 export interface NavItem {
   title: string;
