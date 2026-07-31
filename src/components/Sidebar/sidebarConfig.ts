@@ -56,41 +56,37 @@ export function getNavigationByRole(role: string): NavGroup[] {
 }
 
 // ─── Student ────────────────────────────────────────
+// Four verbs, not fifteen screens: Home · Synapse AI · Practice · Me.
 const studentNavigation: NavGroup[] = [
   {
     label: "Main",
     items: [
-      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
-      { title: "My Learning", url: "/learn", icon: GraduationCap, shortTitle: "Learn", matchPrefixes: ["/course", "/lessons", "/subjects"] },
-      { title: "AI Workspace", url: "/ai", icon: Brain, badge: "AI", shortTitle: "AI", matchPrefixes: ["/ai-chat", "/ai-assistant"] },
-      { title: "Study Hub", url: "/prepare", icon: Calendar, shortTitle: "Study", matchPrefixes: ["/study-planner", "/focus-mode", "/student-notes"] },
-      { title: "ECZ Exams", url: "/ecz", icon: FileText, shortTitle: "ECZ" },
+      { title: "Home", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
+      { title: "Synapse AI", url: "/synapse", icon: Sparkles, shortTitle: "Synapse", badge: "AI", matchPrefixes: ["/know-your-stuff", "/ai", "/snap-and-solve"] },
+      { title: "Practice", url: "/practice", icon: Target, shortTitle: "Practice", matchPrefixes: ["/ecz", "/prepare"] },
+      { title: "Me", url: "/profile", icon: User, shortTitle: "Me", matchPrefixes: ["/progress", "/settings"] },
     ],
   },
   {
     label: "Study",
     items: [
-      { title: "Know Your Stuff", url: "/know-your-stuff", icon: Zap, shortTitle: "Know", badge: "NEW" },
-      { title: "Study Folders", url: "/study", icon: FolderOpen, shortTitle: "Folders" },
-      { title: "Knowledge Hub", url: "/prepare?tab=notes", icon: FolderOpen, shortTitle: "Notes" },
-
-      { title: "Journal", url: "/prepare?tab=journal", icon: BookOpen, shortTitle: "Journal" },
-      { title: "Flashcards", url: "/ai?tab=flashcards", icon: Layers, shortTitle: "Cards" },
-      { title: "Tasks & Planner", url: "/prepare?tab=planner", icon: ClipboardCheck, shortTitle: "Tasks" },
-      { title: "Focus Timer", url: "/prepare?tab=focus", icon: Timer, shortTitle: "Focus" },
-      { title: "Smart Tools", url: "/tools", icon: Sparkles, shortTitle: "Tools" },
+      { title: "My Files", url: "/study", icon: FolderOpen, shortTitle: "Files" },
+      { title: "Resources", url: "/practice?tab=resources", icon: FileText, shortTitle: "Papers" },
+      { title: "My Notes", url: "/prepare?tab=notes", icon: BookOpen, shortTitle: "Notes" },
+      { title: "Planner", url: "/practice?tab=planner", icon: ClipboardCheck, shortTitle: "Plan" },
+      { title: "Focus Timer", url: "/practice?tab=focus", icon: Timer, shortTitle: "Focus" },
     ],
   },
   {
     label: "More",
     items: [
-      { title: "Free Courses", url: "/free-courses", icon: GraduationCap, shortTitle: "Free", badge: "NEW" },
       { title: "Progress", url: "/progress", icon: BarChart3, shortTitle: "Stats" },
-      { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
-      { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
+      { title: "Family Link", url: "/guardian-link", icon: Users, shortTitle: "Family" },
+      { title: "Settings", url: "/profile?tab=settings", icon: Settings, shortTitle: "Settings" },
     ],
   },
 ];
+
 
 // ─── Teacher ────────────────────────────────────────
 const teacherNavigation: NavGroup[] = [
