@@ -367,7 +367,16 @@ export function getPrimaryNavigationByRole(role: string): NavItem[] {
 export function getCommandNavigationByRole(role: string): Array<NavItem & { group: string }> {
   // All hub pages for the command palette
   const baseItems: Array<NavItem & { group: string }> = [
-    { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, group: "Navigate", shortTitle: "Home" },
+    { title: "Home", url: "/dashboard", icon: LayoutDashboard, group: "Navigate", shortTitle: "Home" },
+    ...(isStudentRole(role)
+      ? [
+          { title: "Synapse AI", url: "/synapse", icon: Sparkles, group: "Navigate", shortTitle: "Synapse" },
+          { title: "Practice", url: "/practice", icon: Target, group: "Navigate", shortTitle: "Practice" },
+          { title: "My Files", url: "/study", icon: FolderOpen, group: "Navigate", shortTitle: "Files" },
+          { title: "Family Link", url: "/guardian-link", icon: Users, group: "Account", shortTitle: "Family" },
+        ]
+      : []),
+
     { title: "My Learning", url: "/learn", icon: GraduationCap, group: "Navigate", shortTitle: "Learn" },
     { title: "AI Workspace", url: "/ai", icon: Brain, group: "Navigate", shortTitle: "AI" },
     { title: "Study Hub", url: "/prepare", icon: Calendar, group: "Navigate", shortTitle: "Study" },
