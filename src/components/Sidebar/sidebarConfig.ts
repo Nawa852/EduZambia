@@ -497,5 +497,7 @@ export function getCommandNavigationByRole(role: string): Array<NavItem & { grou
     { title: "Achievements", url: "/progress?tab=achievements", icon: Award, group: "Progress" },
   ];
 
-  return [...baseItems, ...tabItems];
+  const all = [...baseItems, ...tabItems];
+  return isStudentRole(role) ? all.filter(i => isStudentNavVisible(i.url)) : all;
+
 }
