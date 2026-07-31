@@ -51,9 +51,14 @@ export function getNavigationByRole(role: string): NavGroup[] {
     case 'developer': return developerNavigation;
     case 'skills': return skillsNavigation;
     case 'cybersecurity': return cybersecurityNavigation;
-    default: return studentNavigation;
+    default:
+      // Students never see a paused feature in navigation.
+      return studentNavigation
+        .map(g => ({ ...g, items: g.items.filter(i => isStudentNavVisible(i.url)) }))
+        .filter(g => g.items.length > 0);
   }
 }
+
 
 // ─── Student ────────────────────────────────────────
 // Four verbs, not fifteen screens: Home · Synapse AI · Practice · Me.
