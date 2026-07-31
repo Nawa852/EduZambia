@@ -44,6 +44,9 @@ const CurriculumPage = React.lazy(() => import('@/pages/CurriculumPage'));
 const SetupExtrasPage = React.lazy(() => import('@/pages/SetupExtrasPage'));
 const AIHub = React.lazy(() => import('@/pages/hubs/AIHub'));
 const PrepareHub = React.lazy(() => import('@/pages/hubs/PrepareHub'));
+const SynapseAIHub = React.lazy(() => import('@/pages/hubs/SynapseAIHub'));
+const PracticeHub = React.lazy(() => import('@/pages/hubs/PracticeHub'));
+
 const ConnectHub = React.lazy(() => import('@/pages/hubs/ConnectHub'));
 const ProgressHub = React.lazy(() => import('@/pages/hubs/ProgressHub'));
 const ProfileHub = React.lazy(() => import('@/pages/hubs/ProfileHub'));
@@ -193,6 +196,9 @@ function App() {
               <Route path="/learn" element={<PG><LearnHub /></PG>} />
               <Route path="/curriculum" element={<PG><CurriculumPage /></PG>} />
               <Route path="/ai" element={<PG><AIHub /></PG>} />
+              <Route path="/synapse" element={<PG><SynapseAIHub /></PG>} />
+              <Route path="/practice" element={<PG><PracticeHub /></PG>} />
+
               <Route path="/prepare" element={<PG><PrepareHub /></PG>} />
               <Route path="/connect" element={<PG><ConnectHub /></PG>} />
               <Route path="/progress" element={<PG><ProgressHub /></PG>} />
