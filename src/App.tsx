@@ -44,6 +44,9 @@ const CurriculumPage = React.lazy(() => import('@/pages/CurriculumPage'));
 const SetupExtrasPage = React.lazy(() => import('@/pages/SetupExtrasPage'));
 const AIHub = React.lazy(() => import('@/pages/hubs/AIHub'));
 const PrepareHub = React.lazy(() => import('@/pages/hubs/PrepareHub'));
+const SynapseAIHub = React.lazy(() => import('@/pages/hubs/SynapseAIHub'));
+const PracticeHub = React.lazy(() => import('@/pages/hubs/PracticeHub'));
+
 const ConnectHub = React.lazy(() => import('@/pages/hubs/ConnectHub'));
 const ProgressHub = React.lazy(() => import('@/pages/hubs/ProgressHub'));
 const ProfileHub = React.lazy(() => import('@/pages/hubs/ProfileHub'));
