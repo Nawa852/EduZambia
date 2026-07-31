@@ -37,7 +37,7 @@ const ROUTE_LABELS: Record<string, string> = {
   prepare: 'Study Hub', ecz: 'ECZ Exams', progress: 'Progress',
   connect: 'Connect', profile: 'Profile', teach: 'Teaching Hub',
   family: 'Family', admin: 'Admin', ministry: 'Ministry',
-  course: 'Course',
+  course: 'Course', synapse: 'Synapse AI', practice: 'Practice', study: 'My Files',
 };
 
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
