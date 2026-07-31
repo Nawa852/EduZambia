@@ -346,10 +346,16 @@ export function matchesNavItem(pathname: string, item: Pick<NavItem, "url" | "ma
   return candidates.some((c) => pathname === c || pathname.startsWith(`${c}/`));
 }
 
+const isStudentRole = (role: string) => role === 'student' || !role;
+
+/** Bottom-bar / primary destinations. Students get exactly the four core tabs. */
 export function getPrimaryNavigationByRole(role: string): NavItem[] {
   const nav = getNavigationByRole(role);
-  return nav.flatMap(g => g.items);
+  const main = nav[0]?.items ?? [];
+  if (isStudentRole(role)) return main;
+  return main.length >= 4 ? main : nav.flatMap(g => g.items);
 }
+
 
 export function getCommandNavigationByRole(role: string): Array<NavItem & { group: string }> {
   // All hub pages for the command palette
