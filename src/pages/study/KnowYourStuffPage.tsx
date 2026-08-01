@@ -225,11 +225,13 @@ const KnowYourStuffPage: React.FC = () => {
           {busy && <Progress value={((stage + 1) / STAGES.length) * 100} className="h-1.5" />}
         </Card>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
           {[
-            { icon: ListChecks, label: 'Key points', desc: 'The 10 things that matter' },
+            { icon: Lightbulb, label: 'Summary', desc: 'The short version' },
+            { icon: ListChecks, label: 'Key points', desc: 'The things that matter' },
             { icon: Layers, label: 'Flashcards', desc: 'Ready to revise' },
             { icon: Target, label: 'Quiz', desc: 'Instant feedback' },
+            { icon: FileText, label: 'Study plan', desc: 'Day by day' },
             { icon: Boxes, label: 'Visual lesson', desc: 'Built with live code' },
           ].map((f) => (
             <Card key={f.label} className="rounded-2xl p-3.5 border-border/40">
