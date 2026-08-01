@@ -18,7 +18,7 @@ import { ArtifactCanvas, type Artifact } from '@/components/AI/ArtifactCanvas';
 import { saveProgress, loadProgress } from '@/lib/progress';
 import { MAX_TIMEOUT, withTimeout } from '@/lib/withTimeout';
 
-type Tab = 'points' | 'cards' | 'quiz' | 'visual';
+type Tab = 'summary' | 'points' | 'cards' | 'quiz' | 'plan' | 'visual';
 
 interface Pack {
   title?: string;
