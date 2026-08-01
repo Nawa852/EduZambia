@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useProfile } from '@/hooks/useProfile';
 import { toast } from 'sonner';
-import { Link2, Copy, Check, Users, Loader2 } from 'lucide-react';
+import { Link2, Copy, Check, Users, Loader2, MessageCircle } from 'lucide-react';
 
 interface LinkRow {
   id: string;
