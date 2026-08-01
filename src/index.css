@@ -6,104 +6,104 @@
 
 @layer base {
   :root {
-    /* Dark — deep neutral slate, Apple "graphite" */
-    --background: 222 16% 8%;
-    --foreground: 210 20% 97%;
+    /* Dark — Apple system dark (iOS/macOS): true-black-ish base, elevated grays */
+    --background: 0 0% 7%;            /* systemBackground dark #121212-ish */
+    --foreground: 0 0% 98%;
 
-    --card: 222 14% 11%;
-    --card-foreground: 210 20% 97%;
+    --card: 240 3% 12%;               /* secondarySystemBackground */
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222 14% 11%;
-    --popover-foreground: 210 20% 97%;
+    --popover: 240 3% 14%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 214 100% 60%;
+    --primary: 211 100% 59%;          /* systemBlue dark #0A84FF */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 222 12% 15%;
-    --secondary-foreground: 210 16% 90%;
+    --secondary: 240 3% 17%;          /* tertiarySystemBackground */
+    --secondary-foreground: 0 0% 92%;
 
-    --muted: 222 11% 16%;
-    --muted-foreground: 215 10% 62%;
+    --muted: 240 3% 17%;
+    --muted-foreground: 240 2% 64%;   /* secondaryLabel */
 
-    --accent: 222 12% 18%;
-    --accent-foreground: 210 20% 97%;
+    --accent: 240 3% 20%;
+    --accent-foreground: 0 0% 98%;
 
-    --success: 150 63% 45%;
+    --success: 135 59% 49%;           /* systemGreen dark #30D158 */
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 95% 56%;
-    --warning-foreground: 222 16% 8%;
+    --warning: 37 100% 57%;           /* systemOrange dark #FF9F0A */
+    --warning-foreground: 0 0% 10%;
 
-    --destructive: 4 84% 58%;
+    --destructive: 3 100% 61%;        /* systemRed dark #FF453A */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 9% 20%;
-    --input: 220 9% 18%;
-    --ring: 214 100% 60%;
+    --border: 240 2% 24%;             /* separator */
+    --input: 240 3% 20%;
+    --ring: 211 100% 59%;
 
     --radius: 0.9rem;
 
     /* Nav surfaces (frosted, slightly lifted from page bg) */
-    --nav: 222 15% 10%;
-    --nav-foreground: 210 20% 97%;
+    --nav: 240 3% 11%;
+    --nav-foreground: 0 0% 98%;
 
-    --sidebar-background: 222 15% 9%;
-    --sidebar-foreground: 215 12% 70%;
-    --sidebar-primary: 214 100% 60%;
+    --sidebar-background: 0 0% 9%;
+    --sidebar-foreground: 240 2% 68%;
+    --sidebar-primary: 211 100% 59%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 12% 15%;
-    --sidebar-accent-foreground: 210 20% 97%;
-    --sidebar-border: 220 9% 18%;
-    --sidebar-ring: 214 100% 60%;
+    --sidebar-accent: 240 3% 17%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 2% 22%;
+    --sidebar-ring: 211 100% 59%;
   }
 
   .light {
-    /* Light — Cloud White: crisp paper, soft cool grays, iOS blue */
-    --background: 210 25% 98%;
-    --foreground: 222 24% 11%;
+    /* Light — Apple system light: systemGroupedBackground + pure white cards */
+    --background: 240 20% 97%;        /* #F2F2F7 systemGroupedBackground */
+    --foreground: 0 0% 0%;            /* label */
 
     --card: 0 0% 100%;
-    --card-foreground: 222 24% 11%;
+    --card-foreground: 0 0% 0%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 24% 11%;
+    --popover-foreground: 0 0% 0%;
 
-    --primary: 214 100% 50%;
+    --primary: 211 100% 50%;          /* systemBlue #007AFF */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 214 22% 95%;
-    --secondary-foreground: 222 24% 11%;
+    --secondary: 240 11% 94%;         /* secondarySystemGroupedBackground tint */
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 214 22% 95%;
-    --muted-foreground: 215 14% 46%;
+    --muted: 240 11% 94%;
+    --muted-foreground: 240 6% 44%;   /* secondaryLabel #3C3C4399 */
 
-    --accent: 214 40% 95%;
-    --accent-foreground: 222 24% 11%;
+    --accent: 211 100% 95%;
+    --accent-foreground: 211 100% 34%;
 
-    --success: 150 60% 38%;
+    --success: 135 60% 41%;           /* systemGreen #34C759 */
     --success-foreground: 0 0% 100%;
 
-    --warning: 36 95% 48%;
+    --warning: 35 100% 50%;           /* systemOrange #FF9500 */
     --warning-foreground: 0 0% 100%;
 
-    --destructive: 4 84% 54%;
+    --destructive: 3 100% 59%;        /* systemRed #FF3B30 */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 20% 90%;
-    --input: 214 20% 90%;
-    --ring: 214 100% 50%;
+    --border: 240 8% 88%;             /* separator #C6C6C8 */
+    --input: 240 8% 88%;
+    --ring: 211 100% 50%;
 
     --nav: 0 0% 100%;
-    --nav-foreground: 222 24% 11%;
+    --nav-foreground: 0 0% 0%;
 
-    --sidebar-background: 210 25% 98%;
-    --sidebar-foreground: 215 14% 38%;
-    --sidebar-primary: 214 100% 50%;
+    --sidebar-background: 240 20% 97%;
+    --sidebar-foreground: 240 6% 40%;
+    --sidebar-primary: 211 100% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 214 30% 95%;
-    --sidebar-accent-foreground: 222 24% 11%;
-    --sidebar-border: 214 20% 92%;
-    --sidebar-ring: 214 100% 50%;
+    --sidebar-accent: 211 100% 95%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 240 8% 90%;
+    --sidebar-ring: 211 100% 50%;
   }
 
 }
