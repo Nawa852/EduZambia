@@ -57,7 +57,7 @@ const KnowYourStuffPage: React.FC = () => {
   const [busy, setBusy] = useState(false);
   const [stage, setStage] = useState(0);
   const [pack, setPack] = useState<Pack | null>(null);
-  const [tab, setTab] = useState<Tab>('points');
+  const [tab, setTab] = useState<Tab>('summary');
   const [flipped, setFlipped] = useState<number | null>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [artifact, setArtifact] = useState<Artifact | null>(null);
@@ -111,7 +111,7 @@ const KnowYourStuffPage: React.FC = () => {
       const result = data as Pack;
       if (!result || (result as any).error) throw new Error((result as any)?.error || 'No pack returned');
       setPack(result);
-      setTab('points');
+      setTab('summary');
       persist(result, null);
       toast.success('Broken down — everything is saved');
     } catch (e) {
