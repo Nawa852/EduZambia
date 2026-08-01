@@ -18,7 +18,7 @@ import { ArtifactCanvas, type Artifact } from '@/components/AI/ArtifactCanvas';
 import { saveProgress, loadProgress } from '@/lib/progress';
 import { MAX_TIMEOUT, withTimeout } from '@/lib/withTimeout';
 
-type Tab = 'points' | 'cards' | 'quiz' | 'visual';
+type Tab = 'summary' | 'points' | 'cards' | 'quiz' | 'plan' | 'visual';
 
 interface Pack {
   title?: string;
@@ -57,7 +57,7 @@ const KnowYourStuffPage: React.FC = () => {
   const [busy, setBusy] = useState(false);
   const [stage, setStage] = useState(0);
   const [pack, setPack] = useState<Pack | null>(null);
-  const [tab, setTab] = useState<Tab>('points');
+  const [tab, setTab] = useState<Tab>('summary');
   const [flipped, setFlipped] = useState<number | null>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [artifact, setArtifact] = useState<Artifact | null>(null);
@@ -111,7 +111,7 @@ const KnowYourStuffPage: React.FC = () => {
       const result = data as Pack;
       if (!result || (result as any).error) throw new Error((result as any)?.error || 'No pack returned');
       setPack(result);
-      setTab('points');
+      setTab('summary');
       persist(result, null);
       toast.success('Broken down — everything is saved');
     } catch (e) {
@@ -225,11 +225,13 @@ const KnowYourStuffPage: React.FC = () => {
           {busy && <Progress value={((stage + 1) / STAGES.length) * 100} className="h-1.5" />}
         </Card>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
           {[
-            { icon: ListChecks, label: 'Key points', desc: 'The 10 things that matter' },
+            { icon: Lightbulb, label: 'Summary', desc: 'The short version' },
+            { icon: ListChecks, label: 'Key points', desc: 'The things that matter' },
             { icon: Layers, label: 'Flashcards', desc: 'Ready to revise' },
             { icon: Target, label: 'Quiz', desc: 'Instant feedback' },
+            { icon: FileText, label: 'Study plan', desc: 'Day by day' },
             { icon: Boxes, label: 'Visual lesson', desc: 'Built with live code' },
           ].map((f) => (
             <Card key={f.label} className="rounded-2xl p-3.5 border-border/40">
@@ -266,9 +268,11 @@ const KnowYourStuffPage: React.FC = () => {
 
       <div className={segmentedBarClass}>
         {([
+          ['summary', 'Summary', Lightbulb],
           ['points', 'Key points', ListChecks],
           ['cards', 'Flashcards', Layers],
           ['quiz', 'Quiz', Target],
+          ['plan', 'Study plan', FileText],
           ['visual', 'Visual', Boxes],
         ] as [Tab, string, typeof ListChecks][]).map(([id, label, Icon]) => (
           <button
@@ -283,45 +287,52 @@ const KnowYourStuffPage: React.FC = () => {
         ))}
       </div>
 
-      {tab === 'points' && (
-        <div className="space-y-3">
-          {pack.summary && (
-            <Card className="rounded-2xl p-4 border-border/50">
-              <div className="flex items-center gap-2 mb-2">
-                <Lightbulb className="w-4 h-4 text-primary" />
-                <p className="text-sm font-semibold text-foreground">The short version</p>
-              </div>
-              <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">{pack.summary}</p>
-            </Card>
-          )}
-          <div className="grid gap-2 md:grid-cols-2">
-            {(pack.keyPoints ?? []).map((p, i) => (
-              <Card key={i} className="rounded-2xl p-3.5 border-border/40 flex gap-3">
-                <span className="w-6 h-6 shrink-0 rounded-full bg-primary/10 text-primary text-[11px] font-bold flex items-center justify-center">
-                  {i + 1}
-                </span>
-                <p className="text-sm text-foreground leading-snug">{p}</p>
-              </Card>
-            ))}
+      {tab === 'summary' && (
+        <Card className="rounded-2xl p-4 border-border/50">
+          <div className="flex items-center gap-2 mb-2">
+            <Lightbulb className="w-4 h-4 text-primary" />
+            <p className="text-sm font-semibold text-foreground">The short version</p>
           </div>
-          {!!pack.studyPlan?.length && (
-            <Card className="rounded-2xl p-4 border-border/50">
-              <p className="text-sm font-semibold text-foreground mb-2.5">Your study plan</p>
-              <div className="space-y-2">
-                {pack.studyPlan.map((d) => (
-                  <div key={d.day} className="flex gap-3">
-                    <Badge variant="secondary" className="rounded-full text-[10px] h-fit shrink-0">Day {d.day}</Badge>
-                    <div className="min-w-0">
-                      <p className="text-[13px] font-medium text-foreground">{d.focus}</p>
-                      <p className="text-[11px] text-muted-foreground">{d.tasks?.join(' · ')}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+            {pack.summary || 'No summary was produced for this material.'}
+          </p>
+        </Card>
+      )}
+
+      {tab === 'points' && (
+        <div className="grid gap-2 md:grid-cols-2">
+          {(pack.keyPoints ?? []).map((p, i) => (
+            <Card key={i} className="rounded-2xl p-3.5 border-border/40 flex gap-3">
+              <span className="w-6 h-6 shrink-0 rounded-full bg-primary/10 text-primary text-[11px] font-bold flex items-center justify-center">
+                {i + 1}
+              </span>
+              <p className="text-sm text-foreground leading-snug">{p}</p>
             </Card>
-          )}
+          ))}
         </div>
       )}
+
+      {tab === 'plan' && (
+        <Card className="rounded-2xl p-4 border-border/50">
+          <p className="text-sm font-semibold text-foreground mb-2.5">Your study plan</p>
+          {pack.studyPlan?.length ? (
+            <div className="space-y-2">
+              {pack.studyPlan.map((d) => (
+                <div key={d.day} className="flex gap-3">
+                  <Badge variant="secondary" className="rounded-full text-[10px] h-fit shrink-0">Day {d.day}</Badge>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-medium text-foreground">{d.focus}</p>
+                    <p className="text-[11px] text-muted-foreground">{d.tasks?.join(' · ')}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No plan was produced for this material.</p>
+          )}
+        </Card>
+      )}
+
 
       {tab === 'cards' && (
         <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">

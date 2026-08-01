@@ -9,6 +9,7 @@ import { AuthProvider } from '@/components/Auth/AuthProvider';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import ProtectedRoute from '@/components/Auth/ProtectedRoute';
 import PostLoginGate from '@/components/Auth/PostLoginGate';
+import StudentFeatureGate from '@/components/Auth/StudentFeatureGate';
 import { MainLayout } from '@/components/Layout/MainLayout';
 import { LogoLoader } from '@/components/UI/LogoLoader';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -151,7 +152,7 @@ const queryClient = new QueryClient({
 });
 
 const PG = ({ children }: { children: React.ReactNode }) => (
-  <ProtectedRoute><PostLoginGate><MainLayout>{children}</MainLayout></PostLoginGate></ProtectedRoute>
+  <ProtectedRoute><PostLoginGate><MainLayout><StudentFeatureGate>{children}</StudentFeatureGate></MainLayout></PostLoginGate></ProtectedRoute>
 );
 
 const SuspenseWrap = ({ children }: { children: React.ReactNode }) => (
