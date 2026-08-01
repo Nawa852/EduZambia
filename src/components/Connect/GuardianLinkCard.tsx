@@ -45,12 +45,23 @@ export const GuardianLinkCard: React.FC = () => {
 
   useEffect(() => { loadLinks(); }, [loadLinks]);
 
+  const logActivity = React.useCallback(async (action: string, metadata: Record<string, unknown> = {}) => {
+    if (!profile?.id) return;
+    await supabase.from('community_activity').insert({
+      user_id: profile.id,
+      action,
+      entity_type: 'guardian_link',
+      metadata: metadata as never,
+    });
+  }, [profile?.id]);
+
   const generate = async () => {
     setBusy(true);
     const { data, error } = await supabase.rpc('create_guardian_link_code');
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     setCode(data as string);
+    logActivity('guardian_link_code_generated');
     loadLinks();
   };
 
@@ -61,14 +72,26 @@ export const GuardianLinkCard: React.FC = () => {
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success('Connected — your child now appears in your dashboard');
+    logActivity('guardian_link_redeemed');
     setInput('');
     loadLinks();
+  };
+
+  const inviteText = code
+    ? `Hi! I'm using Synapse to study for my ECZ exams. Join as my parent/guardian so you can see my progress.\n\nMy invite code: ${code}\n\n1. Open ${window.location.origin}/auth\n2. Sign up as a Parent / Guardian\n3. Enter my code in Family Link.`
+    : '';
+
+  const shareWhatsApp = () => {
+    if (!code) return;
+    logActivity('guardian_invite_shared', { channel: 'whatsapp' });
+    window.open(`https://wa.me/?text=${encodeURIComponent(inviteText)}`, '_blank', 'noopener,noreferrer');
   };
 
   const copy = async () => {
     if (!code) return;
     await navigator.clipboard.writeText(code);
     setCopied(true);
+    logActivity('guardian_invite_shared', { channel: 'copy' });
     setTimeout(() => setCopied(false), 1800);
   };
 
