@@ -124,12 +124,21 @@ export const GuardianLinkCard: React.FC = () => {
             </Button>
           </div>
         ) : code ? (
-          <div className="flex items-center gap-3 rounded-xl border border-dashed border-primary/40 bg-primary/5 p-4">
-            <span className="font-mono text-2xl font-bold tracking-[0.35em]">{code}</span>
-            <Button size="sm" variant="outline" onClick={copy} className="ml-auto">
-              {copied ? <Check className="w-4 h-4 mr-1" /> : <Copy className="w-4 h-4 mr-1" />}
-              {copied ? 'Copied' : 'Copy'}
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-3 rounded-xl border border-dashed border-primary/40 bg-primary/5 p-4">
+              <span className="font-mono text-2xl font-bold tracking-[0.35em]">{code}</span>
+              <Button size="sm" variant="outline" onClick={copy} className="ml-auto">
+                {copied ? <Check className="w-4 h-4 mr-1" /> : <Copy className="w-4 h-4 mr-1" />}
+                {copied ? 'Copied' : 'Copy'}
+              </Button>
+            </div>
+            <Button onClick={shareWhatsApp} className="w-full rounded-xl">
+              <MessageCircle className="w-4 h-4 mr-2" />
+              Send invite on WhatsApp
             </Button>
+            <p className="text-[11px] text-muted-foreground">
+              The message includes step-by-step instructions for your parent.
+            </p>
           </div>
         ) : (
           <Button onClick={generate} disabled={busy}>
