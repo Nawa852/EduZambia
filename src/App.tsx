@@ -9,6 +9,7 @@ import { AuthProvider } from '@/components/Auth/AuthProvider';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import ProtectedRoute from '@/components/Auth/ProtectedRoute';
 import PostLoginGate from '@/components/Auth/PostLoginGate';
+import StudentFeatureGate from '@/components/Auth/StudentFeatureGate';
 import { MainLayout } from '@/components/Layout/MainLayout';
 import { LogoLoader } from '@/components/UI/LogoLoader';
 import ErrorBoundary from '@/components/ErrorBoundary';
