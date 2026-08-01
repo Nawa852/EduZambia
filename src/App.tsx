@@ -151,7 +151,7 @@ const queryClient = new QueryClient({
 });
 
 const PG = ({ children }: { children: React.ReactNode }) => (
-  <ProtectedRoute><PostLoginGate><MainLayout>{children}</MainLayout></PostLoginGate></ProtectedRoute>
+  <ProtectedRoute><PostLoginGate><MainLayout><StudentFeatureGate>{children}</StudentFeatureGate></MainLayout></PostLoginGate></ProtectedRoute>
 );
 
 const SuspenseWrap = ({ children }: { children: React.ReactNode }) => (
