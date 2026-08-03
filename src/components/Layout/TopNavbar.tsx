@@ -13,6 +13,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useAuth } from '@/components/Auth/AuthProvider';
 import { useProfile } from '@/hooks/useProfile';
 import { roleLabels } from '@/components/Sidebar/sidebarConfig';
+import { isStudentNavVisible } from '@/config/studentFeatures';
 import { MobileSidebarDrawer } from '@/components/Layout/MobileSidebarDrawer';
 import eduMark from '@/assets/brandLogo';
 
