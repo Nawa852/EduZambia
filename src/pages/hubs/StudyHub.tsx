@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { PageHeader } from '@/components/ui/page-header';
 import { Card } from '@/components/ui/card';
+import { useProfile } from '@/hooks/useProfile';
+import { isStudentNavVisible } from '@/config/studentFeatures';
 import {
   BookOpen, Timer, FileText, Target, Bookmark, Calendar,
   Layers, ClipboardCheck, Brain, PenTool, Users, Map, FolderUp,
