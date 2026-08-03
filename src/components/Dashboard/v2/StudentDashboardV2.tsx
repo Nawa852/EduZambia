@@ -498,8 +498,8 @@ export function StudentDashboardV2({ userName }: Props) {
         </Card>
       </div>
 
-      {/* Upcoming Classes — live from video_rooms */}
-      <div data-tour="upcoming"><UpcomingClassesCard /></div>
+      {/* Upcoming Classes — hidden while live rooms are paused */}
+      {isStudentFeature('video_rooms') && <div data-tour="upcoming"><UpcomingClassesCard /></div>}
 
       {/* AI Shortcuts */}
       <div data-tour="ai-shortcuts"><AIShortcutsCard /></div>
