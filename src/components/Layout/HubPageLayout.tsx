@@ -1,5 +1,8 @@
-import React, { Suspense, useCallback } from 'react';
+import React, { Suspense, useCallback, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useTabFromUrl } from '@/hooks/useTabFromUrl';
+import { useProfile } from '@/hooks/useProfile';
+import { isStudentNavVisible, isTabVisibleForRole } from '@/config/studentFeatures';
 import { HubSkeleton } from '@/components/UI/HubSkeleton';
 import { InlineErrorBoundary } from '@/components/UI/ErrorState';
 import { ToolSheet } from '@/components/UI/ToolSheet';
