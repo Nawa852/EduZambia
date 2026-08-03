@@ -13,6 +13,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useAuth } from '@/components/Auth/AuthProvider';
 import { useProfile } from '@/hooks/useProfile';
 import { roleLabels } from '@/components/Sidebar/sidebarConfig';
+import { isStudentNavVisible } from '@/config/studentFeatures';
 import { MobileSidebarDrawer } from '@/components/Layout/MobileSidebarDrawer';
 import eduMark from '@/assets/brandLogo';
 
@@ -20,7 +21,9 @@ export const TopNavbar = () => {
   const navigate = useNavigate();
   const { signOut } = useAuth();
   const { profile } = useProfile();
-  const roleLabel = roleLabels[(profile?.role as string) || 'student'] || 'Student';
+  const role = (profile?.role as string) || 'student';
+  const roleLabel = roleLabels[role] || 'Student';
+  const showMessenger = isStudentNavVisible('/connect?tab=messenger') || role !== 'student';
 
   const handleSignOut = async () => {
     await signOut();
@@ -66,10 +69,12 @@ export const TopNavbar = () => {
 
           <ThemeSwitcher />
 
-          <Button variant="ghost" size="icon" className="hidden lg:flex h-8 w-8 text-muted-foreground hover:text-foreground rounded-xl"
-            onClick={() => navigate('/connect?tab=messenger')}>
-            <MessageCircle className="h-[18px] w-[18px]" />
-          </Button>
+          {showMessenger && (
+            <Button variant="ghost" size="icon" className="hidden lg:flex h-8 w-8 text-muted-foreground hover:text-foreground rounded-xl"
+              onClick={() => navigate('/connect?tab=messenger')}>
+              <MessageCircle className="h-[18px] w-[18px]" />
+            </Button>
+          )}
 
           <NotificationBell />
 

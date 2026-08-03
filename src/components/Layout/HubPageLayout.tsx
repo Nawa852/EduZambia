@@ -1,5 +1,8 @@
-import React, { Suspense, useCallback } from 'react';
+import React, { Suspense, useCallback, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useTabFromUrl } from '@/hooks/useTabFromUrl';
+import { useProfile } from '@/hooks/useProfile';
+import { isStudentNavVisible, isTabVisibleForRole } from '@/config/studentFeatures';
 import { HubSkeleton } from '@/components/UI/HubSkeleton';
 import { InlineErrorBoundary } from '@/components/UI/ErrorState';
 import { ToolSheet } from '@/components/UI/ToolSheet';
@@ -38,11 +41,24 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
   title,
   subtitle,
   icon: Icon,
-  tabs,
+  tabs: allTabs,
   defaultTab,
-  quickLinks,
+  quickLinks: allQuickLinks,
 }) => {
   const [tab, setTab] = useTabFromUrl(defaultTab);
+  const { pathname } = useLocation();
+  const { profile } = useProfile();
+  const role = (profile?.role as string) || 'student';
+
+  // Paused features never render a tab or a shortcut for students.
+  const tabs = useMemo(
+    () => allTabs.filter((t) => isTabVisibleForRole(role, pathname, t.id)),
+    [allTabs, role, pathname],
+  );
+  const quickLinks = useMemo(
+    () => (allQuickLinks ?? []).filter((l) => role !== 'student' || isStudentNavVisible(l.href)),
+    [allQuickLinks, role],
+  );
 
   const homeTab = tabs.find((t) => t.id === defaultTab) ?? tabs[0];
   const toolTabs = tabs.filter((t) => t.id !== homeTab?.id);

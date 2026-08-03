@@ -85,14 +85,42 @@ const GATED_ROUTES: Array<{ prefix: string; key: StudentFeatureKey }> = [
 ];
 
 /** True when a nav destination should be visible to a student. */
+/** Tab ids that belong to a paused feature, wherever they appear. */
+const GATED_TABS: Record<string, StudentFeatureKey> = {
+  leaderboard: 'public_leaderboard',
+  goals: 'standalone_goals',
+  messenger: 'messages',
+  messages: 'messages',
+  groups: 'groups',
+  'study-groups': 'groups',
+  peers: 'peers',
+  'peer-finder': 'peers',
+  mentors: 'mentors',
+  mentorship: 'mentors',
+  events: 'events',
+  feed: 'social_feed',
+  social: 'social_feed',
+  videos: 'video_library',
+  'video-library': 'video_library',
+  live: 'video_rooms',
+  'live-classes': 'video_rooms',
+  rooms: 'video_rooms',
+};
+
 export function isStudentNavVisible(url: string): boolean {
   const path = url.split('?')[0];
-  const tab = url.includes('?tab=') ? url.split('?tab=')[1] : '';
+  const tab = url.includes('?tab=') ? url.split('?tab=')[1].split('&')[0] : '';
 
-  if (tab === 'leaderboard' && !STUDENT_FEATURES.public_leaderboard) return false;
-  if (tab === 'goals' && !STUDENT_FEATURES.standalone_goals) return false;
+  const tabGate = GATED_TABS[tab];
+  if (tabGate && !STUDENT_FEATURES[tabGate]) return false;
 
   const gate = GATED_ROUTES.find((g) => path === g.prefix || path.startsWith(`${g.prefix}/`));
   if (!gate) return true;
   return STUDENT_FEATURES[gate.key];
+}
+
+/** True when a hub tab should be visible for the given role. */
+export function isTabVisibleForRole(role: string | null | undefined, pathname: string, tabId: string): boolean {
+  if ((role || 'student') !== 'student') return true;
+  return isStudentNavVisible(`${pathname}?tab=${tabId}`);
 }
