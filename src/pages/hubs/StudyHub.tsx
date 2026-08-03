@@ -54,40 +54,55 @@ const groups: Group[] = [
   },
 ];
 
-const StudyHub: React.FC = () => (
-  <div className="space-y-6">
-    <PageHeader
-      icon={BookOpen}
-      title="Study"
-      subtitle="Focus, notes, flashcards and quizzes — everything to study smarter."
-    />
-    {groups.map((g) => (
-      <section key={g.label} className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">{g.label}</h2>
-          <span className="text-[11px] text-muted-foreground">{g.tools.length} tools</span>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {g.tools.map((t) => (
-            <Link key={t.href} to={t.href} className="group">
-              <Card className={`relative overflow-hidden p-4 h-full border-border/30 hover:border-primary/40 hover:shadow-card-hover transition-all bg-gradient-to-br ${g.accent}`}>
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-background/80 backdrop-blur flex items-center justify-center text-primary shadow-sm">
-                    <t.icon className="w-4 h-4" />
+const StudyHub: React.FC = () => {
+  const { profile } = useProfile();
+  const role = (profile?.role as string) || 'student';
+
+  const visibleGroups = useMemo(
+    () => groups
+      .map((g) => ({
+        ...g,
+        tools: g.tools.filter((t) => role !== 'student' || isStudentNavVisible(t.href)),
+      }))
+      .filter((g) => g.tools.length > 0),
+    [role],
+  );
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        icon={BookOpen}
+        title="Study"
+        subtitle="Focus, notes, flashcards and quizzes — everything to study smarter."
+      />
+      {visibleGroups.map((g) => (
+        <section key={g.label} className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">{g.label}</h2>
+            <span className="text-[11px] text-muted-foreground">{g.tools.length} tools</span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {g.tools.map((t) => (
+              <Link key={t.href} to={t.href} className="group">
+                <Card className={`relative overflow-hidden p-4 h-full border-border/30 hover:border-primary/40 hover:shadow-card-hover transition-all bg-gradient-to-br ${g.accent}`}>
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-9 h-9 rounded-xl bg-background/80 backdrop-blur flex items-center justify-center text-primary shadow-sm">
+                      <t.icon className="w-4 h-4" />
+                    </div>
+                    {t.badge && (
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">{t.badge}</span>
+                    )}
                   </div>
-                  {t.badge && (
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">{t.badge}</span>
-                  )}
-                </div>
-                <div className="text-sm font-semibold text-foreground leading-tight group-hover:text-primary transition-colors">{t.title}</div>
-                <div className="text-[11px] text-muted-foreground mt-1 leading-snug">{t.desc}</div>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </section>
-    ))}
-  </div>
-);
+                  <div className="text-sm font-semibold text-foreground leading-tight group-hover:text-primary transition-colors">{t.title}</div>
+                  <div className="text-[11px] text-muted-foreground mt-1 leading-snug">{t.desc}</div>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+};
 
 export default StudyHub;
