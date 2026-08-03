@@ -69,10 +69,12 @@ export const TopNavbar = () => {
 
           <ThemeSwitcher />
 
-          <Button variant="ghost" size="icon" className="hidden lg:flex h-8 w-8 text-muted-foreground hover:text-foreground rounded-xl"
-            onClick={() => navigate('/connect?tab=messenger')}>
-            <MessageCircle className="h-[18px] w-[18px]" />
-          </Button>
+          {showMessenger && (
+            <Button variant="ghost" size="icon" className="hidden lg:flex h-8 w-8 text-muted-foreground hover:text-foreground rounded-xl"
+              onClick={() => navigate('/connect?tab=messenger')}>
+              <MessageCircle className="h-[18px] w-[18px]" />
+            </Button>
+          )}
 
           <NotificationBell />
 
