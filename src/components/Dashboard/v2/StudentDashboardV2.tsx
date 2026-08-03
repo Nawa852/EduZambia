@@ -18,6 +18,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { useUserStats } from '@/hooks/useUserStats';
 import { supabase } from '@/integrations/supabase/client';
 import UpcomingClassesCard from '@/components/Dashboard/UpcomingClassesCard';
+import { isStudentFeature } from '@/config/studentFeatures';
 import LearningCircle from '@/components/Study/LearningCircle';
 import AIShortcutsCard from '@/components/Dashboard/AIShortcutsCard';
 import { ProductTour } from '@/components/Onboarding/ProductTour';
