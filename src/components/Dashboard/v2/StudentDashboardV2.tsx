@@ -18,6 +18,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { useUserStats } from '@/hooks/useUserStats';
 import { supabase } from '@/integrations/supabase/client';
 import UpcomingClassesCard from '@/components/Dashboard/UpcomingClassesCard';
+import LearningCircle from '@/components/Study/LearningCircle';
 import AIShortcutsCard from '@/components/Dashboard/AIShortcutsCard';
 import { ProductTour } from '@/components/Onboarding/ProductTour';
 
@@ -277,7 +278,12 @@ export function StudentDashboardV2({ userName }: Props) {
         </div>
       </button>
 
+      {/* The learning circle — the loop that makes it stick */}
+      <LearningCircle />
+
       {/* Quick-create chip row */}
+
+
 
       <div data-tour="quick-tools" className="grid grid-cols-3 sm:grid-cols-5 gap-2 lg:gap-3">
         {createChips.map((c) => (

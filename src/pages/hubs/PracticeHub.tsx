@@ -1,12 +1,13 @@
 import React from 'react';
 import { HubPageLayout, HubTab } from '@/components/Layout/HubPageLayout';
-import { Target, FileText, Play, Calendar, Timer, FolderOpen, Sparkles } from 'lucide-react';
+import { Target, FileText, Play, Calendar, Timer, FolderOpen, Sparkles, CircleDot } from 'lucide-react';
 
 /**
  * Practice — the merged "Learn + Study + ECZ" tab.
- * Every tile below opens its real implementation as an iOS-style tool sheet.
+ * The home tab is the learning circle; every other tile opens as an iOS-style tool sheet.
  */
 const tabs: HubTab[] = [
+  { id: 'circle', label: 'My Circle', icon: CircleDot, component: React.lazy(() => import('@/pages/study/LearningCirclePage')) },
   { id: 'quiz', label: 'ECZ Quiz', icon: Target, component: React.lazy(() => import('@/pages/ECZPracticeQuizPage')) },
   { id: 'know-your-stuff', label: 'Know Your Stuff', icon: Sparkles, component: React.lazy(() => import('@/pages/study/KnowYourStuffPage')) },
   { id: 'papers', label: 'Past Papers', icon: FileText, component: React.lazy(() => import('@/pages/ECZPastPapersPage')) },
@@ -19,16 +20,17 @@ const tabs: HubTab[] = [
 const PracticeHub = () => (
   <HubPageLayout
     title="Practice"
-    subtitle="ECZ quizzes, past papers, timed mocks and your revision plan — one place."
+    subtitle="Capture, understand, practise, review, master — close the loop every week."
     icon={Target}
     tabs={tabs}
-    defaultTab="quiz"
+    defaultTab="circle"
     quickLinks={[
+      { label: 'ECZ quiz', href: '/practice?tab=quiz', icon: Target },
       { label: 'Timed mock', href: '/practice?tab=simulator', icon: Play },
       { label: 'Focus timer', href: '/practice?tab=focus', icon: Timer },
-      { label: 'Resources', href: '/practice?tab=resources', icon: FolderOpen },
     ]}
   />
 );
 
 export default PracticeHub;
+
