@@ -20,7 +20,9 @@ export const TopNavbar = () => {
   const navigate = useNavigate();
   const { signOut } = useAuth();
   const { profile } = useProfile();
-  const roleLabel = roleLabels[(profile?.role as string) || 'student'] || 'Student';
+  const role = (profile?.role as string) || 'student';
+  const roleLabel = roleLabels[role] || 'Student';
+  const showMessenger = isStudentNavVisible('/connect?tab=messenger') || role !== 'student';
 
   const handleSignOut = async () => {
     await signOut();
