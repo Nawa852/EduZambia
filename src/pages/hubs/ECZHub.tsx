@@ -13,7 +13,7 @@ const tabs: HubTab[] = [
 const ECZHub = () => (
   <HubPageLayout
     title="ECZ Exam Hub"
-    subtitle="Past papers, exam simulators, and comprehensive ECZ preparation resources."
+    subtitle="Upload your own papers and notes — Synapse stores, organises and breaks them down for you."
     icon={FileText}
     tabs={tabs}
     defaultTab="papers"
