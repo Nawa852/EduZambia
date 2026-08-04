@@ -3,18 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
-  Flame, Target, CheckCircle2, Clock, ChevronRight, ChevronDown,
-  Camera, Calculator, Atom, Sparkles, Grid3x3, BookOpen,
-  FlaskConical, Plus, Leaf, FileText, Layers, Share2, BookText,
-  MoreHorizontal, FolderOpen, StickyNote, ListChecks, HelpCircle,
-  Folder, Bot, ScanLine, FileType2, Link2, Repeat, BarChart3,
-  Search, Mic, Image as ImageIcon, Video, Paperclip,
-  CalendarDays, Radio,
+  Flame, CheckCircle2, Clock, ChevronRight,
+  Camera, Sparkles, BookOpen, Layers, Share2,
+  FolderOpen, StickyNote, ListChecks, HelpCircle,
+  Folder, Bot, ScanLine, FileType2, Link2, Repeat,
+  FileText, ArrowUpRight,
 } from 'lucide-react';
 import { useAuth } from '@/components/Auth/AuthProvider';
-import { useProfile } from '@/hooks/useProfile';
 import { useUserStats } from '@/hooks/useUserStats';
 import { supabase } from '@/integrations/supabase/client';
 import UpcomingClassesCard from '@/components/Dashboard/UpcomingClassesCard';
@@ -25,61 +21,37 @@ import { ProductTour } from '@/components/Onboarding/ProductTour';
 
 interface Props { userName: string; }
 
-const subjectMeta: Record<string, { icon: any; tint: string }> = {
-  Physics: { icon: Atom, tint: 'from-blue-500/15 to-blue-500/5 text-blue-600' },
-  Biology: { icon: Leaf, tint: 'from-emerald-500/15 to-emerald-500/5 text-emerald-600' },
-  Mathematics: { icon: Calculator, tint: 'from-amber-500/15 to-amber-500/5 text-amber-600' },
-  Chemistry: { icon: FlaskConical, tint: 'from-purple-500/15 to-purple-500/5 text-purple-600' },
-};
-
 export function StudentDashboardV2({ userName }: Props) {
   const navigate = useNavigate();
-  const { user, isDemo } = useAuth();
-  const { profile } = useProfile();
+  const { user } = useAuth();
   const stats = useUserStats();
-  const [subjects, setSubjects] = useState<Array<{ name: string; progress: number; notes: number }>>([]);
   const [tasks, setTasks] = useState<Array<{ id: string; title: string; due: string; done: boolean }>>([]);
-  const [recentNotes, setRecentNotes] = useState<Array<{ id: string; title: string; subject: string; when: string }>>([]);
+  const [recentNotes, setRecentNotes] = useState<Array<{ id: string; title: string; when: string }>>([]);
   const [flashDecks, setFlashDecks] = useState<Array<{ id: string; title: string; cards: number; pct: number }>>([]);
   const [weekFocus, setWeekFocus] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
-  const [weekSessions, setWeekSessions] = useState(0);
 
   useEffect(() => {
     if (!user) return;
     let cancelled = false;
     (async () => {
       const weekAgo = new Date(Date.now() - 6 * 864e5); weekAgo.setHours(0, 0, 0, 0);
-      const [enr, notesRes, decksRes, goalsRes, focusRes] = await Promise.all([
-        supabase.from('enrollments').select('progress, courses(subject)').eq('user_id', user.id),
+      const [notesRes, decksRes, goalsRes, focusRes] = await Promise.all([
         supabase.from('student_notes').select('id, title, updated_at').eq('user_id', user.id).order('updated_at', { ascending: false }).limit(4),
-        supabase.from('flashcard_decks').select('id, title, subject, flashcard_cards(id, repetitions)').eq('user_id', user.id).limit(4),
+        supabase.from('flashcard_decks').select('id, title, flashcard_cards(id, repetitions)').eq('user_id', user.id).limit(4),
         supabase.from('study_goals').select('id, title, due_date, completed').eq('user_id', user.id).order('due_date', { ascending: true }).limit(5),
-        supabase.from('focus_sessions').select('focus_minutes, started_at, sessions_completed').eq('user_id', user.id).gte('started_at', weekAgo.toISOString()),
+        supabase.from('focus_sessions').select('focus_minutes, started_at').eq('user_id', user.id).gte('started_at', weekAgo.toISOString()),
       ]);
       if (cancelled) return;
 
-      const bySubject = new Map<string, { total: number; count: number }>();
-      (enr.data || []).forEach((e: any) => {
-        const s = e.courses?.subject || 'General';
-        const prev = bySubject.get(s) || { total: 0, count: 0 };
-        bySubject.set(s, { total: prev.total + (e.progress || 0), count: prev.count + 1 });
-      });
-      setSubjects(Array.from(bySubject.entries()).slice(0, 4).map(([name, v]) => ({
-        name, progress: Math.round(v.total / Math.max(v.count, 1)), notes: v.count,
-      })));
-
       setRecentNotes((notesRes.data || []).map((n: any) => ({
-        id: n.id, title: n.title || 'Untitled note', subject: 'Note',
+        id: n.id, title: n.title || 'Untitled note',
         when: new Date(n.updated_at).toLocaleDateString(),
       })));
 
       setFlashDecks((decksRes.data || []).map((d: any) => {
         const cards = d.flashcard_cards || [];
         const reviewed = cards.filter((c: any) => (c.repetitions ?? 0) > 0).length;
-        return {
-          id: d.id, title: d.title, cards: cards.length,
-          pct: cards.length ? Math.round((reviewed / cards.length) * 100) : 0,
-        };
+        return { id: d.id, title: d.title, cards: cards.length, pct: cards.length ? Math.round((reviewed / cards.length) * 100) : 0 };
       }));
 
       setTasks((goalsRes.data || []).map((g: any) => ({
@@ -89,14 +61,11 @@ export function StudentDashboardV2({ userName }: Props) {
       })));
 
       const buckets = [0, 0, 0, 0, 0, 0, 0];
-      let sessions = 0;
       (focusRes.data || []).forEach((f: any) => {
         const idx = 6 - Math.min(6, Math.floor((Date.now() - new Date(f.started_at).getTime()) / 864e5));
         if (idx >= 0) buckets[idx] += f.focus_minutes || 0;
-        sessions += f.sessions_completed || 1;
       });
       setWeekFocus(buckets);
-      setWeekSessions(sessions);
     })();
     return () => { cancelled = true; };
   }, [user]);
@@ -113,460 +82,260 @@ export function StudentDashboardV2({ userName }: Props) {
   const focusRem = todayFocus % 60;
   const tasksDone = tasks.filter(t => t.done).length;
   const tasksGoal = tasks.length;
-  const weekMinutes = weekFocus.reduce((a, b) => a + b, 0);
+  const maxFocus = Math.max(...weekFocus, 1);
 
-  const createChips = [
-    { icon: StickyNote, label: 'New Note', tint: 'text-violet-600 bg-violet-500/10', to: '/student-notes?action=new' },
-    { icon: Layers, label: 'New Flashcard', tint: 'text-blue-600 bg-blue-500/10', to: '/flashcards?action=new' },
-    { icon: ListChecks, label: 'New Task', tint: 'text-emerald-600 bg-emerald-500/10', to: '/study-planner?action=new' },
-    { icon: Folder, label: 'New Folder', tint: 'text-amber-600 bg-amber-500/10', to: '/student-notes?folder=new' },
-    { icon: HelpCircle, label: 'New Quiz', tint: 'text-rose-600 bg-rose-500/10', to: '/ai-quiz?action=new' },
+  const quickActions = [
+    { icon: StickyNote, label: 'New Note', tint: 'text-blue-600 bg-blue-500/10', to: '/student-notes?action=new' },
+    { icon: Layers, label: 'Flashcards', tint: 'text-emerald-600 bg-emerald-500/10', to: '/flashcards?action=new' },
+    { icon: ListChecks, label: 'New Task', tint: 'text-amber-600 bg-amber-500/10', to: '/study-planner?action=new' },
+    { icon: HelpCircle, label: 'New Quiz', tint: 'text-rose-600 bg-rose-500/10', to: '/practice?tab=quiz' },
+    { icon: Folder, label: 'Folder', tint: 'text-violet-600 bg-violet-500/10', to: '/student-notes?folder=new' },
   ];
-
-  const knowledgeHub = subjects.map((s) => ({
-    name: s.name,
-    notes: s.notes,
-    cards: 0,
-    icon: subjectMeta[s.name]?.icon ?? BookOpen,
-    tint: subjectMeta[s.name]?.tint ?? 'bg-primary/10 text-primary',
-    progress: s.progress,
-  }));
 
   const smartTools = [
-    { icon: Bot, label: 'AI Chat', desc: 'Streaming · markdown · LaTeX · voice · images.', tint: 'bg-purple-500/10 text-purple-600', to: '/ai?tab=chat' },
-    { icon: Camera, label: 'Snap & Solve', desc: 'Photo of homework → instant step-by-step.', tint: 'bg-rose-500/10 text-rose-600', to: '/snap-solve' },
-    { icon: ScanLine, label: 'Document Scanner', desc: 'Scan notes and extract text.', tint: 'bg-blue-500/10 text-blue-600', to: '/scan' },
-    { icon: FileType2, label: 'PDF Reader', desc: 'Read, highlight, and annotate.', tint: 'bg-amber-500/10 text-amber-600', to: '/pdf-reader' },
-    { icon: Link2, label: 'Web Clipper', desc: 'Save articles and resources.', tint: 'bg-cyan-500/10 text-cyan-600', to: '/student-notes?source=web' },
-    { icon: Layers, label: 'Flashcards', desc: 'Create and review active recall cards.', tint: 'bg-emerald-500/10 text-emerald-600', to: '/flashcards' },
-    { icon: HelpCircle, label: 'Quiz Generator', desc: 'Generate quizzes from your notes.', tint: 'bg-amber-500/10 text-amber-600', to: '/ai-quiz' },
-    { icon: Share2, label: 'Mind Maps', desc: 'Visualize and connect ideas.', tint: 'bg-teal-500/10 text-teal-600', to: '/mind-maps' },
-    { icon: Repeat, label: 'Spaced Repetition', desc: 'Smart review, better retention.', tint: 'bg-indigo-500/10 text-indigo-600', to: '/flashcards?mode=spaced' },
+    { icon: Bot, label: 'AI Chat', desc: 'Streaming markdown answers', tint: 'bg-violet-500/10 text-violet-600', to: '/synapse?tab=ask' },
+    { icon: Camera, label: 'Snap & Solve', desc: 'Photo of homework → solve', tint: 'bg-rose-500/10 text-rose-600', to: '/synapse?tab=snap' },
+    { icon: ScanLine, label: 'Document Scan', desc: 'Scan notes and extract text', tint: 'bg-blue-500/10 text-blue-600', to: '/scan' },
+    { icon: FileType2, label: 'PDF Reader', desc: 'Read, highlight, annotate', tint: 'bg-amber-500/10 text-amber-600', to: '/pdf-reader' },
+    { icon: Link2, label: 'Web Clipper', desc: 'Save articles and resources', tint: 'bg-emerald-500/10 text-emerald-600', to: '/student-notes?source=web' },
+    { icon: Layers, label: 'Flashcards', desc: 'Create and review active recall', tint: 'bg-emerald-500/10 text-emerald-600', to: '/flashcards' },
+    { icon: HelpCircle, label: 'Quiz Generator', desc: 'Generate quizzes from any content', tint: 'bg-amber-500/10 text-amber-600', to: '/practice?tab=quiz' },
+    { icon: Share2, label: 'Mind Map', desc: 'Visualize and connect ideas', tint: 'bg-teal-500/10 text-teal-600', to: '/mind-maps' },
+    { icon: Repeat, label: 'Spaced Repetition', desc: 'Smart review, better retention', tint: 'bg-indigo-500/10 text-indigo-600', to: '/flashcards?mode=spaced' },
   ];
 
-
-
-
   return (
-    <div className="space-y-5 lg:space-y-6">
+    <div className="space-y-5 lg:space-y-6 pb-4">
       <ProductTour role="student" />
-      {/* Greeting + Study Plan (desktop side-by-side) */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-4 lg:gap-5 items-start">
-        <div>
-          <div className="flex items-start justify-between gap-3 mb-4 lg:mb-5">
-            <div>
-              <h1 className="text-2xl lg:text-[28px] font-extrabold tracking-tight text-foreground">
-                {greeting()}, {firstName}! <span className="inline-block animate-fade-in">👋</span>
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">Let's make today count.</p>
-            </div>
-            {/* Mobile streak badge */}
-            <Card data-tour="streak" className="lg:hidden px-3 py-2 flex items-center gap-2 rounded-2xl border-border/40 shadow-sm shrink-0">
-              <Flame className="w-5 h-5 text-orange-500" />
-              <div>
-                <div className="text-base font-bold leading-none">{streak}</div>
-                <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">day streak</div>
-              </div>
-            </Card>
-          </div>
 
-          {/* Stat tiles */}
-          <div className="grid grid-cols-3 gap-3">
-            {/* Study Streak (desktop) / Focus Time (mobile) */}
-            <Card data-tour="streak" className="hidden lg:block p-4 rounded-2xl border-border/40 shadow-sm">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-7 h-7 rounded-full bg-blue-500/10 flex items-center justify-center">
-                  <Flame className="w-3.5 h-3.5 text-blue-600" />
-                </div>
-                <span className="text-xs font-medium text-muted-foreground">Study Streak</span>
-              </div>
-              <div className="text-3xl font-extrabold leading-none">{streak}</div>
-              <div className="text-[11px] text-muted-foreground mt-0.5">days</div>
-              <div className="flex items-end gap-[3px] h-6 mt-2">
-                {weekFocus.map((m, i) => {
-                  const max = Math.max(...weekFocus, 1);
-                  return <div key={i} className="flex-1 rounded-sm bg-blue-500/70 min-h-[2px]" style={{ height: `${(m / max) * 100}%` }} />;
-                })}
-              </div>
-            </Card>
-
-            <Card className="p-3 lg:p-4 rounded-2xl border-border/40 shadow-sm">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-7 h-7 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                  <Clock className="w-3.5 h-3.5 text-emerald-600" />
-                </div>
-                <span className="text-xs font-medium text-muted-foreground">Focus Time</span>
-              </div>
-              <div className="text-xl lg:text-2xl font-extrabold">{focusHrs}h {focusRem}m</div>
-              <div className="text-[11px] text-muted-foreground">today</div>
-              <div className="flex items-end gap-[3px] h-5 mt-1.5">
-                {weekFocus.map((m, i) => {
-                  const max = Math.max(...weekFocus, 1);
-                  return <div key={i} className="flex-1 rounded-sm bg-emerald-500/70 min-h-[2px]" style={{ height: `${(m / max) * 100}%` }} />;
-                })}
-              </div>
-            </Card>
-
-
-            <Card className="p-3 lg:p-4 rounded-2xl border-border/40 shadow-sm">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-7 h-7 rounded-full bg-purple-500/10 flex items-center justify-center">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-purple-600" />
-                </div>
-                <span className="text-xs font-medium text-muted-foreground">Tasks Done</span>
-              </div>
-              <div className="text-xl lg:text-2xl font-extrabold">{tasksGoal > 0 ? `${tasksDone}/${tasksGoal}` : '—'}</div>
-              <div className="text-[11px] text-muted-foreground">{tasksGoal > 0 ? 'today' : 'Set a daily goal'}</div>
-              <Progress value={tasksGoal > 0 ? (tasksDone / tasksGoal) * 100 : 0} className="h-1 mt-1.5" />
-            </Card>
-
-            {/* Mobile-only Study Goal */}
-            <Card className="lg:hidden p-3 rounded-2xl border-border/40 shadow-sm col-span-3 sm:col-span-1">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-7 h-7 rounded-full bg-blue-500/10 flex items-center justify-center">
-                  <Target className="w-3.5 h-3.5 text-blue-600" />
-                </div>
-                <span className="text-xs font-medium text-muted-foreground">Study Goal</span>
-              </div>
-              <div className="text-xl font-extrabold">{tasksGoal > 0 ? `${tasksDone}/${tasksGoal}` : '—'}</div>
-              <div className="text-[11px] text-muted-foreground">{tasksGoal > 0 ? 'tasks completed' : 'Add a study goal'}</div>
-              <Progress value={tasksGoal > 0 ? (tasksDone / tasksGoal) * 100 : 0} className="h-1 mt-1.5" />
-
-            </Card>
-          </div>
+      {/* Greeting + streak */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-[26px] lg:text-[32px] font-extrabold tracking-[-0.03em] leading-tight">
+            {greeting()}, {firstName}! <span className="inline-block">👋</span>
+          </h1>
+          <p className="text-[14px] text-muted-foreground mt-1">Let's make today count.</p>
         </div>
-
-        {/* Study Plan side panel */}
-        <Card data-tour="study-plan" className="p-4 lg:p-5 rounded-2xl border-border/40 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <BookOpen className="w-4 h-4 text-blue-600" />
-              </div>
-              <span className="font-semibold text-sm">Study Plan</span>
-            </div>
-            <button onClick={() => navigate('/study-planner')} className="text-xs text-primary font-medium hover:underline">View all</button>
+        <Card data-tour="streak" className="px-4 py-2.5 flex items-center gap-2.5 rounded-2xl border-border/40 shadow-sm shrink-0">
+          <Flame className="w-5 h-5 text-orange-500" />
+          <div>
+            <div className="text-[20px] font-extrabold leading-none">{streak}</div>
+            <div className="text-[10.5px] text-muted-foreground mt-0.5">Day streak</div>
           </div>
-          <div className="text-[15px] font-bold">{tasks.find(t => !t.done)?.title ?? 'No task scheduled'}</div>
-          <div className="text-xs text-muted-foreground">
-            {tasks.length ? `${tasksDone} of ${tasksGoal} goals complete` : 'Add a study goal to plan your day'}
-          </div>
-          <Progress value={tasksGoal ? (tasksDone / tasksGoal) * 100 : 0} className="h-1.5 mt-3" />
-          <div className="text-[11px] text-muted-foreground mt-1.5 mb-3">{tasks.find(t => !t.done)?.due ?? '—'}</div>
-
-          <Button onClick={() => navigate('/study-planner')} className="w-full rounded-full h-10 text-xs font-semibold shadow-md shadow-primary/20">
-            Start Session
-          </Button>
         </Card>
       </div>
 
-      {/* Synapse It — the one input that produces everything */}
+      {/* Focus / Tasks */}
+      <div className="grid grid-cols-2 gap-3 lg:gap-4">
+        <Card className="p-4 rounded-[22px] border-border/40 shadow-sm">
+          <div className="flex items-center gap-2.5 mb-3">
+            <span className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+              <Clock className="w-4 h-4 text-emerald-600" />
+            </span>
+            <span className="text-[13px] font-semibold">Focus Time</span>
+          </div>
+          <div className="text-[28px] lg:text-[32px] font-extrabold tracking-[-0.03em] leading-none">{focusHrs}h {focusRem}m</div>
+          <div className="text-[12px] text-muted-foreground mt-1">today</div>
+          <div className="flex items-end gap-[3px] h-8 mt-3">
+            {weekFocus.map((m, i) => (
+              <div key={i} className="flex-1 rounded-full bg-emerald-500/70 min-h-[3px]" style={{ height: `${(m / maxFocus) * 100}%` }} />
+            ))}
+          </div>
+        </Card>
+
+        <Card className="p-4 rounded-[22px] border-border/40 shadow-sm">
+          <div className="flex items-center gap-2.5 mb-3">
+            <span className="w-8 h-8 rounded-full bg-violet-500/10 flex items-center justify-center">
+              <CheckCircle2 className="w-4 h-4 text-violet-600" />
+            </span>
+            <span className="text-[13px] font-semibold">Tasks Done</span>
+          </div>
+          <div className="text-[28px] lg:text-[32px] font-extrabold tracking-[-0.03em] leading-none">{tasksDone}</div>
+          <div className="text-[12px] text-muted-foreground mt-1">done today</div>
+          <Progress value={tasksGoal > 0 ? (tasksDone / tasksGoal) * 100 : 0} className="h-1.5 mt-4" />
+        </Card>
+      </div>
+
+      {/* Study plan */}
+      <Card data-tour="study-plan" className="p-4 lg:p-5 rounded-[22px] border-border/40 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2.5">
+            <span className="w-8 h-8 rounded-[10px] bg-blue-500/10 flex items-center justify-center">
+              <BookOpen className="w-4 h-4 text-blue-600" />
+            </span>
+            <span className="font-semibold text-[15px]">Study Plan</span>
+          </div>
+          <button onClick={() => navigate('/study-planner')} className="text-[13px] text-primary font-medium hover:underline">View all</button>
+        </div>
+        <div className="text-[17px] font-bold tracking-[-0.02em]">{tasks.find(t => !t.done)?.title ?? 'No task scheduled'}</div>
+        <div className="text-[13px] text-muted-foreground mt-0.5">
+          {tasks.length ? `${tasksDone} of ${tasksGoal} goals complete · due ${tasks.find(t => !t.done)?.due ?? '—'}` : 'Add a study goal to plan your day.'}
+        </div>
+        <Button
+          onClick={() => navigate('/practice?tab=focus')}
+          className="w-full mt-4 rounded-full h-12 text-[15px] font-semibold bg-gradient-to-r from-primary to-violet-600 hover:opacity-95 shadow-lg shadow-primary/25 justify-between px-5"
+        >
+          <span className="flex-1 text-center">Start Session</span>
+          <span className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
+            <ChevronRight className="w-4 h-4" />
+          </span>
+        </Button>
+      </Card>
+
+      {/* Learning circle */}
+      <LearningCircle variant="summary" />
+
+      {/* Quick actions */}
+      <section data-tour="quick-tools">
+        <h2 className="text-[15px] font-bold tracking-[-0.02em] mb-2.5">Quick actions</h2>
+        <div className="grid grid-cols-5 gap-2 lg:gap-3">
+          {quickActions.map((c) => (
+            <button
+              key={c.label}
+              onClick={() => navigate(c.to)}
+              className="flex flex-col items-center justify-center gap-1.5 py-3 rounded-[18px] bg-card border border-border/40 hover:border-primary/30 hover:shadow-elevated transition-all active:scale-[0.97]"
+            >
+              <span className={`w-9 h-9 rounded-[12px] flex items-center justify-center ${c.tint}`}>
+                <c.icon className="w-4 h-4" />
+              </span>
+              <span className="text-[10.5px] lg:text-[12px] font-semibold text-center leading-tight">{c.label}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Synapse It */}
       <button
         onClick={() => navigate('/synapse')}
-        className="w-full text-left rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-4 lg:p-5 hover:shadow-elevated transition-all group"
+        className="w-full text-left rounded-[22px] border border-primary/20 bg-gradient-to-br from-primary/[0.12] via-violet-500/[0.08] to-transparent p-4 hover:shadow-elevated transition-all group"
       >
-        <div className="flex items-center gap-3">
-          <span className="w-11 h-11 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+        <div className="flex items-center gap-3.5">
+          <span className="w-12 h-12 rounded-[16px] bg-primary/15 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
             <Sparkles className="w-5 h-5 text-primary" />
           </span>
           <div className="min-w-0 flex-1">
-            <div className="font-bold text-[15px] leading-tight">Synapse It</div>
-            <p className="text-xs text-muted-foreground truncate">
-              Drop notes, a past paper or a photo — get key points, flashcards and a quiz.
+            <div className="font-bold text-[16px] leading-tight tracking-[-0.02em]">Synapse It</div>
+            <p className="text-[12.5px] text-muted-foreground leading-snug mt-0.5">
+              Drop notes, a past paper or a photo to get started
             </p>
           </div>
-          <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+          <span className="w-11 h-11 rounded-full bg-gradient-to-br from-primary to-violet-600 text-primary-foreground flex items-center justify-center shrink-0 shadow-lg shadow-primary/25">
+            <ArrowUpRight className="w-5 h-5" />
+          </span>
         </div>
       </button>
 
-      {/* The learning circle — the loop that makes it stick */}
-      <LearningCircle />
-
-      {/* Quick-create chip row */}
-
-
-
-      <div data-tour="quick-tools" className="grid grid-cols-3 sm:grid-cols-5 gap-2 lg:gap-3">
-        {createChips.map((c) => (
-          <button
-            key={c.label}
-            onClick={() => navigate(c.to)}
-            className="flex items-center justify-center gap-2 px-3 py-2.5 lg:py-3 rounded-2xl bg-card border border-border/30 hover:border-primary/30 hover:shadow-elevated transition-all group"
-          >
-            <span className={`w-7 h-7 rounded-lg flex items-center justify-center ${c.tint} group-hover:scale-105 transition-transform`}>
-              <c.icon className="w-3.5 h-3.5" />
-            </span>
-            <span className="text-[12px] lg:text-[13px] font-semibold whitespace-nowrap">{c.label}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* 3-col: Knowledge Hub / Recent Notes / Flashcards Review */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:gap-4">
-        {/* Knowledge Hub */}
-        <Card className="p-4 rounded-2xl border-border/40 shadow-sm">
-          <div className="flex items-center justify-between mb-3.5">
-            <div className="flex items-center gap-2">
-              <FolderOpen className="w-4 h-4 text-blue-600" />
-              <span className="font-semibold text-sm">My Knowledge Hub</span>
-            </div>
-            <button onClick={() => navigate('/student-notes')} className="text-muted-foreground hover:text-primary"><Plus className="w-4 h-4" /></button>
-          </div>
-          <div className="space-y-3">
-            {knowledgeHub.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-6">Enroll in a course or upload material to build your hub.</p>
-            )}
-            {knowledgeHub.map((h) => (
-              <button
-                key={h.name}
-                onClick={() => navigate(`/subjects?subject=${encodeURIComponent(h.name)}`)}
-                className="w-full flex items-center gap-3 group"
-              >
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${h.tint}`}>
-                  <h.icon className="w-4 h-4" />
-                </div>
-                <div className="flex-1 text-left">
-                  <div className="text-sm font-semibold group-hover:text-primary transition-colors">{h.name}</div>
-                  <div className="text-[11px] text-muted-foreground">{h.notes} courses · {h.progress}% complete</div>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          <button onClick={() => navigate('/student-notes')} className="text-xs text-primary font-medium mt-4 block mx-auto hover:underline">View all</button>
-        </Card>
-
-        {/* Recent Notes */}
-        <Card className="p-4 rounded-2xl border-border/40 shadow-sm">
-          <div className="flex items-center justify-between mb-3.5">
-            <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-violet-600" />
-              <span className="font-semibold text-sm">Recent Notes</span>
-            </div>
-            <button onClick={() => navigate('/student-notes?action=new')} className="text-muted-foreground hover:text-primary"><Plus className="w-4 h-4" /></button>
-          </div>
-          <div className="space-y-3.5">
-            {recentNotes.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-6">No notes yet — capture your first one.</p>
-            )}
-            {recentNotes.map((n) => (
-
-              <button
-                key={n.title}
-                onClick={() => navigate('/student-notes')}
-                className="w-full flex items-start gap-3 group"
-              >
-                <div className="w-9 h-9 rounded-lg bg-violet-500/10 text-violet-600 flex items-center justify-center shrink-0">
-                  <FileText className="w-4 h-4" />
-                </div>
-                <div className="flex-1 text-left">
-                  <div className="text-sm font-semibold group-hover:text-primary transition-colors">{n.title}</div>
-                  <div className="text-[11px] text-muted-foreground">{n.subject} · {n.when}</div>
-                </div>
-              </button>
-            ))}
-          </div>
-          <button onClick={() => navigate('/student-notes')} className="text-xs text-primary font-medium mt-4 block mx-auto hover:underline">View all</button>
-        </Card>
-
-        {/* Flashcards Review */}
-        <Card className="p-4 rounded-2xl border-border/40 shadow-sm">
-          <div className="flex items-center justify-between mb-3.5">
-            <div className="flex items-center gap-2">
-              <Layers className="w-4 h-4 text-emerald-600" />
-              <span className="font-semibold text-sm">Flashcards Review</span>
-            </div>
-            <button onClick={() => navigate('/flashcards?action=new')} className="text-muted-foreground hover:text-primary"><Plus className="w-4 h-4" /></button>
-          </div>
-          <div className="space-y-3.5">
-            {flashDecks.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-6">No decks yet — generate one from your notes.</p>
-            )}
-            {flashDecks.map((d) => {
-              const circ = 2 * Math.PI * 16;
-              const offset = circ * (1 - d.pct / 100);
-              return (
-                <button key={d.id} onClick={() => navigate('/flashcards')} className="w-full flex items-center gap-3 group">
-                  <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
-                    <Layers className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <div className="text-sm font-semibold group-hover:text-primary transition-colors">{d.title}</div>
-                    <div className="text-[11px] text-muted-foreground">{d.cards} cards</div>
-                  </div>
-                  <div className="relative w-10 h-10 shrink-0">
-                    <svg className="w-10 h-10 -rotate-90" viewBox="0 0 40 40">
-                      <circle cx="20" cy="20" r="16" className="stroke-muted" strokeWidth="3" fill="none" />
-                      <circle cx="20" cy="20" r="16" className="stroke-emerald-500" strokeWidth="3" fill="none" strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset} />
-                    </svg>
-                    <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-emerald-600">{d.pct}%</span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          <button onClick={() => navigate('/flashcards')} className="text-xs text-primary font-medium mt-4 block mx-auto hover:underline">Review Now</button>
-        </Card>
-      </div>
-
-      {/* 3-col bottom row: Tasks & Planner / Focus Timer / Progress */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:gap-4">
-        <Card className="p-4 rounded-2xl border-border/40 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-blue-600" />
-              <span className="font-semibold text-sm">Tasks & Planner</span>
-            </div>
-            <button onClick={() => navigate('/study-planner')} className="text-muted-foreground hover:text-primary">
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="space-y-2.5">
-            {tasks.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-6">No tasks yet — add a study goal to get started.</p>
-            )}
-            {tasks.map((t) => (
-              <div key={t.id} className="flex items-center gap-2.5">
-                <Checkbox checked={t.done} className="rounded" />
-                <span className={`flex-1 text-sm ${t.done ? 'line-through text-muted-foreground' : ''}`}>{t.title}</span>
-                <span className="text-[11px] text-muted-foreground">{t.due}</span>
-              </div>
-            ))}
-          </div>
-
-          <button onClick={() => navigate('/study-planner')} className="text-xs text-primary font-medium mt-3 block mx-auto hover:underline">View all tasks</button>
-        </Card>
-
-        <Card className="p-4 rounded-2xl border-border/40 shadow-sm relative overflow-hidden">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Leaf className="w-4 h-4 text-emerald-600" />
-              <span className="font-semibold text-sm">Focus Timer</span>
-            </div>
-            <ChevronRight className="w-4 h-4 text-muted-foreground" />
-          </div>
-          <div className="text-center py-2">
-            <div className="text-4xl font-extrabold tracking-tight">25:00</div>
-            <div className="text-[11px] text-muted-foreground mt-1.5 mb-3">Stay focused and avoid distractions.</div>
-            <Button onClick={() => navigate('/focus-mode')} className="rounded-full px-6 h-9 text-xs font-semibold shadow-md shadow-primary/20">
-              Start Focus
-            </Button>
-          </div>
-          <div className="absolute -bottom-3 -right-2 text-5xl opacity-90 select-none">🌱</div>
-        </Card>
-
-        {/* Progress (desktop) */}
-        <Card className="hidden lg:flex p-4 rounded-2xl border-border/40 shadow-sm flex-col">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-blue-600" />
-              <span className="font-semibold text-sm">Progress</span>
-            </div>
-            <button className="text-[11px] text-muted-foreground flex items-center gap-1 hover:text-foreground">
-              This Week <ChevronDown className="w-3 h-3" />
-            </button>
-          </div>
-          {(() => {
-            const max = Math.max(...weekFocus, 1);
-            return (
-              <div className="flex items-end gap-1.5 h-20">
-                {weekFocus.map((m, i) => (
-                  <div key={i} className="flex-1 rounded-t-md bg-primary/70 min-h-[2px]" style={{ height: `${(m / max) * 100}%` }} title={`${m} min`} />
-                ))}
-              </div>
-            );
-          })()}
-          <div className="grid grid-cols-7 text-[9px] text-muted-foreground text-center mb-3 mt-1">
-            {Array.from({ length: 7 }).map((_, i) => {
-              const d = new Date(Date.now() - (6 - i) * 864e5);
-              return <span key={i}>{d.toLocaleDateString(undefined, { weekday: 'short' }).slice(0, 3)}</span>;
-            })}
-          </div>
-          <div className="grid grid-cols-3 gap-2 mt-auto">
-            {[
-              { label: 'Study time', val: `${Math.floor(weekMinutes / 60)}h ${weekMinutes % 60}m` },
-              { label: 'Sessions', val: String(weekSessions) },
-              { label: 'Streak', val: `${streak}d` },
-            ].map(m => (
-              <div key={m.label} className="rounded-xl bg-muted/40 p-2 text-center">
-                <div className="text-[10px] text-muted-foreground">{m.label}</div>
-                <div className="text-sm font-extrabold mt-0.5">{m.val}</div>
-              </div>
-            ))}
-          </div>
-
-        </Card>
-      </div>
-
-      {/* Upcoming Classes — hidden while live rooms are paused */}
-      {isStudentFeature('video_rooms') && <div data-tour="upcoming"><UpcomingClassesCard /></div>}
-
-      {/* AI Shortcuts */}
+      {/* AI shortcuts */}
       <div data-tour="ai-shortcuts"><AIShortcutsCard /></div>
 
-      {/* Smart Study Tools */}
-      <div>
-        <div className="flex items-center gap-2 mb-3 lg:mb-4">
+      {/* Smart study tools */}
+      <section>
+        <div className="flex items-center gap-2 mb-3">
           <Sparkles className="w-4 h-4 text-primary" />
-          <h2 className="font-bold text-base">Smart Study Tools</h2>
+          <h2 className="font-bold text-[17px] tracking-[-0.02em]">Smart Study Tools</h2>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 lg:gap-3">
           {smartTools.map((t) => (
             <button
               key={t.label}
               onClick={() => navigate(t.to)}
-              className="text-left p-3.5 lg:p-4 rounded-2xl bg-card border border-border/30 hover:border-primary/30 hover:shadow-elevated transition-all group flex items-start gap-3"
+              className="text-left p-3.5 rounded-[18px] bg-card border border-border/40 hover:border-primary/30 hover:shadow-elevated transition-all active:scale-[0.98] group flex items-start gap-3"
             >
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${t.tint} group-hover:scale-105 transition-transform`}>
+              <span className={`w-9 h-9 rounded-[12px] flex items-center justify-center shrink-0 ${t.tint} group-hover:scale-105 transition-transform`}>
                 <t.icon className="w-4 h-4" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="text-[13px] font-bold truncate">{t.label}</div>
-                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                </div>
-                <div className="text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">{t.desc}</div>
-              </div>
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[13.5px] font-bold leading-tight tracking-[-0.01em]">{t.label}</span>
+                <span className="block text-[11.5px] text-muted-foreground leading-snug mt-0.5">{t.desc}</span>
+              </span>
             </button>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Bottom utility dock — desktop only */}
-      <Card className="hidden lg:flex p-3 rounded-2xl border-border/40 shadow-sm items-center gap-3">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-rose-500/10 text-rose-600">
-          <Target className="w-4 h-4" />
-          <div>
-            <div className="text-[10px] uppercase tracking-wider font-semibold opacity-80">Daily Goal</div>
-            <div className="text-sm font-extrabold leading-none">{tasksDone}/{tasksGoal} <span className="text-[10px] font-medium opacity-70">tasks</span></div>
-          </div>
+      {/* Recent work */}
+      {(recentNotes.length > 0 || flashDecks.length > 0) && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
+          {recentNotes.length > 0 && (
+            <Card className="p-4 rounded-[22px] border-border/40 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-violet-600" />
+                  <span className="font-semibold text-[14px]">Recent notes</span>
+                </div>
+                <button onClick={() => navigate('/student-notes')} className="text-[12px] text-primary font-medium hover:underline">View all</button>
+              </div>
+              <div className="space-y-3">
+                {recentNotes.map((n) => (
+                  <button key={n.id} onClick={() => navigate('/student-notes')} className="w-full flex items-center gap-3 group text-left">
+                    <span className="w-9 h-9 rounded-[12px] bg-violet-500/10 text-violet-600 flex items-center justify-center shrink-0">
+                      <FileText className="w-4 h-4" />
+                    </span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-[13.5px] font-semibold truncate group-hover:text-primary transition-colors">{n.title}</span>
+                      <span className="block text-[11.5px] text-muted-foreground">{n.when}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {flashDecks.length > 0 && (
+            <Card className="p-4 rounded-[22px] border-border/40 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-emerald-600" />
+                  <span className="font-semibold text-[14px]">Decks to review</span>
+                </div>
+                <button onClick={() => navigate('/flashcards')} className="text-[12px] text-primary font-medium hover:underline">Review now</button>
+              </div>
+              <div className="space-y-3">
+                {flashDecks.map((d) => {
+                  const circ = 2 * Math.PI * 16;
+                  return (
+                    <button key={d.id} onClick={() => navigate('/flashcards')} className="w-full flex items-center gap-3 group text-left">
+                      <span className="w-9 h-9 rounded-[12px] bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Layers className="w-4 h-4" />
+                      </span>
+                      <span className="flex-1 min-w-0">
+                        <span className="block text-[13.5px] font-semibold truncate group-hover:text-primary transition-colors">{d.title}</span>
+                        <span className="block text-[11.5px] text-muted-foreground">{d.cards} cards</span>
+                      </span>
+                      <span className="relative w-10 h-10 shrink-0">
+                        <svg className="w-10 h-10 -rotate-90" viewBox="0 0 40 40">
+                          <circle cx="20" cy="20" r="16" className="stroke-muted" strokeWidth="3" fill="none" />
+                          <circle cx="20" cy="20" r="16" className="stroke-emerald-500" strokeWidth="3" fill="none" strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={circ * (1 - d.pct / 100)} />
+                        </svg>
+                        <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-emerald-600">{d.pct}%</span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </Card>
+          )}
         </div>
-        <div className="flex-1 flex items-center gap-2 px-3.5 h-10 rounded-xl bg-muted/50 border border-border/30">
-          <Search className="w-4 h-4 text-muted-foreground" />
-          <input
-            placeholder="Search everything..."
-            className="bg-transparent flex-1 outline-none text-sm placeholder:text-muted-foreground"
-          />
-          <kbd className="text-[10px] text-muted-foreground bg-background border border-border/40 px-1.5 py-0.5 rounded font-mono">⌘K</kbd>
-        </div>
-        <div className="flex items-center gap-1.5 px-1">
-          {[FileText, ImageIcon, CheckCircle2, FolderOpen, Paperclip, StickyNote].map((Icon, i) => (
-            <button key={i} className="w-8 h-8 rounded-lg bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors">
-              <Icon className="w-3.5 h-3.5" />
-            </button>
-          ))}
-        </div>
-        <button onClick={() => navigate('/voice-notes')} className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-muted/60 transition-colors">
-          <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-            <Mic className="w-4 h-4" />
-          </div>
-          <div className="text-left">
-            <div className="text-xs font-bold leading-none">Quick Capture</div>
-            <div className="text-[10px] text-muted-foreground mt-0.5">Voice to note</div>
-          </div>
-        </button>
-      </Card>
+      )}
+
+      {/* Library shortcut */}
+      <button
+        onClick={() => navigate('/practice?tab=resources')}
+        className="w-full flex items-center gap-3 p-4 rounded-[22px] bg-card border border-border/40 hover:border-primary/30 transition-all text-left"
+      >
+        <span className="w-10 h-10 rounded-[14px] bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
+          <FolderOpen className="w-4.5 h-4.5" />
+        </span>
+        <span className="flex-1 min-w-0">
+          <span className="block text-[14px] font-bold">Your library</span>
+          <span className="block text-[12px] text-muted-foreground">Everything you have uploaded, organised</span>
+        </span>
+        <ChevronRight className="w-4 h-4 text-muted-foreground" />
+      </button>
+
+      {isStudentFeature('video_rooms') && <div data-tour="upcoming"><UpcomingClassesCard /></div>}
     </div>
   );
 }
+
+export default StudentDashboardV2;
