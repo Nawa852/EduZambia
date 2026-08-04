@@ -23,7 +23,7 @@ const SIZE = (RADIUS + STROKE) * 2;
 const GAP = 0.055; // fraction of circle left empty between segments
 
 /** Circular five-step study loop: Capture → Understand → Practice → Review → Master. */
-export const LearningCircle: React.FC<{ compact?: boolean }> = ({ compact }) => {
+export const LearningCircle: React.FC<{ compact?: boolean; variant?: 'full' | 'summary' }> = ({ compact, variant = 'full' }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [d, setD] = useState({ resources: 0, packs: 0, quizzes: 0, reviews: 0, streak: 0 });
