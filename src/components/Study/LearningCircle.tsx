@@ -23,7 +23,7 @@ const SIZE = (RADIUS + STROKE) * 2;
 const GAP = 0.055; // fraction of circle left empty between segments
 
 /** Circular five-step study loop: Capture → Understand → Practice → Review → Master. */
-export const LearningCircle: React.FC<{ compact?: boolean }> = ({ compact }) => {
+export const LearningCircle: React.FC<{ compact?: boolean; variant?: 'full' | 'summary' }> = ({ compact, variant = 'full' }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [d, setD] = useState({ resources: 0, packs: 0, quizzes: 0, reviews: 0, streak: 0 });
@@ -70,8 +70,42 @@ export const LearningCircle: React.FC<{ compact?: boolean }> = ({ compact }) => 
   const seg = circumference / stages.length;
   const dash = seg * (1 - GAP);
 
+  if (variant === 'summary') {
+    const r = 34, s = 7, size = (r + s) * 2;
+    const c = 2 * Math.PI * r;
+    return (
+      <button
+        onClick={() => navigate('/practice?tab=circle')}
+        className="w-full text-left rounded-[22px] border border-border/40 bg-card shadow-sm p-4 flex items-center gap-4 hover:border-primary/30 transition-all"
+      >
+        <span className="relative shrink-0" style={{ width: size, height: size }}>
+          <svg width={size} height={size} className="-rotate-90">
+            <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={s} className="stroke-muted" />
+            <circle
+              cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={s} strokeLinecap="round"
+              className="stroke-primary transition-[stroke-dashoffset] duration-700"
+              strokeDasharray={c} strokeDashoffset={c * (1 - pct / 100)}
+            />
+          </svg>
+          <span className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-[17px] font-extrabold leading-none tracking-[-0.03em]">{pct}%</span>
+            <span className="text-[9px] text-muted-foreground mt-0.5">This week</span>
+          </span>
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[14px] font-semibold leading-snug tracking-[-0.01em]">
+            Finish the 5 steps each week and the knowledge sticks.
+          </span>
+          <span className="block text-[13px] font-semibold text-primary mt-1.5">{doneCount} / {stages.length} steps</span>
+        </span>
+        <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+      </button>
+    );
+  }
+
   return (
     <div className="rounded-[24px] border border-border/50 bg-card/70 supports-[backdrop-filter]:bg-card/60 backdrop-blur-xl p-4 sm:p-6">
+
       <div className="flex flex-col lg:flex-row lg:items-center gap-6">
         {/* Ring */}
         <div className="relative mx-auto shrink-0" style={{ width: SIZE, height: SIZE }}>

@@ -7,10 +7,34 @@ import { Sparkles, Camera, MessageSquare, Mic } from 'lucide-react';
  * One input → key points, flashcards, quiz, visual lesson. Plus ask & snap.
  */
 const tabs: HubTab[] = [
-  { id: 'synapse-it', label: 'Synapse It', icon: Sparkles, component: React.lazy(() => import('@/pages/study/KnowYourStuffPage')) },
-  { id: 'snap', label: 'Snap & Solve', icon: Camera, component: React.lazy(() => import('@/pages/SnapAndSolvePage')) },
-  { id: 'ask', label: 'Ask', icon: MessageSquare, component: React.lazy(() => import('@/pages/AIChat')) },
-  { id: 'voice', label: 'Voice', icon: Mic, component: React.lazy(() => import('@/pages/VoiceAITutorPage')) },
+  {
+    id: 'synapse-it',
+    label: 'Synapse It',
+    icon: Sparkles,
+    description: 'Turn notes, a past paper or a photo into a full study pack',
+    component: React.lazy(() => import('@/pages/study/KnowYourStuffPage')),
+  },
+  {
+    id: 'snap',
+    label: 'Snap & Solve',
+    icon: Camera,
+    description: 'Photograph a question and get a worked, step-by-step answer',
+    component: React.lazy(() => import('@/pages/SnapAndSolvePage')),
+  },
+  {
+    id: 'ask',
+    label: 'Ask',
+    icon: MessageSquare,
+    description: 'Chat with your tutor — markdown, maths and images supported',
+    component: React.lazy(() => import('@/pages/AIChat')),
+  },
+  {
+    id: 'voice',
+    label: 'Voice',
+    icon: Mic,
+    description: 'Talk it through aloud and hear the explanation back',
+    component: React.lazy(() => import('@/pages/VoiceAITutorPage')),
+  },
 ];
 
 const SynapseAIHub = () => (

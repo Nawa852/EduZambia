@@ -162,22 +162,38 @@ const KnowYourStuffPage: React.FC = () => {
 
   /* ------------------------------ input state ------------------------------ */
   if (!pack) {
+    const outcomes = [
+      { icon: Lightbulb, label: 'Summary', desc: 'The short version', tint: 'bg-amber-500/12 text-amber-600' },
+      { icon: ListChecks, label: 'Key points', desc: 'What actually matters', tint: 'bg-blue-500/12 text-blue-600' },
+      { icon: Layers, label: 'Flashcards', desc: 'Ready to revise', tint: 'bg-emerald-500/12 text-emerald-600' },
+      { icon: Target, label: 'Quiz', desc: 'Instant feedback', tint: 'bg-rose-500/12 text-rose-600' },
+      { icon: FileText, label: 'Study plan', desc: 'Day by day', tint: 'bg-violet-500/12 text-violet-600' },
+      { icon: Boxes, label: 'Visual lesson', desc: 'Built with live code', tint: 'bg-teal-500/12 text-teal-600' },
+    ];
+
     return (
       <PageContainer className="py-1">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">Know Your Stuff</h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-2xl leading-relaxed">
-            Drop anything you're studying — notes, a past paper, a slide deck, a photo of the board.
-            Synapse breaks it down into key points, flashcards, a quiz and an interactive visual in seconds.
-          </p>
-        </div>
+        {/* Hero input */}
+        <Card className="rounded-[26px] border-primary/15 bg-gradient-to-br from-primary/[0.10] via-violet-500/[0.06] to-transparent p-4 sm:p-6 space-y-4">
+          <div className="flex items-center gap-3">
+            <span className="w-11 h-11 rounded-[16px] bg-primary/15 flex items-center justify-center shrink-0">
+              <Sparkles className="w-5 h-5 text-primary" />
+            </span>
+            <div className="min-w-0">
+              <h1 className="text-[20px] sm:text-[24px] font-extrabold tracking-[-0.03em] leading-tight">
+                Synapse It
+              </h1>
+              <p className="text-[12.5px] text-muted-foreground leading-snug">
+                One drop → six ways to actually learn it.
+              </p>
+            </div>
+          </div>
 
-        <Card className="rounded-3xl border-border/50 p-4 sm:p-6 space-y-4">
           <Input
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             placeholder="What are you studying? e.g. Photosynthesis, Grade 10 Biology"
-            className="rounded-xl h-11"
+            className="rounded-[14px] h-12 bg-background/80 border-border/50 text-[15px]"
             aria-label="Topic"
           />
 
@@ -191,8 +207,8 @@ const KnowYourStuffPage: React.FC = () => {
               const f = e.dataTransfer.files?.[0];
               if (f) setFile(f);
             }}
-            className={`flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed py-10 px-4 cursor-pointer transition-colors ${
-              dragging ? 'border-primary bg-primary/5' : 'border-border/70 hover:border-primary/50 hover:bg-secondary/40'
+            className={`flex flex-col items-center justify-center gap-2.5 rounded-[20px] border-2 border-dashed py-9 px-4 cursor-pointer transition-all ${
+              dragging ? 'border-primary bg-primary/10 scale-[1.01]' : 'border-primary/25 bg-background/60 hover:border-primary/50 hover:bg-primary/[0.04]'
             }`}
           >
             <input
@@ -201,22 +217,28 @@ const KnowYourStuffPage: React.FC = () => {
               accept=".pdf,.docx,.txt,.md,.png,.jpg,.jpeg,.webp,.pptx"
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             />
-            <UploadCloud className="w-7 h-7 text-primary" />
-            <p className="text-sm font-medium text-foreground">
+            <span className="w-12 h-12 rounded-full bg-primary/12 flex items-center justify-center">
+              <UploadCloud className="w-5 h-5 text-primary" />
+            </span>
+            <p className="text-[14px] font-semibold text-foreground text-center">
               {file ? file.name : 'Drop a file or tap to browse'}
             </p>
-            <p className="text-[11px] text-muted-foreground">PDF, Word, slides, images or plain text</p>
+            <p className="text-[11.5px] text-muted-foreground text-center">PDF · Word · slides · photos · plain text</p>
           </label>
 
           <Textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            rows={5}
+            rows={4}
             placeholder="…or paste your notes here"
-            className="rounded-xl"
+            className="rounded-[14px] bg-background/80 border-border/50 text-[14px]"
           />
 
-          <Button className="w-full rounded-xl h-11" onClick={breakdown} disabled={busy}>
+          <Button
+            className="w-full rounded-full h-12 text-[15px] font-semibold bg-gradient-to-r from-primary to-violet-600 hover:opacity-95 shadow-lg shadow-primary/25"
+            onClick={breakdown}
+            disabled={busy}
+          >
             {busy
               ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{STAGES[stage]}…</>
               : <><Sparkles className="w-4 h-4 mr-2" />Break it down</>}
@@ -225,25 +247,26 @@ const KnowYourStuffPage: React.FC = () => {
           {busy && <Progress value={((stage + 1) / STAGES.length) * 100} className="h-1.5" />}
         </Card>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-          {[
-            { icon: Lightbulb, label: 'Summary', desc: 'The short version' },
-            { icon: ListChecks, label: 'Key points', desc: 'The things that matter' },
-            { icon: Layers, label: 'Flashcards', desc: 'Ready to revise' },
-            { icon: Target, label: 'Quiz', desc: 'Instant feedback' },
-            { icon: FileText, label: 'Study plan', desc: 'Day by day' },
-            { icon: Boxes, label: 'Visual lesson', desc: 'Built with live code' },
-          ].map((f) => (
-            <Card key={f.label} className="rounded-2xl p-3.5 border-border/40">
-              <f.icon className="w-4 h-4 text-primary mb-2" />
-              <p className="text-[13px] font-semibold text-foreground leading-tight">{f.label}</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{f.desc}</p>
-            </Card>
-          ))}
+        <div>
+          <h2 className="text-[11px] font-semibold tracking-[0.08em] text-muted-foreground uppercase px-0.5 mb-2.5">
+            What you get back
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+            {outcomes.map((f) => (
+              <Card key={f.label} className="rounded-[18px] p-3.5 border-border/40 hover:border-primary/25 transition-colors">
+                <span className={`w-9 h-9 rounded-[12px] flex items-center justify-center mb-2.5 ${f.tint}`}>
+                  <f.icon className="w-4 h-4" />
+                </span>
+                <p className="text-[13.5px] font-bold text-foreground leading-tight">{f.label}</p>
+                <p className="text-[11.5px] text-muted-foreground mt-0.5 leading-snug">{f.desc}</p>
+              </Card>
+            ))}
+          </div>
         </div>
       </PageContainer>
     );
   }
+
 
   /* ------------------------------ results state ---------------------------- */
   return (
