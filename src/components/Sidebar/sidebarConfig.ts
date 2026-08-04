@@ -96,39 +96,49 @@ const studentNavigation: NavGroup[] = [
 
 
 // ─── Teacher ────────────────────────────────────────
+// Four verbs, mirroring the student side: Home · Co-Pilot · Teach · Me.
 const teacherNavigation: NavGroup[] = [
   {
     label: "Main",
     items: [
-      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
-      { title: "My Classes", url: "/teacher-classes", icon: Users, shortTitle: "Classes" },
-      { title: "Lesson Planner", url: "/teach?tab=lesson-plans", icon: FileText, shortTitle: "Plan" },
-      { title: "Scheme of Work", url: "/teach?tab=scheme-of-work", icon: BookOpen, shortTitle: "Scheme" },
-      { title: "Assignments", url: "/assignments", icon: ClipboardCheck, shortTitle: "Tasks" },
-      { title: "Gradebook", url: "/gradebook", icon: BarChart3, shortTitle: "Grades" },
-      { title: "Students", url: "/teach?tab=students", icon: GraduationCap, shortTitle: "Students" },
-      { title: "Attendance", url: "/attendance", icon: Calendar, shortTitle: "Attend" },
-      { title: "Reports & Analytics", url: "/teach?tab=analytics", icon: PieChart, shortTitle: "Reports" },
+      { title: "Home", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
+      { title: "Co-Pilot", url: "/teacher/copilot", icon: Sparkles, shortTitle: "Co-Pilot", badge: "AI", matchPrefixes: ["/ai-lesson-generator", "/ai-teacher-suite", "/teacher-test-generator"] },
+      { title: "Teach", url: "/teach", icon: ClipboardCheck, shortTitle: "Teach", matchPrefixes: ["/teacher", "/gradebook", "/attendance"] },
+      { title: "Me", url: "/profile", icon: User, shortTitle: "Me", matchPrefixes: ["/settings"] },
     ],
   },
   {
-    label: "Teaching",
+    label: "Classroom",
     items: [
-      { title: "Curriculum Co-Pilot", url: "/ai-lesson-generator", icon: Sparkles, badge: "AI", shortTitle: "Co-Pilot" },
-      { title: "My Courses", url: "/teach?tab=courses", icon: BookOpen, shortTitle: "Courses" },
-      { title: "Notes Repo", url: "/teacher-notes-repo", icon: Bookmark, shortTitle: "Notes" },
-      { title: "Resources", url: "/resource-library", icon: FolderOpen, shortTitle: "Resources" },
-      { title: "My Materials", url: "/my-materials", icon: FolderOpen, shortTitle: "Materials" },
-      { title: "Assessments", url: "/teach?tab=assessments", icon: Target, shortTitle: "Assess" },
+      { title: "My Classes", url: "/teacher-classes", icon: Users, shortTitle: "Classes" },
+      { title: "Students", url: "/teacher/students", icon: GraduationCap, shortTitle: "Students" },
+      { title: "Assignments", url: "/assignments", icon: ClipboardCheck, shortTitle: "Tasks" },
+      { title: "Gradebook", url: "/gradebook", icon: BarChart3, shortTitle: "Grades" },
+      { title: "Attendance", url: "/attendance", icon: Calendar, shortTitle: "Attend" },
+    ],
+  },
+  {
+    label: "Planning",
+    items: [
+      { title: "Lesson Planner", url: "/teach?tab=lesson-plans", icon: FileText, shortTitle: "Plan" },
+      { title: "Scheme of Work", url: "/teach?tab=scheme-of-work", icon: BookOpen, shortTitle: "Scheme" },
+      { title: "Test Generator", url: "/teach?tab=test-generator", icon: Target, shortTitle: "Tests" },
+      { title: "My Materials", url: "/teach?tab=my-materials", icon: FolderOpen, shortTitle: "Materials" },
+      { title: "Analytics", url: "/teach?tab=analytics", icon: PieChart, shortTitle: "Reports" },
+    ],
+  },
+  {
+    label: "More",
+    items: [
       { title: "Announcements", url: "/teach?tab=announcements", icon: Bell, shortTitle: "News" },
       { title: "Communication", url: "/communication", icon: MessageSquare, shortTitle: "Chat" },
       { title: "Calendar", url: "/calendar", icon: Calendar, shortTitle: "Cal" },
       { title: "Professional Development", url: "/teacher-specialization", icon: Award, shortTitle: "PD" },
-      { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
       { title: "Settings", url: "/settings", icon: Settings, shortTitle: "Settings" },
     ],
   },
 ];
+
 
 
 
