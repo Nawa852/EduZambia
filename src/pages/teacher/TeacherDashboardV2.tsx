@@ -1,326 +1,323 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/components/Auth/AuthProvider";
+import { Link, useNavigate } from "react-router-dom";
 import { useProfile } from "@/hooks/useProfile";
+import { useTeacherStats } from "@/hooks/useTeacherStats";
 import { TeacherShell } from "@/components/Teacher/TeacherShell";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   BookOpen, Users, ClipboardList, TrendingUp, Plus, Calendar as CalIcon,
-  Sparkles, Megaphone, FlaskConical, Video, FileText, Library, Brain,
-  Bell, CheckCircle2, BarChart3, ArrowRight
+  Sparkles, FileText, ArrowRight, AlertTriangle, CheckCircle2, Wand2,
+  Megaphone, BarChart3, FolderUp, GraduationCap,
 } from "lucide-react";
-import {
-  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid,
-} from "recharts";
-import { toast } from "sonner";
 
-const SUBJECT_COLORS: Record<string, string> = {
-  Mathematics: "from-blue-500 to-blue-600",
-  "Add Mathematics": "from-amber-500 to-amber-600",
-  Science: "from-emerald-500 to-emerald-600",
-  Physics: "from-violet-500 to-violet-600",
-  English: "from-rose-500 to-rose-600",
-  default: "from-slate-500 to-slate-600",
-};
+/* ------------------------------------------------------------------ */
 
-const SCHEDULE = [
-  { time: "08:00 AM", title: "Mathematics — Grade 11A", topic: "Algebraic Expressions", room: "Room 12", color: "bg-blue-500" },
-  { time: "10:00 AM", title: "Mathematics — Grade 10B", topic: "Quadratic Equations", room: "Room 08", color: "bg-emerald-500" },
-  { time: "01:00 PM", title: "Additional Math — 11B", topic: "Trigonometric Ratios", room: "Room 15", color: "bg-violet-500" },
-  { time: "02:30 PM", title: "Mathematics — Grade 12A", topic: "Calculus — Derivatives", room: "Room 05", color: "bg-amber-500" },
+const TONES = [
+  { card: "bg-blue-500/[0.07] border-blue-500/15", icon: "bg-blue-500/12 text-blue-600" },
+  { card: "bg-emerald-500/[0.07] border-emerald-500/15", icon: "bg-emerald-500/12 text-emerald-600" },
+  { card: "bg-amber-500/[0.07] border-amber-500/15", icon: "bg-amber-500/12 text-amber-600" },
+  { card: "bg-violet-500/[0.07] border-violet-500/15", icon: "bg-violet-500/12 text-violet-600" },
 ];
 
-const PROGRESS_DATA = [
-  { week: "Apr 20", "Gr 11A": 60, "Gr 10B": 50, "Gr 12A": 65, "Add Math 11B": 45, "Math Club": 55 },
-  { week: "Apr 27", "Gr 11A": 65, "Gr 10B": 58, "Gr 12A": 70, "Add Math 11B": 52, "Math Club": 60 },
-  { week: "May 4",  "Gr 11A": 72, "Gr 10B": 65, "Gr 12A": 75, "Add Math 11B": 60, "Math Club": 64 },
-  { week: "May 11", "Gr 11A": 78, "Gr 10B": 70, "Gr 12A": 80, "Add Math 11B": 68, "Math Club": 67 },
-  { week: "May 18", "Gr 11A": 82, "Gr 10B": 76, "Gr 12A": 85, "Add Math 11B": 72, "Math Club": 68 },
-];
-
-const ANNOUNCEMENTS = [
-  { icon: Megaphone, color: "text-blue-600 bg-blue-100", title: "ECZ Curriculum Update", body: "New Mathematics syllabus guidelines have been released.", time: "2 days ago" },
-  { icon: CalIcon,   color: "text-emerald-600 bg-emerald-100", title: "Teachers' Workshop", body: "Join us for a workshop on AI in Education this Friday.", time: "5 days ago" },
-  { icon: ClipboardList, color: "text-amber-600 bg-amber-100", title: "End of Term Exams", body: "Examination schedule has been published.", time: "1 week ago" },
-];
-
-const RECENT_ASSIGNMENTS = [
-  { title: "Quadratic Equations Worksheet", grade: "Grade 10B", submitted: 12, total: 28, color: "text-blue-600" },
-  { title: "Algebraic Expressions Quiz", grade: "Grade 11A", submitted: 26, total: 32, color: "text-emerald-600" },
-  { title: "Trigonometry Problem Set", grade: "Grade 11B", submitted: 8, total: 20, color: "text-amber-600" },
-  { title: "Calculus Derivatives Assignment", grade: "Grade 12A", submitted: 18, total: 24, color: "text-violet-600" },
-];
-
-const QUICK_RESOURCES = [
-  { icon: FileText, label: "Lesson Plan Templates", to: "/teacher/lessons", color: "bg-blue-50 text-blue-600" },
-  { icon: Library, label: "ECZ Syllabus Documents", to: "/teacher/resources", color: "bg-emerald-50 text-emerald-600" },
-  { icon: ClipboardList, label: "Past Exam Papers", to: "/past-papers", color: "bg-amber-50 text-amber-600" },
-  { icon: FlaskConical, label: "Interactive Simulations", to: "/simulations", color: "bg-rose-50 text-rose-600" },
-  { icon: Video, label: "Video Lessons", to: "/video-learning", color: "bg-violet-50 text-violet-600" },
-  { icon: Brain, label: "Question Bank", to: "/teacher/assignments", color: "bg-slate-50 text-slate-600" },
-];
-
-function Stat({ icon: Icon, label, value, sub, tone, to }: any) {
+function Stat({ icon: Icon, label, value, sub, tone, to }: {
+  icon: typeof BookOpen; label: string; value: string | number; sub: string;
+  tone: typeof TONES[number]; to: string;
+}) {
   return (
-    <Card className="rounded-2xl">
-      <CardContent className="p-5">
-        <div className="flex items-center justify-between">
-          <div className={`w-10 h-10 rounded-xl grid place-items-center ${tone}`}>
-            <Icon className="w-5 h-5" />
-          </div>
-        </div>
-        <div className="mt-3 text-xs text-muted-foreground">{label}</div>
-        <div className="text-3xl font-semibold tracking-tight">{value}</div>
-        <div className="text-xs text-muted-foreground mt-0.5">{sub}</div>
-        {to && (
-          <Link to={to} className="text-xs text-primary font-medium mt-2 inline-flex items-center gap-1">
-            View {label.toLowerCase()} <ArrowRight className="w-3 h-3" />
-          </Link>
-        )}
-      </CardContent>
+    <Link
+      to={to}
+      className={`rounded-[20px] border p-4 block transition-all active:scale-[0.98] hover:-translate-y-0.5 hover:shadow-elevated ${tone.card}`}
+    >
+      <span className={`w-10 h-10 rounded-[14px] flex items-center justify-center mb-3 ${tone.icon}`}>
+        <Icon className="w-[18px] h-[18px]" />
+      </span>
+      <p className="text-[26px] font-extrabold leading-none tracking-[-0.03em]">{value}</p>
+      <p className="text-[12.5px] font-semibold mt-1.5 leading-tight">{label}</p>
+      <p className="text-[11px] text-muted-foreground leading-snug">{sub}</p>
+    </Link>
+  );
+}
+
+function SectionCard({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <Card className="rounded-[22px] border-border/40 p-4 sm:p-5">
+      <div className="flex items-center justify-between gap-3 mb-3.5">
+        <h2 className="text-[14.5px] font-bold tracking-[-0.015em]">{title}</h2>
+        {action}
+      </div>
+      {children}
     </Card>
   );
 }
 
-export default function TeacherDashboardV2() {
-  const { user } = useAuth();
+function Empty({ icon: Icon, title, body, cta, to }: {
+  icon: typeof BookOpen; title: string; body: string; cta?: string; to?: string;
+}) {
+  return (
+    <div className="text-center py-7 px-3">
+      <span className="w-11 h-11 rounded-full bg-secondary flex items-center justify-center mx-auto mb-3">
+        <Icon className="w-[18px] h-[18px] text-muted-foreground" />
+      </span>
+      <p className="text-[13.5px] font-semibold">{title}</p>
+      <p className="text-[12px] text-muted-foreground mt-1 max-w-xs mx-auto leading-snug">{body}</p>
+      {cta && to && (
+        <Link to={to}>
+          <Button size="sm" className="rounded-full mt-3.5 h-9 px-4 text-[13px]">{cta}</Button>
+        </Link>
+      )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+
+const QUICK_ACTIONS = [
+  { label: "Lesson plan", icon: FileText, to: "/teach?tab=lesson-plans" },
+  { label: "Test generator", icon: Wand2, to: "/teach?tab=test-generator" },
+  { label: "New assignment", icon: ClipboardList, to: "/assignments" },
+  { label: "Attendance", icon: CalIcon, to: "/attendance" },
+  { label: "Announcement", icon: Megaphone, to: "/teach?tab=announcements" },
+  { label: "Upload material", icon: FolderUp, to: "/teach?tab=my-materials" },
+];
+
+const TeacherDashboardV2 = () => {
   const { profile } = useProfile();
-  const name = profile?.full_name?.split(" ")[0] || "Teacher";
-  const today = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const navigate = useNavigate();
+  const {
+    courses, totalStudents, pendingCount, avgPerformance,
+    pendingSubmissions, studentAlerts, loading,
+  } = useTeacherStats();
 
-  const { data: classes = [] } = useQuery({
-    queryKey: ["teacher-classes", user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      const { data } = await supabase.from("classes").select("*, class_enrollments(count)").eq("teacher_id", user.id);
-      return data ?? [];
-    },
-    enabled: !!user,
-  });
-
-  const myClasses = classes.length
-    ? classes.map((c: any) => ({
-        name: c.name,
-        subject: c.subject || "Mathematics",
-        students: c.class_enrollments?.[0]?.count ?? 0,
-        progress: 70,
-        color: SUBJECT_COLORS[c.subject || ""] || SUBJECT_COLORS.default,
-      }))
-    : [
-        { name: "Mathematics — Grade 11A", subject: "Mathematics", students: 32, progress: 82, color: SUBJECT_COLORS.Mathematics },
-        { name: "Mathematics — Grade 10B", subject: "Mathematics", students: 28, progress: 76, color: SUBJECT_COLORS.Mathematics },
-        { name: "Mathematics — Grade 12A", subject: "Mathematics", students: 24, progress: 85, color: SUBJECT_COLORS.Mathematics },
-        { name: "Additional Math — 11B", subject: "Add Mathematics", students: 20, progress: 72, color: SUBJECT_COLORS["Add Mathematics"] },
-        { name: "Mathematics Club", subject: "Mathematics", students: 15, progress: 68, color: SUBJECT_COLORS.Mathematics },
-      ];
+  const name = (profile?.full_name || "Teacher").split(" ")[0];
+  const today = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
 
   return (
     <TeacherShell>
-      {/* Greeting + date */}
-      <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Good morning, {name}! 👋</h1>
-          <p className="text-sm text-muted-foreground mt-1">Here's what's happening in your classes today.</p>
+      {/* Greeting */}
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-[24px] sm:text-[30px] font-extrabold tracking-[-0.035em] leading-tight">
+            Good day, {name}
+          </h1>
+          <p className="text-[13px] text-muted-foreground mt-1">
+            {pendingCount > 0
+              ? `${pendingCount} submission${pendingCount === 1 ? "" : "s"} waiting to be marked.`
+              : "Nothing is waiting on you. Good time to plan ahead."}
+          </p>
         </div>
-        <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-card border text-sm">
-          <CalIcon className="w-4 h-4 text-primary" />
-          <span>{today}</span>
-        </div>
+        <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-secondary/70 border border-border/40 text-[12px] font-medium">
+          <CalIcon className="w-3.5 h-3.5 text-primary" />
+          {today}
+        </span>
       </div>
 
-      {/* Top stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Stat icon={BookOpen} label="My Classes" value={myClasses.length} sub="Active classes" tone="bg-blue-100 text-blue-700" to="/teacher/classes" />
-        <Stat icon={Users} label="Students" value={myClasses.reduce((s, c) => s + (c.students || 0), 0)} sub="Total students" tone="bg-emerald-100 text-emerald-700" to="/teacher/students" />
-        <Stat icon={ClipboardList} label="Assignments" value={8} sub="Pending to grade" tone="bg-amber-100 text-amber-700" to="/teacher/assignments" />
-        <Stat icon={TrendingUp} label="Avg. Class Progress" value="78%" sub="This month" tone="bg-violet-100 text-violet-700" to="/teacher/reports" />
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 lg:gap-3">
+        {loading
+          ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[128px] rounded-[20px]" />)
+          : (
+            <>
+              <Stat icon={BookOpen} label="Classes" value={courses.length} sub="Courses you run" tone={TONES[0]} to="/teach?tab=courses" />
+              <Stat icon={Users} label="Students" value={totalStudents} sub="Enrolled with you" tone={TONES[1]} to="/teacher/students" />
+              <Stat icon={ClipboardList} label="To mark" value={pendingCount} sub="Ungraded submissions" tone={TONES[2]} to="/gradebook" />
+              <Stat icon={TrendingUp} label="Average" value={avgPerformance ? `${avgPerformance}%` : "—"} sub="Across graded work" tone={TONES[3]} to="/teach?tab=analytics" />
+            </>
+          )}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* My Classes */}
-        <Card className="rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="text-base">My Classes</CardTitle>
-            <Link to="/teacher/classes" className="text-xs text-primary">View all</Link>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {myClasses.slice(0, 5).map((c) => (
-              <div key={c.name} className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${c.color} grid place-items-center text-white text-sm font-semibold`}>
-                  {c.subject[0]}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium truncate">{c.name}</div>
-                  <div className="text-xs text-muted-foreground">{c.students} students</div>
-                </div>
-                <div className="w-28">
-                  <Progress value={c.progress} className="h-1.5" />
-                </div>
-                <div className="text-xs font-semibold w-10 text-right">{c.progress}%</div>
-              </div>
-            ))}
-            <Link to="/teacher/classes" className="flex items-center justify-center gap-1 text-sm text-primary font-medium pt-1">
-              <Plus className="w-4 h-4" /> Add New Class
-            </Link>
-          </CardContent>
-        </Card>
-
-        {/* Today's Schedule */}
-        <Card className="rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="text-base">Today's Schedule</CardTitle>
-            <Link to="/teacher/attendance" className="text-xs text-primary">View full calendar</Link>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {SCHEDULE.map((s) => (
-              <div key={s.time} className="flex items-start gap-3">
-                <div className="text-xs font-medium w-16 pt-0.5 text-muted-foreground">{s.time}</div>
-                <div className={`w-1 self-stretch rounded-full ${s.color}`} />
-                <div className="flex-1">
-                  <div className="text-sm font-medium">{s.title}</div>
-                  <div className="text-xs text-muted-foreground">{s.topic}</div>
-                </div>
-                <Badge variant="secondary" className="text-[10px]">{s.room}</Badge>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Recent Assignments */}
-        <Card className="rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="text-base">Recent Assignments</CardTitle>
-            <Link to="/teacher/assignments" className="text-xs text-primary">View all</Link>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {RECENT_ASSIGNMENTS.map((a) => (
-              <div key={a.title} className="flex items-center gap-3">
-                <FileText className={`w-4 h-4 ${a.color}`} />
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium truncate">{a.title}</div>
-                  <div className="text-xs text-muted-foreground">{a.grade}</div>
-                </div>
-                <div className="text-xs">
-                  <span className="font-semibold">{a.submitted}/{a.total}</span>
-                  <span className="text-muted-foreground"> Submitted</span>
-                </div>
-              </div>
-            ))}
-            <Link to="/teacher/assignments" className="flex items-center justify-center gap-1 text-sm text-primary font-medium pt-1">
-              <Plus className="w-4 h-4" /> Create New Assignment
-            </Link>
-          </CardContent>
-        </Card>
-
-        {/* Class Progress Chart */}
-        <Card className="rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="text-base">Class Progress Overview</CardTitle>
-            <Badge variant="outline" className="text-xs">This Month</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="h-56">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={PROGRESS_DATA}>
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-                  <XAxis dataKey="week" fontSize={10} />
-                  <YAxis fontSize={10} />
-                  <Tooltip />
-                  <Legend wrapperStyle={{ fontSize: 10 }} />
-                  <Line type="monotone" dataKey="Gr 11A" stroke="#2563eb" strokeWidth={2} />
-                  <Line type="monotone" dataKey="Gr 10B" stroke="#10b981" strokeWidth={2} />
-                  <Line type="monotone" dataKey="Gr 12A" stroke="#f59e0b" strokeWidth={2} />
-                  <Line type="monotone" dataKey="Add Math 11B" stroke="#8b5cf6" strokeWidth={2} />
-                  <Line type="monotone" dataKey="Math Club" stroke="#ef4444" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
+      {/* Co-Pilot banner */}
+      <Card className="rounded-[24px] border-primary/15 bg-gradient-to-br from-primary/[0.10] via-violet-500/[0.06] to-transparent p-4 sm:p-5">
+        <div className="flex items-start gap-3.5">
+          <span className="w-11 h-11 rounded-[16px] bg-primary/15 flex items-center justify-center shrink-0">
+            <Sparkles className="w-5 h-5 text-primary" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-[15.5px] font-bold tracking-[-0.02em]">Curriculum Co-Pilot</p>
+            <p className="text-[12.5px] text-muted-foreground leading-snug mt-0.5">
+              Draft an ECZ-aligned lesson, a scheme of work or a full test with charts — in under a minute.
+            </p>
+            <div className="flex flex-wrap gap-2 mt-3">
+              <Button
+                className="rounded-full h-9 px-4 text-[13px] font-semibold bg-gradient-to-r from-primary to-violet-600 shadow-lg shadow-primary/20"
+                onClick={() => navigate("/teacher/copilot")}
+              >
+                Plan a lesson
+              </Button>
+              <Button variant="outline" className="rounded-full h-9 px-4 text-[13px]" onClick={() => navigate("/teach?tab=test-generator")}>
+                <Wand2 className="w-3.5 h-3.5 mr-1.5" />Generate a test
+              </Button>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* School Announcements + Curriculum Co-Pilot */}
-      <div className="grid lg:grid-cols-2 gap-6 mt-6">
-        <Card className="rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="text-base">School Announcements</CardTitle>
-            <Link to="/teacher/communications" className="text-xs text-primary">View all</Link>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {ANNOUNCEMENTS.map((a) => (
-              <div key={a.title} className="flex items-start gap-3">
-                <div className={`w-8 h-8 rounded-lg grid place-items-center ${a.color}`}>
-                  <a.icon className="w-4 h-4" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium">{a.title}</div>
-                  <div className="text-xs text-muted-foreground">{a.body}</div>
-                  <div className="text-[10px] text-muted-foreground mt-0.5">{a.time}</div>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl bg-gradient-to-br from-primary/5 via-purple-500/5 to-pink-500/5 border-primary/20">
-          <CardHeader className="flex flex-row items-start justify-between pb-3">
-            <div>
-              <CardTitle className="text-base flex items-center gap-2">
-                Curriculum Co-Pilot <Sparkles className="w-4 h-4 text-primary" />
-              </CardTitle>
-              <p className="text-xs text-muted-foreground mt-1">
-                Need help with lesson planning? Let AI Co-Pilot create engaging lessons, quizzes, and activities aligned with the ECZ curriculum.
-              </p>
-            </div>
-            <div className="text-4xl">🤖</div>
-          </CardHeader>
-          <CardContent>
-            <Link to="/teacher/copilot">
-              <Button className="w-full">Create with Co-Pilot</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Quick Resources */}
-      <Card className="rounded-2xl mt-6">
-        <CardHeader className="flex flex-row items-center justify-between pb-3">
-          <CardTitle className="text-base">Quick Resources</CardTitle>
-          <Link to="/teacher/resources" className="text-xs text-primary">View all</Link>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            {QUICK_RESOURCES.map((r) => (
-              <Link key={r.label} to={r.to} className="p-3 rounded-xl border hover:shadow-sm transition text-center">
-                <div className={`w-10 h-10 mx-auto rounded-xl grid place-items-center ${r.color}`}>
-                  <r.icon className="w-5 h-5" />
-                </div>
-                <div className="text-xs font-medium mt-2">{r.label}</div>
-              </Link>
-            ))}
           </div>
-        </CardContent>
+        </div>
       </Card>
 
-      {/* Bottom Quick Actions Bar */}
-      <div className="sticky bottom-0 -mx-4 lg:-mx-8 mt-8 bg-background/90 backdrop-blur border-t z-20">
-        <div className="px-4 lg:px-8 py-3 flex flex-wrap items-center gap-2 justify-between">
-          <div className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5" /> Quick Actions
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Link to="/teacher/attendance"><Button variant="outline" size="sm"><CheckCircle2 className="w-4 h-4 mr-1.5" />Take Attendance</Button></Link>
-            <Link to="/teacher/assignments"><Button variant="outline" size="sm"><ClipboardList className="w-4 h-4 mr-1.5" />Create Assignment</Button></Link>
-            <Link to="/teacher/gradebook"><Button variant="outline" size="sm"><BarChart3 className="w-4 h-4 mr-1.5" />Record Grades</Button></Link>
-            <Link to="/teacher/communications"><Button size="sm"><Megaphone className="w-4 h-4 mr-1.5" />Send Announcement</Button></Link>
-          </div>
+      {/* Quick actions */}
+      <div>
+        <h2 className="text-[11px] font-semibold tracking-[0.08em] text-muted-foreground uppercase px-0.5 mb-2.5">
+          Quick actions
+        </h2>
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+          {QUICK_ACTIONS.map((a) => (
+            <button
+              key={a.label}
+              onClick={() => navigate(a.to)}
+              className="shrink-0 inline-flex items-center gap-2 rounded-full border border-border/50 bg-card px-3.5 h-10 text-[13px] font-medium hover:border-primary/30 hover:bg-primary/[0.04] transition-colors active:scale-[0.97]"
+            >
+              <a.icon className="w-4 h-4 text-primary" />
+              {a.label}
+            </button>
+          ))}
         </div>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-3">
+        {/* Classes */}
+        <SectionCard
+          title="My classes"
+          action={<Link to="/teach?tab=courses" className="text-[12px] font-semibold text-primary">View all</Link>}
+        >
+          {loading ? (
+            <div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-12 rounded-xl" />)}</div>
+          ) : courses.length === 0 ? (
+            <Empty
+              icon={BookOpen}
+              title="No classes yet"
+              body="Create your first course and invite students with a join code."
+              cta="Create a class"
+              to="/teach?tab=courses"
+            />
+          ) : (
+            <div className="space-y-3">
+              {courses.slice(0, 5).map((c) => (
+                <Link key={c.id} to={`/teach?tab=courses`} className="flex items-center gap-3 group">
+                  <span className="w-10 h-10 rounded-[14px] bg-primary/10 text-primary grid place-items-center text-[14px] font-bold shrink-0">
+                    {(c.subject || c.title || "?").charAt(0).toUpperCase()}
+                  </span>
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-[13.5px] font-semibold truncate group-hover:text-primary transition-colors">{c.title}</span>
+                    <span className="block text-[11.5px] text-muted-foreground">
+                      {c.enrollment_count} student{c.enrollment_count === 1 ? "" : "s"}
+                      {!c.is_published && " · draft"}
+                    </span>
+                  </span>
+                  <span className="w-24 shrink-0">
+                    <Progress value={c.avg_score ?? 0} className="h-1.5" />
+                  </span>
+                  <span className="text-[11.5px] font-bold w-9 text-right shrink-0">
+                    {c.avg_score != null ? `${c.avg_score}%` : "—"}
+                  </span>
+                </Link>
+              ))}
+              <Link to="/teach?tab=courses" className="flex items-center justify-center gap-1 text-[13px] text-primary font-semibold pt-1">
+                <Plus className="w-4 h-4" /> Add a class
+              </Link>
+            </div>
+          )}
+        </SectionCard>
+
+        {/* To mark */}
+        <SectionCard
+          title="Waiting to be marked"
+          action={<Link to="/gradebook" className="text-[12px] font-semibold text-primary">Gradebook</Link>}
+        >
+          {loading ? (
+            <div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-12 rounded-xl" />)}</div>
+          ) : pendingSubmissions.length === 0 ? (
+            <Empty
+              icon={CheckCircle2}
+              title="All caught up"
+              body="Every submission from your students has been graded."
+            />
+          ) : (
+            <div className="space-y-2.5">
+              {pendingSubmissions.slice(0, 5).map((s) => (
+                <Link
+                  key={s.id}
+                  to="/gradebook"
+                  className="flex items-center gap-3 rounded-[16px] border border-border/40 p-2.5 hover:border-primary/30 transition-colors"
+                >
+                  <span className="w-9 h-9 rounded-[12px] bg-amber-500/12 text-amber-600 grid place-items-center shrink-0">
+                    <FileText className="w-4 h-4" />
+                  </span>
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-[13px] font-semibold truncate">{s.assignment_title}</span>
+                    <span className="block text-[11.5px] text-muted-foreground truncate">
+                      {s.student_name}{s.course_title ? ` · ${s.course_title}` : ""}
+                    </span>
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                </Link>
+              ))}
+            </div>
+          )}
+        </SectionCard>
+
+        {/* Students needing help */}
+        <SectionCard
+          title="Students needing help"
+          action={<Link to="/teacher/students" className="text-[12px] font-semibold text-primary">All students</Link>}
+        >
+          {loading ? (
+            <div className="space-y-3">{Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} className="h-12 rounded-xl" />)}</div>
+          ) : studentAlerts.length === 0 ? (
+            <Empty
+              icon={GraduationCap}
+              title="No alerts"
+              body="Once your students submit work, anyone falling behind shows up here."
+            />
+          ) : (
+            <div className="space-y-2.5">
+              {studentAlerts.slice(0, 5).map((a) => (
+                <div key={`${a.student_id}-${a.course_title}`} className="flex items-center gap-3">
+                  <span className={`w-9 h-9 rounded-[12px] grid place-items-center shrink-0 ${
+                    a.severity === "high" ? "bg-rose-500/12 text-rose-600" : "bg-amber-500/12 text-amber-600"
+                  }`}>
+                    <AlertTriangle className="w-4 h-4" />
+                  </span>
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-[13px] font-semibold truncate">{a.student_name}</span>
+                    <span className="block text-[11.5px] text-muted-foreground truncate">{a.issue}</span>
+                  </span>
+                  <Badge variant="outline" className="rounded-full text-[10px] shrink-0">{a.course_title}</Badge>
+                </div>
+              ))}
+            </div>
+          )}
+        </SectionCard>
+
+        {/* Class performance */}
+        <SectionCard
+          title="Class performance"
+          action={<Link to="/teach?tab=analytics" className="text-[12px] font-semibold text-primary">Analytics</Link>}
+        >
+          {loading ? (
+            <Skeleton className="h-40 rounded-xl" />
+          ) : courses.filter((c) => c.avg_score != null).length === 0 ? (
+            <Empty
+              icon={BarChart3}
+              title="No graded work yet"
+              body="Averages appear here as soon as you grade the first submissions."
+            />
+          ) : (
+            <div className="space-y-3.5">
+              {courses.filter((c) => c.avg_score != null).slice(0, 6).map((c) => (
+                <div key={c.id}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[12.5px] font-medium truncate pr-3">{c.title}</span>
+                    <span className="text-[12.5px] font-bold shrink-0">{c.avg_score}%</span>
+                  </div>
+                  <Progress value={c.avg_score ?? 0} className="h-2" />
+                </div>
+              ))}
+            </div>
+          )}
+        </SectionCard>
       </div>
     </TeacherShell>
   );
-}
+};
+
+export default TeacherDashboardV2;
