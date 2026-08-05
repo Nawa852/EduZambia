@@ -519,41 +519,94 @@ export type Database = {
           },
         ]
       }
+      class_invites: {
+        Row: {
+          class_id: string
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          invited_by: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          class_id: string
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id?: string
+          invited_by?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          class_id?: string
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          invited_by?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_invites_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       classes: {
         Row: {
+          archived: boolean
           color: string | null
           created_at: string
+          description: string | null
           grade: string | null
           id: string
+          join_code: string | null
           name: string
           room: string | null
           schedule: Json | null
           subject: string | null
           teacher_id: string
+          term: string | null
           updated_at: string
         }
         Insert: {
+          archived?: boolean
           color?: string | null
           created_at?: string
+          description?: string | null
           grade?: string | null
           id?: string
+          join_code?: string | null
           name: string
           room?: string | null
           schedule?: Json | null
           subject?: string | null
           teacher_id: string
+          term?: string | null
           updated_at?: string
         }
         Update: {
+          archived?: boolean
           color?: string | null
           created_at?: string
+          description?: string | null
           grade?: string | null
           id?: string
+          join_code?: string | null
           name?: string
           room?: string | null
           schedule?: Json | null
           subject?: string | null
           teacher_id?: string
+          term?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -3603,8 +3656,12 @@ export type Database = {
       resource_repository: {
         Row: {
           bucket: string
+          category: string
           created_at: string
+          description: string | null
+          downloads: number
           folder_path: string
+          grade_level: string | null
           id: string
           is_public: boolean
           kind: string
@@ -3621,8 +3678,12 @@ export type Database = {
         }
         Insert: {
           bucket?: string
+          category?: string
           created_at?: string
+          description?: string | null
+          downloads?: number
           folder_path?: string
+          grade_level?: string | null
           id?: string
           is_public?: boolean
           kind?: string
@@ -3639,8 +3700,12 @@ export type Database = {
         }
         Update: {
           bucket?: string
+          category?: string
           created_at?: string
+          description?: string | null
+          downloads?: number
           folder_path?: string
+          grade_level?: string | null
           id?: string
           is_public?: boolean
           kind?: string
@@ -4654,6 +4719,33 @@ export type Database = {
           },
         ]
       }
+      user_favorites: {
+        Row: {
+          created_at: string
+          icon: string | null
+          id: string
+          label: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          label: string
+          url: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          label?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_follows: {
         Row: {
           created_at: string
@@ -5181,6 +5273,7 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      ensure_class_join_code: { Args: { _class_id: string }; Returns: string }
       get_assessment_answer_key: {
         Args: { _assessment_id: string }
         Returns: {
@@ -5294,10 +5387,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_resource_download: {
+        Args: { _resource_id: string }
+        Returns: undefined
+      }
       is_group_member: {
         Args: { _group_id: string; _user_id: string }
         Returns: boolean
       }
+      join_class_with_code: { Args: { _code: string }; Returns: string }
       move_to_dlq: {
         Args: {
           dlq_name: string
