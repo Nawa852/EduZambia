@@ -3146,6 +3146,39 @@ export type Database = {
         }
         Relationships: []
       }
+      note_folders: {
+        Row: {
+          color: string
+          created_at: string
+          icon: string
+          id: string
+          name: string
+          position: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          icon?: string
+          id?: string
+          name: string
+          position?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          icon?: string
+          id?: string
+          name?: string
+          position?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string
@@ -4065,32 +4098,59 @@ export type Database = {
         Row: {
           content: string
           course_id: string | null
+          cover: string | null
           created_at: string
+          folder_id: string | null
+          icon: string
           id: string
+          is_archived: boolean
+          is_favorite: boolean
           lesson_id: string | null
+          position: number
+          resource_id: string | null
+          tags: string[]
           title: string | null
           updated_at: string
           user_id: string
+          word_count: number
         }
         Insert: {
           content?: string
           course_id?: string | null
+          cover?: string | null
           created_at?: string
+          folder_id?: string | null
+          icon?: string
           id?: string
+          is_archived?: boolean
+          is_favorite?: boolean
           lesson_id?: string | null
+          position?: number
+          resource_id?: string | null
+          tags?: string[]
           title?: string | null
           updated_at?: string
           user_id: string
+          word_count?: number
         }
         Update: {
           content?: string
           course_id?: string | null
+          cover?: string | null
           created_at?: string
+          folder_id?: string | null
+          icon?: string
           id?: string
+          is_archived?: boolean
+          is_favorite?: boolean
           lesson_id?: string | null
+          position?: number
+          resource_id?: string | null
+          tags?: string[]
           title?: string | null
           updated_at?: string
           user_id?: string
+          word_count?: number
         }
         Relationships: [
           {
@@ -4098,6 +4158,13 @@ export type Database = {
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_notes_folder_id_fkey"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "note_folders"
             referencedColumns: ["id"]
           },
           {
