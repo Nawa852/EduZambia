@@ -110,9 +110,11 @@ const teacherNavigation: NavGroup[] = [
   {
     label: "Classroom",
     items: [
-      { title: "My Classes", url: "/teacher-classes", icon: Users, shortTitle: "Classes" },
-      { title: "Students", url: "/teacher/students", icon: GraduationCap, shortTitle: "Students" },
-      { title: "Assignments", url: "/assignments", icon: ClipboardCheck, shortTitle: "Tasks" },
+      { title: "Teacher World", url: "/teacher/profile", icon: GraduationCap, badge: "★", shortTitle: "World" },
+      { title: "Class Manager", url: "/teach?tab=classes", icon: Users, shortTitle: "Classes" },
+      { title: "Grading Queue", url: "/teach?tab=grading-queue", icon: ClipboardCheck, shortTitle: "Marking" },
+      { title: "Resource Library", url: "/library", icon: FolderOpen, shortTitle: "Library" },
+      { title: "Students", url: "/teacher/students", icon: Users, shortTitle: "Students" },
       { title: "Gradebook", url: "/gradebook", icon: BarChart3, shortTitle: "Grades" },
       { title: "Attendance", url: "/attendance", icon: Calendar, shortTitle: "Attend" },
     ],
