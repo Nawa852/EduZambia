@@ -214,6 +214,10 @@ function App() {
               <Route path="/teacher/students" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherStudentsPage /></RoleGuard></PG>} />
               <Route path="/teacher/lessons" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherLessonsPage /></RoleGuard></PG>} />
               <Route path="/teacher/copilot" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherCopilotPage /></RoleGuard></PG>} />
+              <Route path="/teacher/profile" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherProfilePage /></RoleGuard></PG>} />
+              <Route path="/teacher/grading-queue" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherGradingQueuePage /></RoleGuard></PG>} />
+              <Route path="/teacher/class-manager" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherClassManagerPage /></RoleGuard></PG>} />
+              <Route path="/library" element={<PG><SharedLibraryPage /></PG>} />
               <Route path="/teacher/assignments" element={<Navigate to="/teach?tab=assignments" replace />} />
               <Route path="/teacher/gradebook" element={<Navigate to="/gradebook" replace />} />
               <Route path="/teacher/attendance" element={<Navigate to="/attendance" replace />} />
