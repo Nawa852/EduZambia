@@ -4,6 +4,9 @@ import { BookOpen, ClipboardCheck, FileText, BarChart3, Megaphone, Users, Messag
 
 const tabs: HubTab[] = [
   { id: 'courses', label: 'My Courses', icon: BookOpen, description: 'Your classes, enrolments and join codes', component: React.lazy(() => import('@/pages/Courses')) },
+  { id: 'classes', label: 'Class Manager', icon: Users, description: 'Create classes, invite students, import rosters', component: React.lazy(() => import('@/pages/teacher/TeacherClassManagerPage')) },
+  { id: 'grading-queue', label: 'Grading Queue', icon: ClipboardCheck, description: 'Ungraded work by class, with AI breakdown insights', component: React.lazy(() => import('@/pages/teacher/TeacherGradingQueuePage')) },
+  { id: 'library', label: 'Resource Library', icon: Library, description: 'Shared lesson plans, schemes, notes, papers and quizzes', component: React.lazy(() => import('@/pages/SharedLibraryPage')) },
   { id: 'ai-suite', label: 'AI Suite', icon: Sparkles, badge: 'AI', description: 'Marking help, parent updates, activity ideas', component: React.lazy(() => import('@/pages/AITeacherSuitePage')) },
   { id: 'test-generator', label: 'Test Generator', icon: Wand2, badge: 'NEW', description: 'Full papers with charts and a marking scheme', component: React.lazy(() => import('@/pages/TeacherTestGeneratorPage')) },
   { id: 'lesson-plans', label: 'Lesson Plans', icon: FileText, description: 'ECZ-aligned plans you can print or export', component: React.lazy(() => import('@/pages/TeacherLessonPlanPage')) },

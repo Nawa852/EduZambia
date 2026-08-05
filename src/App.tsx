@@ -58,6 +58,10 @@ const TeacherClassesPage = React.lazy(() => import('@/pages/teacher/TeacherClass
 const TeacherStudentsPage = React.lazy(() => import('@/pages/teacher/TeacherStudentsPage'));
 const TeacherLessonsPage = React.lazy(() => import('@/pages/teacher/TeacherLessonsPage'));
 const TeacherCopilotPage = React.lazy(() => import('@/pages/teacher/TeacherCopilotPage'));
+const TeacherProfilePage = React.lazy(() => import('@/pages/teacher/TeacherProfilePage'));
+const TeacherGradingQueuePage = React.lazy(() => import('@/pages/teacher/TeacherGradingQueuePage'));
+const TeacherClassManagerPage = React.lazy(() => import('@/pages/teacher/TeacherClassManagerPage'));
+const SharedLibraryPage = React.lazy(() => import('@/pages/SharedLibraryPage'));
 const FamilyHub = React.lazy(() => import('@/pages/hubs/FamilyHub'));
 const MinistryHub = React.lazy(() => import('@/pages/hubs/MinistryHub'));
 const AdminHub = React.lazy(() => import('@/pages/hubs/AdminHub'));
@@ -214,6 +218,10 @@ function App() {
               <Route path="/teacher/students" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherStudentsPage /></RoleGuard></PG>} />
               <Route path="/teacher/lessons" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherLessonsPage /></RoleGuard></PG>} />
               <Route path="/teacher/copilot" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherCopilotPage /></RoleGuard></PG>} />
+              <Route path="/teacher/profile" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherProfilePage /></RoleGuard></PG>} />
+              <Route path="/teacher/grading-queue" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherGradingQueuePage /></RoleGuard></PG>} />
+              <Route path="/teacher/class-manager" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherClassManagerPage /></RoleGuard></PG>} />
+              <Route path="/library" element={<PG><SharedLibraryPage /></PG>} />
               <Route path="/teacher/assignments" element={<Navigate to="/teach?tab=assignments" replace />} />
               <Route path="/teacher/gradebook" element={<Navigate to="/gradebook" replace />} />
               <Route path="/teacher/attendance" element={<Navigate to="/attendance" replace />} />
