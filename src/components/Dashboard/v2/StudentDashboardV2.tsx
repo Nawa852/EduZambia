@@ -1,23 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Flame, CheckCircle2, Clock, ChevronRight,
   Camera, Sparkles, BookOpen, Layers, Share2,
   FolderOpen, StickyNote, ListChecks, HelpCircle,
   Folder, Bot, ScanLine, FileType2, Link2, Repeat,
-  FileText, ArrowUpRight,
+  FileText, ArrowUpRight, Bell, Play, WifiOff, Plus,
 } from 'lucide-react';
 import { useAuth } from '@/components/Auth/AuthProvider';
-import { useUserStats } from '@/hooks/useUserStats';
 import { supabase } from '@/integrations/supabase/client';
+import { useStudentSnapshot } from '@/hooks/useStudentSnapshot';
 import UpcomingClassesCard from '@/components/Dashboard/UpcomingClassesCard';
 import { isStudentFeature } from '@/config/studentFeatures';
 import LearningCircle from '@/components/Study/LearningCircle';
 import AIShortcutsCard from '@/components/Dashboard/AIShortcutsCard';
 import { ProductTour } from '@/components/Onboarding/ProductTour';
+
+/** Weekly focus target used for the progress ring on the focus card. */
+const WEEKLY_FOCUS_GOAL = 300;
 
 interface Props { userName: string; }
 
