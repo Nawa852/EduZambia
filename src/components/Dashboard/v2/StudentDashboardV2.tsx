@@ -82,6 +82,7 @@ export function StudentDashboardV2({ userName }: Props) {
         if (idx >= 0) buckets[idx] += f.focus_minutes || 0;
       });
       setWeekFocus(buckets);
+      setDataLoading(false);
     })();
     return () => { cancelled = true; };
   }, [user]);
@@ -92,13 +93,19 @@ export function StudentDashboardV2({ userName }: Props) {
   };
 
   const firstName = userName.split(' ')[0];
-  const streak = stats?.stats?.current_streak ?? 0;
-  const todayFocus = weekFocus[6] || 0;
+  const streak = snapshot?.streak ?? 0;
+  const unread = snapshot?.unread_notifications ?? 0;
+  const todayFocus = snapshot?.focus_minutes_today ?? weekFocus[6] ?? 0;
   const focusHrs = Math.floor(todayFocus / 60);
   const focusRem = todayFocus % 60;
   const tasksDone = tasks.filter(t => t.done).length;
   const tasksGoal = tasks.length;
   const maxFocus = Math.max(...weekFocus, 1);
+  const weekTotal = useMemo(() => weekFocus.reduce((a, b) => a + b, 0), [weekFocus]);
+  const weekPct = Math.min(100, Math.round((weekTotal / WEEKLY_FOCUS_GOAL) * 100));
+  const resume = recentNotes[0];
+  const showSkeleton = dataLoading && snapLoading;
+
 
   const quickActions = [
     { icon: StickyNote, label: 'New Note', tint: 'text-blue-600 bg-blue-500/10', to: '/student-notes?action=new' },
