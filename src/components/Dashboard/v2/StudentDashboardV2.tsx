@@ -28,11 +28,23 @@ interface Props { userName: string; }
 export function StudentDashboardV2({ userName }: Props) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const stats = useUserStats();
+  const { data: snapshot, isLoading: snapLoading } = useStudentSnapshot();
   const [tasks, setTasks] = useState<Array<{ id: string; title: string; due: string; done: boolean }>>([]);
   const [recentNotes, setRecentNotes] = useState<Array<{ id: string; title: string; when: string }>>([]);
   const [flashDecks, setFlashDecks] = useState<Array<{ id: string; title: string; cards: number; pct: number }>>([]);
   const [weekFocus, setWeekFocus] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [offline, setOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const on = () => setOffline(false);
+    const off = () => setOffline(true);
+    window.addEventListener('online', on);
+    window.addEventListener('offline', off);
+    return () => { window.removeEventListener('online', on); window.removeEventListener('offline', off); };
+  }, []);
+
+
 
   useEffect(() => {
     if (!user) return;
