@@ -5425,6 +5425,16 @@ export type Database = {
         Args: { _partnership_id: string }
         Returns: string
       }
+      get_notebook_sources: {
+        Args: { _note_ids: string[] }
+        Returns: {
+          content: string
+          id: string
+          title: string
+          updated_at: string
+          word_count: number
+        }[]
+      }
       get_partner_school_contact: {
         Args: { _school_id: string }
         Returns: {
@@ -5433,6 +5443,8 @@ export type Database = {
         }[]
       }
       get_platform_stats: { Args: never; Returns: Json }
+      get_school_overview: { Args: { _school: string }; Returns: Json }
+      get_student_home_snapshot: { Args: never; Returns: Json }
       grade_assessment_attempt: {
         Args: {
           _answers: Json
@@ -5481,6 +5493,34 @@ export type Database = {
         }[]
       }
       redeem_guardian_link_code: { Args: { _code: string }; Returns: string }
+      search_my_notes: {
+        Args: { _limit?: number; _q: string }
+        Returns: {
+          content: string
+          course_id: string | null
+          cover: string | null
+          created_at: string
+          folder_id: string | null
+          icon: string
+          id: string
+          is_archived: boolean
+          is_favorite: boolean
+          lesson_id: string | null
+          position: number
+          resource_id: string | null
+          tags: string[]
+          title: string | null
+          updated_at: string
+          user_id: string
+          word_count: number
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "student_notes"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
     }
     Enums: {
       app_role:
