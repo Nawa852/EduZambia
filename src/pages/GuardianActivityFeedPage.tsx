@@ -21,7 +21,7 @@ const GuardianActivityFeedPage = () => {
   const { data: studentIds } = useQuery({
     queryKey: ['guardian-students', user?.id],
     queryFn: async () => {
-      const { data } = await supabase.from('guardian_links').select('student_id').eq('guardian_id', user!.id).eq('status', 'active');
+      const { data } = await supabase.from('guardian_links').select('student_id').eq('guardian_id', user!.id).in('status', ['active','accepted']);
       return data?.map(d => d.student_id) || [];
     },
     enabled: !!user,

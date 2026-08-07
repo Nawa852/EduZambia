@@ -25,7 +25,7 @@ const GuardianRewardSystemPage = () => {
   useEffect(() => {
     if (!user) { setLoading(false); return; }
     (async () => {
-      const { data: links, error } = await (supabase as any).from('guardian_links').select('student_id').eq('guardian_id', user.id).eq('status', 'active');
+      const { data: links, error } = await (supabase as any).from('guardian_links').select('student_id').eq('guardian_id', user.id).in('status', ['active','accepted']);
       if (error) { toast.error('Failed to load data'); setLoading(false); return; }
       if (links?.length) {
         const ids = links.map((l: any) => l.student_id);
