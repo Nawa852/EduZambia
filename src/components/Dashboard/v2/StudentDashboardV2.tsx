@@ -137,18 +137,64 @@ export function StudentDashboardV2({ userName }: Props) {
           <h1 className="text-[26px] lg:text-[32px] font-extrabold tracking-[-0.03em] leading-tight">
             {greeting()}, {firstName}! <span className="inline-block">👋</span>
           </h1>
-          <p className="text-[14px] text-muted-foreground mt-1">Let's make today count.</p>
+          <p className="text-[14px] text-muted-foreground mt-1">
+            {streak > 0 ? `${streak} day streak — keep it alive.` : "Let's make today count."}
+          </p>
         </div>
-        <Card data-tour="streak" className="px-4 py-2.5 flex items-center gap-2.5 rounded-2xl border-border/40 shadow-sm shrink-0">
-          <Flame className="w-5 h-5 text-orange-500" />
-          <div>
-            <div className="text-[20px] font-extrabold leading-none">{streak}</div>
-            <div className="text-[10.5px] text-muted-foreground mt-0.5">Day streak</div>
-          </div>
-        </Card>
+        <div className="flex items-center gap-2 shrink-0">
+          {unread > 0 && (
+            <button
+              onClick={() => navigate('/notifications')}
+              aria-label={`${unread} unread notifications`}
+              className="relative w-11 h-11 rounded-2xl border border-border/40 bg-card flex items-center justify-center hover:border-primary/30 transition-colors"
+            >
+              <Bell className="w-4.5 h-4.5 text-muted-foreground" />
+              <span className="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                {unread > 9 ? '9+' : unread}
+              </span>
+            </button>
+          )}
+          <Card data-tour="streak" className="px-4 py-2.5 flex items-center gap-2.5 rounded-2xl border-border/40 shadow-sm">
+            <Flame className={`w-5 h-5 ${streak > 0 ? 'text-orange-500' : 'text-muted-foreground'}`} />
+            <div>
+              <div className="text-[20px] font-extrabold leading-none tabular-nums">{streak}</div>
+              <div className="text-[10.5px] text-muted-foreground mt-0.5">Day streak</div>
+            </div>
+          </Card>
+        </div>
       </div>
 
+      {offline && (
+        <div className="flex items-center gap-2 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-[13px] text-amber-700 dark:text-amber-400">
+          <WifiOff className="w-4 h-4 shrink-0" />
+          You're offline — notes and timers keep working and will sync when you reconnect.
+        </div>
+      )}
+
+      {/* Resume where you left off */}
+      {resume && (
+        <button
+          onClick={() => navigate('/prepare?tab=notes')}
+          className="w-full flex items-center gap-3 p-4 rounded-[22px] border border-border/40 bg-card hover:border-primary/30 transition-all text-left"
+        >
+          <span className="w-10 h-10 rounded-[14px] bg-primary/10 text-primary flex items-center justify-center shrink-0">
+            <Play className="w-4 h-4" />
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-[11px] uppercase tracking-wide text-muted-foreground">Pick up where you left off</span>
+            <span className="block text-[14px] font-bold truncate">{resume.title}</span>
+          </span>
+          <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+        </button>
+      )}
+
       {/* Focus / Tasks */}
+      {showSkeleton ? (
+        <div className="grid grid-cols-2 gap-3 lg:gap-4">
+          <Skeleton className="h-40 rounded-[22px]" />
+          <Skeleton className="h-40 rounded-[22px]" />
+        </div>
+      ) : (
       <div className="grid grid-cols-2 gap-3 lg:gap-4">
         <Card className="p-4 rounded-[22px] border-border/40 shadow-sm">
           <div className="flex items-center gap-2.5 mb-3">
@@ -157,27 +203,64 @@ export function StudentDashboardV2({ userName }: Props) {
             </span>
             <span className="text-[13px] font-semibold">Focus Time</span>
           </div>
-          <div className="text-[28px] lg:text-[32px] font-extrabold tracking-[-0.03em] leading-none">{focusHrs}h {focusRem}m</div>
+          <div className="text-[28px] lg:text-[32px] font-extrabold tracking-[-0.03em] leading-none tabular-nums">{focusHrs}h {focusRem}m</div>
           <div className="text-[12px] text-muted-foreground mt-1">today</div>
-          <div className="flex items-end gap-[3px] h-8 mt-3">
+          <div className="flex items-end gap-[3px] h-8 mt-3" aria-hidden>
             {weekFocus.map((m, i) => (
               <div key={i} className="flex-1 rounded-full bg-emerald-500/70 min-h-[3px]" style={{ height: `${(m / maxFocus) * 100}%` }} />
             ))}
           </div>
+          <div className="mt-3">
+            <Progress value={weekPct} className="h-1.5" />
+            <p className="text-[11px] text-muted-foreground mt-1.5">{weekTotal}/{WEEKLY_FOCUS_GOAL} min this week</p>
+          </div>
         </Card>
 
-        <Card className="p-4 rounded-[22px] border-border/40 shadow-sm">
+        <Card className="p-4 rounded-[22px] border-border/40 shadow-sm flex flex-col">
           <div className="flex items-center gap-2.5 mb-3">
             <span className="w-8 h-8 rounded-full bg-violet-500/10 flex items-center justify-center">
               <CheckCircle2 className="w-4 h-4 text-violet-600" />
             </span>
             <span className="text-[13px] font-semibold">Tasks Done</span>
           </div>
-          <div className="text-[28px] lg:text-[32px] font-extrabold tracking-[-0.03em] leading-none">{tasksDone}</div>
-          <div className="text-[12px] text-muted-foreground mt-1">done today</div>
-          <Progress value={tasksGoal > 0 ? (tasksDone / tasksGoal) * 100 : 0} className="h-1.5 mt-4" />
+          <div className="text-[28px] lg:text-[32px] font-extrabold tracking-[-0.03em] leading-none tabular-nums">{tasksDone}</div>
+          <div className="text-[12px] text-muted-foreground mt-1">{tasksGoal ? `of ${tasksGoal} planned` : 'nothing planned yet'}</div>
+          {tasksGoal > 0 ? (
+            <Progress value={(tasksDone / tasksGoal) * 100} className="h-1.5 mt-4" />
+          ) : (
+            <Button
+              size="sm" variant="outline"
+              className="mt-4 rounded-xl gap-1.5 self-start"
+              onClick={() => navigate('/practice?tab=planner')}
+            >
+              <Plus className="w-3.5 h-3.5" /> Add a goal
+            </Button>
+          )}
         </Card>
       </div>
+      )}
+
+      {/* Lifetime totals */}
+      {snapshot && (
+        <div className="grid grid-cols-4 gap-2 lg:gap-3">
+          {[
+            { label: 'Lessons', value: snapshot.lessons_done, to: '/practice' },
+            { label: 'Quizzes', value: snapshot.quizzes_taken, to: '/practice?tab=quiz' },
+            { label: 'Notes', value: snapshot.notes, to: '/prepare?tab=notes' },
+            { label: 'Files', value: snapshot.resources, to: '/practice?tab=resources' },
+          ].map((s) => (
+            <button
+              key={s.label}
+              onClick={() => navigate(s.to)}
+              className="rounded-[18px] border border-border/40 bg-card py-3 hover:border-primary/30 transition-colors"
+            >
+              <div className="text-[19px] font-extrabold tabular-nums leading-none">{s.value}</div>
+              <div className="text-[11px] text-muted-foreground mt-1">{s.label}</div>
+            </button>
+          ))}
+        </div>
+      )}
+
 
       {/* Study plan */}
       <Card data-tour="study-plan" className="p-4 lg:p-5 rounded-[22px] border-border/40 shadow-sm">
