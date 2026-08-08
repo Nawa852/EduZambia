@@ -71,34 +71,35 @@ export const HubPageLayout: React.FC<HubPageLayoutProps> = ({
 
   return (
     <div className="space-y-3 sm:space-y-4">
-      {/* Hero header — tinted card, Apple-style */}
-      <div className="relative overflow-hidden rounded-[20px] bg-primary/[0.07] dark:bg-primary/[0.12] border border-primary/10">
-        <div className="relative px-3.5 py-3.5 sm:px-5 sm:py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-3 min-w-0">
-            <div className="shrink-0 flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-[14px] bg-primary/10 text-primary ring-1 ring-primary/15">
-              <Icon className="w-5 h-5" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <h1 className="text-[17px] sm:text-xl font-semibold text-foreground leading-tight tracking-[-0.02em]">{title}</h1>
-              <p className="text-[12.5px] sm:text-[13px] text-muted-foreground mt-1 leading-snug sm:max-w-lg">{subtitle}</p>
-            </div>
-          </div>
-          {quickLinks && quickLinks.length > 0 && (
-            <div className="flex sm:flex-wrap gap-2 -mx-3.5 sm:mx-0 px-3.5 sm:px-0 overflow-x-auto scrollbar-none">
-              {quickLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card/90 hover:bg-card text-[12px] font-medium text-foreground transition-colors border border-border/50 whitespace-nowrap shrink-0"
-                >
-                  <link.icon className="w-3.5 h-3.5 text-primary" />
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          )}
+      {/* Hero header — plain iOS large-title, no heavy chrome */}
+      <header className="px-0.5 pt-1">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <span className="shrink-0 flex items-center justify-center w-9 h-9 rounded-[12px] bg-primary/10 text-primary">
+            <Icon className="w-[18px] h-[18px]" />
+          </span>
+          <h1 className="text-[22px] sm:text-[26px] font-bold text-foreground leading-tight tracking-[-0.025em] truncate">
+            {title}
+          </h1>
         </div>
-      </div>
+        <p className="text-[12.5px] sm:text-[13px] text-muted-foreground mt-1.5 leading-snug max-w-xl line-clamp-2">
+          {subtitle}
+        </p>
+        {quickLinks && quickLinks.length > 0 && (
+          <div className="flex gap-2 mt-3 -mx-3 px-3 sm:mx-0 sm:px-0 overflow-x-auto scrollbar-none">
+            {quickLinks.slice(0, 4).map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary/70 hover:bg-secondary text-[12px] font-medium text-foreground transition-colors whitespace-nowrap shrink-0"
+              >
+                <link.icon className="w-3.5 h-3.5 text-primary" />
+                {link.label}
+              </a>
+            ))}
+          </div>
+        )}
+      </header>
+
 
       {/* Segmented quick-switcher — opens tools as sheets */}
       <div className="sticky top-14 z-30 -mx-2 sm:mx-0 px-2 sm:px-0">
