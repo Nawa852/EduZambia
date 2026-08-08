@@ -1,6 +1,8 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { ChevronRight } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+
 
 export interface ToolTile {
   id: string;
@@ -10,14 +12,14 @@ export interface ToolTile {
   badge?: string;
 }
 
-/** Soft iOS-style tints, cycled across tiles. */
+/** Subtle monochrome icon tints, cycled across tiles (Apple-style restraint). */
 const TINTS = [
-  { card: 'bg-blue-500/[0.07] border-blue-500/15', icon: 'bg-blue-500/12 text-blue-600' },
-  { card: 'bg-violet-500/[0.07] border-violet-500/15', icon: 'bg-violet-500/12 text-violet-600' },
-  { card: 'bg-emerald-500/[0.07] border-emerald-500/15', icon: 'bg-emerald-500/12 text-emerald-600' },
-  { card: 'bg-amber-500/[0.07] border-amber-500/15', icon: 'bg-amber-500/12 text-amber-600' },
-  { card: 'bg-rose-500/[0.07] border-rose-500/15', icon: 'bg-rose-500/12 text-rose-600' },
-  { card: 'bg-teal-500/[0.07] border-teal-500/15', icon: 'bg-teal-500/12 text-teal-600' },
+  'bg-blue-500/10 text-blue-600 dark:text-blue-400',
+  'bg-violet-500/10 text-violet-600 dark:text-violet-400',
+  'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+  'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+  'bg-rose-500/10 text-rose-600 dark:text-rose-400',
+  'bg-teal-500/10 text-teal-600 dark:text-teal-400',
 ];
 
 interface ToolGridProps {
@@ -30,46 +32,46 @@ interface ToolGridProps {
 export const ToolGrid: React.FC<ToolGridProps> = ({ title = 'Tools', tools, onOpen, className }) => {
   if (!tools.length) return null;
   return (
-    <section className={cn('space-y-3', className)}>
+    <section className={cn('space-y-2.5', className)}>
       <h2 className="text-[11px] font-semibold tracking-[0.08em] text-muted-foreground uppercase px-0.5">
         {title}
       </h2>
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 lg:gap-3">
-        {tools.map((tool, i) => {
-          const tint = TINTS[i % TINTS.length];
-          return (
-            <button
-              key={tool.id}
-              onClick={() => onOpen(tool.id)}
-              className={cn(
-                'group relative text-left rounded-[20px] border p-4 min-h-[124px] flex flex-col',
-                'transition-all duration-200 active:scale-[0.97] hover:-translate-y-0.5 hover:shadow-elevated',
-                tint.card,
-              )}
-            >
-              {tool.badge && (
-                <span className="absolute top-3 right-3 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-primary text-primary-foreground leading-none">
-                  {tool.badge}
+      {/* Grouped list card — calmer than a wall of coloured tiles */}
+      <div className="rounded-[18px] bg-card border border-border/50 overflow-hidden divide-y divide-border/40">
+        {tools.map((tool, i) => (
+          <button
+            key={tool.id}
+            onClick={() => onOpen(tool.id)}
+            className="w-full text-left flex items-center gap-3 px-3.5 py-3 transition-colors hover:bg-secondary/50 active:bg-secondary"
+          >
+            <span className={cn('h-9 w-9 rounded-[11px] flex items-center justify-center shrink-0', TINTS[i % TINTS.length])}>
+              <tool.icon className="w-[17px] h-[17px]" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="flex items-center gap-1.5">
+                <span className="text-[14px] font-semibold text-foreground tracking-[-0.01em] truncate">
+                  {tool.label}
                 </span>
-              )}
-              <span className={cn('h-10 w-10 rounded-[14px] flex items-center justify-center mb-3 shrink-0 transition-transform group-hover:scale-105', tint.icon)}>
-                <tool.icon className="w-[18px] h-[18px]" />
-              </span>
-              <span className="text-[14.5px] font-bold text-foreground leading-tight tracking-[-0.015em]">
-                {tool.label}
+                {tool.badge && (
+                  <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-primary text-primary-foreground leading-none shrink-0">
+                    {tool.badge}
+                  </span>
+                )}
               </span>
               {tool.description && (
-                <span className="text-[11.5px] text-muted-foreground leading-snug mt-1 line-clamp-2">
+                <span className="block text-[11.5px] text-muted-foreground leading-snug mt-0.5 line-clamp-1">
                   {tool.description}
                 </span>
               )}
-            </button>
-          );
-        })}
+            </span>
+            <ChevronRight className="w-4 h-4 text-muted-foreground/50 shrink-0" />
+          </button>
+        ))}
       </div>
     </section>
   );
 };
+
 
 
 export default ToolGrid;
