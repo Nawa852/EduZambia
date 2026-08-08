@@ -24,38 +24,40 @@ const NAV = [
 export function TeacherShell({ children, title }: { children: ReactNode; title?: string }) {
   return (
     <section className="space-y-4">
-      <div className="rounded-2xl bg-card border border-border/40 shadow-sm p-4">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <Badge variant="secondary" className="text-[10px] tracking-wider mb-2">TEACHER WORKSPACE</Badge>
-            {title && <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>}
-          </div>
-          <nav className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1 lg:pb-0" aria-label="Teacher pages">
-            {NAV.slice(0, 9).map((item) => {
-              const Icon = item.icon;
-              return (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) => cn(
-                    "inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors border",
-                    isActive
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-secondary/50 text-muted-foreground border-border/40 hover:bg-secondary hover:text-foreground"
-                  )}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  {item.label}
-                  {item.ai && <Sparkles className="w-3 h-3" />}
-                </NavLink>
-              );
-            })}
-          </nav>
+      <div className="space-y-3">
+        <div className="px-0.5">
+          <Badge variant="secondary" className="text-[10px] tracking-wider mb-1.5">TEACHER</Badge>
+          {title && <h1 className="text-[22px] sm:text-[26px] font-bold tracking-[-0.025em] leading-tight">{title}</h1>}
         </div>
+        <nav
+          className="flex gap-1.5 overflow-x-auto no-scrollbar -mx-3 px-3 sm:mx-0 sm:px-0 pb-0.5"
+          aria-label="Teacher pages"
+        >
+          {NAV.map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === "/teacher"}
+                className={({ isActive }) => cn(
+                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium whitespace-nowrap transition-colors shrink-0",
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary/70 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                )}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {item.label}
+              </NavLink>
+            );
+          })}
+        </nav>
       </div>
       {children}
     </section>
   );
 }
+
 
 export default TeacherShell;
