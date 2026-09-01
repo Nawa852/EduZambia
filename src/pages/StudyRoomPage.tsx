@@ -121,113 +121,127 @@ const StudyRoomPage = () => {
   );
 };
 
-const UploadPanel = ({ topic, setTopic, text, setText, file, setFile, loading, onGenerate, fileRef }: any) => (
-  <div className="grid md:grid-cols-3 gap-4">
-    <Card className="md:col-span-2 p-5 rounded-3xl border-border/40 bg-card/60 backdrop-blur-xl space-y-4">
-      <div>
-        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Topic (optional)</label>
-        <Input value={topic} onChange={e => setTopic(e.target.value)} placeholder="e.g. Grade 12 Chemistry — Organic reactions" className="mt-1.5 rounded-xl" />
+const UploadPanel = ({ topic, setTopic, text, setText, file, setFile, loading, onGenerate, fileRef, onOpenLibrary }: any) => (
+  <div className="space-y-4">
+    <Card className="p-5 sm:p-6 rounded-[22px] border-border/50 shadow-sm space-y-5">
+      <div className="space-y-1.5">
+        <label className="text-[13px] font-medium text-muted-foreground">What are you studying?</label>
+        <Input value={topic} onChange={e => setTopic(e.target.value)} placeholder="e.g. Grade 12 Chemistry — Organic reactions" className="rounded-xl h-11" />
       </div>
 
       <div
         onClick={() => fileRef.current?.click()}
         onDragOver={e => e.preventDefault()}
         onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files?.[0]; if (f) setFile(f); }}
-        className="border-2 border-dashed border-border/60 hover:border-primary/50 rounded-2xl p-8 text-center cursor-pointer transition-colors bg-muted/20"
+        className="rounded-2xl border border-dashed border-border hover:border-primary/50 hover:bg-primary/[0.03] p-8 text-center cursor-pointer transition-colors"
       >
         <input ref={fileRef} type="file" hidden accept=".pdf,.txt,.doc,.docx,.md,image/*"
           onChange={e => setFile(e.target.files?.[0] || null)} />
-        <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+        <div className="w-11 h-11 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-2.5">
+          <Upload className="w-5 h-5" />
+        </div>
         {file ? (
           <div className="text-sm">
             <p className="font-medium">{file.name}</p>
-            <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(0)} KB — click to replace</p>
+            <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(0)} KB — tap to replace</p>
           </div>
         ) : (
           <div>
-            <p className="text-sm font-medium">Drop a PDF, notes, or textbook page</p>
-            <p className="text-xs text-muted-foreground">or click to browse — PDF, DOCX, TXT, images</p>
+            <p className="text-[15px] font-medium">Drop a PDF, notes or a textbook page</p>
+            <p className="text-[13px] text-muted-foreground mt-0.5">PDF, DOCX, TXT or a photo</p>
           </div>
         )}
       </div>
 
-      <div>
-        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Or paste text</label>
-        <Textarea value={text} onChange={e => setText(e.target.value)} rows={6}
-          placeholder="Paste lecture notes, textbook chapters, or anything you want to study..."
-          className="mt-1.5 rounded-xl resize-none" />
+      <Button variant="outline" onClick={onOpenLibrary} className="w-full rounded-xl h-11 gap-2">
+        <FolderOpen className="w-4 h-4" /> Use a file from my library
+      </Button>
+
+      <div className="space-y-1.5">
+        <label className="text-[13px] font-medium text-muted-foreground">Or paste text</label>
+        <Textarea value={text} onChange={e => setText(e.target.value)} rows={5}
+          placeholder="Paste lecture notes, a chapter, anything…"
+          className="rounded-xl resize-none" />
       </div>
 
-      <Button onClick={onGenerate} disabled={loading} size="lg" className="w-full rounded-2xl h-12 text-base">
+      <Button onClick={onGenerate} disabled={loading} size="lg" className="w-full rounded-xl h-12 text-[15px]">
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Building your study pack…</>
-                 : <><Wand2 className="w-4 h-4 mr-2" /> Generate Study Pack</>}
+                 : <><Wand2 className="w-4 h-4 mr-2" /> Generate study pack</>}
       </Button>
     </Card>
 
-    <Card className="p-5 rounded-3xl border-border/40 bg-card/60 backdrop-blur-xl space-y-3">
-      <h3 className="font-semibold flex items-center gap-2"><Sparkles className="w-4 h-4 text-primary" /> What you'll get</h3>
-      {[
-        { i: BookOpen, t: 'Smart summary', d: 'A clean, exam-ready overview' },
-        { i: Brain, t: 'Flashcards', d: 'Instant recall practice, 12-16 cards' },
-        { i: ClipboardList, t: 'Adaptive quiz', d: '10 MCQs with explanations' },
-        { i: CalendarDays, t: 'Study plan', d: '5-7 day pacing schedule' },
-        { i: MessageSquare, t: 'AI tutor chat', d: 'Ask questions about your file' },
-      ].map(({ i: Icon, t, d }) => (
-        <div key={t} className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0"><Icon className="w-4 h-4" /></div>
-          <div><p className="text-sm font-medium">{t}</p><p className="text-xs text-muted-foreground">{d}</p></div>
-        </div>
-      ))}
+    <Card className="p-5 sm:p-6 rounded-[22px] border-border/50 shadow-sm">
+      <h3 className="text-[13px] font-medium text-muted-foreground mb-3">What you'll get</h3>
+      <div className="grid sm:grid-cols-2 gap-x-6 gap-y-3.5">
+        {[
+          { i: BookOpen, t: 'Smart summary', d: 'A clean, exam-ready overview' },
+          { i: Brain, t: 'Flashcards', d: 'Instant recall practice' },
+          { i: ClipboardList, t: 'Adaptive quiz', d: 'MCQs with explanations' },
+          { i: CalendarDays, t: 'Study plan', d: '5-7 day pacing schedule' },
+          { i: MessageSquare, t: 'AI tutor', d: 'Ask about your own file' },
+        ].map(({ i: Icon, t, d }) => (
+          <div key={t} className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-xl bg-muted text-foreground/70 flex items-center justify-center shrink-0"><Icon className="w-4 h-4" /></div>
+            <div><p className="text-sm font-medium">{t}</p><p className="text-[13px] text-muted-foreground">{d}</p></div>
+          </div>
+        ))}
+      </div>
     </Card>
   </div>
 );
 
+const Section = ({ icon: Icon, title, subtitle, children }: { icon: any; title: string; subtitle?: string; children: React.ReactNode }) => (
+  <section className="space-y-3">
+    <div className="flex items-center gap-2.5">
+      <div className="w-7 h-7 rounded-lg bg-muted text-foreground/70 flex items-center justify-center"><Icon className="w-4 h-4" /></div>
+      <div>
+        <h3 className="text-[17px] font-semibold tracking-[-0.01em] leading-none">{title}</h3>
+        {subtitle && <p className="text-[13px] text-muted-foreground mt-1">{subtitle}</p>}
+      </div>
+    </div>
+    {children}
+  </section>
+);
+
 const PackView = ({ pack, onReset }: { pack: Pack; onReset: () => void }) => (
-  <div className="space-y-5">
-    <Card className="p-5 rounded-3xl border-border/40 bg-card/60 backdrop-blur-xl">
+  <div className="space-y-8">
+    <Card className="p-5 sm:p-6 rounded-[22px] border-border/50 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            <Badge className="bg-primary/10 text-primary border-0">{pack.subject}</Badge>
-            <Badge variant="outline">{pack.level}</Badge>
+            <Badge className="bg-primary/10 text-primary border-0 rounded-full">{pack.subject}</Badge>
+            <Badge variant="outline" className="rounded-full">{pack.level}</Badge>
           </div>
-          <h2 className="text-2xl font-bold">{pack.title}</h2>
+          <h2 className="text-2xl font-semibold tracking-[-0.02em]">{pack.title}</h2>
         </div>
         <Button variant="outline" onClick={onReset} className="rounded-xl"><RotateCw className="w-4 h-4 mr-2" /> New pack</Button>
       </div>
     </Card>
 
-    <Tabs defaultValue="summary" className="space-y-4">
-      <TabsList className="rounded-2xl bg-muted/60 backdrop-blur p-1 h-auto flex-wrap">
-        <TabsTrigger value="summary" className="rounded-xl gap-1.5"><BookOpen className="w-4 h-4" /> Summary</TabsTrigger>
-        <TabsTrigger value="outline" className="rounded-xl gap-1.5"><GraduationCap className="w-4 h-4" /> Course</TabsTrigger>
-        <TabsTrigger value="flash" className="rounded-xl gap-1.5"><Brain className="w-4 h-4" /> Flashcards</TabsTrigger>
-        <TabsTrigger value="quiz" className="rounded-xl gap-1.5"><ClipboardList className="w-4 h-4" /> Quiz</TabsTrigger>
-        <TabsTrigger value="plan" className="rounded-xl gap-1.5"><CalendarDays className="w-4 h-4" /> Plan</TabsTrigger>
-        <TabsTrigger value="chat" className="rounded-xl gap-1.5"><MessageSquare className="w-4 h-4" /> Tutor</TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="summary">
-        <Card className="p-6 rounded-3xl border-border/40">
-          <div className="prose prose-sm max-w-none dark:prose-invert whitespace-pre-wrap">{pack.summary}</div>
-          <div className="mt-5 pt-5 border-t">
-            <h4 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">Key points</h4>
+    <Section icon={BookOpen} title="Summary" subtitle="The essentials, in order.">
+      <Card className="p-5 sm:p-6 rounded-[22px] border-border/50">
+        <div className="prose prose-sm max-w-none dark:prose-invert whitespace-pre-wrap">{pack.summary}</div>
+        {!!pack.keyPoints?.length && (
+          <div className="mt-5 pt-5 border-t border-border/60">
+            <h4 className="text-[13px] font-medium text-muted-foreground mb-3">Key points</h4>
             <ul className="space-y-2">
-              {pack.keyPoints?.map((k, i) => (
+              {pack.keyPoints.map((k, i) => (
                 <li key={i} className="flex gap-2 text-sm"><Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />{k}</li>
               ))}
             </ul>
           </div>
-        </Card>
-      </TabsContent>
+        )}
+      </Card>
+    </Section>
 
-      <TabsContent value="outline">
-        <div className="grid md:grid-cols-2 gap-3">
-          {pack.outline?.map((c, i) => (
-            <Card key={i} className="p-5 rounded-2xl border-border/40 hover:border-primary/40 transition">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">{i + 1}</div>
-                <h4 className="font-semibold">{c.chapter}</h4>
+    {!!pack.outline?.length && (
+      <Section icon={GraduationCap} title="Your course" subtitle="Chapter by chapter.">
+        <div className="space-y-3">
+          {pack.outline.map((c, i) => (
+            <Card key={i} className="p-5 rounded-[22px] border-border/50">
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-semibold text-[13px]">{i + 1}</div>
+                <h4 className="font-medium">{c.chapter}</h4>
               </div>
               <ul className="space-y-1.5 text-sm text-muted-foreground">
                 {c.lessons?.map((l, j) => <li key={j} className="flex gap-2"><FileText className="w-3.5 h-3.5 mt-0.5 shrink-0" />{l}</li>)}
@@ -235,29 +249,38 @@ const PackView = ({ pack, onReset }: { pack: Pack; onReset: () => void }) => (
             </Card>
           ))}
         </div>
-      </TabsContent>
+      </Section>
+    )}
 
-      <TabsContent value="flash"><Flashcards cards={pack.flashcards || []} /></TabsContent>
-      <TabsContent value="quiz"><QuizRunner quiz={pack.quiz || []} /></TabsContent>
+    <Section icon={Brain} title="Flashcards" subtitle="Tap a card to flip it.">
+      <Flashcards cards={pack.flashcards || []} />
+    </Section>
 
-      <TabsContent value="plan">
+    <Section icon={ClipboardList} title="Quiz" subtitle="Answer, then see why.">
+      <QuizRunner quiz={pack.quiz || []} />
+    </Section>
+
+    {!!pack.studyPlan?.length && (
+      <Section icon={CalendarDays} title="Study plan" subtitle="A realistic pace to master it.">
         <div className="space-y-3">
-          {pack.studyPlan?.map(d => (
-            <Card key={d.day} className="p-4 rounded-2xl border-border/40">
+          {pack.studyPlan.map(d => (
+            <Card key={d.day} className="p-4 sm:p-5 rounded-[22px] border-border/50">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-purple-500 text-white flex items-center justify-center font-bold">D{d.day}</div>
-                <p className="font-semibold">{d.focus}</p>
+                <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">D{d.day}</div>
+                <p className="font-medium">{d.focus}</p>
               </div>
-              <ul className="pl-13 space-y-1 text-sm text-muted-foreground ml-13">
-                {d.tasks?.map((t, i) => <li key={i} className="flex gap-2"><Check className="w-3.5 h-3.5 mt-0.5 text-primary" />{t}</li>)}
+              <ul className="space-y-1 text-sm text-muted-foreground">
+                {d.tasks?.map((t, i) => <li key={i} className="flex gap-2"><Check className="w-3.5 h-3.5 mt-0.5 text-primary shrink-0" />{t}</li>)}
               </ul>
             </Card>
           ))}
         </div>
-      </TabsContent>
+      </Section>
+    )}
 
-      <TabsContent value="chat"><TutorChat pack={pack} /></TabsContent>
-    </Tabs>
+    <Section icon={MessageSquare} title="Tutor" subtitle="Ask anything about this material.">
+      <TutorChat pack={pack} />
+    </Section>
   </div>
 );
 
