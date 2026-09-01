@@ -366,6 +366,24 @@ const NotesWorkspacePage: React.FC = () => {
     });
   };
 
+  /* ------------------------------------------------------- attach resources */
+
+  const attachResources = async (items: RepositoryItem[]) => {
+    if (!items.length || !active) return;
+    const id = toast.loading('Attaching files…');
+    const blocks: string[] = [];
+    for (const item of items) {
+      const url = await getResourceUrl(item);
+      if (!url) continue;
+      blocks.push(item.kind === 'image'
+        ? `![${item.title}](${url})`
+        : `📎 [${item.title}](${url}) — _${item.folder_path}_`);
+    }
+    if (!blocks.length) { toast.error('Could not open those files', { id }); return; }
+    patchActive({ content: `${active.content}${active.content.endsWith('\n') ? '' : '\n\n'}${blocks.join('\n\n')}\n` }, true);
+    toast.success(`${blocks.length} file${blocks.length > 1 ? 's' : ''} attached`, { id });
+  };
+
   const runSlash = (cmd: SlashCommand) => {
     const el = textareaRef.current;
     if (!el || !active) return;
