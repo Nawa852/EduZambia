@@ -40,6 +40,7 @@ const StudyRoomPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [pack, setPack] = useState<Pack | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const generate = async () => {
@@ -67,23 +68,33 @@ const StudyRoomPage = () => {
     }
   };
 
-  const reset = () => { setPack(null); setText(''); setFile(null); setTopic(''); };
+  const useFromLibrary = async (items: { id: string }[]) => {
+    const item = items[0] as any;
+    if (!item) return;
+    const id = toast.loading('Opening from your library…');
+    try {
+      const f = await downloadAsFile(item);
+      setFile(f);
+      if (!topic.trim()) setTopic(item.subject ? `${item.subject} — ${item.title}` : item.title);
+      toast.success(`${item.title} ready to study`, { id });
+    } catch (e: any) {
+      toast.error(e.message || 'Could not open that file', { id });
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
-      <div className="container w-full p-4 lg:p-6 space-y-6">
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 py-6 sm:py-10 space-y-6">
         {/* Hero */}
-        <div className="rounded-3xl p-6 md:p-8 bg-gradient-to-br from-primary/10 via-purple-500/5 to-transparent border border-primary/10 backdrop-blur-xl">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-11 h-11 rounded-2xl bg-primary/15 text-primary flex items-center justify-center">
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Study Room</h1>
-              <p className="text-sm text-muted-foreground">Upload any material — get an instant course, notes, flashcards, quizzes and an AI tutor that knows your file.</p>
-            </div>
-          </div>
-        </div>
+        <header className="space-y-1.5">
+          <p className="text-[13px] font-medium text-primary">Study Room</p>
+          <h1 className="text-[28px] sm:text-[34px] font-semibold tracking-[-0.02em] leading-tight">
+            Turn any material into a course
+          </h1>
+          <p className="text-[15px] text-muted-foreground max-w-xl">
+            Upload a file or pick one from your library — get a summary, flashcards, a quiz, a study plan and a tutor that knows it.
+          </p>
+        </header>
 
         {!pack ? (
           <UploadPanel
@@ -92,10 +103,19 @@ const StudyRoomPage = () => {
             file={file} setFile={setFile}
             loading={loading} onGenerate={generate}
             fileRef={fileRef}
+            onOpenLibrary={() => setPickerOpen(true)}
           />
         ) : (
-          <PackView pack={pack} onReset={reset} />
+          <PackView pack={pack} onReset={() => { setPack(null); setText(''); setFile(null); setTopic(''); }} />
         )}
+
+        <ResourcePicker
+          open={pickerOpen}
+          onOpenChange={setPickerOpen}
+          multiple={false}
+          title="Study a file from your library"
+          onSelect={(items) => void useFromLibrary(items as any)}
+        />
       </div>
     </div>
   );
