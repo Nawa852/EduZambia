@@ -11,8 +11,10 @@ import { toast } from 'sonner';
 import {
   Upload, Sparkles, FileText, BookOpen, Brain, ClipboardList,
   MessageSquare, Send, RotateCw, Check, X, ChevronLeft, ChevronRight,
-  Loader2, Wand2, GraduationCap, CalendarDays,
+  Loader2, Wand2, GraduationCap, CalendarDays, FolderOpen,
 } from 'lucide-react';
+import ResourcePicker from '@/components/Resources/ResourcePicker';
+import { downloadAsFile } from '@/lib/resourceRepository';
 
 type Flash = { q: string; a: string };
 type Quiz = { question: string; options: string[]; correct: number; explanation: string };
