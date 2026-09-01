@@ -17,10 +17,12 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   Plus, Search, Star, Trash2, Folder, FolderPlus, FileText, Archive, MoreHorizontal,
-  Eye, PenLine, Sparkles, Loader2, Image as ImageIcon, Hash, PanelLeft, Check,
+  Eye, PenLine, Sparkles, Loader2, Image as ImageIcon, Hash, PanelLeft, Check, Paperclip,
   ChevronRight, Copy, Printer, Inbox, Type,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import ResourcePicker from '@/components/Resources/ResourcePicker';
+import { getResourceUrl, type RepositoryItem } from '@/lib/resourceRepository';
 import {
   COVER_PRESETS, FOLDER_COLORS, NOTE_ICONS, NoteFolder, WorkspaceNote, buildFolderContext,
   countWords, coverClass, createFolder, createNote, deleteFolder, deleteNote, listFolders,
@@ -256,6 +258,7 @@ const NotesWorkspacePage: React.FC = () => {
   const [slashOpen, setSlashOpen] = useState(false);
   const [slashQuery, setSlashQuery] = useState('');
   const [mobileNav, setMobileNav] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [tagDraft, setTagDraft] = useState('');
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -541,6 +544,14 @@ const NotesWorkspacePage: React.FC = () => {
                   <Star className={cn('w-4 h-4', active.is_favorite && 'fill-amber-400 text-amber-400')} />
                 </Button>
 
+                <Button
+                  variant="ghost" size="icon"
+                  onClick={() => setPickerOpen(true)}
+                  aria-label="Attach a file from your library"
+                >
+                  <Paperclip className="w-4 h-4" />
+                </Button>
+
                 <Button variant="ghost" size="icon" onClick={() => setPreview((v) => !v)} aria-label="Toggle preview">
                   {preview ? <PenLine className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </Button>
@@ -744,6 +755,13 @@ const NotesWorkspacePage: React.FC = () => {
           </>
         )}
       </main>
+
+      <ResourcePicker
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        title="Attach from your library"
+        onSelect={(items) => void attachResources(items)}
+      />
     </div>
   );
 };
