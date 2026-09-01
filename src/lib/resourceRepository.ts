@@ -242,3 +242,12 @@ export function groupByFolder(items: RepositoryItem[]): Record<string, Repositor
     return acc;
   }, {});
 }
+
+/** Pulls a stored resource back down as a real File so any tool can consume it. */
+export async function downloadAsFile(item: RepositoryItem): Promise<File> {
+  const { data, error } = await supabase.storage.from(item.bucket).download(item.storage_path);
+  if (error || !data) throw new Error(error?.message || 'Could not open that file');
+  return new File([data], item.title || item.storage_path.split('/').pop() || 'file', {
+    type: item.mime_type || data.type || 'application/octet-stream',
+  });
+}
