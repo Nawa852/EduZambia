@@ -134,6 +134,7 @@ export async function createNote(patch: Partial<WorkspaceNote> = {}): Promise<Wo
       icon: patch.icon ?? '📄',
       folder_id: patch.folder_id ?? null,
       cover: patch.cover ?? null,
+      resource_id: patch.resource_id ?? null,
       tags: patch.tags ?? [],
       word_count: countWords(patch.content ?? ''),
     })
