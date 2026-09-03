@@ -63,16 +63,42 @@ export default function TeacherStudentsPage() {
   const send = async () => {
     if (!user || !active) return;
     setSending(true);
-    const { error } = await supabase.from("parent_updates").insert({
+
+    // Fan the update out to every approved guardian linked to this student,
+    // so it actually lands in the parent's inbox.
+    const { data: links } = await supabase
+      .from("guardian_links")
+      .select("guardian_id, status")
+      .eq("student_id", active.id);
+    const parentIds = [
+      ...new Set(
+        (links ?? [])
+          .filter((l) => l.guardian_id && l.status !== "revoked" && l.status !== "pending")
+          .map((l) => l.guardian_id as string),
+      ),
+    ];
+
+    const base = {
       teacher_id: user.id,
       student_id: active.id,
       subject: draft.subject,
       body: draft.body,
       ai_generated: true,
       sent_at: new Date().toISOString(),
-    });
+    };
+    const rows = parentIds.length
+      ? parentIds.map((parent_id) => ({ ...base, parent_id }))
+      : [base];
+
+    const { error } = await supabase.from("parent_updates").insert(rows);
     setSending(false);
-    if (error) toast.error(error.message); else { toast.success("Parent update sent"); setActive(null); }
+    if (error) { toast.error(error.message); return; }
+    toast.success(
+      parentIds.length
+        ? `Sent to ${parentIds.length} linked guardian${parentIds.length > 1 ? "s" : ""}`
+        : "Saved — no guardian is linked to this student yet",
+    );
+    setActive(null);
   };
 
   return (

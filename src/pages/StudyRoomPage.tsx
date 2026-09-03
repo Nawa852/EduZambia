@@ -1,4 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { EXAM_LAUNCH_KEY } from '@/pages/ECZExamSimulatorPage';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -202,7 +204,20 @@ const Section = ({ icon: Icon, title, subtitle, children }: { icon: any; title: 
   </section>
 );
 
-const PackView = ({ pack, onReset }: { pack: Pack; onReset: () => void }) => (
+const PackView = ({ pack, onReset }: { pack: Pack; onReset: () => void }) => {
+  const navigate = useNavigate();
+
+  const takeMockExam = () => {
+    try {
+      sessionStorage.setItem(
+        EXAM_LAUNCH_KEY,
+        JSON.stringify({ subject: pack.subject, grade: pack.level, topic: pack.title }),
+      );
+    } catch { /* ignore */ }
+    navigate('/ecz?tab=simulator');
+  };
+
+  return (
   <div className="space-y-8">
     <Card className="p-5 sm:p-6 rounded-[22px] border-border/50 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -213,7 +228,10 @@ const PackView = ({ pack, onReset }: { pack: Pack; onReset: () => void }) => (
           </div>
           <h2 className="text-2xl font-semibold tracking-[-0.02em]">{pack.title}</h2>
         </div>
-        <Button variant="outline" onClick={onReset} className="rounded-xl"><RotateCw className="w-4 h-4 mr-2" /> New pack</Button>
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={takeMockExam} className="rounded-xl"><GraduationCap className="w-4 h-4 mr-2" /> Take a mock exam</Button>
+          <Button variant="outline" onClick={onReset} className="rounded-xl"><RotateCw className="w-4 h-4 mr-2" /> New pack</Button>
+        </div>
       </div>
     </Card>
 
@@ -281,7 +299,9 @@ const PackView = ({ pack, onReset }: { pack: Pack; onReset: () => void }) => (
       <TutorChat pack={pack} />
     </Section>
   </div>
-);
+  );
+};
+
 
 const Flashcards = ({ cards }: { cards: Flash[] }) => {
   const [i, setI] = useState(0);

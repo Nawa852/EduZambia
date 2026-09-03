@@ -259,6 +259,7 @@ const NotesWorkspacePage: React.FC = () => {
   const [slashQuery, setSlashQuery] = useState('');
   const [mobileNav, setMobileNav] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerMode, setPickerMode] = useState<'attach' | 'import'>('attach');
   const [tagDraft, setTagDraft] = useState('');
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -387,6 +388,34 @@ const NotesWorkspacePage: React.FC = () => {
     toast.success(`${blocks.length} file${blocks.length > 1 ? 's' : ''} attached`, { id });
   };
 
+  /** Turn each picked file into its own page, linked back to the resource. */
+  const importResourcesAsPages = async (items: RepositoryItem[]) => {
+    if (!items.length) return;
+    const id = toast.loading('Importing files as pages…');
+    const created: typeof notes = [];
+    for (const item of items) {
+      try {
+        const url = await getResourceUrl(item);
+        const body = item.kind === 'image'
+          ? `![${item.title}](${url ?? ''})`
+          : `📎 [${item.title}](${url ?? ''}) — _${item.folder_path}_`;
+        const note = await createNote({
+          title: item.title,
+          content: `${body}\n\n> Use the AI menu to summarise this file, or make flashcards and a quiz from it.\n`,
+          folder_id: activeFolder ?? null,
+          resource_id: item.id,
+          icon: item.kind === 'image' ? '🖼️' : '📎',
+        });
+        created.push(note);
+      } catch { /* skip this file */ }
+    }
+    if (!created.length) { toast.error('Could not import those files', { id }); return; }
+    setNotes((p) => [...created, ...p]);
+    setActiveId(created[0].id);
+    setPreview(false);
+    toast.success(`${created.length} page${created.length > 1 ? 's' : ''} imported`, { id });
+  };
+
   const runSlash = (cmd: SlashCommand) => {
     const el = textareaRef.current;
     if (!el || !active) return;
@@ -509,9 +538,18 @@ const NotesWorkspacePage: React.FC = () => {
             <p className="text-sm text-muted-foreground max-w-sm">
               Create a page, group pages into folders, and let Synapse turn them into flashcards and quizzes.
             </p>
-            <Button className="rounded-xl gap-2" onClick={() => handleNewNote(activeFolder)}>
-              <Plus className="w-4 h-4" /> New page
-            </Button>
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button className="rounded-xl gap-2" onClick={() => handleNewNote(activeFolder)}>
+                <Plus className="w-4 h-4" /> New page
+              </Button>
+              <Button
+                variant="outline"
+                className="rounded-xl gap-2"
+                onClick={() => { setPickerMode('import'); setPickerOpen(true); }}
+              >
+                <Paperclip className="w-4 h-4" /> Import from library
+              </Button>
+            </div>
           </div>
         ) : (
           <>
@@ -546,7 +584,7 @@ const NotesWorkspacePage: React.FC = () => {
 
                 <Button
                   variant="ghost" size="icon"
-                  onClick={() => setPickerOpen(true)}
+                  onClick={() => { setPickerMode('attach'); setPickerOpen(true); }}
                   aria-label="Attach a file from your library"
                 >
                   <Paperclip className="w-4 h-4" />
@@ -759,8 +797,10 @@ const NotesWorkspacePage: React.FC = () => {
       <ResourcePicker
         open={pickerOpen}
         onOpenChange={setPickerOpen}
-        title="Attach from your library"
-        onSelect={(items) => void attachResources(items)}
+        title={pickerMode === 'import' ? 'Import files as pages' : 'Attach from your library'}
+        onSelect={(items) =>
+          void (pickerMode === 'import' ? importResourcesAsPages(items) : attachResources(items))
+        }
       />
     </div>
   );

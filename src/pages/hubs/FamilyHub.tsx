@@ -1,8 +1,9 @@
 import React from 'react';
 import { HubPageLayout, HubTab } from '@/components/Layout/HubPageLayout';
-import { Users, BarChart3, Shield, ClipboardCheck, Gift, MessageSquare, FileText, Mail, Link2 } from 'lucide-react';
+import { LayoutDashboard, Users, BarChart3, Shield, ClipboardCheck, Gift, MessageSquare, FileText, Mail, Link2 } from 'lucide-react';
 
 const tabs: HubTab[] = [
+  { id: 'overview', label: 'Overview', icon: LayoutDashboard, component: React.lazy(() => import('@/pages/GuardianDashboardPage')) },
   { id: 'children', label: 'My Children', icon: Users, component: React.lazy(() => import('@/pages/ParentChildrenPage')) },
   { id: 'report', label: 'Weekly Report', icon: FileText, component: React.lazy(() => import('@/pages/GuardianWeeklyReportPage')) },
   { id: 'updates', label: 'Teacher Updates', icon: Mail, component: React.lazy(() => import('@/pages/ParentUpdatesPage')) },
@@ -20,7 +21,7 @@ const FamilyHub = () => (
     subtitle="See how your child is really doing — study time, quizzes, homework and teacher updates."
     icon={Users}
     tabs={tabs}
-    defaultTab="children"
+    defaultTab="overview"
     quickLinks={[
       { label: 'Weekly report', href: '/family?tab=report', icon: FileText },
       { label: 'Link a child', href: '/family?tab=link', icon: Link2 },
