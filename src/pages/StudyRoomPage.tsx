@@ -297,7 +297,9 @@ const PackView = ({ pack, onReset }: { pack: Pack; onReset: () => void }) => {
       <TutorChat pack={pack} />
     </Section>
   </div>
-);
+  );
+};
+
 
 const Flashcards = ({ cards }: { cards: Flash[] }) => {
   const [i, setI] = useState(0);
