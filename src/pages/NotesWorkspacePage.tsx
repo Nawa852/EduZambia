@@ -509,9 +509,18 @@ const NotesWorkspacePage: React.FC = () => {
             <p className="text-sm text-muted-foreground max-w-sm">
               Create a page, group pages into folders, and let Synapse turn them into flashcards and quizzes.
             </p>
-            <Button className="rounded-xl gap-2" onClick={() => handleNewNote(activeFolder)}>
-              <Plus className="w-4 h-4" /> New page
-            </Button>
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button className="rounded-xl gap-2" onClick={() => handleNewNote(activeFolder)}>
+                <Plus className="w-4 h-4" /> New page
+              </Button>
+              <Button
+                variant="outline"
+                className="rounded-xl gap-2"
+                onClick={() => { setPickerMode('import'); setPickerOpen(true); }}
+              >
+                <Paperclip className="w-4 h-4" /> Import from library
+              </Button>
+            </div>
           </div>
         ) : (
           <>
