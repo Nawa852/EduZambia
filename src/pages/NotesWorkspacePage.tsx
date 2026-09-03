@@ -584,7 +584,7 @@ const NotesWorkspacePage: React.FC = () => {
 
                 <Button
                   variant="ghost" size="icon"
-                  onClick={() => setPickerOpen(true)}
+                  onClick={() => { setPickerMode('attach'); setPickerOpen(true); }}
                   aria-label="Attach a file from your library"
                 >
                   <Paperclip className="w-4 h-4" />
@@ -797,8 +797,10 @@ const NotesWorkspacePage: React.FC = () => {
       <ResourcePicker
         open={pickerOpen}
         onOpenChange={setPickerOpen}
-        title="Attach from your library"
-        onSelect={(items) => void attachResources(items)}
+        title={pickerMode === 'import' ? 'Import files as pages' : 'Attach from your library'}
+        onSelect={(items) =>
+          void (pickerMode === 'import' ? importResourcesAsPages(items) : attachResources(items))
+        }
       />
     </div>
   );
