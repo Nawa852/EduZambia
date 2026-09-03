@@ -7,7 +7,6 @@ import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/UI/EmptyState';
 import { GuardianWeeklyReport } from '@/components/Dashboard/GuardianWeeklyReport';
-import { Link } from 'react-router-dom';
 import { Printer, Link2, BookOpen, Target, TrendingUp, GraduationCap } from 'lucide-react';
 
 /**
