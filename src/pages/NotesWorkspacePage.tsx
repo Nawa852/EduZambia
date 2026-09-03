@@ -388,6 +388,34 @@ const NotesWorkspacePage: React.FC = () => {
     toast.success(`${blocks.length} file${blocks.length > 1 ? 's' : ''} attached`, { id });
   };
 
+  /** Turn each picked file into its own page, linked back to the resource. */
+  const importResourcesAsPages = async (items: RepositoryItem[]) => {
+    if (!items.length) return;
+    const id = toast.loading('Importing files as pages…');
+    const created: typeof notes = [];
+    for (const item of items) {
+      try {
+        const url = await getResourceUrl(item);
+        const body = item.kind === 'image'
+          ? `![${item.title}](${url ?? ''})`
+          : `📎 [${item.title}](${url ?? ''}) — _${item.folder_path}_`;
+        const note = await createNote({
+          title: item.title,
+          content: `${body}\n\n> Use the AI menu to summarise this file, or make flashcards and a quiz from it.\n`,
+          folder_id: activeFolder ?? null,
+          resource_id: item.id,
+          icon: item.kind === 'image' ? '🖼️' : '📎',
+        });
+        created.push(note);
+      } catch { /* skip this file */ }
+    }
+    if (!created.length) { toast.error('Could not import those files', { id }); return; }
+    setNotes((p) => [...created, ...p]);
+    setActiveId(created[0].id);
+    setPreview(false);
+    toast.success(`${created.length} page${created.length > 1 ? 's' : ''} imported`, { id });
+  };
+
   const runSlash = (cmd: SlashCommand) => {
     const el = textareaRef.current;
     if (!el || !active) return;
