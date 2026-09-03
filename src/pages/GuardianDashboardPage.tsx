@@ -38,11 +38,8 @@ const GuardianDashboardPage: React.FC = () => {
         icon={Link2}
         title="No child linked yet"
         description="Link your child's account to see their real grades, study time and teacher updates here."
-        action={
-          <Button asChild className="rounded-xl">
-            <Link to="/family?tab=link">Link a child</Link>
-          </Button>
-        }
+        actionLabel="Link a child"
+        onAction={() => { window.location.href = '/family?tab=link'; }}
       />
     );
   }
