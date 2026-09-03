@@ -259,6 +259,7 @@ const NotesWorkspacePage: React.FC = () => {
   const [slashQuery, setSlashQuery] = useState('');
   const [mobileNav, setMobileNav] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerMode, setPickerMode] = useState<'attach' | 'import'>('attach');
   const [tagDraft, setTagDraft] = useState('');
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
