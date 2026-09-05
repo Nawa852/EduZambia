@@ -30,6 +30,9 @@ import NotFound from '@/pages/NotFound';
 
 // Lazy: public
 const ChooseRolePage = React.lazy(() => import('@/pages/ChooseRolePage'));
+const ParentAuthPage = React.lazy(() => import('@/pages/parents/ParentAuthPage'));
+const ParentInvitePage = React.lazy(() => import('@/pages/parents/ParentInvitePage'));
+const ParentChildProfilePage = React.lazy(() => import('@/pages/parents/ParentChildProfilePage'));
 const PasswordResetPage = React.lazy(() => import('@/pages/PasswordResetPage'));
 const About = React.lazy(() => import('@/pages/About'));
 const Contact = React.lazy(() => import('@/pages/Contact'));
@@ -184,6 +187,12 @@ function App() {
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/login" element={<AuthPage />} />
               <Route path="/signup" element={<AuthPage />} />
+              <Route path="/parents" element={<ParentAuthPage />} />
+              <Route path="/parents/login" element={<ParentAuthPage />} />
+              <Route path="/parents/join/:code" element={<ParentInvitePage />} />
+              <Route path="/parents/dashboard" element={<Navigate to="/family" replace />} />
+              <Route path="/family/child/:studentId" element={<PG><RoleGuard allow={['guardian']}><ParentChildProfilePage /></RoleGuard></PG>} />
+
               <Route path="/password-reset" element={<PasswordResetPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />

@@ -5331,6 +5331,10 @@ export type Database = {
       }
       calculate_user_streak: { Args: { p_user_id: string }; Returns: number }
       create_guardian_link_code: { Args: never; Returns: string }
+      create_parent_invite_for_student: {
+        Args: { _student_id: string }
+        Returns: string
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
