@@ -184,6 +184,12 @@ function App() {
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/login" element={<AuthPage />} />
               <Route path="/signup" element={<AuthPage />} />
+              <Route path="/parents" element={<ParentAuthPage />} />
+              <Route path="/parents/login" element={<ParentAuthPage />} />
+              <Route path="/parents/join/:code" element={<ParentInvitePage />} />
+              <Route path="/parents/dashboard" element={<Navigate to="/family" replace />} />
+              <Route path="/family/child/:studentId" element={<PG><RoleGuard allow={['guardian']}><ParentChildProfilePage /></RoleGuard></PG>} />
+
               <Route path="/password-reset" element={<PasswordResetPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
