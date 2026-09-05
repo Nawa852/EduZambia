@@ -30,6 +30,9 @@ import NotFound from '@/pages/NotFound';
 
 // Lazy: public
 const ChooseRolePage = React.lazy(() => import('@/pages/ChooseRolePage'));
+const ParentAuthPage = React.lazy(() => import('@/pages/parents/ParentAuthPage'));
+const ParentInvitePage = React.lazy(() => import('@/pages/parents/ParentInvitePage'));
+const ParentChildProfilePage = React.lazy(() => import('@/pages/parents/ParentChildProfilePage'));
 const PasswordResetPage = React.lazy(() => import('@/pages/PasswordResetPage'));
 const About = React.lazy(() => import('@/pages/About'));
 const Contact = React.lazy(() => import('@/pages/Contact'));
