@@ -79,9 +79,10 @@ Make it practical, engaging, and fully aligned with the ECZ curriculum.`;
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: systemPrompt },
+          { role: "system", content: systemOverride || systemPrompt },
           { role: "user", content: userPrompt },
         ],
+        ...(jsonOnly ? { response_format: { type: "json_object" } } : {}),
       }),
     });
 
