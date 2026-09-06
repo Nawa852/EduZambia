@@ -257,32 +257,19 @@ const TeacherLessonPlanPage: React.FC = () => {
       const sys = `You are an expert Zambian secondary school teacher writing lesson plans aligned to the ECZ (Examinations Council of Zambia) curriculum. Return ONLY valid JSON matching this schema (no markdown):
 {"topic":"","subTopic":"","specificOutcomes":["","","",""],"rationale":"","prerequisiteKnowledge":"","teachingAids":"","activities":[{"phase":"INTRODUCTION","teacherActivity":"","pupilsActivity":""},{"phase":"LESSON DEVELOPMENT","teacherActivity":"","pupilsActivity":""},{"phase":"GUIDED PRACTICE","teacherActivity":"","pupilsActivity":""},{"phase":"WRITTEN ACTIVITY","teacherActivity":"","pupilsActivity":""},{"phase":"SUMMARY & HOMEWORK","teacherActivity":"","pupilsActivity":""}],"conclusion":"","evaluation":""}
 Always produce exactly 4 specific outcomes and exactly 5 activity phases in the order above.`;
-      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-lesson-generator`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
-        body: JSON.stringify({ subject: aiSubject, grade: aiGrade, topic: aiTopic, duration: '80 minutes', systemOverride: sys, jsonOnly: true }),
-        signal: abortRef.current.signal,
+      const { data: fnData, error: fnError } = await supabase.functions.invoke('ai-lesson-generator', {
+        body: {
+          subject: aiSubject,
+          grade: aiGrade,
+          topic: aiTopic,
+          duration: `${plan.durationMinutes || '80'} minutes`,
+          systemOverride: sys,
+          jsonOnly: true,
+        },
       });
-      if (resp.status === 429) { toast.error('Rate limit. Try again.'); setLoading(false); return; }
-      if (resp.status === 402) { toast.error('AI credits exhausted.'); setLoading(false); return; }
-      if (!resp.ok || !resp.body) throw new Error('Failed');
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = ''; let text = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        let idx;
-        while ((idx = buf.indexOf('\n')) !== -1) {
-          let line = buf.slice(0, idx); buf = buf.slice(idx + 1);
-          if (line.endsWith('\r')) line = line.slice(0, -1);
-          if (!line.startsWith('data: ')) continue;
-          const json = line.slice(6).trim();
-          if (json === '[DONE]') break;
-          try { const p = JSON.parse(json); const c = p.choices?.[0]?.delta?.content; if (c) text += c; } catch {}
-        }
-      }
+      if (fnError) throw fnError;
+      if (fnData?.error) throw new Error(fnData.error);
+      const text: string = fnData?.lessonPlan ?? '';
       const m = text.match(/\{[\s\S]*\}/);
       if (!m) throw new Error('No JSON');
       const data = JSON.parse(m[0]);
