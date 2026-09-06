@@ -18,6 +18,35 @@ export default function TeacherStudentsPage() {
   const [draft, setDraft] = useState<{ subject: string; body: string }>({ subject: "", body: "" });
   const [generating, setGenerating] = useState(false);
   const [sending, setSending] = useState(false);
+  const [inviting, setInviting] = useState<string | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
+
+  // Creates (or reuses) a one-time parent invite code for a student this
+  // teacher actually teaches, and puts the join link on the clipboard.
+  const copyInvite = async (student: any) => {
+    setInviting(student.id);
+    try {
+      const { data, error } = await supabase.rpc("create_parent_invite_for_student", {
+        _student_id: student.id,
+      });
+      if (error) throw error;
+      const code = typeof data === "string" ? data : (data as any)?.link_code;
+      if (!code) throw new Error("No invite code returned");
+      const url = `${window.location.origin}/parents/join/${code}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success("Invite link copied — share it with the parent");
+      } catch {
+        toast.success(`Invite link: ${url}`);
+      }
+      setCopied(student.id);
+      window.setTimeout(() => setCopied(null), 2500);
+    } catch (e: any) {
+      toast.error(e.message || "Could not create an invite link");
+    } finally {
+      setInviting(null);
+    }
+  };
 
   useEffect(() => {
     (async () => {
