@@ -146,6 +146,22 @@ export default function TeacherStudentsPage() {
                 <div className="font-medium">{s.full_name || "Student"}</div>
                 <div className="text-xs text-muted-foreground">{s.grade || "—"}</div>
               </div>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => copyInvite(s)}
+                disabled={inviting === s.id}
+                title="Copy a link a parent can open to connect to this learner"
+              >
+                {inviting === s.id ? (
+                  <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                ) : copied === s.id ? (
+                  <Check className="w-4 h-4 mr-1.5 text-emerald-600" />
+                ) : (
+                  <Link2 className="w-4 h-4 mr-1.5" />
+                )}
+                {copied === s.id ? "Copied" : "Copy parent invite link"}
+              </Button>
               <Dialog open={active?.id === s.id} onOpenChange={(o) => !o && setActive(null)}>
                 <DialogTrigger asChild>
                   <Button size="sm" variant="outline" onClick={() => generate(s)}>
