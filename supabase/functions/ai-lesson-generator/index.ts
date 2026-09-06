@@ -42,7 +42,7 @@ serve(async (req) => {
   if (authResult instanceof Response) return authResult;
   const authedUserId = authResult.id;
   try {
-    const { subject, grade, topic, duration } = await req.json();
+    const { subject, grade, topic, duration, systemOverride, jsonOnly } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
