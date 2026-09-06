@@ -5,7 +5,7 @@ import { TeacherShell } from "@/components/Teacher/TeacherShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Sparkles, Send, Loader2 } from "lucide-react";
+import { Sparkles, Send, Loader2, Link2, Check } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,35 @@ export default function TeacherStudentsPage() {
   const [draft, setDraft] = useState<{ subject: string; body: string }>({ subject: "", body: "" });
   const [generating, setGenerating] = useState(false);
   const [sending, setSending] = useState(false);
+  const [inviting, setInviting] = useState<string | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
+
+  // Creates (or reuses) a one-time parent invite code for a student this
+  // teacher actually teaches, and puts the join link on the clipboard.
+  const copyInvite = async (student: any) => {
+    setInviting(student.id);
+    try {
+      const { data, error } = await supabase.rpc("create_parent_invite_for_student", {
+        _student_id: student.id,
+      });
+      if (error) throw error;
+      const code = typeof data === "string" ? data : (data as any)?.link_code;
+      if (!code) throw new Error("No invite code returned");
+      const url = `${window.location.origin}/parents/join/${code}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success("Invite link copied — share it with the parent");
+      } catch {
+        toast.success(`Invite link: ${url}`);
+      }
+      setCopied(student.id);
+      window.setTimeout(() => setCopied(null), 2500);
+    } catch (e: any) {
+      toast.error(e.message || "Could not create an invite link");
+    } finally {
+      setInviting(null);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -117,6 +146,22 @@ export default function TeacherStudentsPage() {
                 <div className="font-medium">{s.full_name || "Student"}</div>
                 <div className="text-xs text-muted-foreground">{s.grade || "—"}</div>
               </div>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => copyInvite(s)}
+                disabled={inviting === s.id}
+                title="Copy a link a parent can open to connect to this learner"
+              >
+                {inviting === s.id ? (
+                  <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                ) : copied === s.id ? (
+                  <Check className="w-4 h-4 mr-1.5 text-emerald-600" />
+                ) : (
+                  <Link2 className="w-4 h-4 mr-1.5" />
+                )}
+                {copied === s.id ? "Copied" : "Copy parent invite link"}
+              </Button>
               <Dialog open={active?.id === s.id} onOpenChange={(o) => !o && setActive(null)}>
                 <DialogTrigger asChild>
                   <Button size="sm" variant="outline" onClick={() => generate(s)}>
