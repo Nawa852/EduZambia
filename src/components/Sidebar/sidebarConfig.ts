@@ -88,7 +88,7 @@ const studentNavigation: NavGroup[] = [
     label: "More",
     items: [
       { title: "Progress", url: "/progress", icon: BarChart3, shortTitle: "Stats" },
-      { title: "Family Link", url: "/guardian-link", icon: Users, shortTitle: "Family" },
+      { title: "Family Link", url: "/profile?tab=family", icon: Users, shortTitle: "Family" },
       { title: "Settings", url: "/profile?tab=settings", icon: Settings, shortTitle: "Settings" },
     ],
   },
@@ -387,7 +387,7 @@ export function getCommandNavigationByRole(role: string): Array<NavItem & { grou
           { title: "Synapse AI", url: "/synapse", icon: Sparkles, group: "Navigate", shortTitle: "Synapse" },
           { title: "Practice", url: "/practice", icon: Target, group: "Navigate", shortTitle: "Practice" },
           { title: "My Files", url: "/study", icon: FolderOpen, group: "Navigate", shortTitle: "Files" },
-          { title: "Family Link", url: "/guardian-link", icon: Users, group: "Account", shortTitle: "Family" },
+          { title: "Family Link", url: "/profile?tab=family", icon: Users, group: "Account", shortTitle: "Family" },
         ]
       : []),
 
