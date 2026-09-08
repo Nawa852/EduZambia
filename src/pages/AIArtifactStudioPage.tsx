@@ -201,6 +201,15 @@ const AIArtifactStudioPage: React.FC = () => {
       {artifact && (
         <div className="space-y-3">
           <ArtifactCanvas artifact={artifact} onRegenerate={() => generate()} />
+          <Button
+            variant="outline"
+            className="rounded-full"
+            disabled={saving}
+            onClick={saveToWorkspace}
+          >
+            {saving ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <NotebookPen className="mr-1.5 h-4 w-4" />}
+            Save to my knowledge workspace
+          </Button>
           {artifact.explanation && (
             <Card className="rounded-2xl border-border/50 p-4 text-sm text-muted-foreground">
               <Badge variant="secondary" className="mb-2 rounded-full text-[10px]">How it works</Badge>
