@@ -7,14 +7,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { ArtifactCanvas, type Artifact } from '@/components/AI/ArtifactCanvas';
 import { ErrorState } from '@/components/UI/ErrorState';
-import { Boxes, Network, BarChart3, Microscope, FileSpreadsheet, Wand2, Check, Loader2 } from 'lucide-react';
+import { Boxes, Network, BarChart3, Microscope, FileSpreadsheet, Wand2, Check, Loader2, NotebookPen } from 'lucide-react';
+import { createNote } from '@/lib/notesWorkspace';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-type Kind = '3d' | 'mindmap' | 'chart' | 'diagram' | 'document' | 'simulation' | 'auto';
+type Kind = '3d' | 'mindmap' | 'chart' | 'diagram' | 'document' | 'simulation' | 'essay' | 'report' | 'auto';
 
 const KINDS: { id: Kind; label: string; icon: React.ElementType; tint: string }[] = [
   { id: 'auto', label: 'Auto', icon: Wand2, tint: 'bg-primary/10 text-primary' },
+  { id: 'essay', label: 'Essay', icon: FileSpreadsheet, tint: 'bg-primary/10 text-primary' },
+  { id: 'report', label: 'Report', icon: FileSpreadsheet, tint: 'bg-teal-500/10 text-teal-600' },
   { id: '3d', label: '3D scene', icon: Boxes, tint: 'bg-violet-500/10 text-violet-600' },
   { id: 'mindmap', label: 'Mind map', icon: Network, tint: 'bg-emerald-500/10 text-emerald-600' },
   { id: 'chart', label: 'Charts', icon: BarChart3, tint: 'bg-sky-500/10 text-sky-600' },
@@ -22,12 +25,19 @@ const KINDS: { id: Kind; label: string; icon: React.ElementType; tint: string }[
   { id: 'document', label: 'Exam / doc', icon: FileSpreadsheet, tint: 'bg-rose-500/10 text-rose-600' },
 ];
 
+/** Essays and reports are served by the document generator with a shaped brief. */
+const KIND_BRIEF: Partial<Record<Kind, string>> = {
+  essay: 'Write a well-structured academic essay (title, introduction, argued body paragraphs with evidence, conclusion) as a clean printable document about: ',
+  report: 'Write a formal structured report (title page heading, aims, method, findings with a data table, discussion, conclusion, recommendations) as a clean printable document about: ',
+};
+
 const EXAMPLES = [
+  'An essay on the causes and effects of deforestation in Zambia',
+  'A science practical report on testing for starch in leaves',
   'A 3D interactive model of the water molecule with bond angles labelled',
   'Mind map of ECZ Grade 12 Biology: transport in plants',
   'Grade 9 Science end-of-term exam paper with a labelled cell diagram and mark scheme',
   'Charts comparing Zambia maize yield by province over the last 5 years',
-  'Interactive simulation of projectile motion with angle and velocity sliders',
 ];
 
 const FALLBACK_STEPS = [
@@ -45,7 +55,32 @@ const AIArtifactStudioPage: React.FC = () => {
   const [stepIndex, setStepIndex] = useState(0);
   const [artifact, setArtifact] = useState<Artifact | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const timer = useRef<number | null>(null);
+
+  const saveToWorkspace = async () => {
+    if (!artifact) return;
+    setSaving(true);
+    try {
+      await createNote({
+        title: artifact.title || 'Artifact',
+        icon: '🧩',
+        content: [
+          artifact.explanation ? artifact.explanation.trim() : '',
+          artifact.steps?.length ? artifact.steps.map((s) => `- ${s}`).join('\n') : '',
+          '```html',
+          artifact.code,
+          '```',
+        ].filter(Boolean).join('\n\n'),
+        tags: [artifact.kind].filter(Boolean),
+      });
+      toast.success('Saved to your knowledge workspace');
+    } catch (e) {
+      toast.error((e as Error).message || 'Could not save it');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   useEffect(() => () => { if (timer.current) window.clearInterval(timer.current); }, []);
 
@@ -68,7 +103,10 @@ const AIArtifactStudioPage: React.FC = () => {
 
       try {
         const { data, error: fnError } = await supabase.functions.invoke('ai-artifact', {
-          body: { prompt: p, kind },
+          body: {
+            prompt: (KIND_BRIEF[kind] ?? '') + p,
+            kind: kind === 'essay' || kind === 'report' ? 'document' : kind,
+          },
         });
         if (fnError) throw new Error(fnError.message);
         if (data?.error) throw new Error(data.error);
@@ -189,6 +227,15 @@ const AIArtifactStudioPage: React.FC = () => {
       {artifact && (
         <div className="space-y-3">
           <ArtifactCanvas artifact={artifact} onRegenerate={() => generate()} />
+          <Button
+            variant="outline"
+            className="rounded-full"
+            disabled={saving}
+            onClick={saveToWorkspace}
+          >
+            {saving ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <NotebookPen className="mr-1.5 h-4 w-4" />}
+            Save to my knowledge workspace
+          </Button>
           {artifact.explanation && (
             <Card className="rounded-2xl border-border/50 p-4 text-sm text-muted-foreground">
               <Badge variant="secondary" className="mb-2 rounded-full text-[10px]">How it works</Badge>

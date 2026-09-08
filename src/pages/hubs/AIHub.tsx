@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 
 const tabs: HubTab[] = [
+  { id: 'workplace',     label: 'BrightSphere',     icon: Sparkles,      component: React.lazy(() => import('@/pages/BrightSphereWorkplacePage')), badge: 'NEW' },
   { id: 'overview',      label: 'Overview',         icon: LayoutGrid,    component: React.lazy(() => import('@/pages/AIWorkspaceLanding')) },
   { id: 'chat',          label: 'Chat',             icon: MessageSquare, component: React.lazy(() => import('@/pages/AIChat')), badge: 'NEW' },
   { id: 'artifacts',     label: 'Artifact Studio',  icon: Boxes,         component: React.lazy(() => import('@/pages/AIArtifactStudioPage')), badge: 'NEW' },
@@ -32,7 +33,7 @@ const AIHub = () => (
     subtitle="BrightSphere AI — ask, solve, create and analyse for Zambian learners."
     icon={Brain}
     tabs={tabs}
-    defaultTab="overview"
+    defaultTab="workplace"
   />
 );
 

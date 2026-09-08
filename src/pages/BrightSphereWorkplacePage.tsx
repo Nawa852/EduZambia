@@ -297,11 +297,18 @@ const BrightSphereWorkplacePage: React.FC = () => {
       turn.content,
       turn.reply?.keyPoints?.length ? '\n\n' + turn.reply.keyPoints.map((k) => `- ${k}`).join('\n') : '',
     ].join('');
-    const { error } = await supabase.from('notes').insert({
-      user_id: user.id, title, content: body, subject: subject || null,
-    } as any);
-    if (error) toast.error('Could not save to notes');
-    else toast.success('Saved to your notes');
+    try {
+      const { createNote } = await import('@/lib/notesWorkspace');
+      await createNote({
+        title,
+        content: body,
+        icon: '🧠',
+        tags: [subject, topic].filter(Boolean) as string[],
+      });
+      toast.success('Saved to your notes');
+    } catch (e: any) {
+      toast.error(e?.message || 'Could not save to notes');
+    }
   };
 
   const header = useMemo(() => (
