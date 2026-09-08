@@ -77,7 +77,10 @@ const AIArtifactStudioPage: React.FC = () => {
 
       try {
         const { data, error: fnError } = await supabase.functions.invoke('ai-artifact', {
-          body: { prompt: p, kind },
+          body: {
+            prompt: (KIND_BRIEF[kind] ?? '') + p,
+            kind: kind === 'essay' || kind === 'report' ? 'document' : kind,
+          },
         });
         if (fnError) throw new Error(fnError.message);
         if (data?.error) throw new Error(data.error);
