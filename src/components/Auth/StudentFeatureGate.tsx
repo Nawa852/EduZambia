@@ -8,8 +8,11 @@ import { isStudentNavVisible } from '@/config/studentFeatures';
  * Any deep link into one lands back on Home. Other roles pass straight through.
  */
 const StudentFeatureGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { profile } = useProfile();
+  const { profile, loading } = useProfile();
   const { pathname, search } = useLocation();
+
+  // Never gate before the real role is known — other roles must not be bounced.
+  if (loading && !profile) return <>{children}</>;
 
   const isStudent = (profile?.role || 'student') === 'student';
   if (!isStudent || isStudentNavVisible(`${pathname}${search}`)) return <>{children}</>;
