@@ -55,7 +55,32 @@ const AIArtifactStudioPage: React.FC = () => {
   const [stepIndex, setStepIndex] = useState(0);
   const [artifact, setArtifact] = useState<Artifact | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const timer = useRef<number | null>(null);
+
+  const saveToWorkspace = async () => {
+    if (!artifact) return;
+    setSaving(true);
+    try {
+      await createNote({
+        title: artifact.title || 'Artifact',
+        icon: '🧩',
+        content: [
+          artifact.explanation ? artifact.explanation.trim() : '',
+          artifact.steps?.length ? artifact.steps.map((s) => `- ${s}`).join('\n') : '',
+          '```html',
+          artifact.code,
+          '```',
+        ].filter(Boolean).join('\n\n'),
+        tags: [artifact.kind].filter(Boolean),
+      });
+      toast.success('Saved to your knowledge workspace');
+    } catch (e) {
+      toast.error((e as Error).message || 'Could not save it');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   useEffect(() => () => { if (timer.current) window.clearInterval(timer.current); }, []);
 
