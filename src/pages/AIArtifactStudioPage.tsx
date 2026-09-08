@@ -7,7 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { ArtifactCanvas, type Artifact } from '@/components/AI/ArtifactCanvas';
 import { ErrorState } from '@/components/UI/ErrorState';
-import { Boxes, Network, BarChart3, Microscope, FileSpreadsheet, Wand2, Check, Loader2 } from 'lucide-react';
+import { Boxes, Network, BarChart3, Microscope, FileSpreadsheet, Wand2, Check, Loader2, NotebookPen } from 'lucide-react';
+import { createNote } from '@/lib/notesWorkspace';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
