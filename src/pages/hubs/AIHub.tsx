@@ -33,7 +33,7 @@ const AIHub = () => (
     subtitle="BrightSphere AI — ask, solve, create and analyse for Zambian learners."
     icon={Brain}
     tabs={tabs}
-    defaultTab="overview"
+    defaultTab="workplace"
   />
 );
 

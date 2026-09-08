@@ -1,12 +1,19 @@
 import React from 'react';
 import { HubPageLayout, HubTab } from '@/components/Layout/HubPageLayout';
-import { Sparkles, Camera, MessageSquare, Mic } from 'lucide-react';
+import { Sparkles, Camera, MessageSquare, Mic, Brain } from 'lucide-react';
 
 /**
  * Synapse AI — the unified hub.
  * One input → key points, flashcards, quiz, visual lesson. Plus ask & snap.
  */
 const tabs: HubTab[] = [
+  {
+    id: 'workplace',
+    label: 'BrightSphere',
+    icon: Brain,
+    description: 'One continuous workspace that explains, practises, marks, creates and plans',
+    component: React.lazy(() => import('@/pages/BrightSphereWorkplacePage')),
+  },
   {
     id: 'synapse-it',
     label: 'Synapse It',
@@ -43,7 +50,7 @@ const SynapseAIHub = () => (
     subtitle="Drop your notes, a past paper or a photo of the board. Get everything back in seconds."
     icon={Sparkles}
     tabs={tabs}
-    defaultTab="synapse-it"
+    defaultTab="workplace"
     quickLinks={[
       { label: 'Snap the board', href: '/synapse?tab=snap', icon: Camera },
       { label: 'Ask a question', href: '/synapse?tab=ask', icon: MessageSquare },
