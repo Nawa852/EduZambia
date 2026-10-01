@@ -1,146 +1,47 @@
-# Deep-Wire Specialist Role Suites + Student/Teacher Follow-ups
+# Synapse Cleanup + First 10 Build Areas
 
-Goal: turn the specialist dashboards (Medical, Entrepreneur, Developer, NGO, Skills) from visual shells into fully functional workspaces with real database tables, RLS, edge functions, and AI. Then round out Student learning and remaining Teacher pages. Every new page reads/writes real data and every AI panel talks to a deployed edge function.
+Your four documents (plus the earlier Student Guide) are saved in `docs/reference/` as both PDF and plain text, so every future change can be checked against them.
 
-Priority order: Specialist roles → Student learning → Teacher suite.
+## What the documents define
 
----
+Synapse = **one brain, four worlds**: Learner, Teacher, Parent, School. Everything is tied to the Zambian curriculum, works offline, carries school branding, and protects minors. Ministry/district views and colleges come **later**.
 
-## Phase 1 — Medical Suite (Dr. Chanda)
+## Part 1 — Delete what doesn't belong
 
-**Backend (single migration)**
-- `medical_cpd_activities` — user_id, title, category, hours, provider, completed_at, evidence_url
-- `medical_patients` — owner_id (doctor), initials, age, sex, complaint, status, next_review
-- `medical_case_notes` — case_id (→ clinical_cases), user_id, subjective, objective, assessment, plan
-- `medical_drug_lookups` — user_id, drug_name, zambian_availability, checked_at (audit trail)
-- Reuse: `clinical_cases`, `clinical_rotations`
+These are fully removed (pages, menu entries, hub tabs, links, demo-picker cards, onboarding wizards, and their AI functions):
 
-All tables: GRANT to authenticated + service_role, RLS scoped to `owner_id/user_id = auth.uid()`.
+| Remove | Why |
+|---|---|
+| Doctor / Medical suite (cases, patients, drugs, CPD, rotations) | Not a school platform |
+| Entrepreneur suite (ventures, pitch decks, funding, co-founders, financials) | Not in any world |
+| Developer suite (IDE, bounties, code review, reputation) | Not in any world |
+| Cybersecurity suite (CTF, SOC, terminal, crypto, forensics labs) | Not in any world |
+| Skills/workforce suite, AI Business Suite, Marketplace, Meal Planner, Journaling | Off-vision |
+| NGO / donor pages | Not in the four worlds |
+| Social feed, messenger, DMs, peer matching, mentors, video rooms, public leaderboards, community events, free world courses, video library | Tier 2/3 "hidden" features — deleted, not just hidden |
+| Duplicate AI pages (Multi-AI tutor, Comprehensive AI, Study Buddy, Debate, Exam Predictor, second Study Planner, AI Workspace landing, old Courses/Lessons catalog) | Replaced by Synapse AI / BrightSphere |
+| Third-party AI functions (Claude, Grok, DeepSeek assistants) | Duplicates of the main AI |
 
-**Pages** (`src/pages/medical/…`)
-1. `/medical/cpd` — CPD tracker: donut of hours by category, table of activities, "Log activity" dialog, export PDF certificate.
-2. `/medical/sandbox` — Clinical Sandbox: interactive case simulator wired to existing `medical-case-simulator` edge function. Streamed diagnosis, differentials, ordered investigations, feedback.
-3. `/medical/patients` — Patient list + detail drawer with SOAP notes editor; AI "Draft SOAP" via new `ai-soap-draft` function.
-4. `/medical/drugs` — Zambian drug reference search using existing `medical-drug-reference` function; save to `medical_drug_lookups`.
-5. `/medical/collab` — Specialist collaboration board (reuses `mentors_directory` + `mentor_requests` filtered to `role = doctor`).
+**Kept but parked:** Ministry pages stay (document says "later"), just out of everyday menus.
+**Roles:** sign-up offers only Student, Teacher, Parent, School. Existing accounts with removed roles are moved to Student. Database tables for removed suites are left untouched (no data deleted) — they can be dropped later if you want.
 
-**Edge functions**
-- `ai-soap-draft` (new): takes vitals + complaint → returns structured SOAP JSON.
-- Verify existing: `medical-case-simulator`, `medical-drug-reference`, `medical-notes-generator`.
+## Part 2 — First 10 build areas (in order)
 
----
+1. **Curriculum engine** — official grade → subject → topic → sub-topic → competence data (with CDC codes) for the 3 MVP subjects; used by every dropdown.
+2. **Lesson planner on cascading curriculum dropdowns** — no free text; full MoE format with 5-stage table; regenerate one section; version history.
+3. **Schemes of Work "Fill Week 1"** — continue in syllabus order across the term, mark Revision/Test weeks.
+4. **School branding** — school logo, colours, name, EMIS on lesson plans, tests, report cards and certificates.
+5. **School codes onboarding** — school code → staff codes → class codes → learner codes.
+6. **Mastery entry** — after a lesson, tap mastered / not yet per learner in under two minutes; feeds the Learner Model.
+7. **Teacher Home (Today)** — action queue (scores to enter, submissions to verify), pulse card, quick actions.
+8. **Class list with guardian-link status** — see who has a linked parent, share invite to the rest.
+9. **Parent Home + verified study reports** — all children on one screen, study minutes from focus sessions, tonight's conversation starter.
+10. **School Command dashboard** — guardian coverage %, teacher planning activity, weak-competence view.
 
-## Phase 2 — Entrepreneur Suite (Brighton)
+Each area is checked in the preview before moving to the next. Realistically 1–3 land per round; I'll keep a running list so nothing is lost.
 
-**Backend**
-- Reuse: `ventures`, `venture_financials`, `business_milestones`, `pitch_decks`, `grants`.
-- New: `venture_cofounder_matches` — user_id, target_user_id, skills, status, message.
-
-**Pages** (`src/pages/entrepreneur/…`)
-1. `/entrepreneur/ventures` — CRUD list, stage board (idea → validated → launched → scaling), financial summary tile per venture.
-2. `/entrepreneur/ventures/:id` — Detail: milestones, financials chart (from `venture_financials`), team, documents.
-3. `/entrepreneur/funding` — Grant discovery: reads `grants` + calls existing `funding-opportunities` function; save/apply flow.
-4. `/entrepreneur/pitch` — AI Pitch Deck builder wired to existing `pitch-deck-generator`; save to `pitch_decks`, export.
-5. `/entrepreneur/cofounders` — Match board using `peer-matcher` + new `venture_cofounder_matches` table.
-6. `/entrepreneur/market-research` — wired to `market-research-assistant`; save reports to `user_materials`.
-
----
-
-## Phase 3 — Developer Suite (Clever)
-
-**Backend**
-- Reuse: `developer_projects`.
-- New: `developer_bounties` — poster_id, title, description, reward_kwacha, tags, status, deadline, winner_id.
-- New: `developer_bounty_submissions` — bounty_id, developer_id, repo_url, notes, status, score.
-- New: `developer_reputation` — user_id, points, tier, badges (jsonb).
-
-**Pages** (`src/pages/dev/…`)
-1. `/dev/projects` — CRUD project list + detail (README, stack, links).
-2. `/dev/bounties` — Bounty board (list, filter, apply, my submissions).
-3. `/dev/bounties/:id` — Detail + submit solution + AI code review via existing `ai-code-review`.
-4. `/dev/challenges` — Coding challenges via existing `coding-challenge-generator`, tracked attempts.
-5. `/dev/reputation` — Reputation & badges page (from `developer_reputation` + `user_badges`).
-
----
-
-## Phase 4 — NGO Suite (Mercy)
-
-**Backend**
-- Reuse: `ngo_programs`, `ngo_partnerships`, `ngo_beneficiaries`, `donor_pledges`.
-- New: `ngo_impact_reports` — program_id, period, metrics (jsonb), narrative, generated_by_ai.
-
-**Pages** (`src/pages/ngo/…`)
-1. `/ngo/programs` — Program CRUD + progress; per-program beneficiaries count.
-2. `/ngo/donors` — Donor list from `donor_pledges` with funding utilization donut.
-3. `/ngo/beneficiaries` — Roster + intake form (`ngo_beneficiaries`).
-4. `/ngo/partnerships` — Partnership tracker (`ngo_partnerships`), uses existing PII-safe RPC.
-5. `/ngo/impact` — AI-generated impact reports via new `ai-ngo-impact` function; save to `ngo_impact_reports`, export PDF.
-
-**Edge function**
-- `ai-ngo-impact` (new): program metrics → narrative + KPI summary.
-
----
-
-## Phase 5 — Skills / Growth Suite
-
-**Backend**
-- New: `skills_profile` — user_id, target_role, current_level, motivation.
-- New: `skill_assessments` — user_id, skill, score, evidence, assessed_at.
-- New: `learning_paths` — user_id, title, steps (jsonb), progress, generated_by_ai.
-- Reuse: `user_materials` for portfolio.
-
-**Pages** (`src/pages/skills/…`)
-1. `/skills/paths` — Paths list + detail with checklist; AI generator via existing `generate-learning-path`.
-2. `/skills/assessments` — Take assessments (AI-generated MCQs) via `generate-assessment-questions`, scored by `grade_assessment_attempt`.
-3. `/skills/portfolio` — Public-shareable portfolio (projects, certificates, badges).
-4. `/skills/jobs` — Job matches via `job_applications` + `apprenticeships`.
-
----
-
-## Phase 6 — Student Learning Inner Pages
-
-- `/learn/knowledge-hub` — subjects → topics tree (`curriculum_subjects` / `curriculum_topics`) with notes+flashcards inline.
-- `/learn/flashcards` — deck CRUD (`flashcard_decks/cards`) + SM-2 review UI.
-- `/learn/notes` — rich notes editor with offline write-through (already exists in memory pattern).
-- `/learn/planner` — AI weekly plan via existing `ai-smart-planner`, saved to `study_schedules`.
-
-## Phase 7 — Teacher Suite Completion
-
-- `/teacher/gradebook` — table per class, inline AI grade-assist.
-- `/teacher/attendance` — daily roster (`attendance` table) + at-risk AI flag via `ai-attendance-insight`.
-- `/teacher/reports` — analytics + AI insight summary.
-- `/teacher/communications` — parent updates inbox/compose using `parent_updates` + `ai-parent-update`.
-
----
-
-## Shared work
-
-- **Navigation**: extend `sidebarConfig.ts` to add the new routes per role. Every specialist inner page uses `HubPageLayout` for consistency (gradient hero + sticky tabs, matches existing hubs).
-- **Role guards**: `RoleGuard` on every specialist route.
-- **Empty states**: real accounts start at zero — every list shows a branded empty state with a "Create your first …" CTA.
-- **Demo data**: `isDemo` flag continues to inject demo rows so the visual dashboards keep working for stakeholder demos.
-- **Loading/error**: React Query with skeletons; edge function 429/402 surfaced via toast.
-
-## Technical notes
-
-- All new tables follow the 4-step CREATE → GRANT → RLS → POLICY pattern; helper `is_ngo_owner`, `is_venture_owner` security-definer functions where cross-table checks are needed.
-- Edge functions use Lovable AI Gateway with `google/gemini-3-flash-preview` (streaming where the UX benefits: sandbox, pitch, impact reports).
-- AI outputs that are stored (SOAP drafts, pitch decks, impact reports) always land in a dedicated table with `generated_by_ai = true` so users can edit before "publishing".
-- Reused edge functions are already deployed — I'll only add: `ai-soap-draft`, `ai-ngo-impact`.
-- No changes to `handle_new_user`, auth, or existing dashboard visuals.
-
-## Verification
-
-- Migration approved and `supabase--linter` clean.
-- One curl per new edge function → 200.
-- Playwright smoke: demo-login as each specialist role, land on dashboard, click into 2 inner pages, screenshot.
-- Typecheck clean.
-
-## Out of scope
-
-- Native (Capacitor) rebuilds.
-- New dashboard visuals (already shipped).
-- Live video for medical/NGO.
-- Payments/monetization.
-
-Estimated size: 1 migration, 2 new edge functions, ~22 new pages, ~6 shared components. Built in parallel batches by phase.
+## Technical details
+- Deletion: remove page files, `App.tsx` routes (old URLs redirect to `/dashboard`), `sidebarConfig.ts` entries, hub tab registries, `ChooseRolePage`/`DemoRolePicker`/onboarding role lists, `studentFeatures.ts` gating for deleted items, and the matching edge functions (deleted from deployment too).
+- Data migration: `UPDATE profiles/user_roles` setting removed roles to `student`; enum values left in place (dropping enum values is unsafe).
+- New tables: `curriculum_competences` (or extend `curriculum_topics` with codes), `school_branding`, `school_codes`, `mastery_entries`, `lesson_plan_versions` — all with GRANTs + RLS.
+- `roadmap.md` tracks the 10 areas; `AGENTS.md` records the "four worlds only" rule.
