@@ -165,10 +165,8 @@ const guardianNavigation: NavGroup[] = [
   {
     label: "More",
     items: [
-      { title: "Messages", url: "/connect?tab=messenger", icon: MessageSquare, shortTitle: "Chat" },
       { title: "Teacher Contact", url: "/parent-teacher-contact", icon: Users, shortTitle: "Teachers" },
       { title: "ECZ Resources", url: "/ecz", icon: FileText, shortTitle: "ECZ" },
-      { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
       { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
     ],
   },
@@ -193,7 +191,6 @@ const institutionNavigation: NavGroup[] = [
       { title: "Attendance", url: "/admin?tab=attendance", icon: ClipboardCheck, shortTitle: "Attend" },
       { title: "Scheduling", url: "/admin?tab=scheduling", icon: Calendar, shortTitle: "Sched" },
       { title: "ECZ Resources", url: "/ecz", icon: FileText, shortTitle: "ECZ" },
-      { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
       { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
     ],
   },
@@ -216,140 +213,6 @@ const ministryNavigation: NavGroup[] = [
       { title: "ECZ Analytics", url: "/ministry?tab=analytics", icon: PieChart, shortTitle: "Stats" },
       { title: "Budget", url: "/ministry?tab=budget", icon: DollarSign, shortTitle: "Budget" },
       { title: "ECZ Resources", url: "/ecz", icon: FileText, shortTitle: "ECZ" },
-      { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
-    ],
-  },
-];
-
-// ─── Doctor / Medical ───────────────────────────────
-const doctorNavigation: NavGroup[] = [
-  {
-    label: "Main",
-    items: [
-      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
-      { title: "Medical Hub", url: "/medical", icon: Heart, shortTitle: "Medical" },
-      { title: "Case Simulator", url: "/medical-case-simulator", icon: Microscope, badge: "SIM", shortTitle: "Cases" },
-      { title: "AI Coach", url: "/ai", icon: Brain, badge: "AI", shortTitle: "AI" },
-    ],
-  },
-  {
-    label: "Clinical",
-    items: [
-      { title: "Case Log", url: "/medical-case-log", icon: ClipboardCheck, shortTitle: "Log" },
-      { title: "Clinical Notes", url: "/medical-clinical-notes", icon: FileText, shortTitle: "Notes" },
-      { title: "Rotations", url: "/medical-rotations", icon: Calendar, shortTitle: "Rot" },
-      { title: "Drug Reference", url: "/medical-drug-reference", icon: Bookmark, shortTitle: "Drugs" },
-    ],
-  },
-  {
-    label: "Learn",
-    items: [
-      { title: "My Learning", url: "/learn", icon: GraduationCap, shortTitle: "Learn" },
-      { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
-      { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
-    ],
-  },
-];
-
-// ─── Entrepreneur ───────────────────────────────────
-const entrepreneurNavigation: NavGroup[] = [
-  {
-    label: "Main",
-    items: [
-      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
-      { title: "Venture Hub", url: "/entrepreneur", icon: Rocket, shortTitle: "Build" },
-      { title: "AI Co-Pilot", url: "/ai", icon: Brain, badge: "AI", shortTitle: "AI" },
-    ],
-  },
-  {
-    label: "Build",
-    items: [
-      { title: "Business Plan", url: "/entrepreneur?tab=plan", icon: FileText, shortTitle: "Plan" },
-      { title: "Pitch Deck", url: "/entrepreneur?tab=pitch", icon: Sparkles, shortTitle: "Pitch" },
-      { title: "Financials", url: "/entrepreneur?tab=finance", icon: DollarSign, shortTitle: "$$" },
-      { title: "Milestones", url: "/entrepreneur?tab=milestones", icon: Target, shortTitle: "Goals" },
-    ],
-  },
-  {
-    label: "Grow",
-    items: [
-      { title: "Funding", url: "/entrepreneur-funding", icon: DollarSign, badge: "NEW", shortTitle: "Funds" },
-      { title: "Network", url: "/entrepreneur-network", icon: Users, shortTitle: "Network" },
-      { title: "Marketplace", url: "/marketplace", icon: Briefcase, shortTitle: "Market" },
-      { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
-      { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
-    ],
-  },
-];
-
-// ─── Developer ──────────────────────────────────────
-const developerNavigation: NavGroup[] = [
-  {
-    label: "Main",
-    items: [
-      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
-      { title: "Dev Hub", url: "/developer", icon: Code, shortTitle: "Dev" },
-      { title: "IDE", url: "/developer-ide", icon: Monitor, badge: "LIVE", shortTitle: "IDE" },
-      { title: "AI Review", url: "/ai", icon: Brain, badge: "AI", shortTitle: "AI" },
-    ],
-  },
-  {
-    label: "Build",
-    items: [
-      { title: "Projects", url: "/developer-projects", icon: FolderOpen, shortTitle: "Proj" },
-      { title: "Code Review", url: "/developer-code-review", icon: Search, shortTitle: "Review" },
-      { title: "Challenges", url: "/developer-challenges", icon: Target, shortTitle: "Daily" },
-    ],
-  },
-  {
-    label: "Learn",
-    items: [
-      { title: "My Learning", url: "/learn", icon: GraduationCap, shortTitle: "Learn" },
-      { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
-      { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
-    ],
-  },
-];
-
-// ─── Skills ─────────────────────────────────────────
-const skillsNavigation: NavGroup[] = [
-  {
-    label: "Main",
-    items: [
-      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
-      { title: "My Learning", url: "/learn", icon: GraduationCap, shortTitle: "Learn" },
-      { title: "Skill Passport", url: "/skill-passport", icon: Award, shortTitle: "Skills" },
-      { title: "Marketplace", url: "/marketplace", icon: Briefcase, shortTitle: "Jobs" },
-    ],
-  },
-  {
-    label: "More",
-    items: [
-      { title: "AI Tools", url: "/ai", icon: Brain, badge: "AI", shortTitle: "AI" },
-      { title: "Progress", url: "/progress", icon: BarChart3, shortTitle: "Stats" },
-      { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
-      { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
-    ],
-  },
-];
-
-// ─── Cybersecurity ──────────────────────────────────
-const cybersecurityNavigation: NavGroup[] = [
-  {
-    label: "Main",
-    items: [
-      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, shortTitle: "Home" },
-      { title: "Cyber Hub", url: "/cybersecurity", icon: Shield, shortTitle: "Cyber" },
-      { title: "Terminal", url: "/cyber-terminal", icon: Monitor, badge: "LIVE", shortTitle: "Term" },
-      { title: "SOC Sim", url: "/cyber-soc", icon: Bot, shortTitle: "SOC" },
-    ],
-  },
-  {
-    label: "Skills",
-    items: [
-      { title: "Skill Tree", url: "/cyber-skills", icon: Layers, shortTitle: "Tree" },
-      { title: "AI Mentor", url: "/ai", icon: Brain, badge: "AI", shortTitle: "AI" },
-      { title: "Connect", url: "/connect", icon: MessageSquare, shortTitle: "Connect" },
       { title: "My Account", url: "/profile", icon: User, shortTitle: "Me" },
     ],
   },
@@ -390,13 +253,11 @@ export function getCommandNavigationByRole(role: string): Array<NavItem & { grou
     { title: "Study Hub", url: "/prepare", icon: Calendar, group: "Navigate", shortTitle: "Study" },
     { title: "ECZ Exams", url: "/ecz", icon: FileText, group: "Navigate", shortTitle: "ECZ" },
     { title: "Progress", url: "/progress", icon: BarChart3, group: "Navigate", shortTitle: "Stats" },
-    { title: "Connect", url: "/connect", icon: MessageSquare, group: "Navigate", shortTitle: "Connect" },
     { title: "Profile", url: "/profile", icon: User, group: "Account", shortTitle: "Me" },
     { title: "Settings", url: "/profile?tab=settings", icon: Settings, group: "Account" },
     { title: "Notifications", url: "/profile?tab=notifications", icon: Bell, group: "Account" },
     { title: "Bookmarks", url: "/prepare?tab=bookmarks", icon: Bookmark, group: "Account" },
     { title: "Knowledge Hub", url: "/prepare?tab=notes", icon: FolderOpen, group: "Study", shortTitle: "Notes" },
-    { title: "Journal", url: "/prepare?tab=journal", icon: BookOpen, group: "Study", shortTitle: "Journal" },
     { title: "Flashcards", url: "/ai?tab=flashcards", icon: Layers, group: "Study", shortTitle: "Cards" },
     { title: "Tasks & Planner", url: "/prepare?tab=planner", icon: ClipboardCheck, group: "Study", shortTitle: "Tasks" },
     { title: "Focus Timer", url: "/prepare?tab=focus", icon: Timer, group: "Study", shortTitle: "Focus" },
@@ -433,7 +294,7 @@ export function getCommandNavigationByRole(role: string): Array<NavItem & { grou
       { title: "Rewards", url: "/family?tab=rewards", icon: Award, group: "Guardian" },
       { title: "Activity Feed", url: "/family?tab=activity", icon: Bell, group: "Guardian" },
       { title: "Parental Controls", url: "/family?tab=controls", icon: Lock, group: "Guardian" },
-      { title: "Link Child", url: "/guardian-link", icon: Users, group: "Guardian" },
+      { title: "Link Child", url: "/family?tab=link", icon: Users, group: "Guardian" },
       { title: "Reports", url: "/guardian-reports", icon: FileText, group: "Guardian" },
       { title: "Teacher Contact", url: "/parent-teacher-contact", icon: MessageSquare, group: "Guardian" },
     );
@@ -443,49 +304,6 @@ export function getCommandNavigationByRole(role: string): Array<NavItem & { grou
   }
   if (role === 'ministry') {
     baseItems.splice(1, 0, { title: "Ministry", url: "/ministry", icon: Building2, group: "Navigate", shortTitle: "Ministry" });
-  }
-  if (role === 'doctor' || role === 'medical') {
-    baseItems.splice(1, 0,
-      { title: "Medical Hub", url: "/medical", icon: Heart, group: "Navigate", shortTitle: "Medical" },
-      { title: "Case Simulator", url: "/medical-case-simulator", icon: Microscope, group: "Medical" },
-      { title: "Case Log", url: "/medical-case-log", icon: ClipboardCheck, group: "Medical" },
-      { title: "Drug Reference", url: "/medical-drug-reference", icon: Bookmark, group: "Medical" },
-      { title: "Clinical Notes", url: "/medical-clinical-notes", icon: FileText, group: "Medical" },
-      { title: "Rotations", url: "/medical-rotations", icon: Calendar, group: "Medical" },
-    );
-  }
-  if (role === 'developer') {
-    baseItems.splice(1, 0,
-      { title: "Dev Hub", url: "/developer", icon: Code, group: "Navigate", shortTitle: "Dev" },
-      { title: "IDE", url: "/developer-ide", icon: Monitor, group: "Developer" },
-      { title: "Projects", url: "/developer-projects", icon: FolderOpen, group: "Developer" },
-      { title: "Code Review", url: "/developer-code-review", icon: Search, group: "Developer" },
-      { title: "Challenges", url: "/developer-challenges", icon: Target, group: "Developer" },
-    );
-  }
-  if (role === 'entrepreneur') {
-    baseItems.splice(1, 0,
-      { title: "Venture Hub", url: "/entrepreneur", icon: Rocket, group: "Navigate", shortTitle: "Build" },
-      { title: "Business Plan", url: "/entrepreneur?tab=plan", icon: FileText, group: "Venture" },
-      { title: "Pitch Deck", url: "/entrepreneur?tab=pitch", icon: Sparkles, group: "Venture" },
-      { title: "Financials", url: "/entrepreneur?tab=finance", icon: DollarSign, group: "Venture" },
-      { title: "Marketplace", url: "/marketplace", icon: Briefcase, group: "Venture" },
-    );
-  }
-  if (role === 'cybersecurity') {
-    baseItems.splice(1, 0,
-      { title: "Cyber Hub", url: "/cybersecurity", icon: Shield, group: "Navigate", shortTitle: "Cyber" },
-      { title: "Terminal", url: "/cyber-terminal", icon: Monitor, group: "Cyber" },
-      { title: "SOC Simulator", url: "/cyber-soc", icon: Bot, group: "Cyber" },
-      { title: "Skill Tree", url: "/cyber-skills", icon: Layers, group: "Cyber" },
-    );
-  }
-  if (role === 'skills') {
-    baseItems.splice(2, 0,
-      { title: "Skill Passport", url: "/skill-passport", icon: Award, group: "Navigate", shortTitle: "Skills" },
-      { title: "Marketplace", url: "/marketplace", icon: Briefcase, group: "Navigate" },
-    );
-  }
 
   // Add quick-access tabs as command items
   const tabItems: Array<NavItem & { group: string }> = [
@@ -496,12 +314,8 @@ export function getCommandNavigationByRole(role: string): Array<NavItem & { grou
     { title: "Mind Maps", url: "/ai?tab=mind-maps", icon: Brain, group: "AI Tools" },
     { title: "Focus Mode", url: "/prepare?tab=focus", icon: Timer, group: "Study" },
     { title: "My Notes", url: "/prepare?tab=notes", icon: FileText, group: "Study" },
-    { title: "Goals", url: "/prepare?tab=goals", icon: Target, group: "Study" },
     { title: "Past Papers", url: "/ecz?tab=papers", icon: FileText, group: "ECZ" },
     { title: "Exam Simulator", url: "/ecz?tab=simulator", icon: FileText, group: "ECZ" },
-    { title: "Messenger", url: "/connect?tab=messenger", icon: MessageSquare, group: "Connect" },
-    { title: "Study Groups", url: "/connect?tab=groups", icon: Users, group: "Connect" },
-    { title: "Leaderboard", url: "/progress?tab=leaderboard", icon: Trophy, group: "Progress" },
     { title: "Achievements", url: "/progress?tab=achievements", icon: Award, group: "Progress" },
   ];
 
