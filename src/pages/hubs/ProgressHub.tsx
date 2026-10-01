@@ -5,7 +5,6 @@ import { BarChart3, Trophy, Award, FileText } from 'lucide-react';
 const tabs: HubTab[] = [
   { id: 'analytics', label: 'Analytics', icon: BarChart3, component: React.lazy(() => import('@/pages/LearningAnalytics')) },
   { id: 'achievements', label: 'Achievements', icon: Trophy, component: React.lazy(() => import('@/pages/Achievements')) },
-  { id: 'leaderboard', label: 'Leaderboard', icon: Award, component: React.lazy(() => import('@/pages/LeaderboardPage')) },
   { id: 'certificates', label: 'Certificates', icon: FileText, component: React.lazy(() => import('@/pages/CertificatesPage')) },
 ];
 

@@ -8,7 +8,6 @@ const tabs: HubTab[] = [
   { id: 'my-courses', label: 'My Courses', icon: GraduationCap, component: React.lazy(() => import('@/pages/MyCoursesPage')) },
   { id: 'catalog', label: 'Browse', icon: BookOpen, component: React.lazy(() => import('@/pages/CourseCatalogPage')) },
   { id: 'lessons', label: 'Lessons', icon: BookOpen, component: React.lazy(() => import('@/pages/LessonsPage')) },
-  { id: 'videos', label: 'Videos', icon: Video, component: React.lazy(() => import('@/pages/VideoLearningPage')) },
   { id: 'live', label: 'Live Classes', icon: Tv, component: React.lazy(() => import('@/pages/LiveLearningPage')), badge: 'LIVE' },
 ];
 

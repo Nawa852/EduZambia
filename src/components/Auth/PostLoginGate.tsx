@@ -37,7 +37,7 @@ const PostLoginGate: React.FC<PostLoginGateProps> = ({ children }) => {
   const role = profile?.role || 'student';
 
   // Roles that should be routed through their tailored onboarding wizard
-  const onboardableRoles = ['student','teacher','guardian','doctor','entrepreneur','developer','skills','cybersecurity'];
+  const onboardableRoles = ['student','teacher','guardian'];
   const needsSetup = onboardableRoles.includes(role);
 
   if (needsSetup && (!profileComplete || !setupDone)) {

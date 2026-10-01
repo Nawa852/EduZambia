@@ -6,7 +6,6 @@ const tabs: HubTab[] = [
   { id: 'papers', label: 'My Papers', icon: FileText, component: React.lazy(() => import('@/pages/ECZPastPapersPage')) },
   { id: 'simulator', label: 'Exam Simulator', icon: Play, component: React.lazy(() => import('@/pages/ECZExamSimulatorPage')), badge: 'NEW' },
   { id: 'quiz', label: 'Practice Quiz', icon: Target, component: React.lazy(() => import('@/pages/ECZPracticeQuizPage')) },
-  { id: 'videos', label: 'Video Library', icon: Video, component: React.lazy(() => import('@/pages/ECZVideoLibraryPage')) },
   { id: 'resources', label: 'Resources', icon: BookOpen, component: React.lazy(() => import('@/pages/ECZResourcesExpandedPage')) },
 ];
 

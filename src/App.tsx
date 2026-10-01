@@ -51,7 +51,6 @@ const PrepareHub = React.lazy(() => import('@/pages/hubs/PrepareHub'));
 const SynapseAIHub = React.lazy(() => import('@/pages/hubs/SynapseAIHub'));
 const PracticeHub = React.lazy(() => import('@/pages/hubs/PracticeHub'));
 
-const ConnectHub = React.lazy(() => import('@/pages/hubs/ConnectHub'));
 const ProgressHub = React.lazy(() => import('@/pages/hubs/ProgressHub'));
 const ProfileHub = React.lazy(() => import('@/pages/hubs/ProfileHub'));
 const ECZHub = React.lazy(() => import('@/pages/hubs/ECZHub'));
@@ -68,38 +67,17 @@ const SharedLibraryPage = React.lazy(() => import('@/pages/SharedLibraryPage'));
 const FamilyHub = React.lazy(() => import('@/pages/hubs/FamilyHub'));
 const MinistryHub = React.lazy(() => import('@/pages/hubs/MinistryHub'));
 const AdminHub = React.lazy(() => import('@/pages/hubs/AdminHub'));
-const CybersecurityHub = React.lazy(() => import('@/pages/hubs/CybersecurityHub'));
-const CyberTerminalSandboxPage = React.lazy(() => import('@/pages/CyberTerminalSandboxPage'));
-const CyberSOCSimulatorPage = React.lazy(() => import('@/pages/CyberSOCSimulatorPage'));
-const CyberSkillTreePage = React.lazy(() => import('@/pages/CyberSkillTreePage'));
 const SetupSchedulePage = React.lazy(() => import('@/pages/SetupSchedulePage'));
-const EntrepreneurHub = React.lazy(() => import('@/pages/hubs/EntrepreneurHub'));
-const NGOHub = React.lazy(() => import('@/pages/hubs/NGOHub'));
-const VideoRoomsPage = React.lazy(() => import('@/pages/VideoRoomsPage'));
 const StudyGroupsHubPage = React.lazy(() => import('@/pages/StudyGroupsHubPage'));
-const VideoWatchPage = React.lazy(() => import('@/pages/VideoWatchPage'));
 const GroupChatPage = React.lazy(() => import('@/pages/GroupChatPage'));
 const GroupFilesPage = React.lazy(() => import('@/pages/GroupFilesPage'));
 const GroupVideoPage = React.lazy(() => import('@/pages/GroupVideoPage'));
 const GroupWorkspacePage = React.lazy(() => import('@/pages/GroupWorkspacePage'));
 const SchoolAnnouncementsPage = React.lazy(() => import('@/pages/SchoolAnnouncementsPage'));
-const DonorImpactPage = React.lazy(() => import('@/pages/DonorImpactPage'));
 const ToolsHub = React.lazy(() => import('@/pages/hubs/ToolsHub'));
-const FreeCoursesPage = React.lazy(() => import('@/pages/FreeCoursesPage'));
 const PilotControlPage = React.lazy(() => import('@/pages/PilotControlPage'));
 const ResourceRepositoryPage = React.lazy(() => import('@/pages/ResourceRepositoryPage'));
 const StudyHub = React.lazy(() => import('@/pages/hubs/StudyHub'));
-const MedicalHub = React.lazy(() => import('@/pages/hubs/MedicalHub'));
-const DeveloperHub = React.lazy(() => import('@/pages/hubs/DeveloperHub'));
-const MedicalCaseSimulatorPage = React.lazy(() => import('@/pages/MedicalCaseSimulatorPage'));
-const MedicalCaseLogPage = React.lazy(() => import('@/pages/MedicalCaseLogPage'));
-const MedicalClinicalNotesPage = React.lazy(() => import('@/pages/MedicalClinicalNotesPage'));
-const MedicalRotationsPage = React.lazy(() => import('@/pages/MedicalRotationsPage'));
-const MedicalDrugReferencePage = React.lazy(() => import('@/pages/MedicalDrugReferencePage'));
-const DeveloperIDEPage = React.lazy(() => import('@/pages/DeveloperIDEPage'));
-const DeveloperProjectsPage = React.lazy(() => import('@/pages/DeveloperProjectsPage'));
-const DeveloperCodeReviewPage = React.lazy(() => import('@/pages/DeveloperCodeReviewPage'));
-const DeveloperChallengesPage = React.lazy(() => import('@/pages/DeveloperChallengesPage'));
 const TeacherNotesRepoPage = React.lazy(() => import('@/pages/TeacherNotesRepoPage'));
 const TeacherSpecializationPage = React.lazy(() => import('@/pages/TeacherSpecializationPage'));
 const ResourceLibraryHubPage = React.lazy(() => import('@/pages/ResourceLibraryHubPage'));
@@ -109,8 +87,6 @@ const TeacherGradebookStandalone = React.lazy(() => import('@/pages/TeacherGrade
 const TeacherAttendanceStandalone = React.lazy(() => import('@/pages/TeacherAttendanceQRPage'));
 const TeacherCommunicationPage = React.lazy(() => import('@/pages/TeacherCommunicationPage'));
 
-const EntrepreneurFundingPage = React.lazy(() => import('@/pages/EntrepreneurFundingPage'));
-const EntrepreneurNetworkPage = React.lazy(() => import('@/pages/EntrepreneurNetworkPage'));
 const SchoolAdminTeachersPage = React.lazy(() => import('@/pages/SchoolAdminTeachersPage'));
 
 // Lazy: Dynamic detail pages (keep standalone)
@@ -128,14 +104,6 @@ const SnapAndSolvePage = React.lazy(() => import('@/pages/SnapAndSolvePage'));
 const TeacherTestGeneratorPage = React.lazy(() => import('@/pages/TeacherTestGeneratorPage'));
 
 // New specialist pages
-const MedicalCPDPage = React.lazy(() => import('@/pages/MedicalCPDPage'));
-const MedicalPatientsPage = React.lazy(() => import('@/pages/MedicalPatientsPage'));
-const EntrepreneurCofoundersPage = React.lazy(() => import('@/pages/EntrepreneurCofoundersPage'));
-const EntrepreneurPitchPage = React.lazy(() => import('@/pages/EntrepreneurPitchPage'));
-const DeveloperBountiesPage = React.lazy(() => import('@/pages/DeveloperBountiesPage'));
-const DeveloperReputationPage = React.lazy(() => import('@/pages/DeveloperReputationPage'));
-const SkillsPathsPage = React.lazy(() => import('@/pages/SkillsPathsPage'));
-const SkillsPortfolioPage = React.lazy(() => import('@/pages/SkillsPortfolioPage'));
 const StudentLearningHubPage = React.lazy(() => import('@/pages/StudentLearningHubPage'));
 const StudyRoomPage = React.lazy(() => import('@/pages/StudyRoomPage'));
 const StudyDashboardPage = React.lazy(() => import('@/pages/study/StudyDashboardPage'));
@@ -146,11 +114,6 @@ const PageProfilePage = React.lazy(() => import('@/pages/community/PageProfilePa
 
 const StudentAnalyticsPage = React.lazy(() => import('@/pages/StudentAnalyticsPage'));
 const StudentQuizzesPage = React.lazy(() => import('@/pages/StudentQuizzesPage'));
-const AIBusinessSuitePage = React.lazy(() => import('@/pages/AIBusinessSuitePage'));
-const AIMedicalSuitePage = React.lazy(() => import('@/pages/AIMedicalSuitePage'));
-const AIDeveloperSuitePage = React.lazy(() => import('@/pages/AIDeveloperSuitePage'));
-const AINGOSuitePage = React.lazy(() => import('@/pages/AINGOSuitePage'));
-const AISkillsSuitePage = React.lazy(() => import('@/pages/AISkillsSuitePage'));
 const AITeacherSuitePage = React.lazy(() => import('@/pages/AITeacherSuitePage'));
 const TeacherCompletionsPage = React.lazy(() => import('@/pages/TeacherCompletionsPage'));
 
@@ -214,12 +177,9 @@ function App() {
               <Route path="/practice" element={<PG><PracticeHub /></PG>} />
 
               <Route path="/prepare" element={<PG><PrepareHub /></PG>} />
-              <Route path="/connect" element={<PG><ConnectHub /></PG>} />
               <Route path="/progress" element={<PG><ProgressHub /></PG>} />
               <Route path="/profile" element={<PG><ProfileHub /></PG>} />
               <Route path="/ecz" element={<PG><RoleGuard allow={[...ECZ_ROLES]}><ECZHub /></RoleGuard></PG>} />
-              <Route path="/watch" element={<PG><VideoWatchPage /></PG>} />
-              <Route path="/watch/:videoId" element={<PG><VideoWatchPage /></PG>} />
               <Route path="/teach" element={<PG><RoleGuard allow={['teacher','institution']}><TeachHub /></RoleGuard></PG>} />
               {/* New polished Teacher Suite v2 */}
               <Route path="/teacher" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherDashboardV2 /></RoleGuard></PG>} />
@@ -269,22 +229,13 @@ function App() {
               <Route path="/learning-paths" element={<Navigate to="/skills-paths" replace />} />
               <Route path="/study-room" element={<PG><StudyRoomPage /></PG>} />
 
-              <Route path="/entrepreneur-funding" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurFundingPage /></RoleGuard></PG>} />
-              <Route path="/entrepreneur-network" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurNetworkPage /></RoleGuard></PG>} />
               <Route path="/school-teachers" element={<PG><RoleGuard allow={['institution','ministry']}><SchoolAdminTeachersPage /></RoleGuard></PG>} />
               <Route path="/resource-library" element={<PG><ResourceLibraryHubPage /></PG>} />
               <Route path="/my-materials" element={<PG><MyMaterialsPage /></PG>} />
               <Route path="/family" element={<PG><RoleGuard allow={['guardian']}><FamilyHub /></RoleGuard></PG>} />
               <Route path="/ministry" element={<PG><RoleGuard allow={['ministry']}><MinistryHub /></RoleGuard></PG>} />
               <Route path="/admin" element={<PG><RoleGuard allow={['institution','ministry']}><AdminHub /></RoleGuard></PG>} />
-              <Route path="/cybersecurity" element={<PG><RoleGuard allow={['cybersecurity','student','developer']}><CybersecurityHub /></RoleGuard></PG>} />
-              <Route path="/cyber-terminal" element={<PG><RoleGuard allow={['cybersecurity','student','developer']}><CyberTerminalSandboxPage /></RoleGuard></PG>} />
-              <Route path="/cyber-soc" element={<PG><RoleGuard allow={['cybersecurity','student','developer']}><CyberSOCSimulatorPage /></RoleGuard></PG>} />
-              <Route path="/cyber-skills" element={<PG><RoleGuard allow={['cybersecurity','student','developer']}><CyberSkillTreePage /></RoleGuard></PG>} />
               <Route path="/setup-schedule" element={<PG><SetupSchedulePage /></PG>} />
-              <Route path="/entrepreneur" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurHub /></RoleGuard></PG>} />
-              <Route path="/ngo" element={<PG><NGOHub /></PG>} />
-              <Route path="/video-rooms" element={<PG><VideoRoomsPage /></PG>} />
               <Route path="/groups" element={<PG><StudyGroupsHubPage /></PG>} />
              <Route path="/group/:groupId" element={<PG><GroupWorkspacePage /></PG>} />
              <Route path="/study-room/:groupId" element={<PG><StudyGroupRoomPage /></PG>} />
@@ -292,43 +243,16 @@ function App() {
               <Route path="/group/:groupId/files" element={<PG><GroupWorkspacePage /></PG>} />
               <Route path="/group/:groupId/video" element={<PG><GroupWorkspacePage /></PG>} />
               <Route path="/school-announcements" element={<PG><SchoolAnnouncementsPage /></PG>} />
-              <Route path="/donor-impact" element={<DonorImpactPage />} />
               <Route path="/tools" element={<PG><ToolsHub /></PG>} />
-              <Route path="/free-courses" element={<PG><FreeCoursesPage /></PG>} />
-              <Route path="/free-courses/:courseId" element={<PG><FreeCoursesPage /></PG>} />
 
               {/* Splash tile hubs */}
               <Route path="/study" element={<PG><StudyHub /></PG>} />
-              <Route path="/medical" element={<PG><RoleGuard allow={['doctor']}><MedicalHub /></RoleGuard></PG>} />
-              <Route path="/developer" element={<PG><RoleGuard allow={['developer']}><DeveloperHub /></RoleGuard></PG>} />
 
               {/* Healthcare tools */}
-              <Route path="/medical-case-simulator" element={<PG><RoleGuard allow={['doctor']}><MedicalCaseSimulatorPage /></RoleGuard></PG>} />
-              <Route path="/medical-case-log" element={<PG><RoleGuard allow={['doctor']}><MedicalCaseLogPage /></RoleGuard></PG>} />
-              <Route path="/medical-clinical-notes" element={<PG><RoleGuard allow={['doctor']}><MedicalClinicalNotesPage /></RoleGuard></PG>} />
-              <Route path="/medical-rotations" element={<PG><RoleGuard allow={['doctor']}><MedicalRotationsPage /></RoleGuard></PG>} />
-              <Route path="/medical-drug-reference" element={<PG><RoleGuard allow={['doctor']}><MedicalDrugReferencePage /></RoleGuard></PG>} />
 
               {/* Developer tools */}
-              <Route path="/developer-ide" element={<PG><RoleGuard allow={['developer']}><DeveloperIDEPage /></RoleGuard></PG>} />
-              <Route path="/developer-projects" element={<PG><RoleGuard allow={['developer']}><DeveloperProjectsPage /></RoleGuard></PG>} />
-              <Route path="/developer-code-review" element={<PG><RoleGuard allow={['developer']}><DeveloperCodeReviewPage /></RoleGuard></PG>} />
-              <Route path="/developer-challenges" element={<PG><RoleGuard allow={['developer']}><DeveloperChallengesPage /></RoleGuard></PG>} />
 
               {/* New specialist inner pages */}
-              <Route path="/medical-cpd" element={<PG><RoleGuard allow={['doctor']}><MedicalCPDPage /></RoleGuard></PG>} />
-              <Route path="/medical-patients" element={<PG><RoleGuard allow={['doctor']}><MedicalPatientsPage /></RoleGuard></PG>} />
-              <Route path="/entrepreneur-cofounders" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurCofoundersPage /></RoleGuard></PG>} />
-              <Route path="/entrepreneur-pitch" element={<PG><RoleGuard allow={['entrepreneur']}><EntrepreneurPitchPage /></RoleGuard></PG>} />
-              <Route path="/developer-bounties" element={<PG><RoleGuard allow={['developer']}><DeveloperBountiesPage /></RoleGuard></PG>} />
-              <Route path="/developer-reputation" element={<PG><RoleGuard allow={['developer']}><DeveloperReputationPage /></RoleGuard></PG>} />
-              <Route path="/skills-paths" element={<PG><RoleGuard allow={['skills','student']}><SkillsPathsPage /></RoleGuard></PG>} />
-              <Route path="/skills-portfolio" element={<PG><RoleGuard allow={['skills','student']}><SkillsPortfolioPage /></RoleGuard></PG>} />
-              <Route path="/ai-business-suite" element={<PG><AIBusinessSuitePage /></PG>} />
-              <Route path="/ai-medical-suite" element={<PG><AIMedicalSuitePage /></PG>} />
-              <Route path="/ai-developer-suite" element={<PG><AIDeveloperSuitePage /></PG>} />
-              <Route path="/ai-ngo-suite" element={<PG><AINGOSuitePage /></PG>} />
-              <Route path="/ai-skills-suite" element={<PG><AISkillsSuitePage /></PG>} />
               <Route path="/ai-teacher-suite" element={<PG><AITeacherSuitePage /></PG>} />
               <Route path="/business-suite" element={<Navigate to="/ai-business-suite" replace />} />
 
@@ -489,6 +413,46 @@ function App() {
               <Route path="/repository/:folder" element={<PG><ResourceRepositoryPage /></PG>} />
 
               {/* 404 */}
+              {/* Removed off-vision features */}
+              <Route path="/connect" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/watch" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/watch/:videoId" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/entrepreneur-funding" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/entrepreneur-network" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/cybersecurity" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/cyber-terminal" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/cyber-soc" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/cyber-skills" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/entrepreneur" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/ngo" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/video-rooms" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/donor-impact" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/free-courses" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/free-courses/:courseId" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-case-simulator" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-case-log" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-clinical-notes" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-rotations" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-drug-reference" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer-ide" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer-projects" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer-code-review" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer-challenges" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-cpd" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-patients" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/entrepreneur-cofounders" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/entrepreneur-pitch" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer-bounties" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer-reputation" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/skills-paths" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/skills-portfolio" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/ai-business-suite" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/ai-medical-suite" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/ai-developer-suite" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/ai-ngo-suite" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/ai-skills-suite" element={<Navigate to="/dashboard" replace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </SuspenseWrap>
