@@ -413,6 +413,46 @@ function App() {
               <Route path="/repository/:folder" element={<PG><ResourceRepositoryPage /></PG>} />
 
               {/* 404 */}
+              {/* Removed off-vision features */}
+              <Route path="/connect" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/watch" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/watch/:videoId" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/entrepreneur-funding" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/entrepreneur-network" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/cybersecurity" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/cyber-terminal" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/cyber-soc" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/cyber-skills" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/entrepreneur" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/ngo" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/video-rooms" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/donor-impact" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/free-courses" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/free-courses/:courseId" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-case-simulator" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-case-log" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-clinical-notes" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-rotations" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-drug-reference" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer-ide" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer-projects" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer-code-review" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer-challenges" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-cpd" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/medical-patients" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/entrepreneur-cofounders" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/entrepreneur-pitch" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer-bounties" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/developer-reputation" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/skills-paths" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/skills-portfolio" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/ai-business-suite" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/ai-medical-suite" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/ai-developer-suite" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/ai-ngo-suite" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/ai-skills-suite" element={<Navigate to="/dashboard" replace />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </SuspenseWrap>
