@@ -32,11 +32,11 @@ export const roleLabels: Record<string, string> = {
   guardian: 'Guardian',
   institution: 'Institution',
   ministry: 'Ministry',
-  doctor: 'Doctor',
-  entrepreneur: 'Entrepreneur',
-  developer: 'Developer',
-  skills: 'Skills Development',
-  cybersecurity: 'Cybersecurity',
+  
+  
+  
+  
+  
 };
 
 export function getNavigationByRole(role: string): NavGroup[] {
@@ -47,12 +47,6 @@ export function getNavigationByRole(role: string): NavGroup[] {
     case 'institution':
     case 'school_admin': return institutionNavigation;
     case 'ministry': return ministryNavigation;
-    case 'doctor':
-    case 'medical': return doctorNavigation;
-    case 'entrepreneur': return entrepreneurNavigation;
-    case 'developer': return developerNavigation;
-    case 'skills': return skillsNavigation;
-    case 'cybersecurity': return cybersecurityNavigation;
     default:
       // Students never see a paused feature in navigation.
       return studentNavigation
