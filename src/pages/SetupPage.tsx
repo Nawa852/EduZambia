@@ -24,11 +24,6 @@ const SetupPage = () => {
       guardian: '/family',
       institution: '/admin',
       ministry: '/ministry',
-      doctor: '/medical',
-      entrepreneur: '/entrepreneur',
-      developer: '/developer',
-      cybersecurity: '/cybersecurity',
-      skills: '/dashboard',
       student: '/dashboard',
     };
     navigate(roleHome[role] || '/dashboard', { replace: true });
@@ -48,9 +43,6 @@ const SetupPage = () => {
     switch (role) {
       case 'teacher':      return <TeacherOnboardingWizard onComplete={handleComplete} />;
       case 'guardian':     return <ParentOnboardingWizard onComplete={handleComplete} />;
-      case 'developer':    return <DeveloperOnboardingWizard onComplete={handleComplete} />;
-      case 'skills':       return <VocationalOnboardingWizard onComplete={handleComplete} />;
-      case 'entrepreneur': return <EntrepreneurOnboardingWizard onComplete={handleComplete} />;
       default:             return <StudentOnboardingWizard onComplete={handleComplete} />;
     }
   };

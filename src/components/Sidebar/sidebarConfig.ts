@@ -304,6 +304,7 @@ export function getCommandNavigationByRole(role: string): Array<NavItem & { grou
   }
   if (role === 'ministry') {
     baseItems.splice(1, 0, { title: "Ministry", url: "/ministry", icon: Building2, group: "Navigate", shortTitle: "Ministry" });
+  }
 
   // Add quick-access tabs as command items
   const tabItems: Array<NavItem & { group: string }> = [
