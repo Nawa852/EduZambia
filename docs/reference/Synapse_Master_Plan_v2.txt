@@ -1,0 +1,479 @@
+SYNAPSE
+Master Plan v2 — The Full Platform
+
+Learners · Teachers · Parents · Schools
+
+
+Every major learning app solves one slice. Synapse connects all the slices —
+and adds the one thing none of them can: the classroom itself.
+
+Levels: Primary · Junior Secondary · Senior Secondary → Colleges & Tertiary
+later
+
+
+
+Covers and beats: Notion · NotebookLM · Gauth · ChatEdu · SchoolGo — plus school branding, study
+pathways, and the teacher-parent-school loop.
+
+Prepared 2026 · Working document v2
+
+
+
+
+                                 Synapse · BrightSphere · 2026   Page 1
+SYNAPSE — Master Plan v2
+
+
+
+
+ 1. The Vision
+ Synapse is the connected learning platform where learners improve, teachers teach instead of
+ doing paperwork, parents finally see the truth, and schools run on evidence. It is lightweight in
+ feel — simple pages — but the pages are wired together, and that wiring is the product.
+
+ Principles
+   • Synapses over pages. Every page reads from and writes to the shared Learner Model. Data
+   flows; nobody re-enters anything; each feature makes the others smarter.
+   • The curriculum is ground truth. Digitized Zambian syllabi (ZECF 2023, CDC codes like 4.1.4.1).
+   Every plan, question, answer, artifact and report cites it.
+   • The knowledge base grows itself. Any uploaded paper, textbook or note is auto-digitized,
+   tagged to competences, and entered into the bank. New ECZ papers are known the day after
+   upload — forever.
+   • Study pathways, not study sessions. Learning is continuous: a pathway follows the learner
+   across pages, terms and years — resumable anywhere, even offline (referring to notes in
+   church, revising on the bus).
+   • Schools are brands. Each school gets a branded account: logo and colors on the dashboard,
+   lesson plans, schemes of work, tests, report cards and certificates. Documents look like the
+   school’s, not generic.
+   • Offline-first, language-inclusive. Everything works without signal and syncs later. Explanations
+   and audio in English plus major Zambian languages.
+   • Privacy by design. Learners are minors: permissions asked first, monitoring opt-in and
+   parent-controlled, guardians see only their children, on-device processing for anything
+   sensitive.
+
+
+
+ 2. Architecture — One Brain, Four Worlds
+ At the core: the Curriculum Engine (subjects → grades → terms → topics → sub-topics →
+ competences with official codes) and the Knowledge Bank (past papers, questions, solutions,
+ materials — auto-digitized). Around them, four worlds connected by synapses:
+
+  World             Feeds into Synapse                           Receives from Synapse
+
+  Learner           Study sessions, practice & exam              Adaptive pathway, assignments,
+                    results, artifacts, focus time               resources, study packs
+
+  Teacher           Plans, schemes, tests, mastery               Class learner models, review queue,
+                    scores, upload verifications                 curriculum & paper bank
+
+  Parent            Guardian link, viewing activity              Verified progress, study reports,
+                                                                 alerts, messages, meetings
+
+  School            Structure, branding, announcements,          Aggregate analytics, document
+                    enrollment                                   branding, Ministry-ready evidence
+ One engine serves Primary, Junior Secondary and Senior Secondary — each level is syllabus data
+ in the same tables. Colleges and tertiary join later through the same ingestion pipeline.
+
+
+
+
+                                 Synapse · BrightSphere · 2026     Page 2
+SYNAPSE — Master Plan v2
+
+
+
+
+ 3. The Learner World — in Detail
+ Ten connected spaces. Each is useful alone; together they form a study pathway that never loses
+ the thread.
+
+ 3.1 Home (Today)
+   • Auto-built daily plan; streaks and weekly goals; flashcards due today (spaced repetition);
+   exam countdowns; weak-topic nudges ("sets troubled you — 10 minutes?"); pick up where you
+   left off — any page, any device.
+   • Optional mood/energy check-in — Synapse schedules hard topics when the learner says they
+   feel sharp.
+
+ 3.2 Synapse AI (the engine room)
+   • Curriculum-grounded chat with citations ("this is Commerce 4.1.4, ZECF 2023") — ChatEdu
+   beaten by being official.
+   • Snap & Solve — photograph any problem; symbolic math engine solves, AI explains every
+   step (Gauth beaten by reliability).
+   • Voice Tutor — talk it through, hear the explanation back; hands-free revision for
+   low-bandwidth homes.
+   • Local-language explanations — English, Bemba, Nyanja and more; ask in one language, revise
+   in another.
+   • Artifact generator — "make me a 3D model of the heart", "a projectile simulation", "an
+   interactive timeline of the Zambian economy". Sandboxed interactive HTML, saved to Library,
+   shared to study groups, tagged to a competence so classmates on that topic find it
+   automatically.
+   • Modes: Explain · Guide · Solve · Practise · Assess · Create · Organise · Plan. Eight verbs, one
+   engine.
+
+ 3.3 Library (Notion × NotebookLM)
+   • Files, notes, folders; PDF reader with highlight and annotate; document scan (OCR of
+   handwritten notes); web clipper; Ask My Library — answers grounded in your own materials
+   with citations to the exact page.
+   • Auto-generated companions: every note gets a summary, key points, flashcards and a
+   mini-quiz (Break It Down).
+   • Formula sheets & glossaries per subject and grade, generated from the syllabus and kept
+   updated.
+
+ 3.4 Practice (My Circle)
+   • Five-step loop — Capture → Understand → Practise → Review → Master — with weekly
+   completion. Study in loops, not lines.
+   • ECZ paper bank — real papers segmented question-by-question, each tagged to a
+   competence, with worked solutions and examiner marking points.
+   • Paper Mode — open a past paper; tap any question for its worked solution, marking guide and
+   an instant mini-quiz on that topic. A static PDF becomes a tutor.
+   • Personalized mocks — "I’ve covered algebra and sets" → authentic ECZ-format timed exam
+   from real bank questions, fresh per-learner number variants, auto-marked with explanations.
+   • Exam Simulator — full papers under real timing; adaptive selection weights your needs-work
+   competences.
+
+
+
+
+                                 Synapse · BrightSphere · 2026   Page 3
+SYNAPSE — Master Plan v2
+
+
+
+   • Drills & flashcards with spaced repetition scheduled automatically (day after → three days → a
+   week).
+
+
+
+
+                               Synapse · BrightSphere · 2026   Page 4
+SYNAPSE — Master Plan v2
+
+
+
+
+ 3.5 Study Groups
+   • School-scoped groups: shared notes and flashcard decks, group quizzes, challenges with
+   leaderboards (opt-in), discussion threads.
+   • Escalate any question to Synapse AI — the answer returns to the whole group. One member’s
+   upload becomes everyone’s study pack.
+
+ 3.6 Planner
+   • Tasks, daily goals, focus timer; revision plan generator — "ECZ Maths in 21 days" becomes a
+   paced daily plan.
+   • The planner schedules weak-topic practice and flashcard reviews automatically from the
+   Learner Model — it plans around your reality, not just your to-do list.
+
+ 3.7 Progress (outcomes)
+   • Mastery per subject and competence, strengths and needs-work, term-over-term trends,
+   exam-readiness estimate.
+   • Career lens: "where does this competence lead?" — biology competences link to nursing,
+   maths to engineering, commerce to accounting — motivation through direction.
+   • Certificates: milestone certificates (school-branded) for completed topics and mastered
+   terms.
+
+ 3.8 Learn Anywhere (offline & audio)
+   • Offline-first: notes, flashcards, papers and downloaded lessons work with no signal;
+   everything syncs when back online.
+   • Audio lessons ("revision radio"): any note or topic becomes a spoken summary — revise on
+   the bus, in church before service, while cooking.
+   • Cross-device pathway: phone at school, parent’s tablet at home — the pathway resumes
+   exactly where it stopped.
+
+ 3.9 Achievements
+   • Badges and milestones (first perfect quiz, 7-day streak, topic mastered), class leaderboards
+   (opt-in), term certificates.
+
+ 3.10 Me (Profile & Family Link)
+   • Profile, joined classes, language preferences, Family Link (guardian connects with the learner
+   code), notification controls, data/privacy settings.
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 5
+SYNAPSE — Master Plan v2
+
+
+
+
+ 4. The Teacher World — in Detail
+ Fourteen connected capabilities — an AI workspace plus a classroom command center. Everything
+ a Zambian teacher needs, nothing they have to format themselves.
+
+ 4.1 AI Lesson Planning
+   • Cascading curriculum dropdowns (grade → subject → topic → sub-topic → competence —
+   official data, never free text).
+   • Full MoE-format generation: general/specific competences, lesson goal, rationale, prior
+   knowledge, references (ZECF 2023), learning environment, low-resource-aware materials,
+   expected standard, and the 5-stage progression table (Teacher activity / Learner activity /
+   Assessment criteria).
+   • Edit anything inline; regenerate any section; version history keeps every draft.
+
+ 4.2 Schemes of Work
+   • Fill Week 1 — the engine continues in syllabus order across the term; weeks can be marked
+   Revision or Test; full MoE table generated.
+
+ 4.3 Voice-to-Plan
+   • Describe the lesson aloud in English or a local language — Synapse structures it into the
+   official format. For teachers faster at speaking than typing.
+
+ 4.4 Tests & Exam Generation
+   • Quick tests per competence, or full ECZ-format exams learned from the real paper bank —
+   authentic structure, command words, mark distribution — with complete marking guides and
+   per-student variants.
+   • Diagram support: LaTeX-rendered math, real music notation, generated figures for technical
+   subjects.
+
+ 4.5 Classroom & Scores
+   • Create class → class code; learners join in seconds. Mastery entry after each lesson: mastered
+   yes/no per learner in under two minutes.
+   • Light attendance; class list with guardian-link status (who is connected to parents, who isn’t).
+
+ 4.6 Assignments & AI Marking
+   • Assign a paper or generated exam → lands in every student’s Planner with due date and
+   notification. Submissions AI-marked against the guide; teacher verifies with one-tap overrides.
+
+ 4.7 Class Analytics
+   • Mastery heatmap per competence; "who needs what" list per learner; trends across the term;
+   comparison to the class average — all feeding the adaptive engine.
+
+ 4.8 Adaptive Engine
+   • Below-threshold mastery → next plan opens with remediation; strong mastery → enrichment.
+   The class teaches the plan, and the plan adapts to the class.
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 6
+SYNAPSE — Master Plan v2
+
+
+
+
+ 4.9 Branded Documents
+   • Every plan, scheme, test, report card and certificate carries the school logo, school colors,
+   teacher name and school header — print-ready PDFs that look official for inspectors and the
+   Ministry.
+
+ 4.10 Teacher Library
+   • School-scoped shared repository: reuse colleagues’ plans, contribute your own, rate and
+   organize by topic. A school’s collective knowledge stops leaving when a teacher transfers.
+
+ 4.11 Report Cards & Comments
+   • Term report cards auto-composed from mastery data — school-branded, per learner, with
+   AI-drafted teacher comments editable in one tap.
+
+ 4.12 Communication
+   • Announcements to a class or the whole school; parent messaging with read receipts; parents
+   request meetings from teacher-published slots.
+
+ 4.13 Review Queue & Professional Growth
+   • Uploaded materials with low auto-tagging confidence wait here — one tap confirms or fixes;
+   teachers curate the platform in seconds.
+   • Lesson observation notes and teaching-standards tracking begin continuous professional
+   development inside the workspace.
+
+ 4.14 Calendar & Deadlines
+   • Term planner: schemes, tests, assignments and events on one calendar; deadline reminders
+   to learners and parents automatically.
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 7
+SYNAPSE — Master Plan v2
+
+
+
+
+ 5. The Parent World — in Detail
+   • Family Link & multi-child: connect with learner codes; support several children in one account,
+   switching between them instantly.
+   • Progress dashboard: mastery per subject and competence, trends term over term,
+   exam-readiness, class-average comparison — the truth, live, not end-of-term surprises.
+   • Verified study reports: "Elena studied 32 minutes today — engaged, verified". Session logs
+   from the focus system; optional on-device learning confirmation (opt-in, parent-controlled).
+   • Alerts that matter: missed assignments, slipping mastery, upcoming tests, absence notes —
+   tuned to urgency, not spam.
+   • Documents inbox: school-branded report cards, test results and certificates arrive as they are
+   published.
+   • Messaging & meetings: direct chat with teachers and the school; book meetings from
+   teacher-published slots; announcements feed.
+   • Home support: "tonight, ask your child about osmosis" — conversation starters matched to
+   this week’s syllabus, so parents help without knowing the content.
+   • Language & access: plain-language summaries in English and major Zambian languages;
+   (later) USSD result checks for parents without smartphones.
+
+
+
+ 6. The School World — in Detail
+   • Branded account: upload logo, set colors, school name and details — branding flows to the
+   dashboard, all generated documents, report cards, certificates and parent-facing views. The
+   platform looks like the school.
+   • Codes & onboarding: school code; staff codes for teachers; class codes for learners; learner
+   codes for guardians — four codes connect an entire school in one afternoon.
+   • Oversight dashboard: every teacher, class, grade and subject — planning activity, mastery
+   heatmaps, comparative trends, engagement. Weak-competence view across the whole school.
+   • Enrollment management: learners, classes, staff directory and roles, guardian-link status —
+   one source of truth, no spreadsheets.
+   • Announcements & events: targeted broadcasts (one grade, whole school, parents only);
+   events calendar (exams, open days, sports).
+   • Report cards & certificates: generate the whole term’s reports at once — school-branded
+   PDFs; certificates for achievements.
+   • Academic analytics: which competences the school struggles with per grade and subject;
+   intervention tracking; evidence ready for the Ministry and inspectors.
+   • Resource library: school policies, circulars, schemes archive — searchable, always current.
+   • Subscriptions & tiers: per-school plans (learners/parents free; schools pay for management
+   depth and branding).
+   • District & Ministry rollup (later): anonymized aggregates give the Ministry a live national
+   picture it has never had.
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 8
+SYNAPSE — Master Plan v2
+
+
+
+
+ 7. The Synapses — How It All Works Together
+  Signal                   Flow through Synapse
+
+  Learner studies          Focus session + practice results → Learner Model → Progress (learner) ·
+                           adaptive plan (teacher) · verified report (parent)
+
+  Teacher teaches          Plan delivered → mastery scored → class mastery → next plan
+                           auto-adjusts → parent sees outcome
+
+  Upload anything          PDF (paper, textbook, notes) → auto-digitized → competence-tagged →
+                           bank grows → exams get better for everyone
+
+  Artifact created         "3D heart model" → tagged to competence → surfaced to classmates
+                           on that topic → shared to study group
+
+  Assignment set           Teacher assigns → student Planner + alert → AI marking → mastery
+                           update → parent notified
+
+  New exams arrive         2027 ECZ paper uploaded → tagged overnight → fresher prep for every
+                           learner
+
+  Report time              Mastery data → branded report cards → parent inbox → school archive
+                           → Ministry evidence
+
+  School acts              Weak school-wide competence found → announcement + intervention
+                           → teacher plans reflect it
+
+  Pathway continuity       Church, bus, home — offline notes and audio keep the pathway alive;
+                           sync resumes the thread anywhere
+
+  Branding everywhere      School logo set once → appears on every document, report, certificate
+                           and parent view automatically
+
+
+
+ 8. Study Pathways — the Product Philosophy
+   • A pathway is the learner’s continuous route through the curriculum: where they are, what’s
+   next, what’s weak, where it leads (careers).
+   • It never resets: terms roll over, weak competences resurface for review, new topics connect
+   to prior ones automatically.
+   • It lives everywhere: every page advances it; offline time counts; audio revision counts; a
+   teacher’s lesson moves it; a parent’s evening question reinforces it.
+   • Study pathways, not study apps — the difference between a tool and a journey.
+
+
+
+ 9. Trust, Integrity & Anti-Cheat
+   • Permissions first at install (focus/monitoring) — explicit, revocable, parent-controlled. Nothing
+   covert, ever.
+   • Marking guides separate from questions; revealed only after submission; questions in live
+   assignments locked until due date; every solution view logged and auditable by teachers.
+   • Per-learner randomized variants defeat answer-key sharing; high-stakes prep uses fresh
+   AI-written parallel questions.
+   • Database-level security: guardians see only their children; vision processing on-device; no
+   raw images stored or transmitted.
+
+
+
+                                 Synapse · BrightSphere · 2026   Page 9
+SYNAPSE — Master Plan v2
+
+
+
+
+ 10. The MVP — Real, Not Ambitious
+ The smallest platform that proves the full loop, with the breadth that makes each stakeholder
+ stay.
+
+  #    Component           In the MVP                                 Deliberately later
+
+  1    Curriculum          3 subjects fully digitized (CS F3,         Full national coverage; more
+       engine              Commerce F4, Maths G12)                    levels
+
+  2    Teacher world       Plans, schemes, class codes, scores,       Voice-to-plan, observations,
+                           adaptive adjustment, test generation       shared library
+
+  3    Learner world       Join class, assignments, grounded AI       Artifacts gallery, study
+                           chat, flashcards, Progress                 groups, audio radio
+
+  4    Paper bank          Ingest 3 years of ECZ papers for MVP       Self-serve uploads open to all
+                           subjects; auto-tagging + teacher           users
+                           review queue
+
+  5    Personalized        Adaptive selection from bank;              Full exam simulator depth
+       mocks               per-learner variants; auto-marking
+
+  6    Parent world        Family Link, progress dashboard,           Meetings booking,
+                           verified study-time reports, alerts        home-support prompts, USSD
+
+  7    Focus shield        Study-block notification blocking          Full app-lock depth; vision
+                           (Android)                                  verification
+
+  8    School world        Branded account (logo on documents),       Analytics depth, timetables,
+                           codes onboarding, oversight                attendance, subscriptions
+                           dashboard
+
+  9    Offline mode        Notes, flashcards, papers cached; sync     Full offline lesson playback
+                           on reconnect
+
+  10   Languages           English UI; AI explanations in             Full UI localization
+                           Bemba/Nyanja
+
+ Build order
+   • Wks 1–4: schema live; first syllabus digitized; first perfect lesson plan (matches the MoE
+   format exactly).
+   • Wks 5–8: class codes + scores + adaptive engine; paper pipeline on real ECZ PDFs; school
+   branding (logo → documents).
+   • Wks 9–12: learner core + Family Link + mocks + focus shield; pilot in 2 schools, one per level
+   band.
+
+ Pilot success criteria
+   • Teachers save ≥3 planning hours/week; ≥70% weekly active use for a full term.
+   • ≥1 guardian linked per learner, viewing weekly; parents rate visibility better than any
+   previous channel.
+   • Schools use branded documents in real meetings/inspections; ≥3 years of papers per subject
+   in the bank.
+
+
+ 11. Technical Foundation
+
+                                 Synapse · BrightSphere · 2026   Page 10
+SYNAPSE — Master Plan v2
+
+
+
+   • Flutter (Android-first) · Supabase (Postgres + RLS + storage) · LLM API behind serverless
+   functions · symbolic math engine · sandboxed HTML artifacts · offline sync layer · TTS audio
+   pipelines.
+   • Data foundation: synapse_schema.sql (v0.2) + papers migration (v0.3) + artifacts/exams
+   migration (v0.4).
+   • Open dependency: real source documents — one CDC syllabus PDF and ECZ past papers to
+   run the first end-to-end ingestion.
+ Immediate next step: digitize one syllabus and ingest one past paper — real content in, structured
+ knowledge out.
+
+
+
+
+                               Synapse · BrightSphere · 2026   Page 11
+

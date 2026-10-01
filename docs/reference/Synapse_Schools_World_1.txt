@@ -1,0 +1,279 @@
+SYNAPSE
+The School’s World
+The school’s operating system.
+
+
+One branded platform where the head teacher, deputies, teachers, learners
+and parents are already connected — because they all live inside Synapse.
+The school doesn’t adopt a new system; it simply opens the door to the one
+that already exists.
+
+
+
+The promise: every stakeholder on one platform, every document carrying
+the school’s name, and evidence the Ministry has never seen — for less than
+the school spends on the software patchwork today.
+
+
+
+Prepared 2026 · Working document
+
+
+
+
+                               Synapse · BrightSphere · 2026   Page 1
+SYNAPSE — School’s World
+
+
+
+
+ 1. What the School’s World Solves
+ Schools today run on duct tape: an attendance app here, a WhatsApp group there, Excel for
+ results, a printer for report cards, paper for letters — each with its own cost, its own logins, its own
+ chaos. Because teachers, learners and parents already live in Synapse, the school gets all of it in
+ one place, already populated:
+
+  School’s problem today                  How Synapse answers it
+
+  Scattered software & fees               One subscription replaces the attendance app, SMS service,
+                                          results spreadsheets and communication tools
+
+  No live picture of learning             Real-time mastery across every class, subject and grade —
+                                          today, not term end
+
+  Documents without identity              The school’s logo, colors and EMIS header on every plan,
+                                          report card, certificate and letter
+
+  Parents unreachable                     Every learner has a linked guardian channel — see exactly
+                                          who is and isn’t connected
+
+  Inspection & Ministry pressure          Inspection-ready evidence exports, generated on demand
+
+  Teacher workload & burnout              AI planning and marking return hours to teaching — visible
+                                          in the school’s own analytics
+
+
+
+ 2. The Console at a Glance — Ten Sections
+  Section                       Purpose
+
+  1. Command                    The live school dashboard — everything, today
+
+  2. People                     Staff directory & roles, learners, classes, guardians
+
+  3. Academics                  Schemes, pacing, exams, results, interventions
+
+  4. Documents                  Branding, report cards, certificates, official letters
+
+  5. Communication              Announcements, events, emergency broadcast
+
+  6. Analytics                  Performance per teacher, class, grade, subject
+
+  7. Operations                 Attendance insights, timetable, (later) fees
+
+  8. Resources                  School library: policies, circulars, schemes archive
+
+  9. Insights+                  Year-over-year trends, benchmarking, forecasting
+
+  10. Settings                  Branding, roles & permissions, subscriptions
+
+
+
+
+                                    Synapse · BrightSphere · 2026   Page 2
+SYNAPSE — School’s World
+
+
+
+
+ 3. Section One — Command (The Live Dashboard)
+   • Today at a glance: attendance so far, lessons in progress, assignments due, announcements
+   pending approval.
+   • School mastery map: the whole syllabus, every grade — green, amber, red at competence
+   level. One screen answers "how are we doing?" — zoom from school → grade → class → learner.
+   • Teacher pulse: planning activity, score-entry timeliness, class momentum — support the
+   struggling teacher before it shows in results.
+   • Guardian coverage: what percentage of learners have a linked parent — and one-tap codes to
+   close the gap.
+   • Alerts: anomalies surface themselves — a class falling behind pace, a subject
+   underperforming across grades, an unmarked backlog.
+
+
+ 4. Section Two — People
+   • Roles for everyone: head teacher, deputies, heads of department, teachers, bursar, support
+   staff — each with exactly the access they need, nothing more.
+   • Four codes onboard a school: school code → staff codes → class codes → learner codes. An
+   entire school connected in one afternoon, no IT department required.
+   • Staff directory: who teaches what, class loads, contact — always current because it updates
+   itself.
+   • Enrollment management: learners, class lists, stream moves, new admissions — one source of
+   truth, no spreadsheets.
+   • Guardian registry: every linked parent, per learner, per class — with connection status and
+   history.
+
+
+ 5. Section Three — Academics
+   • Syllabus pacing tracker: every class’s position against the scheme of work — who is on pace,
+   who is behind, by how many weeks.
+   • Exam scheduling & records: the term’s exam calendar with conflict warnings; every result
+   archived and analyzable.
+   • Intervention tracking: mark a weak competence school-wide, assign interventions, and watch
+   the heatmap respond.
+   • Moderation: compare marking standards across teachers on the same competence —
+   consistency, not blame.
+   • Knowledge bank growth: every uploaded paper enriches the whole school’s question bank —
+   the school’s library of past papers becomes structured, searchable, exam-generating.
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 3
+SYNAPSE — School’s World
+
+
+
+
+ 6. Section Four — Documents & Branding
+   • Brand once, everywhere: upload the logo, set colors and details — every plan, scheme, test,
+   report card, certificate, transcript and letter carries the school’s identity automatically.
+   • Report cards in bulk: the whole term’s reports generated from live mastery data —
+   school-branded PDFs, ready for the printing room.
+   • AI letter writer: official letters drafted in seconds — absence follow-ups, disciplinary,
+   invitations, memos — on the school letterhead, in the right tone, reviewed and sent.
+   • Certificates & transcripts: achievements, leavers’ transcripts, competition awards — produced
+   in moments, archived forever.
+   • Policy center: school policies and circulars versioned and acknowledged — who has read
+   what, proven.
+
+
+ 7. Section Five — Communication
+   • Targeted announcements: to one grade, one class, staff only, parents only — or the whole
+   school; read receipts included.
+   • Events calendar: exams, open days, sports, PTA — pushed to the right audiences
+   automatically.
+   • Emergency broadcast: urgent alerts to all guardians instantly — with delivery confirmation.
+   (SMS fallback for non-smartphone parents.)
+   • Every channel official: because conversations live in Synapse, the school has a record — no
+   more "the WhatsApp group said" disputes.
+
+
+ 8. Section Six — Analytics (Evidence)
+   • Any cut of the data: by teacher, class, grade, subject, gender, term, year — a question away,
+   not a week of spreadsheet work.
+   • Year-over-year trends: is the school improving? Where? Since when? What changed?
+   • Benchmarking: compare against anonymized schools of similar profile — context for targets.
+   • Forecasting: predicted exam outcomes from current mastery — act months early, not after
+   results.
+   • Inspection & Ministry exports: clean, branded, evidence-grade reports generated on demand
+   — the inspection meeting starts from strength.
+
+
+
+
+                                 Synapse · BrightSphere · 2026   Page 4
+SYNAPSE — School’s World
+
+
+
+
+ 9. Sections Seven to Ten — Operations, Resources,
+ Settings
+   • Operations: attendance insights and patterns; timetable builder (later phase); fees and
+   payments (later phase) — each arriving on the same platform, no new system to buy.
+   • Resources: the school’s document library — policies, schemes, circulars, past papers —
+   searchable and shared to staff instantly.
+   • Settings: branding, role permissions, academic calendar, subscription and billing — the school
+   controls its own house.
+
+
+
+ 10. How the School Synapses With the Other Worlds
+  From → To                    What flows
+
+  Teachers → School            Plans, scores, mastery — become the school’s live evidence
+                               automatically
+
+  Learners → School            Study activity and results — no reports to compile, ever
+
+  Parents → School             Guardian-link coverage and engagement — visible and improvable
+
+  School → Teachers            Announcements, interventions, pacing expectations — land in their
+                               workspace
+
+  School → Parents             Official communications replace the rumor group chat
+
+  School → Ministry            Aggregated, anonymized evidence exports on demand
+
+  School → Itself              Every uploaded paper and shared plan compounds into institutional
+                               memory
+
+
+
+ 11. The Money Case — One Subscription, Many
+ Replacements
+  What schools pay for today                   Replaced by
+
+  Attendance/registration software             Command + Operations (in Synapse)
+
+  SMS bundles for parent notices               Announcements + emergency broadcast
+
+  Results & report software/spreadsheets       Bulk branded report cards from live data
+
+  Printing & stationery for letters            AI letter writer on school letterhead
+
+  Past-paper collections & prep books          The auto-growing knowledge bank
+
+  Teacher overtime for paperwork               AI planning & marking (hours returned)
+
+  Consultants for inspection prep              On-demand evidence exports
+ Pricing shape: free for learners and parents (they are the network); schools subscribe per term by
+ learner count, tiers scaling with depth (branding and analytics in, operations modules as add-ons).
+ The school that tries Synapse for one term can price its old patchwork against it — and keep the
+ receipt.
+
+
+
+
+                                 Synapse · BrightSphere · 2026   Page 5
+SYNAPSE — School’s World
+
+
+
+
+ 12. Trust, Privacy & Governance
+   • Role-based access down to the row level: a teacher sees their classes; a deputy sees their
+   grade; the head sees the school; the Ministry sees anonymized aggregates — and nothing
+   more.
+   • Learners are minors: guardian visibility is per-child only, monitoring is opt-in and
+   parent-controlled, sensitive processing stays on-device.
+   • Every action logged: who saw what, who changed what — governance built in, not bolted on.
+   • The school owns its data: full export at any time, no lock-in hostage-taking. Confidence,
+   stated in writing.
+
+
+
+ 13. First Build (MVP Slice for Schools)
+   • Command dashboard, People (staff/learners/guardians + codes), branded documents and
+   bulk report cards, targeted announcements, core analytics and Ministry export.
+   • Later phases: operations modules (timetable, fees), benchmarking and forecasting, SMS
+   fallback, multi-school groups.
+
+
+
+ 14. Why Schools Will Love It
+   • Zero adoption friction: the network is already there — the school simply claims it, brands it,
+   and switches on the console.
+   • Identity restored: every document that leaves the school carries its name — pride in print,
+   credibility in inspection.
+   • Evidence instead of anecdotes: staff meetings, board meetings, Ministry meetings — all start
+   from live data.
+   • Money back to the mission: one subscription replaces the patchwork, and teacher hours
+   return to teaching.
+   • Synapse doesn’t ask the school to change how it works. It asks the school to stop paying for
+   five tools when one nervous system already connects everyone it serves.
+
+
+
+
+                                 Synapse · BrightSphere · 2026   Page 6
+
