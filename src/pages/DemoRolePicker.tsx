@@ -11,7 +11,7 @@ const ROLES = [
   { id: 'teacher',     title: 'Teacher',      desc: 'Plan lessons, generate tests with charts, grade with AI.', icon: Users, gradient: 'from-emerald-500 to-teal-600' },
   { id: 'guardian',    title: 'Parent / Guardian', desc: 'Track your child\'s progress, attendance, performance.', icon: Heart, gradient: 'from-rose-500 to-pink-600' },
   { id: 'institution', title: 'School Admin', desc: 'Run a school: students, staff, fees, analytics.',     icon: Building2, gradient: 'from-amber-500 to-orange-600' },
-  { id: 'ministry',    title: 'Ministry / NGO', desc: 'Policy, school registry, interventions, donor impact.', icon: Landmark, gradient: 'from-slate-600 to-zinc-700' },
+  { id: 'ministry',    title: 'Ministry (later)', desc: 'National overview of schools and results.', icon: Landmark, gradient: 'from-slate-600 to-zinc-700' },
 ];
 
 
@@ -51,7 +51,7 @@ export default function DemoRolePicker() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {ROLES.map(r => {
             const Icon = r.icon;
-            const locked = 'comingSoon' in r && r.comingSoon;
+            const locked = false;
             return (
               <Card
                 key={r.id}
