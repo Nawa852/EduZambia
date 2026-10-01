@@ -1,0 +1,264 @@
+SYNAPSE
+The Parent’s World
+See the truth. Help at home. Learn what’s next.
+
+
+A parent’s window into their child’s learning — live progress, verified study,
+direct communication with teachers and school — plus something no platform
+offers: the parents themselves learn too.
+
+
+
+
+The promise: no more end-of-term surprises, no more "I don’t know what
+they’re studying" — and a family that grows with the technology, not behind
+it.
+
+
+
+Prepared 2026 · Working document
+
+
+
+
+                               Synapse · BrightSphere · 2026   Page 1
+SYNAPSE — Parent’s World
+
+
+
+
+ 1. What the Parent’s World Solves
+ Parents are a child’s first teachers, yet they are usually the last to know: reports arrive at term
+ end, WhatsApp rumors replace facts, and the technology their children use every day is a closed
+ door. The Parent’s World fixes all three:
+
+  Parent’s problem today                  How Synapse answers it
+
+  "I only find out at report time"        Live competence-level progress, trends and alerts — the
+                                          truth as it happens
+
+  "Are they really studying?"             Verified study sessions: focus time, engagement, what was
+                                          covered
+
+  "I can’t help — I don’t know the        Conversation starters and plain-language guides matched
+  subjects"                               to this week’s syllabus
+
+  "AI and apps are a mystery to           The Parent Academy: short lessons in AI literacy, digital
+  me"                                     skills and online safety
+
+  "Reaching the teacher is hard"          Direct messaging, meeting booking, and announcements in
+                                          one official channel
+
+
+
+ 2. The App at a Glance — Nine Pages
+  Page                          Purpose
+
+  1. Home (Today)               All children at a glance: today’s study, alerts, tonight’s conversation
+                                starter
+
+  2. Progress                   Per-child mastery dashboard: subjects, competences, trends
+
+  3. Study Reports              Verified study sessions and engagement evidence
+
+  4. Documents                  Report cards, test results, certificates — as published
+
+  5. Connect                    Messages with teachers & school, meetings, announcements
+
+  6. Home Support               How to help tonight: conversation starters & guides
+
+  7. Learn (Academy)            AI literacy, digital skills, online safety — for the parent
+
+  8. Alerts                     Everything urgent, in one place, tuned not to spam
+
+  9. Me                         Multi-child management, languages, privacy, settings
+
+
+
+
+                                  Synapse · BrightSphere · 2026    Page 2
+SYNAPSE — Parent’s World
+
+
+
+
+ 3. Page One — Home (Today)
+   • All children, one screen: today’s verified study time, pending assignments, upcoming tests —
+   switch between children in one tap.
+   • Tonight’s conversation starter: "ask Chipo about osmosis — she practised it today" —
+   matched to the actual syllabus, so any parent can help, no degree required.
+   • Priority alerts only: missed work, slipping mastery, absence — urgent things first, everything
+   else in the Alerts page.
+   • School announcements and unread teacher messages.
+
+
+ 4. Page Two — Progress (the Truth, Live)
+   • Mastery per subject and competence: "mastered 8 of 11 competences in Mathematics this
+   term" — not a single mark, but the full picture.
+   • Trends term over term: improving, steady, or slipping — with the moment the change began.
+   • Class-average comparison: context without competition — is my child keeping pace?
+   • Exam-readiness: Synapse’s estimate per subject, and what would raise it fastest.
+   • Career lens: what this term’s competences unlock — nursing, engineering, accounting — so
+   progress feels like direction.
+
+
+ 5. Page Three — Study Reports (Verified)
+   • Session evidence: "Elena studied 32 minutes today — flashcards and 12 algebra questions,
+   engaged, verified".
+   • Focus-time history: the week’s study pattern at a glance — streaks, gaps, best hours.
+   • Optional learning confirmation (opt-in, parent-controlled): on-device verification that genuine
+   engagement happened. No raw images — only the verified signal leaves the device.
+   • Notifications when it matters: no study for two days, a broken streak, a late-night session —
+   the parent can act the same week, not at report time.
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 3
+SYNAPSE — Parent’s World
+
+
+
+
+ 6. Page Four — Documents
+   • Report cards as published: school-branded PDFs arrive in the inbox the moment the school
+   releases them — signed, sealed, archived.
+   • Test results and certificates: every marked assessment and achievement certificate, kept
+   forever — no lost papers.
+   • Term summaries: a plain-language wrap-up per child, readable in two minutes, shareable with
+   family.
+
+
+ 7. Page Five — Connect (Teachers & School)
+   • Direct messaging: logged conversations with teachers and the school — read receipts, no
+   phone-call tag, no lost WhatsApp threads.
+   • Meeting booking: teachers publish available slots; parents book in two taps; both sides get
+   reminders.
+   • Announcements feed: the official channel — what the school says, not what the group chat
+   heard.
+   • Two-way respect: teachers send canned updates in seconds ("your child mastered 4.1.4 this
+   week"), parents reply in context.
+
+
+ 8. Page Six — Home Support
+   • Conversation starters: matched to this week’s actual syllabus — "tonight, ask about the water
+   cycle" turns dinner into revision.
+   • Plain-language guides: every topic explained for adults in two-minute reads and audio — in
+   English and major Zambian languages.
+   • Routine builder: a gentle shared study schedule the parent and child agree on; Synapse
+   nudges both sides.
+   • Celebration cues: when the child masters a competence, the parent gets the good news and a
+   suggestion to acknowledge it — recognition drives motivation.
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 4
+SYNAPSE — Parent’s World
+
+
+
+
+ 9. Page Seven — Learn: The Parent Academy
+ The feature no education platform offers: the parents themselves learn. Short, practical, in plain
+ language and local languages — because a family that understands the technology raises a child
+ who uses it well.
+
+ 9.1 Course Tracks
+  Track               What the parent learns                              Format
+
+  AI Literacy         What AI really is, how Synapse uses it, how to      5 lessons · 5 min each ·
+                      check an AI answer, what it can and cannot do       audio + text
+
+  Digital Skills      Smartphone confidence: files, photos, PDFs,         Hands-on, guided on
+                      mobile money, safe passwords, data bundles          the parent’s own phone
+
+  Online Safety       Protecting children online: scams, grooming         Scenarios + checklists
+                      signs, screen-time agreements, reporting
+                      (ZICTA)
+
+  Supporting          How children learn, encouragement over              Weekly tip + practical
+  Learning            pressure, working with teachers, reading habits     tasks
+
+  Money &             Mobile money safety, budgeting for school costs,    Monthly briefing +
+  Opportunity         scholarships and bursaries to watch for             audio
+
+  Understanding       How Zambian education works: competences,           Short series per level
+  the Curriculum      ECZ exams, progression — demystified                band
+
+ 9.2 How It Works
+   • One lesson a week by default — five minutes, audio-first (works hands-free and low-literacy
+   friendly), downloadable for offline.
+   • In English, Bemba, Nyanja and more; large text; no jargon.
+   • Synapses with the child’s world: when Chipo starts learning web design, the parent gets "what
+   web design is and why it matters" — the Academy explains what the child is doing, exactly
+   when it becomes relevant.
+   • Certificates for completed tracks — celebrated in the family feed; some schools may
+   recognize parent-graduates at open days.
+   • Ask Synapse: a plain-language Q&A; — "what is artificial intelligence?" — answered without
+   jargon, cite-checked, in the parent’s language.
+
+
+ 10. Pages Eight & Nine — Alerts, and Me
+   • Alerts: one inbox for everything urgent — absence, missed assignments, slipping mastery,
+   school notices — tuned by the parent (quiet hours, per-child settings).
+   • Me: multi-child management (one account, many children), language preference, notification
+   controls, privacy settings (what the parent shares, what stays private), guardian-link
+   management, offline downloads.
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 5
+SYNAPSE — Parent’s World
+
+
+
+
+ 11. How the Pages Synapse
+  From → To                         What flows
+
+  Child’s study → Home              Verified sessions become today’s family picture
+
+  Child’s syllabus → Home           Conversation starters matched to this week’s real topics
+  Support
+
+  Child’s new topic → Academy       "What web design is" arrives exactly when it matters
+
+  Teacher marks → Documents         Report cards and results publish straight to the parent inbox
+
+  Slipping mastery → Alerts         The parent acts the same week, not at term end
+
+  Academy completion → family       Certificates celebrated; engagement compounds
+
+  School → Connect                  Official announcements, replacing the rumor group chat
+
+
+
+ 12. Trust & Privacy
+   • Guardians see only their own linked children — enforced at the database level, not just the
+   interface.
+   • Monitoring features are opt-in and parent-controlled; on-device processing for anything
+   sensitive; nothing covert, ever.
+   • Schools see aggregates, not parent conversations; teachers see only their classes’ families.
+
+
+
+ 13. First Build (MVP Slice)
+   • Pages 1–6 with: Family Link, progress dashboard, verified study-time reports, documents
+   inbox, messaging, alerts, and the first Academy track (AI Literacy).
+   • Later phases: meeting booking, routine builder, remaining Academy tracks, USSD result
+   checks for parents without smartphones.
+
+
+ 14. Why This Matters
+   • An informed parent is the cheapest, most powerful intervention in education. Synapse makes
+   every parent informed — and then makes them more capable still.
+   • The family that learns together no longer fears the technology the child carries in their
+   pocket. That is the Synapse difference.
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 6
+

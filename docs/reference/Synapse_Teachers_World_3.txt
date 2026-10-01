@@ -1,0 +1,326 @@
+SYNAPSE
+The Teacher’s World
+Every page. Every feature. One workspace.
+
+
+An AI workspace and classroom command center for Zambian teachers —
+planning, assessment, communication and evidence, all aligned to the official
+curriculum and all carrying the school’s name.
+
+
+
+
+The promise: hours returned every week, documents worthy of inspection,
+and a classroom that teaches the teacher what to do next.
+
+
+
+Prepared 2026 · Working document
+
+
+
+
+                               Synapse · BrightSphere · 2026   Page 1
+SYNAPSE — Teacher’s World
+
+
+
+
+ 1. What the Teacher’s World Solves
+ Zambian teachers carry heavy loads: large classes, full syllabus pacing, MoE paperwork, parent
+ expectations — often with limited materials. The Teacher’s World attacks the three biggest time
+ sinks directly:
+
+  Time sink today                        How Synapse answers it
+
+  Planning & formatting (2–4             AI generates complete MoE-format lesson plans and
+  hrs/week)                              schemes from curriculum dropdowns; voice-to-plan;
+                                         regenerate any section.
+
+  Setting & marking assessments          AI builds quizzes, tests and ECZ-format exams with
+  (3+ hrs/week)                          marking guides; AI marks submissions; teacher verifies in
+                                         taps.
+
+  Parent & class communication           One official channel: announcements, class groups, parent
+  (scattered across WhatsApp)            messages, meetings — logged and branded.
+
+
+
+ 2. The App at a Glance — Eleven Pages
+  Page                         Purpose
+
+  1. Home (Today)              Everything awaiting the teacher today, at a glance
+
+  2. Plan                      Lesson plans, schemes of work, voice-to-plan, curriculum browser
+
+  3. Assess                    Quiz/test/exam builder, question bank, AI marking, gradebook
+
+  4. Class                     Classes & codes, learners, mastery entry, attendance-lite
+
+  5. Insights                  Class analytics, mastery heatmap, adaptive recommendations
+
+  6. Connect                   Announcements, class groups, parent messaging, meetings
+
+  7. Documents                 Branded PDFs, report cards, certificates, print center
+
+  8. Library                   My resources, school-shared plans, upload review queue
+
+  9. Grow                      Observations, teaching standards, professional development
+
+  10. Calendar                 Term planner, deadlines, events, reminders
+
+  11. Me                       Profile, school branding preview, settings, offline
+
+
+
+
+                                 Synapse · BrightSphere · 2026   Page 2
+SYNAPSE — Teacher’s World
+
+
+
+
+ 3. Page One — Home (Today)
+   • Today’s lessons — tap any to open its plan; time till each period.
+   • Action queue — mastery scores waiting to be entered, submissions awaiting verification,
+   review-queue items pending. Nothing gets forgotten; nothing needs a notebook.
+   • Quick actions — new plan, new quiz, announce, mark attendance.
+   • Pulse card — class average mastery this week, trending up or down, and the one competence
+   most needing attention tomorrow.
+   • School announcements and parent messages — priority first, quiet by default.
+
+
+ 4. Page Two — Plan (AI Planning)
+ 4.1 Lesson Plans
+   • Cascading curriculum dropdowns: grade → subject → topic → sub-topic → specific competence
+   — official CDC data, so the curriculum part can never be wrong.
+   • One tap generates the complete MoE-format document: general and specific competences,
+   lesson goal, rationale, prior knowledge, references (Zambia Education Curriculum Framework
+   2023), learning environment, materials (realistic and low-resource aware — charts, manila
+   paper, textbooks), expected standard, and the 5-stage progression table (Introduction →
+   Development → Exercise/Assessment → Homework → Conclusion) with Teacher activity /
+   Learner activity / Assessment criteria columns.
+   • Edit inline; regenerate any single section; version history; duplicate across classes; export
+   branded PDF.
+
+ 4.2 Schemes of Work
+   • Fill Week 1 — the engine continues in syllabus order across the term; mark any week Revision
+   or Test; the full term’s MoE-format table generates automatically.
+
+ 4.3 Voice-to-Plan
+   • Speak the lesson aloud — in English or a local language ("tomorrow I want to teach web
+   interactivity, they struggled last week, practical session") — Synapse structures it into the
+   official format. Talking is faster than typing.
+
+ 4.4 Smart extras
+   • Differentiation: the same plan rendered at three support levels (core / supported / advanced)
+   for mixed-ability classes.
+   • Absent-learner recap: a one-page plain-language summary of each lesson for students who
+   were absent — generated automatically, sent to their Planner.
+   • Curriculum browser: the whole syllabus as a tap-through map — see what was taught, what’s
+   next, and how every lesson connects.
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 3
+SYNAPSE — Teacher’s World
+
+
+
+
+ 5. Page Three — Assess (Quizzes, Tests, Exams,
+ Marking)
+ 5.1 Quiz & Test Builder
+   • Pick a competence → AI generates a quiz (multiple choice, structured, calculation, short
+   essay) with answers and mark allocations; adjust count and difficulty with sliders.
+   • Diagrams where needed: LaTeX-rendered mathematics, real music notation, generated
+   figures for sciences and technical subjects.
+   • Push to the class in one tap — it appears in every learner’s Planner with a due date; parents
+   are notified automatically.
+
+ 5.2 Exam Generation (ECZ-format)
+   • Full exams learned from the real ECZ paper bank: authentic section structure, command
+   words, mark distribution and time allowance — with a complete marking guide.
+   • Per-student variants: the same exam with randomized numbers so answer sharing is useless.
+   • Questions inside a live exam are solution-locked for the whole class until the due date; every
+   solution view is logged for the integrity audit.
+
+ 5.3 AI Marking & Gradebook
+   • Submissions marked against the guide; the teacher sees the AI’s marking with the reasoning
+   and overrides in one tap.
+   • Gradebook auto-built from every quiz, test and mastery entry — no spreadsheet, ever.
+   • Comment writer: per-learner report comments drafted from performance data; the teacher
+   edits tone and detail, never starts from a blank page.
+
+
+ 6. Page Four — Class
+   • Create class → get a class code; learners join in seconds. Multiple classes, multiple grades —
+   one view.
+   • Mastery entry in under two minutes: after a lesson, mark each learner mastered / not yet for
+   that competence — one screen, big tap targets.
+   • Attendance-lite: present / absent in seconds; absence triggers a guardian notification.
+   • Class list with guardian-link status: instantly see which learners have a connected parent and
+   which don’t — share a join code with the unlinked.
+   • Learner snapshots: any learner’s pathway — mastery history, strengths, needs work, app
+   activity — one tap from the class list.
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 4
+SYNAPSE — Teacher’s World
+
+
+
+
+ 7. Page Five — Insights (Analytics & Adaptation)
+   • Mastery heatmap: the whole syllabus for the class — green (mastered), amber (partial), red
+   (needs work) — at competence-code level.
+   • "Who needs what" list: per learner, the exact competences to revisit — with one-tap revision
+   packs generated for each.
+   • Adaptive engine: below-threshold class mastery → the next lesson plan auto-opens with
+   remediation; strong mastery → enrichment. The class teaches the plan; the plan adapts to the
+   class.
+   • Trends: week-over-week movement, comparison to the school average, early warning before
+   marks slip.
+   • Integrity audit: which students viewed solutions before a test, and when — evidence, not
+   suspicion.
+
+
+ 8. Page Six — Connect (Communication)
+   • Announcements: to one class, several, or the whole school; parents receive them in their own
+   feed; read receipts show who has seen it.
+   • Class groups: moderated chat with the learners of a class — questions after school, homework
+   clarifications — with the teacher in control and everything logged (no more WhatsApp groups
+   with no oversight).
+   • Study-group visibility: see the school-scoped study groups your learners joined and drop in to
+   answer — teaching extends beyond the classroom walls.
+   • Parent messaging: direct, logged conversations; canned updates ("your child mastered 4.1.4
+   this week") sent in two taps.
+   • Meetings: publish available slots; parents book; reminders to both sides. No phone-call tag.
+
+
+ 9. Page Seven — Documents (Branded & Print-Ready)
+   • The school’s identity on every page: logo, colors, school name and EMIS header on lesson
+   plans, schemes, tests, report cards and certificates — print-ready PDFs that stand up in
+   inspections.
+   • Report cards: the term’s reports auto-composed from mastery data, per learner, with
+   AI-drafted comments the teacher edits in one tap.
+   • Certificates: achievement certificates for competitions, perfect scores, improvement —
+   generated and printed in seconds.
+   • Print center: batch-export anything, formatted for the school’s printer.
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 5
+SYNAPSE — Teacher’s World
+
+
+
+
+ 10. Page Eight — Library (Resources & Review Queue)
+   • My resources: every plan, scheme, quiz and document the teacher has made — searchable,
+   reusable, versioned.
+   • School-shared library: colleagues’ plans rated and organized by topic; the school’s collective
+   knowledge stays even when a teacher transfers.
+   • Upload anything: a past paper, textbook chapter, or notes → auto-digitized and tagged to
+   competences. Low-confidence items land in the review queue — one tap confirms or fixes.
+   Teachers curate the platform in seconds and the whole system gets smarter.
+
+
+ 11. Page Nine — Grow (Professional Development)
+   • Lesson observations: heads of department record observations against the teaching
+   standards, linked to the actual lesson plan taught.
+   • Standards tracker: the teacher’s growth across the term, with suggested focus areas and
+   relevant resources.
+   • Micro-PD: short, targeted tips generated from the teacher’s own analytics ("your assessments
+   skew recall — here are two question styles for analysis").
+
+
+ 12. Page Ten — Calendar
+   • Term planner: schemes, tests, assignments and events on one timeline; drag to reschedule;
+   learners and parents get deadline reminders automatically.
+   • Exam-countdown views per class; conflict warnings (two tests same day).
+
+
+ 13. Page Eleven — Me
+   • Profile, subjects and classes, school branding preview, language preference, notification
+   controls, data & privacy settings, offline downloads.
+
+
+
+ 14. How the Pages Synapse (Work Together)
+  From → To                      What flows
+
+  Class scores → Plan            Mastery results reshape the next lesson automatically
+
+  Plan → Documents               Every plan exports school-branded, print-ready
+
+  Assess → Connect               Marked results notify parents with context in two taps
+
+  Library → Assess               Reviewed uploads enrich the question and exam bank for
+                                 everyone
+
+  Insights → Grow                Analytics suggest the teacher’s own next development step
+
+  Calendar → Home                Deadlines surface as today’s action queue
+
+  Class → Connect                Guardian-link gaps surface so no parent stays unconnected
+
+
+
+
+                                Synapse · BrightSphere · 2026   Page 6
+SYNAPSE — Teacher’s World
+
+
+
+
+ 15. The Workload Ledger (What a Week Looks Like)
+  Weekly task                      Before Synapse                     With Synapse
+
+  Lesson plans (5)                 ~3 hours writing & formatting      ~15 minutes reviewing AI
+                                                                      drafts
+
+  Scheme of work updates           ~1 hour retyping tables            Automatic from Week 1
+                                                                      onward
+
+  Quiz/test creation + marking     ~3 hours                           ~30 minutes verifying AI
+                                                                      marking
+
+  Report comments                  ~2 hours from a blank page         ~20 minutes editing drafts
+
+  Parent updates                   Ad-hoc, untracked                  Two-tap canned updates,
+                                                                      logged
+
+  Record keeping                   Spreadsheets, paper                Automatic gradebook &
+                                                                      mastery
+
+  Total                            ≈ 10+ hours of paperwork           ≈ 1.5 hours of oversight
+
+ The recovered time goes where it belongs: teaching, feedback, and the learners who need it most.
+
+
+
+ 16. Built On
+   • Curriculum engine (CDC syllabi, official codes), knowledge bank (auto-digitized ECZ papers),
+   adaptive mastery loop, branded documents, and the same security model as the whole
+   Synapse platform (row-level privacy, minors protected).
+   • Technical base: Flutter + Supabase + LLM functions — the Teacher’s World is one role in the
+   same app learners and parents use.
+
+
+ 17. First Build (MVP Slice)
+   • Pages 1–7 with: plans, schemes, quiz builder, class codes, mastery entry, adaptive
+   adjustment, branded PDFs, parent messaging. Everything else follows in phases — the schema
+   already supports it all.
+   • Open dependency, unchanged: one CDC syllabus PDF to digitize and ECZ papers to ingest.
+   Real content in, real hours saved out.
+
+
+
+
+                                 Synapse · BrightSphere · 2026   Page 7
+
