@@ -4,7 +4,6 @@ import { Calendar, Timer, FileText, Target, BookOpen, Bookmark, Flame, Zap, Brai
 
 const tabs: HubTab[] = [
   { id: 'challenges', label: 'Daily Challenge', icon: Zap, component: React.lazy(() => import('@/pages/DailyChallengePage')), badge: 'NEW' },
-  { id: 'leaderboard', label: 'Leaderboard', icon: Trophy, component: React.lazy(() => import('@/pages/SocialLeaderboardPage')), badge: 'NEW' },
   { id: 'ai-planner', label: 'AI Planner', icon: Brain, component: React.lazy(() => import('@/pages/AIStudyPlannerPage')), badge: 'NEW' },
   { id: 'offline', label: 'Offline Mode', icon: CloudOff, component: React.lazy(() => import('@/pages/OfflineContentPage')), badge: 'NEW' },
   { id: 'planner', label: 'Study Planner', icon: Calendar, component: React.lazy(() => import('@/pages/StudyPlannerPage')) },
@@ -12,7 +11,6 @@ const tabs: HubTab[] = [
   { id: 'notes', label: 'My Notes', icon: FileText, component: React.lazy(() => import('@/pages/NotesWorkspacePage')) },
   { id: 'goals', label: 'Goals', icon: Target, component: React.lazy(() => import('@/pages/GoalsPage')) },
   { id: 'pomodoro', label: 'Pomodoro', icon: Flame, component: React.lazy(() => import('@/pages/PomodoroPage')) },
-  { id: 'journal', label: 'Journal', icon: BookOpen, component: React.lazy(() => import('@/pages/JournalingPage')) },
   { id: 'bookmarks', label: 'Bookmarks', icon: Bookmark, component: React.lazy(() => import('@/pages/BookmarksPage')) },
 ];
 
