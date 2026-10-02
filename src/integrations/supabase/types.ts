@@ -1216,6 +1216,44 @@ export type Database = {
         }
         Relationships: []
       }
+      curriculum_competences: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          kind: string
+          sort_order: number
+          title: string
+          topic_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          kind?: string
+          sort_order?: number
+          title: string
+          topic_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          sort_order?: number
+          title?: string
+          topic_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "curriculum_competences_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "curriculum_topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       curriculum_resources: {
         Row: {
           created_at: string
@@ -1310,6 +1348,7 @@ export type Database = {
       }
       curriculum_topics: {
         Row: {
+          code: string | null
           created_at: string
           description: string | null
           difficulty: string | null
@@ -1319,10 +1358,12 @@ export type Database = {
           parent_id: string | null
           sort_order: number | null
           subject_id: string
+          term: number | null
           title: string
           updated_at: string
         }
         Insert: {
+          code?: string | null
           created_at?: string
           description?: string | null
           difficulty?: string | null
@@ -1332,10 +1373,12 @@ export type Database = {
           parent_id?: string | null
           sort_order?: number | null
           subject_id: string
+          term?: number | null
           title: string
           updated_at?: string
         }
         Update: {
+          code?: string | null
           created_at?: string
           description?: string | null
           difficulty?: string | null
@@ -1345,6 +1388,7 @@ export type Database = {
           parent_id?: string | null
           sort_order?: number | null
           subject_id?: string
+          term?: number | null
           title?: string
           updated_at?: string
         }
@@ -2463,6 +2507,41 @@ export type Database = {
           },
         ]
       }
+      lesson_plan_versions: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          note: string | null
+          plan_id: string
+          teacher_id: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          id?: string
+          note?: string | null
+          plan_id: string
+          teacher_id: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          note?: string | null
+          plan_id?: string
+          teacher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_plan_versions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "lesson_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lesson_plans: {
         Row: {
           ai_generated: boolean | null
@@ -2634,6 +2713,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      mastery_entries: {
+        Row: {
+          class_id: string
+          competence_code: string
+          competence_title: string | null
+          created_at: string
+          id: string
+          lesson_date: string
+          mastered: boolean
+          student_id: string
+          teacher_id: string
+        }
+        Insert: {
+          class_id: string
+          competence_code: string
+          competence_title?: string | null
+          created_at?: string
+          id?: string
+          lesson_date?: string
+          mastered: boolean
+          student_id: string
+          teacher_id: string
+        }
+        Update: {
+          class_id?: string
+          competence_code?: string
+          competence_title?: string | null
+          created_at?: string
+          id?: string
+          lesson_date?: string
+          mastered?: boolean
+          student_id?: string
+          teacher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mastery_entries_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       medical_case_notes: {
         Row: {
@@ -3901,6 +4024,86 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      school_members: {
+        Row: {
+          created_at: string
+          id: string
+          member_role: string
+          school_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          member_role?: string
+          school_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          member_role?: string
+          school_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_members_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      schools: {
+        Row: {
+          address: string | null
+          created_at: string
+          emis_number: string | null
+          id: string
+          logo_url: string | null
+          motto: string | null
+          name: string
+          owner_id: string
+          primary_color: string
+          school_code: string
+          secondary_color: string
+          staff_code: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          emis_number?: string | null
+          id?: string
+          logo_url?: string | null
+          motto?: string | null
+          name: string
+          owner_id: string
+          primary_color?: string
+          school_code?: string
+          secondary_color?: string
+          staff_code?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          emis_number?: string | null
+          id?: string
+          logo_url?: string | null
+          motto?: string | null
+          name?: string
+          owner_id?: string
+          primary_color?: string
+          school_code?: string
+          secondary_color?: string
+          staff_code?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       screen_time_logs: {
         Row: {
@@ -5386,6 +5589,16 @@ export type Database = {
           question_text: string
         }[]
       }
+      get_class_roster: {
+        Args: { _class_id: string }
+        Returns: {
+          entries_count: number
+          full_name: string
+          guardian_linked: boolean
+          mastered_count: number
+          student_id: string
+        }[]
+      }
       get_guardian_link_contact: {
         Args: { _link_id: string }
         Returns: {
@@ -5446,6 +5659,30 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_my_school: {
+        Args: never
+        Returns: {
+          address: string | null
+          created_at: string
+          emis_number: string | null
+          id: string
+          logo_url: string | null
+          motto: string | null
+          name: string
+          owner_id: string
+          primary_color: string
+          school_code: string
+          secondary_color: string
+          staff_code: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "schools"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_ngo_partnership_contact: {
         Args: { _partnership_id: string }
         Returns: string
@@ -5468,6 +5705,7 @@ export type Database = {
         }[]
       }
       get_platform_stats: { Args: never; Returns: Json }
+      get_school_command: { Args: { _school_id: string }; Returns: Json }
       get_school_overview: { Args: { _school: string }; Returns: Json }
       get_student_home_snapshot: { Args: never; Returns: Json }
       grade_assessment_attempt: {
@@ -5500,7 +5738,12 @@ export type Database = {
         Returns: boolean
       }
       is_platform_admin: { Args: { _user_id: string }; Returns: boolean }
+      is_school_member: {
+        Args: { _school_id: string; _user_id: string }
+        Returns: boolean
+      }
       join_class_with_code: { Args: { _code: string }; Returns: string }
+      join_school_with_code: { Args: { _code: string }; Returns: string }
       move_to_dlq: {
         Args: {
           dlq_name: string
