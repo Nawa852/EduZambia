@@ -65,12 +65,10 @@ export const CurriculumPicker: React.FC<Props> = ({ onChange, depth = 'competenc
         <SelectTrigger className="h-9 w-44 rounded-full"><SelectValue placeholder="Subject" /></SelectTrigger>
         <SelectContent>{gradeSubjects.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
       </Select>
-      {depth !== 'topic' || true ? (
-        <Select value={topicId} onValueChange={(v) => { setTopicId(v); setCompetenceId(''); }} disabled={!topics.length}>
+      <Select value={topicId} onValueChange={(v) => { setTopicId(v); setCompetenceId(''); }} disabled={!topics.length}>
           <SelectTrigger className="h-9 w-52 rounded-full"><SelectValue placeholder={subjectId && !topics.length ? 'No topics yet' : 'Topic'} /></SelectTrigger>
           <SelectContent>{topics.map((t) => <SelectItem key={t.id} value={t.id}>{t.code ? `${t.code} ` : ''}{t.title}</SelectItem>)}</SelectContent>
         </Select>
-      ) : null}
       {depth === 'competence' && (
         <Select value={competenceId} onValueChange={setCompetenceId} disabled={!topicComps.length}>
           <SelectTrigger className="h-9 w-64 rounded-full"><SelectValue placeholder="Specific competence" /></SelectTrigger>

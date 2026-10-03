@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Sparkles, Loader2, Download, Wand2, Printer, FileText } from 'lucide-react';
+import { Sparkles, Loader2, Download, Wand2, Printer, FileText, Save } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -310,18 +310,55 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
 
   const onPrint = () => window.print();
 
+  // Version history: each save stores a snapshot under one plan record.
+  const [planId, setPlanId] = useState<string | null>(null);
+  const [versions, setVersions] = useState<{ id: string; content: LessonPlan; created_at: string }[]>([]);
+  const [savingVersion, setSavingVersion] = useState(false);
+  const saveVersion = async () => {
+    if (!user) { toast.error('Sign in to save'); return; }
+    setSavingVersion(true);
+    try {
+      const db = supabase as any;
+      let id = planId;
+      const row = { teacher_id: user.id, title: plan.topic || 'Lesson plan', topic: plan.topic, subject: plan.subject, grade: plan.className, content: plan as any };
+      if (!id) {
+        const { data, error } = await db.from('lesson_plans').insert(row).select('id').single();
+        if (error) throw error; id = data.id; setPlanId(id);
+      } else {
+        const { error } = await db.from('lesson_plans').update(row).eq('id', id);
+        if (error) throw error;
+      }
+      const { data: v, error: vErr } = await db.from('lesson_plan_versions').insert({ plan_id: id, teacher_id: user.id, content: plan }).select('id, content, created_at').single();
+      if (vErr) throw vErr;
+      setVersions((p) => [v, ...p]);
+      toast.success('Version saved');
+    } catch (e: any) { toast.error(e.message || 'Could not save'); }
+    setSavingVersion(false);
+  };
+
   return (
     <div className="space-y-4">
       {/* Toolbar (hidden on print) */}
       <div className="print:hidden flex flex-wrap items-center gap-2 p-3 bg-card rounded-xl border">
-        <Input placeholder="Topic for AI (e.g. Quadratic Equations)" value={aiTopic} onChange={(e) => setAiTopic(e.target.value)} className="w-64" />
-        <Input placeholder="Subject" value={aiSubject} onChange={(e) => setAiSubject(e.target.value)} className="w-40" />
-        <Input placeholder="Grade" value={aiGrade} onChange={(e) => setAiGrade(e.target.value)} className="w-32" />
+        <CurriculumPicker onChange={(s) => {
+          if (s.subject) setAiSubject(s.subject.name);
+          if (s.grade) setAiGrade(gradeLabel(s.grade));
+          setAiTopic(s.competence ? `${s.topic?.title} — ${s.competence.code} ${s.competence.title}` : s.topic?.title ?? '');
+        }} />
         <Button onClick={aiFill} disabled={loading} className="gap-2">
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
           AI Fill
         </Button>
         <div className="ml-auto flex gap-2">
+          <Button variant="outline" onClick={saveVersion} disabled={savingVersion} className="gap-2"><Save className="h-4 w-4" />Save version</Button>
+          {versions.length > 0 && (
+            <select aria-label="Restore a saved version" className="h-9 rounded-md border bg-background px-2 text-sm" value="" onChange={(e) => {
+              const v = versions.find((x) => x.id === e.target.value); if (v) { setPlan({ ...empty(), ...v.content }); toast.success('Version restored'); }
+            }}>
+              <option value="">History ({versions.length})</option>
+              {versions.map((v) => <option key={v.id} value={v.id}>{new Date(v.created_at).toLocaleString()}</option>)}
+            </select>
+          )}
           <Button variant="outline" onClick={onPrint} className="gap-2"><Printer className="h-4 w-4" />Print / PDF</Button>
           <Button onClick={exportDocx} className="gap-2"><Download className="h-4 w-4" />Export .docx</Button>
         </div>
@@ -330,6 +367,7 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
       {/* Document preview — Nalionwa format */}
       <Card className="border-2 border-foreground/20">
         <CardContent className="p-6 font-serif text-sm bg-background print:p-0">
+          <SchoolBrandHeader />
           {/* Header table */}
           <table className="w-full border-collapse border border-foreground text-sm">
             <tbody>

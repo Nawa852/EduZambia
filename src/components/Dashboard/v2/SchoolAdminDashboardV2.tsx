@@ -1,3 +1,4 @@
+import { SchoolCommandPanel } from '@/components/School/SchoolCommandPanel';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
@@ -108,6 +109,7 @@ export function SchoolAdminDashboardV2({ userName }: Props) {
         <p className="text-sm text-muted-foreground mt-1">{school ? `Live figures for ${school}.` : 'Set your school in Settings to scope these figures.'}</p>
       </div>
 
+      <SchoolCommandPanel />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {loading
           ? [0, 1, 2, 3].map(i => <Skeleton key={i} className="h-[104px] rounded-2xl" />)

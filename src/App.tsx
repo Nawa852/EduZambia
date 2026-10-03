@@ -55,6 +55,8 @@ const ProgressHub = React.lazy(() => import('@/pages/hubs/ProgressHub'));
 const ProfileHub = React.lazy(() => import('@/pages/hubs/ProfileHub'));
 const ECZHub = React.lazy(() => import('@/pages/hubs/ECZHub'));
 const TeachHub = React.lazy(() => import('@/pages/hubs/TeachHub'));
+const MasteryEntryPage = React.lazy(() => import('@/pages/MasteryEntryPage'));
+const SchoolSettingsPage = React.lazy(() => import('@/pages/SchoolSettingsPage'));
 const TeacherDashboardV2 = React.lazy(() => import('@/pages/teacher/TeacherDashboardV2'));
 const TeacherClassesPage = React.lazy(() => import('@/pages/teacher/TeacherClassesPage'));
 const TeacherStudentsPage = React.lazy(() => import('@/pages/teacher/TeacherStudentsPage'));
@@ -181,6 +183,8 @@ function App() {
               <Route path="/profile" element={<PG><ProfileHub /></PG>} />
               <Route path="/ecz" element={<PG><RoleGuard allow={[...ECZ_ROLES]}><ECZHub /></RoleGuard></PG>} />
               <Route path="/teach" element={<PG><RoleGuard allow={['teacher','institution']}><TeachHub /></RoleGuard></PG>} />
+              <Route path="/teach/mastery" element={<PG><RoleGuard allow={['teacher']}><MasteryEntryPage /></RoleGuard></PG>} />
+              <Route path="/school/settings" element={<PG><RoleGuard allow={['institution','teacher']}><SchoolSettingsPage /></RoleGuard></PG>} />
               {/* New polished Teacher Suite v2 */}
               <Route path="/teacher" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherDashboardV2 /></RoleGuard></PG>} />
               <Route path="/teacher/classes" element={<PG><RoleGuard allow={['teacher','institution']}><TeacherClassesPage /></RoleGuard></PG>} />

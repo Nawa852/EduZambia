@@ -1,3 +1,4 @@
+import { ParentTonightPanel } from '@/components/Dashboard/ParentTonightPanel';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -47,6 +48,7 @@ export function GuardianDashboardV2({ userName }: Props) {
 
   return (
     <div className="space-y-5 pb-20 lg:pb-6">
+      <ParentTonightPanel />
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
           <Badge className="mb-2 uppercase tracking-wider text-[10px] bg-pink-500/10 text-pink-700 border-0">Guardian</Badge>
