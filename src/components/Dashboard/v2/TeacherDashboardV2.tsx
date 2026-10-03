@@ -1,3 +1,4 @@
+import { TeacherTodayPanel } from '@/components/Dashboard/TeacherTodayPanel';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
@@ -76,6 +77,7 @@ export function TeacherDashboardV2({ userName }: Props) {
 
   return (
     <div className="space-y-5 pb-6">
+      <TeacherTodayPanel />
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
           <Badge variant="secondary" className="mb-2 uppercase tracking-wider text-[10px]">Teacher</Badge>
