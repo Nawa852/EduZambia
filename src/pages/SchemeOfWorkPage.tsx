@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Loader2, Download, Wand2, Printer } from 'lucide-react';
+import { Loader2, Download, Wand2, Printer, ListOrdered } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,9 @@ import {
   AlignmentType, BorderStyle, WidthType, TableLayoutType,
 } from 'docx';
 import { saveAs } from 'file-saver';
+import { CurriculumPicker, type CurriculumSelection } from '@/components/Curriculum/CurriculumPicker';
+import { gradeLabel } from '@/lib/curriculum';
+import { SchoolBrandHeader } from '@/components/School/SchoolBrandHeader';
 
 interface Week {
   wk: number;
@@ -113,6 +116,41 @@ const SchemeOfWorkPage: React.FC = () => {
   const setWeek = (i: number, field: keyof Week, v: string | number) =>
     setS((p) => ({ ...p, weeks: p.weeks.map((w, idx) => (idx === i ? { ...w, [field]: v } : w)) }));
 
+  const [syl, setSyl] = useState<CurriculumSelection | null>(null);
+  const [startTopic, setStartTopic] = useState(0);
+
+  /** Fill Week 1 → continue in syllabus order. Week 7 is Revision, week 13 is a Test. */
+  const fillFromSyllabus = () => {
+    if (!syl?.subject || !syl.topics.length) { toast.error('Pick grade and subject first'); return; }
+    const first = syl.topic ? Math.max(0, syl.topics.findIndex((t) => t.id === syl.topic!.id)) : startTopic;
+    const queue = syl.topics.slice(first).flatMap((t) => {
+      const comps = syl.competences.filter((c) => c.topic_id === t.id);
+      return comps.length ? comps.map((c) => ({ t, c })) : [{ t, c: null as null | typeof comps[number] }];
+    });
+    let qi = 0;
+    setS((p) => ({
+      ...p,
+      subject: syl.subject!.name,
+      grade: gradeLabel(syl.grade).replace(/^Grade /, ''),
+      weeks: p.weeks.map((w, i) => {
+        const wk = i + 1;
+        if (wk === 7) return { ...w, wk, topic: 'REVISION', subTopic: 'Revision of weeks 1–6', specificOutcomes: 'Consolidate competences covered so far', content: '', skills: '', values: '', references: '' };
+        if (wk === 13) return { ...w, wk, topic: 'END OF TERM TEST', subTopic: 'Assessment', specificOutcomes: 'Assess competences covered this term', content: '', skills: '', values: '', references: '' };
+        const item = queue[qi++];
+        if (!item) return { ...w, wk };
+        return {
+          ...w, wk,
+          topic: `${item.t.code ?? ''} ${item.t.title}`.trim(),
+          subTopic: item.c ? `${item.c.code}` : '',
+          specificOutcomes: item.c ? item.c.title : (item.t.objectives ?? []).join('; '),
+          references: 'ZECF 2023; CDC syllabus',
+        };
+      }),
+    }));
+    setStartTopic(0);
+    toast.success('Term filled in syllabus order — edit any week');
+  };
+
   const aiFill = async () => {
     if (!s.subject || !s.grade) { toast.error('Enter subject and grade first'); return; }
     setLoading(true);
@@ -170,6 +208,8 @@ const SchemeOfWorkPage: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="print:hidden flex flex-wrap items-center gap-2 p-3 bg-card rounded-xl border">
+        <CurriculumPicker depth="topic" onChange={setSyl} />
+        <Button variant="outline" onClick={fillFromSyllabus} className="gap-2"><ListOrdered className="h-4 w-4" />Fill from syllabus</Button>
         <Button onClick={aiFill} disabled={loading} className="gap-2">
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
           AI Fill 13 Weeks
@@ -182,6 +222,7 @@ const SchemeOfWorkPage: React.FC = () => {
 
       <Card className="border-2 border-foreground/20">
         <CardContent className="p-6 font-serif text-sm bg-background print:p-0">
+          <SchoolBrandHeader />
           {/* Header */}
           <div className="text-center font-bold text-base uppercase tracking-wide">MINISTRY OF EDUCATION</div>
           <div className="text-center font-bold text-base uppercase tracking-wide">NALIONWA SECONDARY SCHOOL</div>

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Sparkles, Loader2, Download, Wand2, Printer, FileText } from 'lucide-react';
+import { Sparkles, Loader2, Download, Wand2, Printer, FileText, Save } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
