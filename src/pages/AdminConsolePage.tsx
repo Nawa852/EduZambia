@@ -163,7 +163,7 @@ const AdminConsolePage: React.FC = () => {
           return (
             <Card key={s.label} className="rounded-2xl border-border/50 p-4">
               <Icon className="h-4 w-4 text-muted-foreground" />
-              <div data-testid={`admin-stat-${s.label.toLowerCase().replaceAll(' ', '-')}`} className="mt-2 text-2xl font-bold">{s.value.toLocaleString()}</div>
+              <div data-testid={`admin-stat-${s.label.toLowerCase().replace(/ /g, '-')}`} className="mt-2 text-2xl font-bold">{s.value.toLocaleString()}</div>
               <div className="text-xs text-muted-foreground">{s.label}</div>
             </Card>
           );
