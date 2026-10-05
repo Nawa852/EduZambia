@@ -69,6 +69,7 @@ const SharedLibraryPage = React.lazy(() => import('@/pages/SharedLibraryPage'));
 const FamilyHub = React.lazy(() => import('@/pages/hubs/FamilyHub'));
 const MinistryHub = React.lazy(() => import('@/pages/hubs/MinistryHub'));
 const AdminHub = React.lazy(() => import('@/pages/hubs/AdminHub'));
+const AdminConsolePage = React.lazy(() => import('@/pages/AdminConsolePage'));
 const SetupSchedulePage = React.lazy(() => import('@/pages/SetupSchedulePage'));
 const StudyGroupsHubPage = React.lazy(() => import('@/pages/StudyGroupsHubPage'));
 const GroupChatPage = React.lazy(() => import('@/pages/GroupChatPage'));
@@ -239,6 +240,7 @@ function App() {
               <Route path="/family" element={<PG><RoleGuard allow={['guardian']}><FamilyHub /></RoleGuard></PG>} />
               <Route path="/ministry" element={<PG><RoleGuard allow={['ministry']}><MinistryHub /></RoleGuard></PG>} />
               <Route path="/admin" element={<PG><RoleGuard allow={['institution','ministry']}><AdminHub /></RoleGuard></PG>} />
+              <Route path="/admin-console" element={<ProtectedRoute><MainLayout><AdminConsolePage /></MainLayout></ProtectedRoute>} />
               <Route path="/setup-schedule" element={<PG><SetupSchedulePage /></PG>} />
               <Route path="/groups" element={<PG><StudyGroupsHubPage /></PG>} />
              <Route path="/group/:groupId" element={<PG><GroupWorkspacePage /></PG>} />
