@@ -11,16 +11,21 @@ import {
   ShieldCheck, Users, BookOpen, Timer, AlertTriangle, Upload, RefreshCw, Loader2, FileText,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuth } from '@/components/Auth/AuthProvider';
 
 interface Row { id: string; full_name: string | null; role: string | null; school: string | null; created_at: string }
 interface Alert { id: string; title?: string | null; message?: string | null; severity?: string | null; created_at: string }
 
 const AdminConsolePage: React.FC = () => {
+  const { user } = useAuth();
   const [checking, setChecking] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [people, setPeople] = useState<Row[]>([]);
   const [roleCounts, setRoleCounts] = useState<Record<string, number>>({});
+  const [peopleCount, setPeopleCount] = useState(0);
+  const [materialCount, setMaterialCount] = useState(0);
+  const [accessError, setAccessError] = useState(false);
   const [quizzes, setQuizzes] = useState(0);
   const [focusMinutes, setFocusMinutes] = useState(0);
   const [lessons, setLessons] = useState(0);
@@ -33,14 +38,25 @@ const AdminConsolePage: React.FC = () => {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [{ data: profiles }, { count: quizCount }, { data: focus }, { count: lessonCount }, { data: alertRows }] =
+      const results =
         await Promise.all([
-          supabase.from('profiles').select('id, full_name, role, school, created_at').order('created_at', { ascending: false }).limit(200),
+          supabase.from('profiles').select('id, full_name, role, school, created_at', { count: 'exact' }).order('created_at', { ascending: false }).limit(200),
           supabase.from('quiz_attempts').select('id', { count: 'exact', head: true }),
           supabase.from('focus_sessions').select('focus_minutes').limit(2000),
           supabase.from('lesson_completions').select('id', { count: 'exact', head: true }),
           supabase.from('monitoring_alerts').select('*').order('created_at', { ascending: false }).limit(10),
+          supabase.from('resource_repository').select('id', { count: 'exact', head: true }).eq('is_public', true),
         ]);
+      const failed = results.find(result => result.error);
+      if (failed?.error) throw failed.error;
+      const [profileResult, quizResult, focusResult, lessonResult, alertResult, materialResult] = results;
+      const profiles = profileResult.data;
+      const quizCount = quizResult.count;
+      const focus = focusResult.data;
+      const lessonCount = lessonResult.count;
+      const alertRows = alertResult.data;
+      setPeopleCount(profileResult.count ?? 0);
+      setMaterialCount(materialResult.count ?? 0);
 
       const rows = (profiles ?? []) as unknown as Row[];
       setPeople(rows);
@@ -62,16 +78,25 @@ const AdminConsolePage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    let active = true;
+    setChecking(true);
+    setAccessError(false);
     (async () => {
-      const { data: sess } = await supabase.auth.getSession();
-      const uid = sess?.session?.user?.id;
-      if (!uid) { setChecking(false); return; }
-      const { data } = await supabase.rpc('is_platform_admin', { _user_id: uid });
-      setIsAdmin(Boolean(data));
-      setChecking(false);
-      if (data) void load();
+      try {
+        if (!user) return;
+        const { data, error } = await supabase.rpc('is_platform_admin', { _user_id: user.id });
+        if (error) throw error;
+        if (!active) return;
+        setIsAdmin(Boolean(data));
+        if (data) void load();
+      } catch {
+        if (active) setAccessError(true);
+      } finally {
+        if (active) setChecking(false);
+      }
     })();
-  }, [load]);
+    return () => { active = false; };
+  }, [load, user]);
 
   const onUpload = async (files: FileList | null) => {
     if (!files?.length) return;
@@ -81,7 +106,7 @@ const AdminConsolePage: React.FC = () => {
         await uploadToRepository({ file, subject: subject || null, isPublic: true, source: 'admin' });
       }
       toast.success(`${files.length} material${files.length > 1 ? 's' : ''} added for everyone`);
-      setMaterials(await listRepository());
+      await load();
     } catch (e) {
       toast.error((e as Error).message || 'Upload failed');
     } finally {
@@ -91,6 +116,7 @@ const AdminConsolePage: React.FC = () => {
   };
 
   if (checking) return <div className="flex min-h-[50vh] items-center justify-center"><LogoLoader text="Checking access..." /></div>;
+  if (accessError) return <EmptyState icon={AlertTriangle} title="Could not check administrator access" description="Please reload and try again." />;
 
   if (!isAdmin) {
     return (
@@ -105,7 +131,8 @@ const AdminConsolePage: React.FC = () => {
   }
 
   const stats = [
-    { label: 'People', value: people.length, icon: Users },
+    { label: 'People', value: peopleCount, icon: Users },
+    { label: 'Shared materials', value: materialCount, icon: FileText },
     { label: 'Quizzes taken', value: quizzes, icon: BookOpen },
     { label: 'Lessons done', value: lessons, icon: FileText },
     { label: 'Focus minutes', value: focusMinutes, icon: Timer },
@@ -130,13 +157,13 @@ const AdminConsolePage: React.FC = () => {
         </div>
       </Card>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         {stats.map((s) => {
           const Icon = s.icon;
           return (
             <Card key={s.label} className="rounded-2xl border-border/50 p-4">
               <Icon className="h-4 w-4 text-muted-foreground" />
-              <div className="mt-2 text-2xl font-bold">{s.value.toLocaleString()}</div>
+              <div data-testid={`admin-stat-${s.label.toLowerCase().replaceAll(' ', '-')}`} className="mt-2 text-2xl font-bold">{s.value.toLocaleString()}</div>
               <div className="text-xs text-muted-foreground">{s.label}</div>
             </Card>
           );

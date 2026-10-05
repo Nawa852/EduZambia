@@ -43,16 +43,23 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   // Sync theme from profile on auth
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    let active = true;
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
-        const { data } = await supabase.from('profiles').select('theme_preference').eq('id', session.user.id).single();
-        if (data?.theme_preference && (data.theme_preference === 'light' || data.theme_preference === 'dark')) {
-          setThemeState(data.theme_preference as ThemeType);
-          localStorage.setItem('edu-zambia-theme', data.theme_preference);
-        }
+        const userId = session.user.id;
+        // Auth callbacks run under the client lock; defer queries until it releases.
+        setTimeout(() => {
+          if (!active) return;
+          void supabase.from('profiles').select('theme_preference').eq('id', userId).single().then(({ data }) => {
+            if (active && (data?.theme_preference === 'light' || data?.theme_preference === 'dark')) {
+              setThemeState(data.theme_preference);
+              localStorage.setItem('edu-zambia-theme', data.theme_preference);
+            }
+          });
+        }, 0);
       }
     });
-    return () => subscription.unsubscribe();
+    return () => { active = false; subscription.unsubscribe(); };
   }, []);
 
   return (
