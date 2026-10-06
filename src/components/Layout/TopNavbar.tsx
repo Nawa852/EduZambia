@@ -35,7 +35,7 @@ export const TopNavbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-40 w-full bg-nav/80 supports-[backdrop-filter]:bg-nav/65 backdrop-blur-2xl border-b border-border/50">
+    <nav aria-label="App toolbar" className="sticky top-0 z-40 w-full bg-nav/95 supports-[backdrop-filter]:bg-nav/80 backdrop-blur-2xl border-b border-border/50">
       <div className="flex h-14 items-center px-3 sm:px-4 gap-2">
 
         {/* Desktop sidebar trigger */}
@@ -50,19 +50,21 @@ export const TopNavbar = () => {
 
         {/* Desktop: Search center */}
         <div className="hidden lg:flex flex-1 justify-center">
-          <button
+          <Button
+            variant="ghost"
             onClick={openCommandPalette}
-            className="flex items-center gap-3 h-9 w-full max-w-md px-4 rounded-xl bg-secondary/60 border border-border/50 text-muted-foreground hover:bg-secondary transition-colors text-sm cursor-pointer group"
+            className="flex items-center gap-3 h-10 w-full max-w-md px-4 rounded-full bg-secondary/70 border border-border/40 text-muted-foreground hover:bg-secondary transition-colors text-sm cursor-pointer group"
           >
             <Search className="w-4 h-4 shrink-0 text-muted-foreground/60 group-hover:text-foreground transition-colors" />
-            <span className="flex-1 text-left text-muted-foreground/50">Search anything...</span>
+            <span className="flex-1 text-left text-muted-foreground">Search Synapse</span>
             <kbd className="ml-auto px-1.5 py-0.5 rounded-md bg-muted/50 text-[9px] font-mono border border-border/15 text-muted-foreground/40">⌘K</kbd>
-          </button>
+          </Button>
         </div>
 
         {/* Right actions */}
         <div className="flex items-center gap-0.5">
           <Button variant="ghost" size="icon" className="lg:hidden h-8 w-8 text-muted-foreground hover:text-foreground rounded-xl"
+            aria-label="Search Synapse" title="Search Synapse"
             onClick={openCommandPalette}>
             <Search className="h-[18px] w-[18px]" />
           </Button>
@@ -71,6 +73,7 @@ export const TopNavbar = () => {
 
           {showMessenger && (
             <Button variant="ghost" size="icon" className="hidden lg:flex h-8 w-8 text-muted-foreground hover:text-foreground rounded-xl"
+              aria-label="Messages" title="Messages"
               onClick={() => navigate('/connect?tab=messenger')}>
               <MessageCircle className="h-[18px] w-[18px]" />
             </Button>
@@ -81,7 +84,7 @@ export const TopNavbar = () => {
           {/* Profile */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 rounded-full p-0 ml-0.5 hover:ring-2 hover:ring-primary/15 transition-all">
+              <Button aria-label="Account menu" title="Account menu" variant="ghost" className="h-10 w-10 rounded-full p-0 ml-0.5 hover:ring-2 hover:ring-primary/15 transition-all">
                 <Avatar className="h-7 w-7">
                   <AvatarImage src={profile?.avatar_url} />
                   <AvatarFallback className="bg-primary/10 text-primary text-[11px] font-bold">

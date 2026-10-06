@@ -9,11 +9,12 @@ export function ThemeSwitcher() {
     <Button
       variant="ghost"
       size="icon"
+      title={theme === 'dark' ? 'Switch to light appearance' : 'Switch to dark appearance'}
+      aria-label={theme === 'dark' ? 'Switch to light appearance' : 'Switch to dark appearance'}
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="relative"
+      className="relative h-10 w-10 rounded-full text-muted-foreground hover:text-foreground"
     >
       {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-      <span className="sr-only">Toggle theme</span>
     </Button>
   );
 }

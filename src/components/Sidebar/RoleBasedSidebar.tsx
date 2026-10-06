@@ -19,6 +19,7 @@ import { getNavigationByRole, matchesNavItem } from "./sidebarConfig";
 import { useProfile } from "@/hooks/useProfile";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import eduIcon from "@/assets/brandLogo";
+import { Button } from '@/components/ui/button';
 
 export function RoleBasedSidebar() {
   const { state, toggleSidebar } = useSidebar();
@@ -44,9 +45,9 @@ export function RoleBasedSidebar() {
               {!collapsed && (
                 <div className="flex-1 flex items-center justify-between min-w-0">
                   <span className="font-bold text-sm text-foreground">Synapse</span>
-                  <button onClick={toggleSidebar} className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
+                  <Button variant="ghost" size="icon" aria-label="Collapse sidebar" title="Collapse sidebar" onClick={toggleSidebar} className="h-8 w-8 rounded-full text-muted-foreground hover:text-foreground">
                     <ChevronLeft className="w-4 h-4" />
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
@@ -57,7 +58,7 @@ export function RoleBasedSidebar() {
             {navigation.map((group) => (
               <SidebarGroup key={group.label} className="px-2 py-0 mb-1">
                 {!collapsed && (
-                  <SidebarGroupLabel className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-[0.08em]">
+                  <SidebarGroupLabel className="px-3 py-1.5 text-[11px] font-medium text-muted-foreground">
                     {group.label}
                   </SidebarGroupLabel>
                 )}
@@ -76,7 +77,7 @@ export function RoleBasedSidebar() {
                             collapsed && "justify-center px-2"
                           )}
                         >
-                          <item.icon className={cn("h-[18px] w-[18px] flex-shrink-0", active ? "text-primary" : "text-muted-foreground")} strokeWidth={active ? 2.5 : 1.8} />
+                          <item.icon aria-hidden="true" className={cn("h-[18px] w-[18px] flex-shrink-0", active ? "text-primary" : "text-muted-foreground")} strokeWidth={active ? 2 : 1.7} />
                           {!collapsed && (
                             <>
                               <span className="flex-1 truncate">{item.title}</span>
