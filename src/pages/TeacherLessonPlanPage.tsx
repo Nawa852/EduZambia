@@ -11,9 +11,6 @@ import {
   AlignmentType, BorderStyle, WidthType, HeightRule, VerticalAlign, TableLayoutType,
 } from 'docx';
 import { saveAs } from 'file-saver';
-import { CurriculumPicker } from '@/components/Curriculum/CurriculumPicker';
-import { gradeLabel } from '@/lib/curriculum';
-import { SchoolBrandHeader } from '@/components/School/SchoolBrandHeader';
 
 interface Activity {
   phase: string;

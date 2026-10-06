@@ -18,6 +18,7 @@ import UpcomingClassesCard from '@/components/Dashboard/UpcomingClassesCard';
 import { isStudentFeature } from '@/config/studentFeatures';
 import LearningCircle from '@/components/Study/LearningCircle';
 import AIShortcutsCard from '@/components/Dashboard/AIShortcutsCard';
+import { ProductTour } from '@/components/Onboarding/ProductTour';
 
 /** Weekly focus target used for the progress ring on the focus card. */
 const WEEKLY_FOCUS_GOAL = 300;
@@ -128,12 +129,13 @@ export function StudentDashboardV2({ userName }: Props) {
 
   return (
     <div className="space-y-5 lg:space-y-6 pb-4">
+      <ProductTour role="student" />
 
       {/* Greeting + streak */}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-[26px] lg:text-[32px] font-semibold leading-tight">
-            {greeting()}, {firstName}
+          <h1 className="text-[26px] lg:text-[32px] font-extrabold tracking-[-0.03em] leading-tight">
+            {greeting()}, {firstName}! <span className="inline-block">👋</span>
           </h1>
           <p className="text-[14px] text-muted-foreground mt-1">
             {streak > 0 ? `${streak} day streak — keep it alive.` : "Let's make today count."}
