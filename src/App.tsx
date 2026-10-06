@@ -38,14 +38,12 @@ const About = React.lazy(() => import('@/pages/About'));
 const Contact = React.lazy(() => import('@/pages/Contact'));
 const Privacy = React.lazy(() => import('@/pages/Privacy'));
 const Terms = React.lazy(() => import('@/pages/Terms'));
-const SetupPage = React.lazy(() => import('@/pages/SetupPage'));
 const OAuthConsent = React.lazy(() => import('@/pages/OAuthConsent'));
 
 // Lazy: Hub pages
 const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
 const LearnHub = React.lazy(() => import('@/pages/hubs/LearnHub'));
 const CurriculumPage = React.lazy(() => import('@/pages/CurriculumPage'));
-const SetupExtrasPage = React.lazy(() => import('@/pages/SetupExtrasPage'));
 const AIHub = React.lazy(() => import('@/pages/hubs/AIHub'));
 const PrepareHub = React.lazy(() => import('@/pages/hubs/PrepareHub'));
 const SynapseAIHub = React.lazy(() => import('@/pages/hubs/SynapseAIHub'));
@@ -70,7 +68,6 @@ const FamilyHub = React.lazy(() => import('@/pages/hubs/FamilyHub'));
 const MinistryHub = React.lazy(() => import('@/pages/hubs/MinistryHub'));
 const AdminHub = React.lazy(() => import('@/pages/hubs/AdminHub'));
 const AdminConsolePage = React.lazy(() => import('@/pages/AdminConsolePage'));
-const SetupSchedulePage = React.lazy(() => import('@/pages/SetupSchedulePage'));
 const StudyGroupsHubPage = React.lazy(() => import('@/pages/StudyGroupsHubPage'));
 const GroupChatPage = React.lazy(() => import('@/pages/GroupChatPage'));
 const GroupFilesPage = React.lazy(() => import('@/pages/GroupFilesPage'));
@@ -168,8 +165,8 @@ function App() {
               <Route path="/try" element={<DemoRolePicker />} />
               <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
               <Route path="/choose-role" element={<ProtectedRoute><ChooseRolePage /></ProtectedRoute>} />
-              <Route path="/setup" element={<ProtectedRoute><SetupPage /></ProtectedRoute>} />
-              <Route path="/setup-extras" element={<ProtectedRoute><SetupExtrasPage /></ProtectedRoute>} />
+              <Route path="/setup" element={<Navigate to="/profile?tab=settings" replace />} />
+              <Route path="/setup-extras" element={<Navigate to="/dashboard" replace />} />
 
               {/* ─── Hub Pages ─────────────────────────────────── */}
               <Route path="/dashboard" element={<PG><Dashboard /></PG>} />
@@ -241,7 +238,7 @@ function App() {
               <Route path="/ministry" element={<PG><RoleGuard allow={['ministry']}><MinistryHub /></RoleGuard></PG>} />
               <Route path="/admin" element={<PG><RoleGuard allow={['institution','ministry']}><AdminHub /></RoleGuard></PG>} />
               <Route path="/admin-console" element={<ProtectedRoute><MainLayout><AdminConsolePage /></MainLayout></ProtectedRoute>} />
-              <Route path="/setup-schedule" element={<PG><SetupSchedulePage /></PG>} />
+              <Route path="/setup-schedule" element={<Navigate to="/practice?tab=planner" replace />} />
               <Route path="/groups" element={<PG><StudyGroupsHubPage /></PG>} />
              <Route path="/group/:groupId" element={<PG><GroupWorkspacePage /></PG>} />
              <Route path="/study-room/:groupId" element={<PG><StudyGroupRoomPage /></PG>} />
