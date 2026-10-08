@@ -1,0 +1,4 @@
+- [ ] Complete frontend redesign ritual, then remove unsuitable onboarding and modernize themes, icons, and bottom navigation.
+- [ ] Wire /admin-console and verify admin sign-in, material upload, and live counts.
+- [ ] Research PrepDesk lesson-planning workflow and official Zambian curriculum sources.
+- [ ] Build curriculum-grounded teacher lesson plans and schemes from legally reusable source data.
