@@ -2,3 +2,4 @@
 - [ ] Wire /admin-console and verify admin sign-in, material upload, and live counts.
 - [ ] Research PrepDesk lesson-planning workflow and official Zambian curriculum sources.
 - [ ] Build curriculum-grounded teacher lesson plans and schemes from legally reusable source data.
+- [ ] Review the ten newly uploaded architecture/world documents and fold their requirements into implementation; use parallel research tasks where useful.
