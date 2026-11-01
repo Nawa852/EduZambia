@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { getPrimaryNavigationByRole, matchesNavItem } from '@/components/Sidebar/sidebarConfig';
 import { CurriculumSwitcher, getCurrentCurriculum } from '@/components/Curriculum/CurriculumSwitcher';
+import { Button } from '@/components/ui/button';
 
 export const MobileBottomNav = () => {
   const navigate = useNavigate();
@@ -35,21 +36,21 @@ export const MobileBottomNav = () => {
 
   return (
     <>
-      <nav
+      <nav aria-label="Main navigation"
         className={cn(
           'fixed bottom-0 left-0 right-0 z-40 lg:hidden pointer-events-none',
           'transition-transform duration-300 ease-out will-change-transform',
           hidden ? 'translate-y-[calc(100%+env(safe-area-inset-bottom,0px))]' : 'translate-y-0',
         )}
       >
-        <div className="absolute inset-0 bg-nav/80 supports-[backdrop-filter]:bg-nav/70 backdrop-blur-2xl border-t border-border/50 pointer-events-none" />
+        <div className="absolute inset-0 bg-nav/95 backdrop-blur-xl border-t border-border/60 pointer-events-none" />
 
         <div className="relative flex items-stretch justify-around h-[58px] max-w-lg mx-auto px-1.5 pb-[env(safe-area-inset-bottom,2px)] pointer-events-auto">
           {items.map((item) => {
             const isActive = matchesNavItem(location.pathname, item);
             const isCurr = isCurriculumTab(item.url);
             return (
-              <button
+              <Button variant="ghost"
                 key={item.url}
                 aria-current={isActive ? 'page' : undefined}
                 aria-label={item.title}
@@ -66,21 +67,21 @@ export const MobileBottomNav = () => {
                 onTouchStart={() => handlePressStart(item.url)}
                 onTouchEnd={handlePressEnd}
                 className={cn(
-                  'relative flex flex-col items-center justify-center gap-[2px] flex-1 rounded-[14px] my-1 transition-colors duration-200 active:scale-[0.94] touch-manipulation',
-                  isActive ? 'text-primary' : 'text-muted-foreground',
+                  'relative h-[50px] min-w-0 flex flex-col items-center justify-center gap-1 flex-1 rounded-lg my-1 px-1 transition-colors duration-200 touch-manipulation',
+                  isActive ? 'text-primary bg-primary/10' : 'text-muted-foreground',
                 )}
               >
                 {/* Facebook-style top indicator on the active tab */}
                 <span
                   className={cn(
-                    'absolute top-0 h-[2.5px] rounded-full bg-primary transition-all duration-300',
+                    'absolute bottom-0 h-[2px] rounded-full bg-primary transition-all duration-300',
                     isActive ? 'w-7 opacity-100' : 'w-0 opacity-0',
                   )}
                 />
                 <span
                   className={cn(
                     'flex items-center justify-center rounded-[12px] transition-all duration-200',
-                    isActive ? 'bg-primary/[0.10] px-3.5 py-1' : 'px-3.5 py-1',
+                    'px-2 py-0.5',
                   )}
                 >
                   <item.icon
@@ -88,20 +89,18 @@ export const MobileBottomNav = () => {
                       'transition-all duration-200',
                       isActive ? 'w-[22px] h-[22px] scale-105' : 'w-[21px] h-[21px]',
                     )}
-                    strokeWidth={isActive ? 2.4 : 1.75}
-                    fill={isActive ? 'currentColor' : 'none'}
-                    fillOpacity={isActive ? 0.14 : 0}
+                    strokeWidth={isActive ? 2 : 1.75}
                   />
                 </span>
                 <span
                   className={cn(
-                    'text-[10px] leading-none tracking-[-0.01em] transition-colors duration-150',
+                    'text-[11px] leading-none transition-colors duration-150',
                     isActive ? 'font-semibold' : 'font-medium',
                   )}
                 >
                   {isCurr ? current.code : (item.shortTitle ?? item.title)}
                 </span>
-              </button>
+              </Button>
             );
           })}
         </div>

@@ -38,14 +38,13 @@ const About = React.lazy(() => import('@/pages/About'));
 const Contact = React.lazy(() => import('@/pages/Contact'));
 const Privacy = React.lazy(() => import('@/pages/Privacy'));
 const Terms = React.lazy(() => import('@/pages/Terms'));
-const SetupPage = React.lazy(() => import('@/pages/SetupPage'));
+const AdminConsolePage = React.lazy(() => import('@/pages/AdminConsolePage'));
 const OAuthConsent = React.lazy(() => import('@/pages/OAuthConsent'));
 
 // Lazy: Hub pages
 const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
 const LearnHub = React.lazy(() => import('@/pages/hubs/LearnHub'));
 const CurriculumPage = React.lazy(() => import('@/pages/CurriculumPage'));
-const SetupExtrasPage = React.lazy(() => import('@/pages/SetupExtrasPage'));
 const AIHub = React.lazy(() => import('@/pages/hubs/AIHub'));
 const PrepareHub = React.lazy(() => import('@/pages/hubs/PrepareHub'));
 const SynapseAIHub = React.lazy(() => import('@/pages/hubs/SynapseAIHub'));
@@ -167,8 +166,9 @@ function App() {
               <Route path="/try" element={<DemoRolePicker />} />
               <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
               <Route path="/choose-role" element={<ProtectedRoute><ChooseRolePage /></ProtectedRoute>} />
-              <Route path="/setup" element={<ProtectedRoute><SetupPage /></ProtectedRoute>} />
-              <Route path="/setup-extras" element={<ProtectedRoute><SetupExtrasPage /></ProtectedRoute>} />
+              <Route path="/setup" element={<Navigate to="/profile" replace />} />
+              <Route path="/setup-extras" element={<Navigate to="/profile" replace />} />
+              <Route path="/admin-console" element={<ProtectedRoute><MainLayout><AdminConsolePage /></MainLayout></ProtectedRoute>} />
 
               {/* ─── Hub Pages ─────────────────────────────────── */}
               <Route path="/dashboard" element={<PG><Dashboard /></PG>} />
