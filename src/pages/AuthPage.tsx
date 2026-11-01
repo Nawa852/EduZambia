@@ -14,6 +14,7 @@ import {
 import { z } from 'zod';
 import { lovable } from '@/integrations/lovable';
 import eduIcon from '@/assets/brandLogo';
+import { useLocation } from 'react-router-dom';
 
 const emailSchema = z.string().email('Please enter a valid email address');
 const passwordSchema = z.string().min(8, 'Password must be at least 8 characters');
@@ -21,6 +22,9 @@ const passwordSchema = z.string().min(8, 'Password must be at least 8 characters
 const AuthPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnPath = location.state?.from?.pathname;
+  const destination = typeof returnPath === 'string' && returnPath.startsWith('/') && !returnPath.startsWith('//') ? returnPath : '/dashboard';
   const { toast } = useToast();
   
   const [activeTab, setActiveTab] = useState(searchParams.get('mode') === 'signup' ? 'signup' : 'login');
@@ -50,7 +54,7 @@ const AuthPage = () => {
             return;
           }
         }
-        navigate('/dashboard', { replace: true });
+        navigate(destination, { replace: true });
       }
     };
     checkSession();
@@ -61,13 +65,13 @@ const AuthPage = () => {
         if (needsRole === 'true') {
           navigate('/choose-role', { replace: true });
         } else {
-          navigate('/dashboard', { replace: true });
+          navigate(destination, { replace: true });
         }
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, destination]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -35,7 +35,7 @@ const AdminConsolePage: React.FC = () => {
     try {
       const [{ data: profiles }, { count: quizCount }, { data: focus }, { count: lessonCount }, { data: alertRows }] =
         await Promise.all([
-          supabase.from('profiles').select('id, full_name, role, school, created_at').order('created_at', { ascending: false }).limit(200),
+          supabase.from('profiles').select('id, full_name, role, school, created_at').order('created_at', { ascending: false }),
           supabase.from('quiz_attempts').select('id', { count: 'exact', head: true }),
           supabase.from('focus_sessions').select('focus_minutes').limit(2000),
           supabase.from('lesson_completions').select('id', { count: 'exact', head: true }),
@@ -53,7 +53,7 @@ const AdminConsolePage: React.FC = () => {
       setLessons(lessonCount ?? 0);
       setFocusMinutes((focus ?? []).reduce((s: number, f: any) => s + (f.focus_minutes ?? 0), 0));
       setAlerts((alertRows ?? []) as unknown as Alert[]);
-      setMaterials(await listRepository());
+      setMaterials((await listRepository()).filter((item) => item.is_public));
     } catch (e) {
       toast.error((e as Error).message || 'Could not load the console');
     } finally {
@@ -81,7 +81,7 @@ const AdminConsolePage: React.FC = () => {
         await uploadToRepository({ file, subject: subject || null, isPublic: true, source: 'admin' });
       }
       toast.success(`${files.length} material${files.length > 1 ? 's' : ''} added for everyone`);
-      setMaterials(await listRepository());
+      await load();
     } catch (e) {
       toast.error((e as Error).message || 'Upload failed');
     } finally {
@@ -109,28 +109,26 @@ const AdminConsolePage: React.FC = () => {
     { label: 'Quizzes taken', value: quizzes, icon: BookOpen },
     { label: 'Lessons done', value: lessons, icon: FileText },
     { label: 'Focus minutes', value: focusMinutes, icon: Timer },
+    { label: 'Shared materials', value: materials.length, icon: FolderOpen },
   ];
 
   return (
     <div className="space-y-5">
-      <Card className="rounded-3xl border-border/50 bg-gradient-to-br from-primary/10 via-violet-500/5 to-transparent p-5">
+      <header className="border-b border-border pb-5">
         <div className="flex flex-wrap items-start gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/15">
             <ShieldCheck className="h-5 w-5 text-primary" />
           </div>
           <div className="min-w-0 flex-1">
             <h1 className="text-xl font-bold tracking-tight sm:text-2xl">Admin console</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Monitor who has joined, what they are doing, system alerts — and add materials everyone can use.
-            </p>
           </div>
           <Button variant="outline" size="sm" className="rounded-full" onClick={load} disabled={loading}>
             {loading ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-1.5 h-4 w-4" />} Refresh
           </Button>
         </div>
-      </Card>
+      </header>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         {stats.map((s) => {
           const Icon = s.icon;
           return (
