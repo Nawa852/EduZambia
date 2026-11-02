@@ -8,7 +8,7 @@ import { LogoLoader } from '@/components/UI/LogoLoader';
 import { EmptyState } from '@/components/UI/EmptyState';
 import { uploadToRepository, listRepository, type RepositoryItem } from '@/lib/resourceRepository';
 import {
-  ShieldCheck, Users, BookOpen, Timer, AlertTriangle, Upload, RefreshCw, Loader2, FileText,
+  ShieldCheck, Users, BookOpen, Timer, AlertTriangle, Upload, RefreshCw, Loader2, FileText, FolderOpen,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
