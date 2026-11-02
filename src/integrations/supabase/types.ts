@@ -1307,42 +1307,87 @@ export type Database = {
           },
         ]
       }
+      curriculum_source_registry: {
+        Row: {
+          checked_at: string | null
+          created_at: string
+          framework: string
+          id: string
+          level: string
+          status: string
+          title: string
+          url: string
+        }
+        Insert: {
+          checked_at?: string | null
+          created_at?: string
+          framework: string
+          id?: string
+          level: string
+          status?: string
+          title: string
+          url: string
+        }
+        Update: {
+          checked_at?: string | null
+          created_at?: string
+          framework?: string
+          id?: string
+          level?: string
+          status?: string
+          title?: string
+          url?: string
+        }
+        Relationships: []
+      }
       curriculum_subjects: {
         Row: {
           code: string
           color: string | null
           created_at: string
           description: string | null
+          framework: string
           grade: string
           icon: string | null
           id: string
           name: string
           sort_order: number | null
+          source_title: string | null
+          syllabus_url: string | null
           updated_at: string
+          verification_status: string
         }
         Insert: {
           code: string
           color?: string | null
           created_at?: string
           description?: string | null
+          framework?: string
           grade: string
           icon?: string | null
           id?: string
           name: string
           sort_order?: number | null
+          source_title?: string | null
+          syllabus_url?: string | null
           updated_at?: string
+          verification_status?: string
         }
         Update: {
           code?: string
           color?: string | null
           created_at?: string
           description?: string | null
+          framework?: string
           grade?: string
           icon?: string | null
           id?: string
           name?: string
           sort_order?: number | null
+          source_title?: string | null
+          syllabus_url?: string | null
           updated_at?: string
+          verification_status?: string
         }
         Relationships: []
       }
@@ -1357,6 +1402,7 @@ export type Database = {
           objectives: string[] | null
           parent_id: string | null
           sort_order: number | null
+          source_page: number | null
           subject_id: string
           term: number | null
           title: string
@@ -1372,6 +1418,7 @@ export type Database = {
           objectives?: string[] | null
           parent_id?: string | null
           sort_order?: number | null
+          source_page?: number | null
           subject_id: string
           term?: number | null
           title: string
@@ -1387,6 +1434,7 @@ export type Database = {
           objectives?: string[] | null
           parent_id?: string | null
           sort_order?: number | null
+          source_page?: number | null
           subject_id?: string
           term?: number | null
           title?: string
