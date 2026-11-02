@@ -1,0 +1,10 @@
+ALTER TABLE public.curriculum_subjects ADD COLUMN IF NOT EXISTS framework text NOT NULL DEFAULT 'ECZ_2013', ADD COLUMN IF NOT EXISTS verification_status text NOT NULL DEFAULT 'draft', ADD COLUMN IF NOT EXISTS syllabus_url text, ADD COLUMN IF NOT EXISTS source_title text;
+ALTER TABLE public.curriculum_topics ADD COLUMN IF NOT EXISTS source_page integer;
+COMMENT ON COLUMN public.curriculum_subjects.verification_status IS 'draft until curriculum content is checked against its attributed CDC syllabus; source availability alone is not content verification';
+CREATE TABLE IF NOT EXISTS public.curriculum_source_registry (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), title text NOT NULL, url text NOT NULL UNIQUE, framework text NOT NULL, level text NOT NULL, status text NOT NULL DEFAULT 'pending_review', checked_at timestamptz, created_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT ON public.curriculum_source_registry TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.curriculum_source_registry TO authenticated;
+GRANT ALL ON public.curriculum_source_registry TO service_role;
+ALTER TABLE public.curriculum_source_registry ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Authenticated curriculum source reads" ON public.curriculum_source_registry FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Platform admins manage curriculum sources" ON public.curriculum_source_registry FOR ALL TO authenticated USING (public.is_platform_admin(auth.uid())) WITH CHECK (public.is_platform_admin(auth.uid()));

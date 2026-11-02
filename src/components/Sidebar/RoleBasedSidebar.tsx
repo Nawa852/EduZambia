@@ -19,6 +19,7 @@ import { getNavigationByRole, matchesNavItem } from "./sidebarConfig";
 import { useProfile } from "@/hooks/useProfile";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import eduIcon from "@/assets/brandLogo";
+import { Button } from '@/components/ui/button';
 
 export function RoleBasedSidebar() {
   const { state, toggleSidebar } = useSidebar();
@@ -44,9 +45,9 @@ export function RoleBasedSidebar() {
               {!collapsed && (
                 <div className="flex-1 flex items-center justify-between min-w-0">
                   <span className="font-bold text-sm text-foreground">Synapse</span>
-                  <button onClick={toggleSidebar} className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
+                  <Button variant="ghost" size="icon" aria-label="Collapse navigation" onClick={toggleSidebar} className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors">
                     <ChevronLeft className="w-4 h-4" />
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
