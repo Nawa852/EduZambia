@@ -21,7 +21,7 @@ interface Props {
   className?: string;
 }
 
-/** Cascading grade → subject → topic → competence from official curriculum data. Never free text. */
+/** Cascading curriculum selection with explicit verification status. */
 export const CurriculumPicker: React.FC<Props> = ({ onChange, depth = 'competence', className }) => {
   const [subjects, setSubjects] = useState<CurriculumSubject[]>([]);
   const [grade, setGrade] = useState('');
@@ -56,25 +56,26 @@ export const CurriculumPicker: React.FC<Props> = ({ onChange, depth = 'competenc
   const topicComps = competences.filter((c) => c.topic_id === topicId);
 
   return (
-    <div className={`flex flex-wrap gap-2 ${className ?? ''}`}>
+    <div className={`flex flex-wrap gap-2 max-w-full ${className ?? ''}`}>
       <Select value={grade} onValueChange={(v) => { setGrade(v); setSubjectId(''); }}>
-        <SelectTrigger className="h-9 w-32 rounded-full"><SelectValue placeholder="Grade" /></SelectTrigger>
+        <SelectTrigger aria-label="Grade or form" className="h-10 w-32 max-w-full rounded-lg"><SelectValue placeholder="Grade" /></SelectTrigger>
         <SelectContent>{grades.map((g) => <SelectItem key={g} value={g}>{gradeLabel(g)}</SelectItem>)}</SelectContent>
       </Select>
       <Select value={subjectId} onValueChange={setSubjectId} disabled={!grade}>
-        <SelectTrigger className="h-9 w-44 rounded-full"><SelectValue placeholder="Subject" /></SelectTrigger>
+        <SelectTrigger aria-label="Subject" className="h-10 w-44 max-w-full rounded-lg"><SelectValue placeholder="Subject" /></SelectTrigger>
         <SelectContent>{gradeSubjects.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
       </Select>
       <Select value={topicId} onValueChange={(v) => { setTopicId(v); setCompetenceId(''); }} disabled={!topics.length}>
-          <SelectTrigger className="h-9 w-52 rounded-full"><SelectValue placeholder={subjectId && !topics.length ? 'No topics yet' : 'Topic'} /></SelectTrigger>
+          <SelectTrigger aria-label="Topic" className="h-10 w-52 max-w-full rounded-lg"><SelectValue placeholder={subjectId && !topics.length ? 'No topics yet' : 'Topic'} /></SelectTrigger>
           <SelectContent>{topics.map((t) => <SelectItem key={t.id} value={t.id}>{t.code ? `${t.code} ` : ''}{t.title}</SelectItem>)}</SelectContent>
         </Select>
       {depth === 'competence' && (
         <Select value={competenceId} onValueChange={setCompetenceId} disabled={!topicComps.length}>
-          <SelectTrigger className="h-9 w-64 rounded-full"><SelectValue placeholder="Specific competence" /></SelectTrigger>
+          <SelectTrigger aria-label="Specific competence" className="h-10 w-64 max-w-full rounded-lg"><SelectValue placeholder="Specific competence" /></SelectTrigger>
           <SelectContent>{topicComps.map((c) => <SelectItem key={c.id} value={c.id}>{c.code} · {c.title}</SelectItem>)}</SelectContent>
         </Select>
       )}
+      {subject && <p className="w-full text-xs text-muted-foreground">{subject.verification_status === 'syllabus_verified' ? 'Syllabus verified' : 'Draft curriculum · awaiting syllabus verification'}{subject.syllabus_url && <> · <a className="text-primary underline" href={subject.syllabus_url} target="_blank" rel="noreferrer">Syllabus source</a></>}</p>}
     </div>
   );
 };
