@@ -11,3 +11,14 @@ export const schemeDraftSchema = z.object({ weeks: z.array(schemeWeekSchema).len
 export function parseSchemeDraft(text: string) {
   return schemeDraftSchema.parse(JSON.parse(text)).weeks;
 }
+
+export const lessonDraftSchema = z.object({
+  topic: z.string().min(1), subTopic: z.string(), specificOutcomes: z.array(z.string().min(1)).length(4),
+  rationale: z.string(), prerequisiteKnowledge: z.string(), teachingAids: z.string(),
+  activities: z.array(z.object({ phase: z.string(), teacherActivity: z.string().min(1), pupilsActivity: z.string().min(1) })).length(5),
+  conclusion: z.string(), evaluation: z.string(),
+});
+
+export function parseLessonDraft(text: string) {
+  return lessonDraftSchema.parse(JSON.parse(text));
+}

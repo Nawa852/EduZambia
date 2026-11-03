@@ -11,9 +11,10 @@ import {
   AlignmentType, BorderStyle, WidthType, HeightRule, VerticalAlign, TableLayoutType,
 } from 'docx';
 import { saveAs } from 'file-saver';
-import { CurriculumPicker } from '@/components/Curriculum/CurriculumPicker';
+import { CurriculumPicker, type CurriculumSelection } from '@/components/Curriculum/CurriculumPicker';
 import { gradeLabel } from '@/lib/curriculum';
 import { SchoolBrandHeader } from '@/components/School/SchoolBrandHeader';
+import { parseLessonDraft } from '@/lib/teacherDrafts';
 
 interface Activity {
   phase: string;
@@ -245,6 +246,8 @@ const TeacherLessonPlanPage: React.FC = () => {
   const [aiTopic, setAiTopic] = useState('');
   const [aiSubject, setAiSubject] = useState('Mathematics');
   const [aiGrade, setAiGrade] = useState('Grade 10');
+  const [curriculum, setCurriculum] = useState<CurriculumSelection | null>(null);
+  const [section, setSection] = useState<'all' | 'rationale' | 'prerequisiteKnowledge' | 'teachingAids' | 'activities' | 'conclusion' | 'evaluation'>('all');
   const abortRef = useRef<AbortController | null>(null);
 
   const set = <K extends keyof LessonPlan>(k: K, v: LessonPlan[K]) => setPlan((p) => ({ ...p, [k]: v }));
@@ -260,7 +263,7 @@ const TeacherLessonPlanPage: React.FC = () => {
     try {
       const sys = `You are an expert Zambian secondary school teacher writing lesson plans aligned to the ECZ (Examinations Council of Zambia) curriculum. Return ONLY valid JSON matching this schema (no markdown):
 {"topic":"","subTopic":"","specificOutcomes":["","","",""],"rationale":"","prerequisiteKnowledge":"","teachingAids":"","activities":[{"phase":"INTRODUCTION","teacherActivity":"","pupilsActivity":""},{"phase":"LESSON DEVELOPMENT","teacherActivity":"","pupilsActivity":""},{"phase":"GUIDED PRACTICE","teacherActivity":"","pupilsActivity":""},{"phase":"WRITTEN ACTIVITY","teacherActivity":"","pupilsActivity":""},{"phase":"SUMMARY & HOMEWORK","teacherActivity":"","pupilsActivity":""}],"conclusion":"","evaluation":""}
-Always produce exactly 4 specific outcomes and exactly 5 activity phases in the order above.`;
+Always produce exactly 4 specific outcomes and exactly 5 activity phases in the order above. Ground the outcomes in the supplied curriculum selection; do not invent official codes or claim verification for draft data. Use realistic Zambian low-resource activities. Curriculum: ${JSON.stringify(curriculum)}. ${section !== 'all' ? `Improve only the ${section} section of this existing plan, preserving all other content: ${JSON.stringify(plan)}` : ''}`;
       const { data: fnData, error: fnError } = await supabase.functions.invoke('ai-lesson-generator', {
         body: {
           subject: aiSubject,
@@ -274,9 +277,13 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
       if (fnError) throw fnError;
       if (fnData?.error) throw new Error(fnData.error);
       const text: string = fnData?.lessonPlan ?? '';
-      const m = text.match(/\{[\s\S]*\}/);
-      if (!m) throw new Error('No JSON');
-      const data = JSON.parse(m[0]);
+      const data = parseLessonDraft(text);
+      if (section !== 'all') {
+        if (section === 'activities') setPlan((p) => ({ ...p, activities: PHASES.map((ph, i) => ({ ...ph, teacherActivity: data.activities[i].teacherActivity, pupilsActivity: data.activities[i].pupilsActivity })) }));
+        else setPlan((p) => ({ ...p, [section]: data[section] }));
+        toast.success('Section updated');
+        return;
+      }
       setPlan((p) => ({
         ...p,
         subject: aiSubject,
@@ -297,9 +304,10 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
       }));
       toast.success('Lesson plan generated');
     } catch (e: any) {
-      if (e.name !== 'AbortError') toast.error('Generation failed');
+      if (e.name !== 'AbortError') toast.error(e.message || 'Generation failed');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const exportDocx = async () => {
@@ -344,10 +352,20 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
       {/* Toolbar (hidden on print) */}
       <div className="print:hidden flex flex-wrap items-center gap-2 p-3 bg-card rounded-xl border">
         <CurriculumPicker onChange={(s) => {
+          setCurriculum(s);
           if (s.subject) setAiSubject(s.subject.name);
           if (s.grade) setAiGrade(gradeLabel(s.grade));
           setAiTopic(s.competence ? `${s.topic?.title} — ${s.competence.code} ${s.competence.title}` : s.topic?.title ?? '');
         }} />
+        <select aria-label="Section to generate" value={section} onChange={(e) => setSection(e.target.value as typeof section)} className="h-10 max-w-full rounded-lg border bg-background px-2 text-sm">
+          <option value="all">Complete plan</option>
+          <option value="rationale">Rationale</option>
+          <option value="prerequisiteKnowledge">Prior knowledge</option>
+          <option value="teachingAids">Teaching aids</option>
+          <option value="activities">Activities</option>
+          <option value="conclusion">Conclusion</option>
+          <option value="evaluation">Evaluation</option>
+        </select>
         <Button onClick={aiFill} disabled={loading} className="gap-2">
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
           AI Fill
