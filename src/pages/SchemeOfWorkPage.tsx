@@ -12,6 +12,8 @@ import { saveAs } from 'file-saver';
 import { CurriculumPicker, type CurriculumSelection } from '@/components/Curriculum/CurriculumPicker';
 import { gradeLabel } from '@/lib/curriculum';
 import { SchoolBrandHeader } from '@/components/School/SchoolBrandHeader';
+import { supabase } from '@/integrations/supabase/client';
+import { parseSchemeDraft } from '@/lib/teacherDrafts';
 
 interface Week {
   wk: number;
@@ -122,7 +124,9 @@ const SchemeOfWorkPage: React.FC = () => {
   /** Fill Week 1 → continue in syllabus order. Week 7 is Revision, week 13 is a Test. */
   const fillFromSyllabus = () => {
     if (!syl?.subject || !syl.topics.length) { toast.error('Pick grade and subject first'); return; }
-    const first = syl.topic ? Math.max(0, syl.topics.findIndex((t) => t.id === syl.topic!.id)) : startTopic;
+    const subject = syl.subject;
+    const selectedTopic = syl.topic;
+    const first = selectedTopic ? Math.max(0, syl.topics.findIndex((t) => t.id === selectedTopic.id)) : startTopic;
     const queue = syl.topics.slice(first).flatMap((t) => {
       const comps = syl.competences.filter((c) => c.topic_id === t.id);
       return comps.length ? comps.map((c) => ({ t, c })) : [{ t, c: null as null | typeof comps[number] }];
@@ -130,7 +134,7 @@ const SchemeOfWorkPage: React.FC = () => {
     let qi = 0;
     setS((p) => ({
       ...p,
-      subject: syl.subject!.name,
+      subject: subject.name,
       grade: gradeLabel(syl.grade).replace(/^Grade /, ''),
       weeks: p.weeks.map((w, i) => {
         const wk = i + 1;
@@ -143,7 +147,7 @@ const SchemeOfWorkPage: React.FC = () => {
           topic: `${item.t.code ?? ''} ${item.t.title}`.trim(),
           subTopic: item.c ? `${item.c.code}` : '',
           specificOutcomes: item.c ? item.c.title : (item.t.objectives ?? []).join('; '),
-          references: 'ZECF 2023; CDC syllabus',
+          references: [subject.framework, subject.source_title, subject.syllabus_url, subject.verification_status === 'syllabus_verified' ? 'Verified syllabus' : 'Draft — verify against CDC syllabus'].filter(Boolean).join('; '),
         };
       }),
     }));
@@ -152,46 +156,26 @@ const SchemeOfWorkPage: React.FC = () => {
   };
 
   const aiFill = async () => {
-    if (!s.subject || !s.grade) { toast.error('Enter subject and grade first'); return; }
+    if (!syl?.subject || !syl.topics.length) { toast.error('Choose a curriculum subject with topics first'); return; }
     setLoading(true);
     abortRef.current = new AbortController();
     try {
-      const sys = `You are an expert Zambian secondary school curriculum planner aligned to the ECZ. Return ONLY a JSON array of 13 items (no markdown), one per week, schema:
-[{"wk":1,"topic":"","subTopic":"","specificOutcomes":"","content":"","skills":"","values":"","references":""}]`;
-      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-lesson-generator`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
-        body: JSON.stringify({ subject: s.subject, grade: `Grade ${s.grade}`, topic: `Term ${s.term} scheme of work — 13 weeks`, duration: '13 weeks', systemOverride: sys, jsonOnly: true }),
-        signal: abortRef.current.signal,
-      });
-      if (!resp.ok || !resp.body) throw new Error('Failed');
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let buf = ''; let text = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += decoder.decode(value, { stream: true });
-        let idx;
-        while ((idx = buf.indexOf('\n')) !== -1) {
-          let line = buf.slice(0, idx); buf = buf.slice(idx + 1);
-          if (line.endsWith('\r')) line = line.slice(0, -1);
-          if (!line.startsWith('data: ')) continue;
-          const json = line.slice(6).trim();
-          if (json === '[DONE]') break;
-          try { const p = JSON.parse(json); const c = p.choices?.[0]?.delta?.content; if (c) text += c; } catch {}
-        }
-      }
-      const m = text.match(/\[[\s\S]*\]/);
-      if (!m) throw new Error('No JSON');
-      const arr: Week[] = JSON.parse(m[0]);
+      const sys = `Create a Zambian teacher's scheme of work. Return ONLY a JSON object {"weeks":[{"wk":1,"topic":"","subTopic":"","specificOutcomes":"","content":"","skills":"","values":"","references":""}]} with exactly 13 ordered weeks. Use only the supplied curriculum topics and outcomes; never invent official codes or references. Preserve draft status when unverified. Week 7 is revision and week 13 is a test. Expand teaching content, skills and values with realistic low-resource activities. Curriculum context: ${JSON.stringify(syl)}`;
+      const { data, error } = await supabase.functions.invoke('ai-lesson-generator', { body: {
+        subject: syl.subject.name, grade: gradeLabel(syl.grade), topic: `Term ${s.term} scheme of work`, duration: '13 weeks', systemOverride: sys, jsonOnly: true,
+      }});
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      const arr = parseSchemeDraft(data?.lessonPlan ?? '');
       setS((p) => ({
         ...p,
+        subject: syl.subject?.name ?? p.subject,
+        grade: gradeLabel(syl.grade),
         weeks: p.weeks.map((w, i) => ({ ...w, ...(arr[i] || {}), wk: i + 1 })),
       }));
       toast.success('Scheme generated');
     } catch (e: any) {
-      if (e.name !== 'AbortError') toast.error('Generation failed');
+      if (e.name !== 'AbortError') toast.error(e.message || 'Generation failed');
     }
     setLoading(false);
   };

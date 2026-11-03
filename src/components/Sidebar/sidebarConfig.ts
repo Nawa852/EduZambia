@@ -120,6 +120,7 @@ const teacherNavigation: NavGroup[] = [
       { title: "Scheme of Work", url: "/teach?tab=scheme-of-work", icon: BookOpen, shortTitle: "Scheme" },
       { title: "Test Generator", url: "/teach?tab=test-generator", icon: Target, shortTitle: "Tests" },
       { title: "My Materials", url: "/teach?tab=my-materials", icon: FolderOpen, shortTitle: "Materials" },
+      { title: "Mastery Entry", url: "/teach/mastery", icon: ClipboardCheck, shortTitle: "Mastery" },
       { title: "Analytics", url: "/teach?tab=analytics", icon: PieChart, shortTitle: "Reports" },
     ],
   },

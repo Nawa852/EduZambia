@@ -1,13 +1,13 @@
 import { supabase } from '@/integrations/supabase/client';
 
-export interface CurriculumSubject { id: string; grade: string; code: string; name: string }
+export interface CurriculumSubject { id: string; grade: string; code: string; name: string; framework: string; verification_status: string; syllabus_url: string | null; source_title: string | null }
 export interface CurriculumTopic { id: string; subject_id: string; title: string; code: string | null; objectives: string[] | null; sort_order: number }
 export interface CurriculumCompetence { id: string; topic_id: string; code: string; title: string; sort_order: number }
 
 const db = supabase as any;
 
 export async function listSubjects(): Promise<CurriculumSubject[]> {
-  const { data, error } = await db.from('curriculum_subjects').select('id, grade, code, name').order('grade').order('sort_order');
+  const { data, error } = await db.from('curriculum_subjects').select('id, grade, code, name, framework, verification_status, syllabus_url, source_title').order('grade').order('sort_order');
   if (error) throw error;
   return data ?? [];
 }

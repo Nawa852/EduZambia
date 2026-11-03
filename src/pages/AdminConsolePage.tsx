@@ -11,6 +11,7 @@ import {
   ShieldCheck, Users, BookOpen, Timer, AlertTriangle, Upload, RefreshCw, Loader2, FileText, FolderOpen,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { CurriculumSourceRegister } from '@/components/Curriculum/CurriculumSourceRegister';
 
 interface Row { id: string; full_name: string | null; role: string | null; school: string | null; created_at: string }
 interface Alert { id: string; title?: string | null; message?: string | null; severity?: string | null; created_at: string }
@@ -167,6 +168,7 @@ const AdminConsolePage: React.FC = () => {
         </div>
       </Card>
 
+      <CurriculumSourceRegister />
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="rounded-2xl border-border/50 p-4">
           <h2 className="text-sm font-semibold">People by role</h2>
