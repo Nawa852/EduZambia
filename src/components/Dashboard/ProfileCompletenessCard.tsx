@@ -54,7 +54,7 @@ export const ProfileCompletenessCard = () => {
           ))}
         </div>
         {missing.length > 6 && (
-          <Button variant="ghost" size="sm" className="w-full text-xs" onClick={() => navigate('/setup')}>
+          <Button variant="ghost" size="sm" className="w-full text-xs" onClick={() => navigate('/profile?tab=settings')}>
             View all {missing.length} missing fields
           </Button>
         )}

@@ -3,7 +3,6 @@ import {
   LayoutDashboard, BookOpen, FileText, Target, Brain, 
   Trophy, Users, Briefcase, Wifi, Sparkles, Calendar, Zap
 } from 'lucide-react';
-import { OnboardingWelcomeBanner } from '@/components/Dashboard/OnboardingWelcomeBanner';
 import { SmartWelcomePanel } from './SmartWelcomePanel';
 import { TodaySnapshot } from './TodaySnapshot';
 import { SubjectsHub } from './SubjectsHub';
@@ -28,18 +27,6 @@ export const ComprehensiveLearnerDashboard = ({ userName }: ComprehensiveLearner
       {/* Smart Welcome Panel */}
       <SmartWelcomePanel userName={userName} />
 
-      <OnboardingWelcomeBanner
-        role="student"
-        userName={userName}
-        emoji="🎓"
-        subtitle="Here's how to make the most of your learning experience."
-        tips={[
-          { icon: Brain, title: 'AI Study Buddy', desc: 'Ask your AI tutor any question for instant help.' },
-          { icon: BookOpen, title: 'Explore Subjects', desc: 'Browse your subjects and track progress on each one.' },
-          { icon: Target, title: 'Exam Prep', desc: 'Practice with past papers and AI-generated quizzes.' },
-          { icon: Trophy, title: 'Earn Rewards', desc: 'Complete lessons and challenges to earn XP and badges.' },
-        ]}
-      />
 
       
       {/* Today's Snapshot */}
