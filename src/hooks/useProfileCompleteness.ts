@@ -17,7 +17,7 @@ interface CompletenessResult {
   role: string;
 }
 
-const SETUP = '/setup';
+const SETUP = '/profile?tab=settings';
 const PROFILE = '/profile?tab=settings';
 
 function check(value: any) {

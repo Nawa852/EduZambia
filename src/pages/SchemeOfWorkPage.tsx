@@ -14,6 +14,7 @@ import { gradeLabel } from '@/lib/curriculum';
 import { SchoolBrandHeader } from '@/components/School/SchoolBrandHeader';
 import { supabase } from '@/integrations/supabase/client';
 import { parseSchemeDraft } from '@/lib/teacherDrafts';
+import { useSchool } from '@/hooks/useSchool';
 
 interface Week {
   wk: number;
@@ -64,10 +65,10 @@ const tr = (t: string, opts: { bold?: boolean; size?: number } = {}) =>
 
 const inputCls = 'w-full bg-transparent border-0 focus:outline-none focus:ring-1 focus:ring-primary/40 px-1 py-0.5 text-xs resize-y';
 
-function buildDocx(s: SchemeOfWork): Document {
+function buildDocx(s: SchemeOfWork, schoolName: string): Document {
   const headerLines = [
     new Paragraph({ alignment: AlignmentType.CENTER, children: [tr('MINISTRY OF EDUCATION', { bold: true, size: 24 })] }),
-    new Paragraph({ alignment: AlignmentType.CENTER, children: [tr('NALIONWA SECONDARY SCHOOL', { bold: true, size: 24 })] }),
+    new Paragraph({ alignment: AlignmentType.CENTER, children: [tr(schoolName, { bold: true, size: 24 })] }),
     new Paragraph({ alignment: AlignmentType.CENTER, children: [tr(`${s.department.toUpperCase()} DEPARTMENT`, { bold: true, size: 24 })] }),
     new Paragraph({ children: [
       tr('SUBJECT: ', { bold: true }), tr(s.subject + '   '),
@@ -110,6 +111,7 @@ function buildDocx(s: SchemeOfWork): Document {
 }
 
 const SchemeOfWorkPage: React.FC = () => {
+  const { school } = useSchool();
   const [s, setS] = useState<SchemeOfWork>(empty());
   const [loading, setLoading] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -166,7 +168,8 @@ const SchemeOfWorkPage: React.FC = () => {
       }});
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      const arr = parseSchemeDraft(data?.lessonPlan ?? '');
+      const sourceReference = [syl.subject.framework, syl.subject.source_title, syl.subject.syllabus_url, syl.subject.verification_status === 'syllabus_verified' ? 'Verified syllabus' : 'Draft — verify against CDC syllabus'].filter(Boolean).join('; ');
+      const arr = parseSchemeDraft(data?.lessonPlan ?? '').map((week) => ({ ...week, references: sourceReference }));
       setS((p) => ({
         ...p,
         subject: syl.subject?.name ?? p.subject,
@@ -182,7 +185,7 @@ const SchemeOfWorkPage: React.FC = () => {
 
   const exportDocx = async () => {
     try {
-      const doc = buildDocx(s);
+      const doc = buildDocx(s, school?.name ?? 'School name not configured');
       const blob = await Packer.toBlob(doc);
       saveAs(blob, `SchemeOfWork_${s.subject || 'Subject'}_Grade${s.grade}_Term${s.term}.docx`);
       toast.success('Downloaded .docx');
@@ -209,7 +212,7 @@ const SchemeOfWorkPage: React.FC = () => {
           <SchoolBrandHeader />
           {/* Header */}
           <div className="text-center font-bold text-base uppercase tracking-wide">MINISTRY OF EDUCATION</div>
-          <div className="text-center font-bold text-base uppercase tracking-wide">NALIONWA SECONDARY SCHOOL</div>
+          {!school && <div className="text-center text-sm text-muted-foreground print:hidden">School name not configured</div>}
           <div className="text-center font-bold text-base uppercase tracking-wide">
             <input
               className="bg-transparent text-center font-bold uppercase border-b border-dotted border-foreground/40 focus:outline-none focus:border-primary"
