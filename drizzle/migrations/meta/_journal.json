@@ -8,6 +8,13 @@
       "when": 1793608789990,
       "tag": "0000_curriculum_source_provenance",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793898641035,
+      "tag": "0001_restrict_seven_student_data_exposures",
+      "breakpoints": true
     }
   ]
 }

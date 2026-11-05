@@ -5602,6 +5602,10 @@ export type Database = {
         Returns: undefined
       }
       calculate_user_streak: { Args: { p_user_id: string }; Returns: number }
+      can_read_connected_profile: {
+        Args: { _profile_id: string }
+        Returns: boolean
+      }
       create_guardian_link_code: { Args: never; Returns: string }
       create_parent_invite_for_student: {
         Args: { _student_id: string }
