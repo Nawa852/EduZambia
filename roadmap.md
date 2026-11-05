@@ -1,5 +1,6 @@
-- [ ] Complete frontend redesign ritual, then remove unsuitable onboarding and modernize themes, icons, and bottom navigation.
-- [ ] Wire /admin-console and verify admin sign-in, material upload, and live counts.
-- [ ] Research PrepDesk lesson-planning workflow and official Zambian curriculum sources.
-- [ ] Build curriculum-grounded teacher lesson plans and schemes from legally reusable source data.
-- [ ] Review the ten newly uploaded architecture/world documents and fold their requirements into implementation; use parallel research tasks where useful.
+- [x] Preserve the selected palette/type/layout, remove forced setup and dashboard tours, refine shared navigation and outlined icons.
+- [x] Wire /admin-console and verify admin access, material upload, persistence, and shared count changing from 1 to 2.
+- [x] Research PrepDesk's public workflow and official Zambian curriculum sources; preserve ten uploaded references.
+- [x] Repair authenticated scheme generation, validate lesson/scheme drafts, add curriculum provenance and 29 pending-review sources; verify generation and lesson version saving.
+- [ ] Full national curriculum ingestion and publication — blocked on source-content verification and CDC/ECZ reuse permission; registered links are not verified curriculum data.
+- [ ] Complete all four world specifications — blocked on conflicting grade/template/grading rules in uploaded plans and verified source content; do not invent policy or claim full implementation.

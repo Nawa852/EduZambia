@@ -45,7 +45,7 @@ const RoleGuard: React.FC<RoleGuardProps> = ({ allow, children, redirectTo }) =>
           </p>
           <div className="flex gap-2 justify-center pt-2">
             <Button variant="outline" onClick={() => navigate('/dashboard')}>Go to dashboard</Button>
-            <Button onClick={() => navigate('/choose-role')}>Switch role</Button>
+            <Button onClick={() => navigate('/profile')}>My account</Button>
           </div>
         </CardContent>
       </Card>
