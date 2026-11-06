@@ -15,6 +15,7 @@ import { CurriculumPicker, type CurriculumSelection } from '@/components/Curricu
 import { gradeLabel } from '@/lib/curriculum';
 import { SchoolBrandHeader } from '@/components/School/SchoolBrandHeader';
 import { parseLessonDraft } from '@/lib/teacherDrafts';
+import { DocumentFlow } from '@/components/Teacher/DocumentFlow';
 
 interface Activity {
   phase: string;
@@ -243,6 +244,7 @@ const TeacherLessonPlanPage: React.FC = () => {
   const { user } = useAuth();
   const [plan, setPlan] = useState<LessonPlan>(empty());
   const [loading, setLoading] = useState(false);
+  const [reviewing, setReviewing] = useState(false);
   const [aiTopic, setAiTopic] = useState('');
   const [aiSubject, setAiSubject] = useState('Mathematics');
   const [aiGrade, setAiGrade] = useState('Grade 10');
@@ -303,6 +305,7 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
         evaluation: data.evaluation ?? '',
       }));
       toast.success('Lesson plan generated');
+      setReviewing(true);
     } catch (e: any) {
       if (e.name !== 'AbortError') toast.error(e.message || 'Generation failed');
     } finally {
@@ -350,13 +353,18 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
   return (
     <div className="space-y-4">
       {/* Toolbar (hidden on print) */}
-      <div className="print:hidden flex flex-wrap items-center gap-2 border-b pb-4">
+      {!reviewing && <div className="print:hidden flex flex-wrap items-center gap-3">
+        <h2 className="w-full text-lg font-semibold">Plan your lesson</h2>
         <CurriculumPicker className="w-full" onChange={(s) => {
           setCurriculum(s);
           if (s.subject) setAiSubject(s.subject.name);
           if (s.grade) setAiGrade(gradeLabel(s.grade));
           setAiTopic(s.competence ? `${s.topic?.title} — ${s.competence.code} ${s.competence.title}` : s.topic?.title ?? '');
         }} />
+        <label className="text-sm">Duration (minutes)<Input aria-label="Lesson duration" type="number" value={plan.durationMinutes} onChange={e => set('durationMinutes', e.target.value)} className="mt-1 w-32" /></label>
+      </div>}
+      <DocumentFlow reviewing={reviewing} loading={loading} ready={!!aiTopic.trim()} onGenerate={aiFill} onReview={() => setReviewing(true)} onSetup={() => setReviewing(false)} />
+      {reviewing && <div className="print:hidden flex flex-wrap items-center gap-2">
         <select aria-label="Section to generate" value={section} onChange={(e) => setSection(e.target.value as typeof section)} className="h-10 max-w-full rounded-lg border bg-background px-2 text-sm">
           <option value="all">Complete plan</option>
           <option value="rationale">Rationale</option>
@@ -383,10 +391,10 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
           <Button variant="outline" onClick={onPrint} className="gap-2"><Printer className="h-4 w-4" />Print / PDF</Button>
           <Button onClick={exportDocx} className="gap-2"><Download className="h-4 w-4" />Export .docx</Button>
         </div>
-      </div>
+      </div>}
 
       {/* Document preview */}
-      <div className="max-w-full overflow-x-auto print:overflow-visible">
+      <div className={`${reviewing ? '' : 'hidden print:block'} max-w-full overflow-x-auto print:overflow-visible`}>
       <Card className="min-w-[720px] rounded-lg border-foreground/20">
         <CardContent className="p-4 sm:p-6 font-serif text-sm bg-background print:p-0">
           <SchoolBrandHeader />

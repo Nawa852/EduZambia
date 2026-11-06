@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Loader2, Download, Wand2, Printer, ListOrdered } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,8 @@ import { SchoolBrandHeader } from '@/components/School/SchoolBrandHeader';
 import { supabase } from '@/integrations/supabase/client';
 import { parseSchemeDraft } from '@/lib/teacherDrafts';
 import { useSchool } from '@/hooks/useSchool';
+import { DocumentFlow } from '@/components/Teacher/DocumentFlow';
+import { Label } from '@/components/ui/label';
 
 interface Week {
   wk: number;
@@ -114,7 +116,7 @@ const SchemeOfWorkPage: React.FC = () => {
   const { school } = useSchool();
   const [s, setS] = useState<SchemeOfWork>(empty());
   const [loading, setLoading] = useState(false);
-  const abortRef = useRef<AbortController | null>(null);
+  const [reviewing, setReviewing] = useState(false);
 
   const setField = <K extends keyof SchemeOfWork>(k: K, v: SchemeOfWork[K]) => setS((p) => ({ ...p, [k]: v }));
   const setWeek = (i: number, field: keyof Week, v: string | number) =>
@@ -154,13 +156,13 @@ const SchemeOfWorkPage: React.FC = () => {
       }),
     }));
     setStartTopic(0);
+    setReviewing(true);
     toast.success('Term filled in syllabus order — edit any week');
   };
 
   const aiFill = async () => {
     if (!syl?.subject || !syl.topics.length) { toast.error('Choose a curriculum subject with topics first'); return; }
     setLoading(true);
-    abortRef.current = new AbortController();
     try {
       const sys = `Create a Zambian teacher's scheme of work. Return ONLY a JSON object {"weeks":[{"wk":1,"topic":"","subTopic":"","specificOutcomes":"","content":"","skills":"","values":"","references":""}]} with exactly 13 ordered weeks. Use only the supplied curriculum topics and outcomes; never invent official codes or references. Preserve draft status when unverified. Week 7 is revision and week 13 is a test. Expand teaching content, skills and values with realistic low-resource activities. Curriculum context: ${JSON.stringify(syl)}`;
       const { data, error } = await supabase.functions.invoke('ai-lesson-generator', { body: {
@@ -177,6 +179,7 @@ const SchemeOfWorkPage: React.FC = () => {
         weeks: p.weeks.map((w, i) => ({ ...w, ...(arr[i] || {}), wk: i + 1 })),
       }));
       toast.success('Scheme generated');
+      setReviewing(true);
     } catch (e: any) {
       if (e.name !== 'AbortError') toast.error(e.message || 'Generation failed');
     }
@@ -194,20 +197,25 @@ const SchemeOfWorkPage: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div className="print:hidden flex flex-wrap items-center gap-2 p-3 bg-card rounded-xl border">
+      {!reviewing && <div className="print:hidden space-y-4">
+        <h2 className="text-lg font-semibold">Plan your term</h2>
         <CurriculumPicker depth="topic" onChange={setSyl} />
-        <Button variant="outline" onClick={fillFromSyllabus} className="gap-2"><ListOrdered className="h-4 w-4" />Fill from syllabus</Button>
-        <Button onClick={aiFill} disabled={loading} className="gap-2">
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
-          AI Fill 13 Weeks
-        </Button>
-        <div className="ml-auto flex gap-2">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div className="space-y-1.5"><Label htmlFor="scheme-term">Term</Label><select id="scheme-term" value={s.term} onChange={e => setField('term', e.target.value)} className="h-10 w-full rounded-md border bg-background px-3"><option value="1">Term 1</option><option value="2">Term 2</option><option value="3">Term 3</option></select></div>
+          <div className="space-y-1.5"><Label htmlFor="scheme-year">Year</Label><Input id="scheme-year" type="number" value={s.year} onChange={e => setField('year', e.target.value)} /></div>
+          <div className="col-span-2 space-y-1.5 sm:col-span-1"><Label htmlFor="scheme-department">Department</Label><Input id="scheme-department" value={s.department} onChange={e => setField('department', e.target.value)} /></div>
+        </div>
+        <Button variant="outline" onClick={fillFromSyllabus} disabled={loading || !syl?.topics.length} className="gap-2"><ListOrdered className="h-4 w-4" />Use syllabus outline</Button>
+      </div>}
+      <DocumentFlow reviewing={reviewing} loading={loading} ready={!!syl?.subject && !!syl.topics.length} onGenerate={aiFill} onReview={() => setReviewing(true)} onSetup={() => setReviewing(false)} />
+      {reviewing && <div className="print:hidden flex flex-wrap items-center gap-2">
+        <span className="mr-auto text-sm font-medium">Draft · {s.subject || 'Scheme of work'} · 13 weeks</span>
           <Button variant="outline" onClick={() => window.print()} className="gap-2"><Printer className="h-4 w-4" />Print / PDF</Button>
           <Button onClick={exportDocx} className="gap-2"><Download className="h-4 w-4" />Export .docx</Button>
-        </div>
-      </div>
+      </div>}
 
-      <Card className="border-2 border-foreground/20">
+      <div className={`${reviewing ? '' : 'hidden print:block'} max-w-full overflow-x-auto print:overflow-visible`}>
+      <Card className="min-w-[960px] rounded-lg border-foreground/20">
         <CardContent className="p-6 font-serif text-sm bg-background print:p-0">
           <SchoolBrandHeader />
           {/* Header */}
@@ -263,6 +271,7 @@ const SchemeOfWorkPage: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
