@@ -4,5 +4,7 @@
 - [x] Repair authenticated scheme generation, validate lesson/scheme drafts, add curriculum provenance and 29 pending-review sources; verify generation and lesson version saving.
 - [ ] Full national curriculum ingestion and publication — blocked on source-content verification and CDC/ECZ reuse permission; registered links are not verified curriculum data.
 - [ ] Complete all four world specifications — blocked on conflicting grade/template/grading rules in uploaded plans and verified source content; do not invent policy or claim full implementation.
-- [ ] Repair seven blocking access-rule findings and verify cross-account isolation.
-- [ ] Verify lesson-planner imports and remove obsolete onboarding/off-vision frontend pages without removing core four-world tools.
+- [x] Repair seven blocking access-rule findings; quick rescan shows none of the seven, seven live-policy regressions pass, and signed-in foreign-record reads are denied.
+- [x] Verify lesson-planner imports/build and desktop/mobile rendering; delete eighteen obsolete onboarding/tour files and repair teacher quick links without removing core four-world tools.
+- [ ] Reverify authenticated teacher generation/save after cleanup — requesting account is a guardian; requires an authorized teacher session, not a demo role.
+- [ ] Remaining security hardening — eleven database/storage warnings and production dependency advisories remain outside the seven requested findings; no full safety certification.

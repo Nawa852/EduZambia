@@ -350,8 +350,8 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
   return (
     <div className="space-y-4">
       {/* Toolbar (hidden on print) */}
-      <div className="print:hidden flex flex-wrap items-center gap-2 p-3 bg-card rounded-xl border">
-        <CurriculumPicker onChange={(s) => {
+      <div className="print:hidden flex flex-wrap items-center gap-2 border-b pb-4">
+        <CurriculumPicker className="w-full" onChange={(s) => {
           setCurriculum(s);
           if (s.subject) setAiSubject(s.subject.name);
           if (s.grade) setAiGrade(gradeLabel(s.grade));
@@ -370,7 +370,7 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
           AI Fill
         </Button>
-        <div className="ml-auto flex gap-2">
+        <div className="flex w-full flex-wrap gap-2 sm:ml-auto sm:w-auto">
           <Button variant="outline" onClick={saveVersion} disabled={savingVersion} className="gap-2"><Save className="h-4 w-4" />Save version</Button>
           {versions.length > 0 && (
             <select aria-label="Restore a saved version" className="h-9 rounded-md border bg-background px-2 text-sm" value="" onChange={(e) => {
@@ -385,9 +385,10 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
         </div>
       </div>
 
-      {/* Document preview — Nalionwa format */}
-      <Card className="border-2 border-foreground/20">
-        <CardContent className="p-6 font-serif text-sm bg-background print:p-0">
+      {/* Document preview */}
+      <div className="max-w-full overflow-x-auto print:overflow-visible">
+      <Card className="min-w-[720px] rounded-lg border-foreground/20">
+        <CardContent className="p-4 sm:p-6 font-serif text-sm bg-background print:p-0">
           <SchoolBrandHeader />
           {/* Header table */}
           <table className="w-full border-collapse border border-foreground text-sm">
@@ -499,6 +500,7 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

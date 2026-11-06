@@ -1,6 +1,6 @@
 import React from 'react';
 import { HubPageLayout, HubTab } from '@/components/Layout/HubPageLayout';
-import { BookOpen, ClipboardCheck, FileText, BarChart3, Megaphone, Users, MessageSquare, Library, GraduationCap, FolderUp, Link as LinkIcon, Wand2, Sparkles } from 'lucide-react';
+import { BookOpen, ClipboardCheck, FileText, BarChart3, Megaphone, Users, Library, GraduationCap, FolderUp, Wand2, Sparkles } from 'lucide-react';
 
 const tabs: HubTab[] = [
   { id: 'courses', label: 'My Courses', icon: BookOpen, description: 'Your classes, enrolments and join codes', component: React.lazy(() => import('@/pages/Courses')) },
@@ -30,8 +30,8 @@ const TeachHub = () => (
     defaultTab="courses"
     quickLinks={[
       { label: 'Generate a test', href: '/teach?tab=test-generator', icon: Wand2 },
-      { label: 'Message students', href: '/connect?tab=messenger', icon: MessageSquare },
-      { label: 'Open library', href: '/resource-library', icon: LinkIcon },
+      { label: 'Class announcements', href: '/teach?tab=announcements', icon: Megaphone },
+      { label: 'Open library', href: '/teach?tab=library', icon: Library },
     ]}
   />
 );
