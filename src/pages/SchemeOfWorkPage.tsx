@@ -17,6 +17,7 @@ import { parseSchemeDraft } from '@/lib/teacherDrafts';
 import { useSchool } from '@/hooks/useSchool';
 import { DocumentFlow } from '@/components/Teacher/DocumentFlow';
 import { Label } from '@/components/ui/label';
+import { invokeLessonGenerator } from '@/lib/lessonGeneration';
 
 interface Week {
   wk: number;
@@ -165,9 +166,9 @@ const SchemeOfWorkPage: React.FC = () => {
     setLoading(true);
     try {
       const sys = `Create a Zambian teacher's scheme of work. Return ONLY a JSON object {"weeks":[{"wk":1,"topic":"","subTopic":"","specificOutcomes":"","content":"","skills":"","values":"","references":""}]} with exactly 13 ordered weeks. Use only the supplied curriculum topics and outcomes; never invent official codes or references. Preserve draft status when unverified. Week 7 is revision and week 13 is a test. Expand teaching content, skills and values with realistic low-resource activities. Curriculum context: ${JSON.stringify(syl)}`;
-      const { data, error } = await supabase.functions.invoke('ai-lesson-generator', { body: {
+      const { data, error } = await invokeLessonGenerator(supabase, {
         subject: syl.subject.name, grade: gradeLabel(syl.grade), topic: `Term ${s.term} scheme of work`, duration: '13 weeks', systemOverride: sys, jsonOnly: true,
-      }});
+      });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       const sourceReference = [syl.subject.framework, syl.subject.source_title, syl.subject.syllabus_url, syl.subject.verification_status === 'syllabus_verified' ? 'Verified syllabus' : 'Draft — verify against CDC syllabus'].filter(Boolean).join('; ');

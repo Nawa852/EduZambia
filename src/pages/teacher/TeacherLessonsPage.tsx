@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Sparkles, Loader2, Save, Printer } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
+import { invokeLessonGenerator } from '@/lib/lessonGeneration';
 
 export default function TeacherLessonsPage() {
   const { user } = useAuth();
@@ -22,7 +23,7 @@ export default function TeacherLessonsPage() {
     setLoading(true);
     setContent("");
     try {
-      const { data, error } = await supabase.functions.invoke("ai-lesson-generator", { body: form });
+      const { data, error } = await invokeLessonGenerator(supabase, form);
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       const text = data?.lessonPlan || data?.content || "";

@@ -16,6 +16,7 @@ import { gradeLabel } from '@/lib/curriculum';
 import { SchoolBrandHeader } from '@/components/School/SchoolBrandHeader';
 import { parseLessonDraft } from '@/lib/teacherDrafts';
 import { DocumentFlow } from '@/components/Teacher/DocumentFlow';
+import { invokeLessonGenerator } from '@/lib/lessonGeneration';
 
 interface Activity {
   phase: string;
@@ -266,15 +267,13 @@ const TeacherLessonPlanPage: React.FC = () => {
       const sys = `You are an expert Zambian secondary school teacher writing lesson plans aligned to the ECZ (Examinations Council of Zambia) curriculum. Return ONLY valid JSON matching this schema (no markdown):
 {"topic":"","subTopic":"","specificOutcomes":["","","",""],"rationale":"","prerequisiteKnowledge":"","teachingAids":"","activities":[{"phase":"INTRODUCTION","teacherActivity":"","pupilsActivity":""},{"phase":"LESSON DEVELOPMENT","teacherActivity":"","pupilsActivity":""},{"phase":"GUIDED PRACTICE","teacherActivity":"","pupilsActivity":""},{"phase":"WRITTEN ACTIVITY","teacherActivity":"","pupilsActivity":""},{"phase":"SUMMARY & HOMEWORK","teacherActivity":"","pupilsActivity":""}],"conclusion":"","evaluation":""}
 Always produce exactly 4 specific outcomes and exactly 5 activity phases in the order above. Ground the outcomes in the supplied curriculum selection; do not invent official codes or claim verification for draft data. Use realistic Zambian low-resource activities. Curriculum: ${JSON.stringify(curriculum)}. ${section !== 'all' ? `Improve only the ${section} section of this existing plan, preserving all other content: ${JSON.stringify(plan)}` : ''}`;
-      const { data: fnData, error: fnError } = await supabase.functions.invoke('ai-lesson-generator', {
-        body: {
+      const { data: fnData, error: fnError } = await invokeLessonGenerator(supabase, {
           subject: aiSubject,
           grade: aiGrade,
           topic: aiTopic,
           duration: `${plan.durationMinutes || '80'} minutes`,
           systemOverride: sys,
           jsonOnly: true,
-        },
       });
       if (fnError) throw fnError;
       if (fnData?.error) throw new Error(fnData.error);
