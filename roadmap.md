@@ -8,4 +8,4 @@
 - [x] Verify lesson-planner imports/build and desktop/mobile rendering; delete eighteen obsolete onboarding/tour files and repair teacher quick links without removing core four-world tools.
 - [ ] Reverify authenticated teacher generation/save after cleanup — requesting account is a guardian; requires an authorized teacher session, not a demo role.
 - [ ] Remaining security hardening — eleven database/storage warnings and production dependency advisories remain outside the seven requested findings; no full safety certification.
-- [ ] Apply PrepDesk-inspired curriculum → draft → review → download flow to schemes and lesson plans, preserving source status and existing document formats.
+- [x] Apply PrepDesk-inspired curriculum → draft → review → download flow to schemes and lesson plans; preserve selections on return, source status, and print/DOCX formats. Desktop/mobile manual-review and download checks passed; authenticated generation remains subject to the teacher-session blocker above.

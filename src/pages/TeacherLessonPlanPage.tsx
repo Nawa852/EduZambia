@@ -353,7 +353,7 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
   return (
     <div className="space-y-4">
       {/* Toolbar (hidden on print) */}
-      {!reviewing && <div className="print:hidden flex flex-wrap items-center gap-3">
+      <div className={`print:hidden flex flex-wrap items-center gap-3 ${reviewing ? 'hidden' : ''}`}>
         <h2 className="w-full text-lg font-semibold">Plan your lesson</h2>
         <CurriculumPicker className="w-full" onChange={(s) => {
           setCurriculum(s);
@@ -362,7 +362,7 @@ Always produce exactly 4 specific outcomes and exactly 5 activity phases in the 
           setAiTopic(s.competence ? `${s.topic?.title} — ${s.competence.code} ${s.competence.title}` : s.topic?.title ?? '');
         }} />
         <label className="text-sm">Duration (minutes)<Input aria-label="Lesson duration" type="number" value={plan.durationMinutes} onChange={e => set('durationMinutes', e.target.value)} className="mt-1 w-32" /></label>
-      </div>}
+      </div>
       <DocumentFlow reviewing={reviewing} loading={loading} ready={!!aiTopic.trim()} onGenerate={aiFill} onReview={() => setReviewing(true)} onSetup={() => setReviewing(false)} />
       {reviewing && <div className="print:hidden flex flex-wrap items-center gap-2">
         <select aria-label="Section to generate" value={section} onChange={(e) => setSection(e.target.value as typeof section)} className="h-10 max-w-full rounded-lg border bg-background px-2 text-sm">

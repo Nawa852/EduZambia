@@ -197,7 +197,7 @@ const SchemeOfWorkPage: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {!reviewing && <div className="print:hidden space-y-4">
+      <div className={`print:hidden space-y-4 ${reviewing ? 'hidden' : ''}`}>
         <h2 className="text-lg font-semibold">Plan your term</h2>
         <CurriculumPicker depth="topic" onChange={setSyl} />
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -206,7 +206,7 @@ const SchemeOfWorkPage: React.FC = () => {
           <div className="col-span-2 space-y-1.5 sm:col-span-1"><Label htmlFor="scheme-department">Department</Label><Input id="scheme-department" value={s.department} onChange={e => setField('department', e.target.value)} /></div>
         </div>
         <Button variant="outline" onClick={fillFromSyllabus} disabled={loading || !syl?.topics.length} className="gap-2"><ListOrdered className="h-4 w-4" />Use syllabus outline</Button>
-      </div>}
+      </div>
       <DocumentFlow reviewing={reviewing} loading={loading} ready={!!syl?.subject && !!syl.topics.length} onGenerate={aiFill} onReview={() => setReviewing(true)} onSetup={() => setReviewing(false)} />
       {reviewing && <div className="print:hidden flex flex-wrap items-center gap-2">
         <span className="mr-auto text-sm font-medium">Draft · {s.subject || 'Scheme of work'} · 13 weeks</span>
