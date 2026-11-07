@@ -18,6 +18,7 @@ import { listRepository, getResourceUrl, deleteResource, type RepositoryItem } f
 import { getResourcePermissions } from '@/lib/resourcePermissions';
 import { ResourceUploader } from '@/components/Resources/ResourceUploader';
 import { ResourceCard, tagValue } from '@/components/Resources/ResourceCard';
+import { SiloziLibrary } from '@/components/Resources/SiloziLibrary';
 
 const ALL = '__all__';
 
@@ -116,6 +117,7 @@ const ECZResourcesExpandedPage = () => {
   return (
     <div className="space-y-5">
       {perms.canUpload && <ResourceUploader perms={perms} role={role} onUploaded={load} />}
+      <SiloziLibrary />
 
       {/* Filters */}
       {items.length > 0 && (

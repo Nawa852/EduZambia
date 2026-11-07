@@ -7,3 +7,4 @@
 - Lesson-generator callers share a session-aware invoker: reject missing sessions locally, send the current user token explicitly, and refresh/retry a 401 only once to preserve authentication without retry loops.
 - Teacher plans and schemes share a non-forced curriculum/setup → editable draft → export flow; preserve existing print formats and expose unverified source status.
 - Retired social and video records remain owner-scoped; group rosters require membership, and profile reads require ownership, an active teaching/family connection, or protected admin authorization to preserve student privacy.
+- Open educational imports use a separate source-URL-deduplicated catalogue with protected admin writes; full text requires recorded per-item licence and attribution, and reading levels never imply official curriculum verification.

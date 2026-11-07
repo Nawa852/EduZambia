@@ -18,6 +18,7 @@ import {
   downloadLibraryItem, formatBytes, listLibrary, setLibraryVisibility, uploadToLibrary,
 } from '@/lib/sharedLibrary';
 import { useAuth } from '@/components/Auth/AuthProvider';
+import { SiloziLibrary } from '@/components/Resources/SiloziLibrary';
 
 const SUBJECTS = ['Mathematics', 'English', 'Science', 'Biology', 'Chemistry', 'Physics', 'Social Studies', 'Civic Education', 'History', 'Geography', 'Computer Studies', 'Agriculture', 'Business Studies'];
 const GRADES = ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'];
@@ -198,6 +199,7 @@ const SharedLibraryPage: React.FC = () => {
           <UploadDialog onDone={load} />
         </div>
       </header>
+      <SiloziLibrary />
 
       <div className="flex flex-wrap gap-2">
         {(['shared', 'mine'] as const).map((s) => (

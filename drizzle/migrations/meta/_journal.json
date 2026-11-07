@@ -15,6 +15,13 @@
       "when": 1793898641035,
       "tag": "0001_restrict_seven_student_data_exposures",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794065123820,
+      "tag": "0002_create_open_learning_materials",
+      "breakpoints": true
     }
   ]
 }

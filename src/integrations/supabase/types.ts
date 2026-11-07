@@ -3404,6 +3404,60 @@ export type Database = {
         }
         Relationships: []
       }
+      open_learning_materials: {
+        Row: {
+          attribution: string | null
+          content: string | null
+          curriculum_status: string
+          download_url: string | null
+          id: string
+          import_status: string
+          imported_at: string
+          language: string
+          level: number | null
+          license_name: string | null
+          license_url: string | null
+          material_type: string
+          provider: string
+          source_url: string
+          title: string
+        }
+        Insert: {
+          attribution?: string | null
+          content?: string | null
+          curriculum_status?: string
+          download_url?: string | null
+          id?: string
+          import_status?: string
+          imported_at?: string
+          language?: string
+          level?: number | null
+          license_name?: string | null
+          license_url?: string | null
+          material_type?: string
+          provider: string
+          source_url: string
+          title: string
+        }
+        Update: {
+          attribution?: string | null
+          content?: string | null
+          curriculum_status?: string
+          download_url?: string | null
+          id?: string
+          import_status?: string
+          imported_at?: string
+          language?: string
+          level?: number | null
+          license_name?: string | null
+          license_url?: string | null
+          material_type?: string
+          provider?: string
+          source_url?: string
+          title?: string
+        }
+        Relationships: []
+      }
       page_followers: {
         Row: {
           created_at: string
